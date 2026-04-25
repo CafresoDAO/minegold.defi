@@ -1,0 +1,489 @@
+type sGLDTRequest = 
+ record {
+   bbTokenAmount: nat;
+   id: nat;
+   sgldAmountCalculated: nat;
+   status: ExchangeStatus;
+   submitter: principal;
+   timestamp: Time;
+ };
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserProfile = record {name: text;};
+type UniDepositRequest = 
+ record {
+   ethAddress: text;
+   id: nat;
+   lockedExchangeRate: opt nat;
+   sgldtPaid: nat;
+   status: UNIDepositStatus;
+   submitter: principal;
+   timestamp: Time;
+   txHash: text;
+   uniAmount: nat;
+ };
+type UNIDepositStatus = 
+ variant {
+   confirmed;
+   failed;
+   paid;
+   pending;
+   processing;
+ };
+type TxType = 
+ variant {
+   Bridge;
+   Mint;
+   Refine;
+   Transfer;
+ };
+type TxStatus = 
+ variant {
+   Completed;
+   Confirmed;
+   Failed;
+   Pending;
+ };
+type TxRecord = 
+ record {
+   amount: nat;
+   description: text;
+   errorMsg: opt text;
+   ethTxHash: opt text;
+   icpBlockIndex: opt nat;
+   id: text;
+   status: TxStatus;
+   timestamp: int;
+   tokenSymbol: text;
+   txType: TxType;
+ };
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type Time = int;
+type ExchangeStatus = 
+ variant {
+   approved;
+   pending;
+   rejected;
+ };
+type BridgeStatus = 
+ variant {
+   approved;
+   pending;
+   rejected;
+ };
+type BridgeRequest = 
+ record {
+   batAmount: nat;
+   ethAddress: text;
+   id: nat;
+   status: BridgeStatus;
+   submitter: principal;
+   timestamp: Time;
+ };
+type AutoFinalizeResult = 
+ variant {
+   alreadyExists: record {
+                    requestId: nat;
+                    status: text;
+                    txHash: text;
+                  };
+   apiError: text;
+   noDepositFound: text;
+   ok: record {
+         requestId: nat;
+         txHash: text;
+       };
+ };
+service : {
+  _initializeAccessControl: () -> ();
+  /// Admin-only: add a transaction record on behalf of any user (e.g. for manual entries).
+  addTransaction: (user: principal, "record": TxRecord) -> ();
+  /// Admin-only: Burns ckUNI from the treasury and releases UNI back to an Ethereum address.
+  /// Calls the ICP ERC-20 minter withdrawal method to burn ckUNI and trigger UNI release on Ethereum.
+  /// ckUNIAmount — amount in e8s (1e8 = 1 ckUNI).
+  /// destinationEthAddress — the Ethereum address to receive the released UNI.
+  adminDissolveCkUNI: (ckUNIAmount: nat, destinationEthAddress: text) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+  /// Admin-only: view any user's transaction history.
+  adminGetUserTransactions: (user: principal) -> (vec TxRecord) query;
+  /// Admin-only: promote another principal to #admin. Use this to grant admin
+  /// rights to the currently-logged-in UI principal if it differs from
+  /// ADMIN_PRINCIPAL. Call from dfx or from a principal already registered as
+  /// #admin.
+  adminGrantAdmin: (newAdmin: principal) -> (text);
+  /// Admin-only alias for initializeMinterDepositAddress() that returns a result-style Text
+  /// so the admin panel can display success/error feedback without trapping.
+  adminInitializeMinterAddress: () -> (text);
+  /// Admin-only: Records a UNI→ckUNI mint event and calls the ICP ERC-20 minter
+  /// to mint ckUNI directly to the treasury principal (c626g-iyaaa-aaaau-agpoa-cai).
+  /// ethTxHash — the Ethereum transaction hash proving UNI was sent to the deposit address.
+  /// uniAmount — amount in e18 (ERC-20 standard, 1 UNI = 1_000_000_000_000_000_000).
+  ///             ckUNI is an ERC-20 mirror token and always uses 18 decimal places — NOT e8s.
+  adminMintCkUNI: (ethTxHash: text, uniAmount: nat) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+  /// Admin transfers ckUNI from this canister to any principal via ICRC-1.
+  /// Returns a Text result prefixed with "ok:" on success or "error:" on failure
+  /// so the frontend can surface the real reason (no traps on transfer errors).
+  adminTransferCkUNI: (to: principal, amount: nat) -> (text);
+  /// Admin transfers sGLDT from this canister's treasury to any principal via ICRC-1.
+  adminTransferSGLDT: (to: principal, amount: nat) -> (text);
+  approveBridgeRequest: (id: nat) -> ();
+  approveSGLDTExchangeRequest: (id: nat) -> ();
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  /// Find the user's most recent UNI deposit tx to the ckERC-20 helper AND
+  /// submit it for verification + payout — all in one call. This is the
+  /// reliable finalize path for mobile users whose frontend never captured
+  /// the deposit tx hash: they click one button after signing, and the
+  /// backend discovers the tx from their on-chain history.
+  /// 
+  /// Flow:
+  ///   1. Etherscan V2 txlist for `ethAddress`, newest first, last ~10 txs
+  ///   2. Find the newest one where: to == helper, input starts with
+  ///      deposit() selector, UNI is the token, amount matches uniAmountE8
+  ///   3. If found, create a UniDepositRequest (or return the existing one
+  ///      if we've already seen this hash) and kick off verifyAndPayUNIDeposit
+  ///   4. Return a result variant so the frontend can show the right UI
+  /// 
+  /// Only the caller's own ethAddress is scanned — we use `caller` as the
+  /// record submitter, so whoever invokes this gets credited. To prevent
+  /// front-running, the _verifyDepositCalldata check later re-validates
+  /// `tx.from == ethAddress`.
+  autoFinalizeUNIDeposit: (ethAddress: text, uniAmountE8: nat, rateHint:
+   opt nat) -> (AutoFinalizeResult);
+  calculateExchangeRate: (batAmount: nat) ->
+   (record {
+      bbTokenAmount: nat;
+      sgldAmount: nat;
+    }) query;
+  deprecated_getBridgeRequests: () -> (vec BridgeRequest) query;
+  deprecated_getSGLDTRequests: () -> (vec sGLDTRequest) query;
+  /// Diagnoses payout ability for a specific deposit — returns a human-readable summary.
+  /// Shows the treasury sGLDT balance, exact amount required for this deposit,
+  /// the fee, and whether the transfer would succeed with the current balance.
+  /// Admin-only.
+  diagnosePayoutAbility: (depositId: nat) -> (text);
+  getAllUNIDeposits: () -> (vec UniDepositRequest) query;
+  getBalance: (_principal: principal) -> (nat) query;
+  getBatPrice: () -> (nat);
+  getBridgeRequests: () -> (vec BridgeRequest) query;
+  getBridgeRequestsByUser: (user: principal) -> (vec BridgeRequest) query;
+  getCallerUserProfile: () -> (opt UserProfile) query;
+  getCallerUserRole: () -> (UserRole) query;
+  getCanisterPrincipal: () -> (principal) query;
+  /// Returns the sGLDT balance held by the treasury (this canister's own account on the sGLDT ledger).
+  /// Principal.fromActor(Self) == c626g-iyaaa-aaaau-agpoa-cai — this IS the treasury.
+  /// Admin must send sGLDT to this canister's principal on the sGLDT ledger to fund payouts.
+  /// Display: divide by 1e8 for human-readable sGLDT amount.
+  getCanisterSGLDTBalance: () -> (nat);
+  /// Returns the Ethereum helper-contract address that users interact with to deposit UNI.
+  /// If the address is not yet cached, this call auto-initializes it by calling
+  /// the DFINITY chain-key ERC-20 minter (sv3dd-oaaaa-aaaar-qacoa-cai) once.
+  /// Users do NOT send UNI to this address directly — they call
+  /// helper.approve(UNI, amount) followed by helper.deposit(UNI, amount, principal).
+  /// The treasury principal (c626g-iyaaa-aaaau-agpoa-cai) is always the owner/beneficiary.
+  /// After initialization the address is cached permanently — subsequent calls are instant.
+  /// Prefer getMinterDepositAddress() (query) once initialization has happened.
+  getCkUNIMinterDepositAddress: (_userPrincipal: principal) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+  /// Returns the cached on-chain ckUNI balance held by the treasury principal (c626g-iyaaa-aaaau-agpoa-cai).
+  /// This is a query so it works for unauthenticated (anonymous) callers.
+  /// Call refreshTreasuryBalances() to update the cache from the ckUNI ledger.
+  getCkUNITreasuryBalance: () -> (nat) query;
+  /// Public query: returns the current status of a UNI deposit for frontend polling.
+  /// Any authenticated user may query their own deposit. Admin may query any deposit.
+  /// Returns status as a Text string, the txHash, and the sGLDT amount paid (0 if not yet paid).
+  getDepositStatus: (requestId: nat) ->
+   (record {
+      sgldtPaid: nat;
+      status: text;
+      txHash: text;
+    }) query;
+  /// Canister-side ETH balance read. Uses Etherscan V2 account/balance which
+  /// is a plain GET — CORS-free from canister HTTP outcalls. Primary purpose:
+  /// give the frontend a reliable balance path on mobile browsers where
+  /// public RPC fetches are blocked by Brave Shields / CORS / network, AND
+  /// where window.ethereum isn't injected in regular tabs. Returns Nat of
+  /// wei (18 decimals) on success, traps on network failure so the frontend
+  /// can fall back to other paths. */
+  getEthBalanceOnchain: (ethAddress: text) -> (nat);
+  /// Public query — returns the cached treasury Ethereum deposit address for the ERC-20 minter.
+  /// Falls back to the fixed hardcoded address (0x22582083361bf06579BbfFcC1138D3fc986B91FF)
+  /// if the minter-derived address has not been initialized yet — so callers always get a
+  /// non-empty, usable address.
+  getMinterDepositAddress: () -> (text) query;
+  /// Returns the most recent non-paid UNI deposit for the caller (used by "Keep Checking" to
+  /// recover the active deposit ID after a page refresh). Returns null if no active deposit exists.
+  /// Also returns already-paid deposits so the UI can show a success screen instead of "not found".
+  getMyActiveDeposit: () ->
+   (opt record {
+          id: nat;
+          sgldtPaid: nat;
+          status: text;
+          txHash: text;
+        }) query;
+  /// Caller's own transaction history.
+  getMyTransactions: () -> (vec TxRecord) query;
+  /// Alias kept for backward compatibility. Prefer getPayoutReadiness().
+  getPayoutDiagnostic: () ->
+   (record {
+      canisterSGLDTBalance: nat;
+      estimatedSGLDTNeeded: nat;
+      pendingDeposits: nat;
+    });
+  /// Returns payout readiness info so the admin knows how much sGLDT is available
+  /// and whether the treasury can cover all pending deposits.
+  /// - treasurySGLDTBalance: sGLDT held by the treasury (this canister, e8s).
+  /// - pendingDeposits: count of deposits in #confirmed or #failed status awaiting payout.
+  /// - estimatedSGLDTNeeded: total sGLDT owed across all pending deposits (e8s).
+  /// - treasuryPrincipal: the principal to send sGLDT to for top-up.
+  getPayoutReadiness: () ->
+   (record {
+      estimatedSGLDTNeeded: nat;
+      pendingDeposits: nat;
+      treasuryPrincipal: text;
+      treasurySGLDTBalance: nat;
+    });
+  getPendingBridgeRequests: () -> (vec BridgeRequest) query;
+  getPendingSGLDTExchangeRequests: () -> (vec sGLDTRequest) query;
+  /// Returns this canister's principal as Text — this IS the treasury (c626g-iyaaa-aaaau-agpoa-cai).
+  /// Admin must send sGLDT to this address on the sGLDT ledger (i2s4q-syaaa-aaaan-qz4sq-cai)
+  /// to fund user payouts. No separate "refinery payout balance" exists — there is one treasury.
+  getRefineryPrincipal: () -> (text) query;
+  getSGLDTExchangeRequests: () -> (vec sGLDTRequest) query;
+  getSGLDTExchangeRequestsByUser: (user: principal) ->
+   (vec sGLDTRequest) query;
+  getSGLDTPrice: () -> (nat);
+  /// Returns the cached on-chain sGLDT balance held by the treasury principal (c626g-iyaaa-aaaau-agpoa-cai).
+  /// Used by the treasury banner at the top of the page.
+  /// This is a query so it works for unauthenticated (anonymous) callers.
+  /// Call refreshTreasuryBalances() to update the cache from the ledger.
+  getSGLDTTreasuryBalance: () -> (nat) query;
+  getTotalSupply: () -> (nat) query;
+  /// Returns cached ICRC-1 balances held by the treasury principal (c626g-iyaaa-aaaau-agpoa-cai).
+  /// This is a query so it works for unauthenticated callers.
+  /// Call refreshTreasuryBalances() to pull fresh values from the ledgers.
+  getTreasuryICRC1Balances: () ->
+   (record {
+      ckUNIBalance: nat;
+      sgldtBalance: nat;
+    }) query;
+  getTreasuryStats: () ->
+   (record {
+      batPoolBalance: nat;
+      sGLDTTreasuryBalance: nat;
+    }) query;
+  /// Public query — returns treasury wallet info: cached deposit address, ckUNI balance (e8s), sGLDT balance (e8s).
+  /// No authentication required — safe for all callers.
+  /// Frontend divides raw Nat balances by 1e8 for display.
+  /// depositAddress always returns a non-empty value: the minter-derived address when available,
+  /// otherwise the fixed hardcoded fallback (0x22582083361bf06579BbfFcC1138D3fc986B91FF).
+  getTreasuryWalletInfo: () ->
+   (record {
+      ckUNIBalance: nat;
+      depositAddress: text;
+      sGLDTBalance: nat;
+    }) query;
+  getUNIExchangeRate: () -> (nat) query;
+  /// Canister-side UNI (ERC-20) balance read. Same rationale as
+  /// getEthBalanceOnchain — reliable mobile path via HTTPS outcall. Returns
+  /// Nat of UNI in wei (18 decimals, ERC-20 standard).
+  getUniBalanceOnchain: (ethAddress: text) -> (nat);
+  getUserProfile: (user: principal) -> (opt UserProfile) query;
+  /// Public query: returns the sGLDT ICRC-1 balance for any given principal (their own ICP account).
+  /// No admin restriction — users can check their own balance.
+  getUserSGLDTBalance: (principalText: text) -> (nat);
+  /// Returns all transactions for a given principal, newest-first. No auth restriction —
+  /// the frontend passes the logged-in user's principal.
+  getUserTransactions: (user: principal) -> (vec TxRecord) query;
+  getUserUNIDeposits: (user: principal) -> (vec UniDepositRequest) query;
+  getWalletBalances: (ethAddress: text) ->
+   (record {
+      ethWei: nat;
+      uniWei: nat;
+    });
+  /// Admin-only: Calls the ICP ERC-20 minter to derive the treasury's fixed Ethereum
+  /// deposit address and caches it on-chain. Only needs to be called once (or to refresh).
+  /// All users will send UNI to this same address; the minter automatically converts
+  /// incoming ERC-20 UNI to ckUNI and credits the treasury principal (c626g-iyaaa-aaaau-agpoa-cai).
+  initializeMinterDepositAddress: () -> (text);
+  /// Public query so the frontend can check whether the caller is the admin
+  /// without any round-trip to the admin panel itself.
+  isAdminCaller: () -> (bool) query;
+  isCallerAdmin: () -> (bool) query;
+  migrated_getAllBridgeRequests: () -> (vec BridgeRequest) query;
+  migrated_getAllSGLDTRequests: () -> (vec sGLDTRequest) query;
+  migration_updateBalance: (_balance: nat) -> ();
+  mintBankingBraveTokens: (_to: principal, _amount: nat) -> ();
+  /// Fetches the live ICRC-1 balances for the treasury (this canister's own account) from both ledgers
+  /// and stores them in the cache.
+  /// This is an update call — anyone may call it to warm the cache.
+  /// Called automatically after any admin transfer or sGLDT payout so the banner stays current.
+  /// Note: Principal.fromActor(Self) == c626g-iyaaa-aaaau-agpoa-cai (they are the same).
+  refreshTreasuryBalances: () -> ();
+  rejectBridgeRequest: (id: nat) -> ();
+  rejectSGLDTExchangeRequest: (id: nat) -> ();
+  /// checkAndProcessCkUNIBalance — REMOVED (was a critical treasury-drain vector).
+  /// 
+  /// This function previously: (a) had no caller authentication (public shared func),
+  /// (b) accepted both userPrincipal and uniAmount as unauthenticated parameters,
+  /// (c) required only that the named principal hold ≥1 ckUNI wei (~free) and
+  /// (d) never pulled or burned that ckUNI. Any principal could call it in a loop
+  /// with an arbitrary uniAmount to drain the sGLDT treasury. Removed entirely —
+  /// the legitimate deposit flow goes through submitUNIDeposit →
+  /// verifyEthTransaction → verifyAndPayUNIDeposit, which now on-chain-verifies
+  /// the deposit before paying out.
+  /// Allows a user to reset their own stuck mining phase (e.g. after a 20-minute timeout).
+  /// This method only affects the UNI deposit state — it does NOT refund any tokens.
+  /// Any #processing deposit belonging to the caller is reverted to #confirmed so the
+  /// user can retry verifyAndPayUNIDeposit without reloading the page.
+  /// Admin may reset any user's stuck deposit by passing the requestId.
+  resetMiningPhase: (requestId: nat) -> (variant {
+                                           err: text;
+                                           ok: text;
+                                         });
+  /// Retries the sGLDT payout for a deposit that is in #confirmed or #failed status.
+  /// 
+  /// This is what the "Keep Checking" button should call. Unlike verifyEthTransaction,
+  /// which only reads the current status, this method actually re-attempts the ICRC-1
+  /// sGLDT transfer. Use this to resolve deposits that are stuck in #confirmed because
+  /// a previous verifyAndPayUNIDeposit call trapped or failed silently.
+  /// 
+  /// IMPORTANT: This function NEVER traps. All outcomes are returned as descriptive Text.
+  ///   - If already paid:   "already_paid: <amount> sGLDT released to <principal>"
+  ///   - If confirmed/failed and retry succeeds: "paid: <amount> sGLDT released to <principal>"
+  ///   - If confirmed/failed and payout fails definitively: "confirmed_payout_failed: <reason>"
+  ///   - If confirmed/failed and network/transient error: "failed: <reason>"
+  ///   - If pending ETH:   "pending: ..."
+  ///   - If processing:    "pending: ..."
+  /// 
+  /// Only the original depositor or admin may call this.
+  retryUNIDepositPayout: (requestId: nat) -> (text);
+  saveCallerUserProfile: (profile: UserProfile) -> ();
+  /// Public (non-admin) method to trigger minter address initialization.
+  /// Called by the frontend automatically when getMinterDepositAddress() returns "".
+  /// Returns the cached address immediately if already set (fast path — no inter-canister call).
+  /// If the cache is empty, calls the DFINITY chain-key ERC-20 minter
+  /// (sv3dd-oaaaa-aaaar-qacoa-cai) to fetch the ERC-20 helper contract address
+  /// and caches it on-chain.
+  /// Any caller (authenticated or anonymous) may call this — it only mutates the address cache.
+  selfInitializeMinterAddress: () -> (variant {
+                                        err: text;
+                                        ok: text;
+                                      });
+  setBatPoolBalance: (_balance: nat) -> ();
+  /// Syncs the live exchange rate from the frontend CoinGecko feed to the backend.
+  /// Called by the frontend after fetching UNI/sGLDT prices so the backend always uses
+  /// the same rate the user sees. Only admin may call this; rate is in 1e8 precision
+  /// (e.g. 238_000_000 = 2.38 sGLDT per UNI).
+  setLiveExchangeRate: (newRate: nat) -> ();
+  setSGLDTTreasuryBalance: (_balance: nat) -> ();
+  setUNIExchangeRate: (rate: nat) -> ();
+  submitBridgeRequest: (ethAddress: text, batAmount: nat) -> (nat);
+  submitSGLDTExchangeRequest: (bbTokenAmount: nat) -> (nat);
+  /// Records a UNI deposit after the frontend has confirmed the ETH transaction on-chain.
+  /// 
+  /// Trust model: The frontend is responsible for confirming the ETH transaction via
+  /// eth_getTransactionReceipt (using the connected Brave wallet) before calling this function.
+  /// The backend trusts the frontend-submitted txHash, ethAddress, and uniAmount because:
+  ///   1. The admin reviews and calls verifyAndPayUNIDeposit to release sGLDT.
+  ///   2. A malicious user submitting a fake txHash would only create a pending record;
+  ///      no sGLDT is released until the admin (or automated flow) explicitly approves it.
+  ///   3. No Etherscan API key is required — ETH-side verification is client-side.
+  /// 
+  /// Security:
+  ///   - txHash must be in the valid Ethereum format: "0x" followed by exactly 64 hex characters.
+  ///   - Duplicate txHash submissions are rejected to prevent double-deposit attacks.
+  /// 
+  /// rateHint: Optional live exchange rate from the frontend (1e8 precision, e.g. 238_000_000 = 2.38 sGLDT/UNI).
+  ///           When provided and > 0, this rate is locked for this deposit so the user receives
+  ///           exactly what they saw on screen. Falls back to uniExchangeRate if null or 0.
+  ///           This eliminates the need for a separate syncLiveExchangeRate call from the frontend.
+  submitUNIDeposit: (ethAddress: text, uniAmount: nat, txHash: text,
+   rateHint: opt nat) -> (nat);
+  /// Syncs the live market exchange rate from the frontend (CoinGecko) to the backend.
+  /// ADMIN-ONLY: Only the admin principal may update the global exchange rate.
+  /// Regular users should pass the live rate via submitUNIDeposit's rateHint parameter
+  /// so the rate is locked per-deposit without mutating the global state.
+  /// Rate is in 1e8 precision (e.g. 238_000_000 = 2.38 sGLDT per UNI).
+  syncLiveExchangeRate: (newRate: nat) -> (variant {
+                                             err: text;
+                                             ok;
+                                           });
+  transform: (input: TransformationInput) -> (TransformationOutput) query;
+  /// Direct payout trigger — bypasses Etherscan re-check and immediately attempts
+  /// the sGLDT ICRC-1 transfer for a deposit that is in #confirmed or #failed status.
+  /// 
+  /// Use this when: the ETH transaction is confirmed but sGLDT was not released, and
+  /// you want to force a payout retry without waiting for the next Etherscan poll cycle.
+  /// 
+  /// Only the original depositor or admin may call this.
+  /// NEVER traps — all outcomes returned as descriptive Text.
+  triggerSGLDTPayout: (requestId: nat) -> (text);
+  /// Releases sGLDT from the treasury to the depositing user via ICRC-1 transfer.
+  /// 
+  /// Trust model: The frontend confirms the ETH transaction before calling submitUNIDeposit,
+  /// so by the time this function is called the deposit is already #confirmed. No Etherscan
+  /// HTTP outcall is needed — ETH verification happens client-side.
+  /// 
+  /// Race condition protection: Before the async ICRC-1 transfer, the deposit status is
+  /// atomically set to #processing. Any concurrent call will see #processing and be rejected,
+  /// preventing double-payout. On failure, the status reverts to #confirmed for retry.
+  /// 
+  /// IMPORTANT: This function NEVER traps. All errors are returned as descriptive Text.
+  /// On any failure the deposit reverts to #confirmed so the user can retry via Keep Checking.
+  verifyAndPayUNIDeposit: (requestId: nat) -> (text);
+  /// Verifies an ETH transaction on Etherscan and auto-releases sGLDT if confirmed.
+  /// 
+  /// Steps:
+  ///   1. Looks up the deposit by requestId.
+  ///   2. Makes an HTTP GET to the Etherscan API (gettxreceiptstatus endpoint).
+  ///   3. If status=1 (success), marks the deposit #confirmed and calls verifyAndPayUNIDeposit.
+  ///   4. Returns "confirmed_and_paid", "pending", "failed", or an error message.
+  /// 
+  /// Any authenticated caller may verify their own deposit. Admin may verify any deposit.
+  /// Returns "pending" on Etherscan timeout or API error so the frontend can retry safely.
+  verifyEthTransaction: (requestId: nat) -> (text);
+  /// Diagnostic: returns the caller's principal + every admin check result.
+  /// Helps debug "not admin" errors from the UI.
+  whoAmI: () ->
+   (record {
+      caller: text;
+      hasAdminRole: bool;
+      isAdmin: bool;
+      isHardcodedAdmin: bool;
+    }) query;
+}

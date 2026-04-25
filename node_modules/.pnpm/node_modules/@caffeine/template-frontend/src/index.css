@@ -1,0 +1,527 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Global reduce-motion respect ────────────────────────────────────────
+   Users who opt into OS-level "reduce motion" (accessibility setting on
+   both iOS and macOS/Windows for vestibular sensitivity) should see no
+   animation in this app — including Tailwind's ambient `animate-pulse`,
+   `animate-spin`, and our custom @keyframes. We cut animation duration
+   to 1ms rather than `none` so single-shot animations still "complete"
+   synchronously and cleanup/callbacks fire without a code path change.
+   Preserves all state changes, hover effects, and page transitions while
+   eliminating the motion that triggers discomfort.                     */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Workflow UX animations ───────────────────────────────────────────────
+   Used by WorkflowStepper, CrossChainFlow, and BlockConfirmationMeter to
+   give the swap flow a top-notch Web3 feel without adding a motion lib. */
+@keyframes xchain-flow {
+  0%   { left: -15%; opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { left: 110%; opacity: 0; }
+}
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.animate-shimmer { animation: shimmer 1.6s ease-in-out infinite; }
+
+@keyframes pulse-slow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.35); }
+  50%      { box-shadow: 0 0 0 8px rgba(250, 204, 21, 0); }
+}
+.animate-pulse-slow { animation: pulse-slow 2s ease-in-out infinite; }
+
+@keyframes coin-burst {
+  0%   { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: var(--coin-travel, translate(0, -60px)) scale(1); opacity: 0; }
+}
+.animate-coin-burst { animation: coin-burst 1.2s ease-out forwards; }
+
+@keyframes success-pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  60%  { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-success-pop { animation: success-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Banking.Brave theme — light & dark modes.
+
+   The entire dApp is composed of fine-grained Tailwind classes, so a full
+   invert would touch hundreds of files. Instead we expose semantic CSS
+   variables for the top-level surfaces that matter (page background,
+   primary text, card surfaces, muted text, borders) and flip them via a
+   `.theme-light` / `.theme-dark` class on <html>. The theme toggle lives
+   in the top-right of the landing + dApp nav.
+
+   Brand accent is Banking.Brave blue (#1D4ED8) regardless of theme.
+   ───────────────────────────────────────────────────────────────────── */
+
+html.theme-dark, :root {
+  --bb-bg: #080808;
+  --bb-bg-soft: #111111;
+  --bb-surface: #18181b;
+  --bb-surface-soft: rgba(24, 24, 27, 0.6);
+  --bb-border: #27272a;
+  --bb-border-soft: rgba(39, 39, 42, 0.7);
+  --bb-text: #fafafa;
+  --bb-text-muted: #a1a1aa;
+  --bb-text-dim: #71717a;
+  --bb-brand: #3b82f6;          /* brighter blue for dark bg contrast */
+  --bb-brand-strong: #1D4ED8;   /* canonical Banking.Brave blue */
+}
+
+html.theme-light {
+  /* Premium-financial light palette — modeled on the Banking.Brave blog's
+     clean white + deep-navy + refined-gold aesthetic. Replaces the previous
+     warm-ivory + stone look that competed with the gold brand accent. The
+     gold here is deliberately DEEPER than the dark-mode fluorescent yellow
+     (#FFD700) because bright yellow loses readability on white surfaces —
+     on white, "gold" reads as ~#B8860B ("DarkGoldenrod"), not neon yellow.
+
+       bg         #F8FAFC    slate-50 — subtle cool wash so cards pop
+       bg-soft    #EFF2F7    slightly deeper for inset sections
+       surface    #FFFFFF    pure white cards
+       border     #E2E8F0    slate-200 — crisp hairline
+       text       #0B1E3B    deep navy — primary text, brand-linked
+       text-muted #475569    slate-600 — secondary text (AA on white)
+       text-dim   #64748B    slate-500 — tertiary
+       brand      #1D4ED8    royal blue primary
+       gold       #B8860B    refined darkgoldenrod — readable on white     */
+  --bb-bg: #F8FAFC;                  /* slate-50 base */
+  --bb-bg-soft: #EFF2F7;             /* inset wash */
+  --bb-surface: #FFFFFF;             /* card surfaces */
+  --bb-surface-soft: rgba(255, 255, 255, 0.94);
+  --bb-border: #E2E8F0;              /* slate-200 hairline */
+  --bb-border-soft: rgba(226, 232, 240, 0.7);
+  --bb-text: #0B1E3B;                /* deep navy — on-brand primary text */
+  --bb-text-muted: #475569;          /* slate-600 — 7.1:1 on white, passes AAA */
+  --bb-text-dim: #64748B;            /* slate-500 — 4.6:1 on white, passes AA */
+  --bb-brand: #1D4ED8;               /* royal blue primary */
+  --bb-brand-strong: #1E3A8A;        /* deeper royal for pressed states */
+  --bb-gold: #B8860B;                /* refined gold — readable on white */
+  --bb-gold-deep: #8B6508;           /* deeper gold for hover/pressed */
+  --bb-gold-soft: #D4A94A;           /* lighter gold for subtle accents */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Global light-mode overrides.
+
+   The existing minegold.defi surfaces hardcode dark Tailwind classes
+   (bg-[#080808], bg-zinc-900, text-white, text-zinc-100, etc.). Rewriting
+   each component to support `dark:` variants would touch 30+ files. Instead
+   we remap the most common dark-theme utility classes globally when the
+   .theme-light class is on <html>. Branded accents (gold, blue, emerald,
+   pink, yellow) stay unchanged — they read well on both themes.
+   ───────────────────────────────────────────────────────────────────── */
+
+html.theme-light body {
+  background: var(--bb-bg);
+  color: var(--bb-text);
+}
+
+html.theme-light .bg-\[\#080808\],
+html.theme-light .bg-\[\#080808\]\/80,
+html.theme-light .bg-\[\#0D0D0D\],
+html.theme-light .bg-black,
+html.theme-light .bg-black\/90 {
+  background-color: var(--bb-bg) !important;
+}
+
+html.theme-light .bg-zinc-950 { background-color: var(--bb-bg) !important; }
+html.theme-light .bg-zinc-900,
+html.theme-light .bg-zinc-900\/80,
+html.theme-light .bg-zinc-900\/60,
+html.theme-light .bg-zinc-900\/40 {
+  background-color: var(--bb-surface) !important;
+}
+html.theme-light .bg-zinc-800,
+html.theme-light .bg-zinc-800\/60,
+html.theme-light .bg-zinc-800\/80 {
+  background-color: var(--bb-bg-soft) !important;
+}
+html.theme-light .bg-zinc-700 { background-color: #CBD5E1 !important; }  /* slate-300 */
+
+html.theme-light .text-white,
+html.theme-light .text-zinc-100,
+html.theme-light .text-zinc-200 {
+  color: var(--bb-text) !important;
+}
+/* Secondary text — slate palette matches the cool-white bg. Passes WCAG
+   AA on all surfaces (#F8FAFC bg, #FFFFFF cards). */
+html.theme-light .text-zinc-300,
+html.theme-light .text-zinc-400 {
+  color: #334155 !important;   /* slate-700 — 11:1 on white */
+}
+html.theme-light .text-zinc-500,
+html.theme-light .text-zinc-600 {
+  color: #475569 !important;   /* slate-600 — 7.1:1 on white */
+}
+html.theme-light .text-zinc-700 {
+  color: #1E293B !important;   /* slate-800 — near-primary */
+}
+
+html.theme-light .border-zinc-800,
+html.theme-light .border-zinc-800\/50,
+html.theme-light .border-zinc-700,
+html.theme-light .border-zinc-700\/50,
+html.theme-light .border-zinc-600 {
+  border-color: var(--bb-border) !important;
+}
+
+/* Inputs / code surfaces */
+html.theme-light input,
+html.theme-light textarea,
+html.theme-light select {
+  color-scheme: light;
+}
+
+/* Placeholder text — cool slate dim */
+html.theme-light .placeholder\:text-zinc-500::placeholder,
+html.theme-light .placeholder\:text-zinc-600::placeholder {
+  color: var(--bb-text-dim) !important;
+}
+html.theme-light ::placeholder { color: #94A3B8 !important; }  /* slate-400 */
+
+/* Hover states — slate to match the cool bg */
+html.theme-light .hover\:bg-zinc-800:hover { background-color: var(--bb-bg-soft) !important; }
+html.theme-light .hover\:bg-zinc-700:hover { background-color: #CBD5E1 !important; }  /* slate-300 */
+
+/* Cards/divs with alpha overlays — light slate instead of warm cream */
+html.theme-light .bg-black\/80,
+html.theme-light .bg-black\/50 {
+  background-color: rgba(248, 250, 252, 0.90) !important;  /* slate-50 @ 90% */
+}
+
+/* ── Accent color contrast in light mode ───────────────────────────────
+   Dark-mode yellow accents (#FACC15, #FCD34D) wash out on white. On light
+   surfaces we use the refined-gold ramp — still reads as GOLD not brown,
+   and passes WCAG AA for body text at 4.5:1 against #FFFFFF.
+
+     text-yellow-300  D4A94A  gold-soft (large-text only; 3.3:1 on white)
+     text-yellow-400  B8860B  gold-primary (4.7:1 on white — passes AA)
+     text-yellow-500  8B6508  gold-deep (6.8:1 on white — passes AA & AAA large)
+   Amber maps to the same ramp so the two feel unified, not two gold tones.  */
+html.theme-light .text-yellow-300 { color: #D4A94A !important; }
+html.theme-light .text-yellow-400 { color: #B8860B !important; }
+html.theme-light .text-yellow-500 { color: #8B6508 !important; }
+html.theme-light .text-amber-300 { color: #D4A94A !important; }
+html.theme-light .text-amber-400 { color: #B8860B !important; }
+
+/* Alpha-suffixed variants (text-yellow-400/90, text-yellow-500/60, etc.) —
+   Tailwind compiles these as distinct classes, so the base-shade rules
+   above don't apply. Remap to the refined-gold ramp at the same effective
+   alpha so the visual intent (muted gold label) is preserved. */
+html.theme-light .text-yellow-200\/70 { color: rgba(184, 134, 11, 0.70) !important; }
+html.theme-light .text-yellow-400\/90 { color: rgba(184, 134, 11, 0.92) !important; }
+html.theme-light .text-yellow-500\/60 { color: rgba(139, 101, 8, 0.70) !important; }
+html.theme-light .text-yellow-500\/80 { color: rgba(139, 101, 8, 0.85) !important; }
+
+/* Yellow/gold borders use the brand gold at a readable shade */
+html.theme-light .border-yellow-500\/30,
+html.theme-light .border-yellow-500\/40 { border-color: rgba(184, 134, 11, 0.38) !important; }
+
+/* Gold gradients — the primary CTA's from-yellow-500 to-amber-400 reads as
+   fluorescent lemon on white. Remap to a deeper gold → darkgoldenrod ramp
+   so the button looks like polished gold, not a highlighter. Black text on
+   this gradient still passes AAA for large text. */
+html.theme-light .from-yellow-400 { --tw-gradient-from: #D4A94A !important; }
+html.theme-light .from-yellow-500 { --tw-gradient-from: #C79A1F !important; }
+html.theme-light .from-yellow-600 { --tw-gradient-from: #A47810 !important; }
+html.theme-light .to-yellow-300 { --tw-gradient-to: #E8C669 !important; }
+html.theme-light .to-yellow-400 { --tw-gradient-to: #D4A94A !important; }
+html.theme-light .to-amber-300 { --tw-gradient-to: #E8C669 !important; }
+html.theme-light .to-amber-400 { --tw-gradient-to: #D4A94A !important; }
+html.theme-light .hover\:from-yellow-300:hover { --tw-gradient-from: #E8C669 !important; }
+html.theme-light .hover\:from-yellow-400:hover { --tw-gradient-from: #D4A94A !important; }
+html.theme-light .hover\:to-yellow-300:hover { --tw-gradient-to: #F0D47F !important; }
+html.theme-light .hover\:to-amber-300:hover { --tw-gradient-to: #E8C669 !important; }
+
+/* Shadow glow under the gold CTA needs to be gold-tinted in light mode so
+   the button lifts off the white surface. Default is yellow-500/20 which
+   is invisible on #FFFFFF. */
+html.theme-light .shadow-yellow-500\/20 { --tw-shadow-color: rgba(184, 134, 11, 0.22) !important; }
+html.theme-light .shadow-yellow-500\/30 { --tw-shadow-color: rgba(184, 134, 11, 0.28) !important; }
+
+/* Links */
+html.theme-light a:not(.no-theme-link) { color: #1D4ED8; }
+html.theme-light a:not(.no-theme-link):hover { color: #1E3A8A; }
+
+/* Pink/rose — handled by the global rebrand below. */
+
+/* Blue accents use the Banking.Brave canonical royal blue everywhere */
+html.theme-light .text-blue-300 { color: #1D4ED8 !important; }
+html.theme-light .text-blue-400 { color: #1D4ED8 !important; }
+html.theme-light .text-blue-500 { color: #1E40AF !important; }
+html.theme-light .text-blue-600 { color: #1E3A8A !important; }
+html.theme-light .bg-blue-500 { background-color: #1D4ED8 !important; }
+html.theme-light .bg-blue-600 { background-color: #1E40AF !important; }
+html.theme-light .hover\:bg-blue-400:hover { background-color: #3B82F6 !important; }
+html.theme-light .hover\:bg-blue-500:hover { background-color: #2563EB !important; }
+html.theme-light .border-blue-500 { border-color: #1D4ED8 !important; }
+html.theme-light .border-blue-500\/30,
+html.theme-light .border-blue-500\/40 { border-color: rgba(29, 78, 216, 0.35) !important; }
+
+/* Emerald success states */
+html.theme-light .text-emerald-300 { color: #047857 !important; }
+html.theme-light .text-emerald-400 { color: #065f46 !important; }
+
+/* Red/error */
+html.theme-light .text-red-300 { color: #b91c1c !important; }
+html.theme-light .text-red-400 { color: #991b1b !important; }
+
+/* Light alpha-tinted backgrounds — common pattern on the dApp for alert
+   banners and status strips (bg-yellow-500/10, bg-emerald-500/10, etc).
+   On white, we want ~10% tint so the banner is obvious but doesn't shout.
+   Gold uses the refined palette, not fluorescent yellow; emerald and blue
+   stay true to the 500 shade. The single source of truth for these
+   appears below after the text/border rules. */
+html.theme-light [class*="bg-emerald-500/10"],
+html.theme-light [class*="bg-emerald-500/15"] {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+}
+html.theme-light [class*="bg-blue-500/10"] {
+  background-color: rgba(29, 78, 216, 0.10) !important;
+}
+/* NOTE: no light-mode pink override here — the global rebrand (lines below)
+   already maps pink → Banking.Brave blue for both themes. A substring
+   attribute selector here would also match classes like
+   `selection:bg-pink-500/30`, painting the entire app root with a pink
+   wash. The global rebrand is the single source of truth. */
+html.theme-light [class*="bg-red-500/10"] {
+  background-color: rgba(239, 68, 68, 0.10) !important;
+}
+
+/* Card shadow — slate-tinted for a clean premium-finance lift.
+   Navy-based rgba keeps shadows on-brand rather than muddy gray. */
+html.theme-light .bg-zinc-900,
+html.theme-light .bg-zinc-900\/80,
+html.theme-light .bg-zinc-900\/60 {
+  box-shadow:
+    0 1px 3px rgba(11, 30, 59, 0.06),
+    0 1px 2px rgba(11, 30, 59, 0.04);
+}
+
+/* Refinery panel — the main swap widget. Uses a near-white elevated
+   surface with a subtle royal-blue hairline and a soft navy shadow to
+   carry the Banking.Brave brand presence without fighting the gold
+   accents. The old #c5d1ec was too saturated — it competed with every
+   CTA and made the panel feel heavier than the action button inside it. */
+html.theme-light .refinery-panel.bg-zinc-900 {
+  background-color: #FBFCFE !important;              /* near-white, barely cooler than bg */
+  border-color: rgba(29, 78, 216, 0.22) !important;  /* subtle brand hairline */
+  box-shadow:
+    0 1px 2px rgba(11, 30, 59, 0.04),
+    0 8px 24px rgba(29, 78, 216, 0.08) !important;
+}
+/* Nested cards inside the refinery — use a slightly cooler white so they
+   register as distinct surfaces without a jarring contrast jump. */
+html.theme-light .refinery-panel .bg-zinc-900,
+html.theme-light .refinery-panel .bg-zinc-900\/80,
+html.theme-light .refinery-panel .bg-zinc-900\/60,
+html.theme-light .refinery-panel .bg-zinc-900\/40,
+html.theme-light .refinery-panel .bg-black\/80,
+html.theme-light .refinery-panel .bg-black\/50 {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+html.theme-light .refinery-panel .bg-zinc-800,
+html.theme-light .refinery-panel .bg-zinc-800\/60,
+html.theme-light .refinery-panel .bg-zinc-800\/80 {
+  background-color: #F1F5F9 !important;              /* slate-100 input surface */
+}
+
+/* The gold pickaxe buttons keep their brand gradient but force the
+   label to stay readable (black text on gold). Already black-text in
+   dark mode — keep it enforced. */
+html.theme-light .text-black {
+  color: #0f172a !important;
+}
+
+/* Disabled button states — cool slate fits the new palette. The muted
+   color sits adjacent to slate-50 page bg so disabled doesn't feel dead. */
+html.theme-light button:disabled.bg-zinc-800,
+html.theme-light .disabled\:bg-zinc-800:disabled {
+  background-color: #E2E8F0 !important;    /* slate-200 */
+  color: #94A3B8 !important;                /* slate-400 */
+}
+
+/* Disabled gold CTA in light mode — the Tailwind `disabled:from-zinc-800
+   disabled:to-zinc-800` classes combined with my light-mode zinc-800 → bg-soft
+   remap gave a barely-visible gradient. Force a crisp slate-200 gradient so
+   disabled primaries are obvious. */
+html.theme-light .disabled\:from-zinc-800:disabled,
+html.theme-light button:disabled.from-zinc-800 { --tw-gradient-from: #E2E8F0 !important; }
+html.theme-light .disabled\:to-zinc-800:disabled,
+html.theme-light button:disabled.to-zinc-800 { --tw-gradient-to: #E2E8F0 !important; }
+html.theme-light .disabled\:text-zinc-500:disabled { color: #94A3B8 !important; }
+
+/* Input fields */
+html.theme-light input,
+html.theme-light textarea {
+  background-color: var(--bb-surface) !important;
+  color: var(--bb-text) !important;
+  border-color: var(--bb-border) !important;
+}
+
+/* Code / monospace blocks */
+html.theme-light code,
+html.theme-light .font-mono {
+  color: inherit;
+}
+html.theme-light code.text-yellow-300 { color: #8B6508 !important; }
+
+/* Selection color — royal blue tint reads as a brand-consistent highlight */
+html.theme-light .selection\:bg-pink-500\/30 ::selection,
+html.theme-light ::selection {
+  background-color: rgba(29, 78, 216, 0.18);
+}
+
+/* Body text default color in light mode — without this, any un-classed
+   paragraph inherits white from the global Tailwind text-white rules. */
+html.theme-light {
+  color: var(--bb-text);
+}
+
+/* Subtle surface distinction for soft-gold accent cards (alert banners,
+   info strips). These used to be near-invisible at 10% alpha on white. */
+html.theme-light [class*="bg-yellow-500/10"],
+html.theme-light [class*="bg-yellow-500/5"] {
+  background-color: rgba(184, 134, 11, 0.10) !important;
+  border-color: rgba(184, 134, 11, 0.25) !important;
+}
+html.theme-light [class*="bg-amber-500/10"] {
+  background-color: rgba(184, 134, 11, 0.10) !important;
+}
+
+/* ── Global pink → Banking.Brave royal-blue rebrand (both themes) ─────
+   The legacy minegold.defi UI used pink accents for the user principal
+   badge, UNI input focus, tab backgrounds, and progress bars. Replace
+   every shade of pink with the Banking.Brave blue family so the brand
+   color comes through consistently on every screen. */
+
+/* Text */
+.text-pink-300 { color: #93c5fd !important; }
+.text-pink-400 { color: #60a5fa !important; }
+.text-pink-500 { color: #3b82f6 !important; }
+html.theme-light .text-pink-300 { color: #1D4ED8 !important; }
+html.theme-light .text-pink-400 { color: #1D4ED8 !important; }
+html.theme-light .text-pink-500 { color: #1E3A8A !important; }
+.hover\:text-pink-300:hover { color: #bfdbfe !important; }
+.hover\:text-pink-400:hover { color: #93c5fd !important; }
+html.theme-light .hover\:text-pink-300:hover { color: #1E3A8A !important; }
+html.theme-light .hover\:text-pink-400:hover { color: #1E3A8A !important; }
+
+/* Backgrounds (solid) */
+.bg-pink-400 { background-color: #60a5fa !important; }
+.bg-pink-500 { background-color: #3b82f6 !important; }
+.bg-pink-600 { background-color: #1D4ED8 !important; }
+html.theme-light .bg-pink-400 { background-color: #3b82f6 !important; }
+html.theme-light .bg-pink-500 { background-color: #1D4ED8 !important; }
+html.theme-light .bg-pink-600 { background-color: #1E3A8A !important; }
+
+/* Backgrounds (alpha-tinted) */
+[class*="bg-pink-500/5"] { background-color: rgba(59, 130, 246, 0.06) !important; }
+[class*="bg-pink-500/10"] { background-color: rgba(59, 130, 246, 0.10) !important; }
+[class*="bg-pink-500/20"] { background-color: rgba(59, 130, 246, 0.18) !important; }
+[class*="bg-pink-500/30"] { background-color: rgba(59, 130, 246, 0.25) !important; }
+html.theme-light [class*="bg-pink-500/5"] { background-color: rgba(29, 78, 216, 0.06) !important; }
+html.theme-light [class*="bg-pink-500/10"] { background-color: rgba(29, 78, 216, 0.10) !important; }
+html.theme-light [class*="bg-pink-500/20"] { background-color: rgba(29, 78, 216, 0.16) !important; }
+
+/* Borders */
+[class*="border-pink-500/20"] { border-color: rgba(59, 130, 246, 0.3) !important; }
+[class*="border-pink-500/30"] { border-color: rgba(59, 130, 246, 0.4) !important; }
+[class*="border-pink-500/40"] { border-color: rgba(59, 130, 246, 0.5) !important; }
+html.theme-light [class*="border-pink-500/20"] { border-color: rgba(29, 78, 216, 0.3) !important; }
+html.theme-light [class*="border-pink-500/30"] { border-color: rgba(29, 78, 216, 0.4) !important; }
+html.theme-light [class*="border-pink-500/40"] { border-color: rgba(29, 78, 216, 0.5) !important; }
+
+/* Gradients (dark → royal blue, light → royal blue) */
+.from-pink-400 { --tw-gradient-from: #60a5fa !important; }
+.from-pink-500 { --tw-gradient-from: #3b82f6 !important; }
+.from-pink-600 { --tw-gradient-from: #1D4ED8 !important; }
+.to-pink-400 { --tw-gradient-to: #60a5fa !important; }
+.to-pink-500 { --tw-gradient-to: #3b82f6 !important; }
+.to-pink-600 { --tw-gradient-to: #1D4ED8 !important; }
+.via-pink-500 { --tw-gradient-via: #3b82f6 !important; }
+.via-pink-600 { --tw-gradient-via: #1D4ED8 !important; }
+html.theme-light .from-pink-400,
+html.theme-light .from-pink-500,
+html.theme-light .from-pink-600 { --tw-gradient-from: #1D4ED8 !important; }
+html.theme-light .to-pink-400,
+html.theme-light .to-pink-500,
+html.theme-light .to-pink-600 { --tw-gradient-to: #1E3A8A !important; }
+
+/* Shadow */
+[class*="shadow-pink-500"] { --tw-shadow-color: rgba(29, 78, 216, 0.3) !important; }
+.selection\:bg-pink-500\/30::selection,
+::selection { background-color: rgba(29, 78, 216, 0.25); }
+
+@layer base {
+  :root {
+    --background: 0.08 0 0;
+    --foreground: 0.95 0.01 260;
+    --card: 0.12 0.008 260;
+    --card-foreground: 0.95 0.01 260;
+    --popover: 0.12 0.008 260;
+    --popover-foreground: 0.95 0.01 260;
+    /* Primary = Banking.Brave royal blue (was magenta 350 → produced pink
+       focus rings and button washes in both themes). */
+    --primary: 0.48 0.22 263;
+    --primary-foreground: 1 0 0;
+    --secondary: 0.18 0.01 260;
+    --secondary-foreground: 0.9 0.01 260;
+    --muted: 0.18 0.01 260;
+    --muted-foreground: 0.55 0.015 260;
+    --accent: 0.82 0.14 82;
+    --accent-foreground: 0.1 0 0;
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 1 0 0;
+    --border: 0.22 0.01 260;
+    --input: 0.22 0.01 260;
+    --ring: 0.48 0.22 263;
+    --radius: 0.75rem;
+    --gold: 0.82 0.14 82;
+    --gold-light: 0.92 0.1 85;
+    --gold-dim: 0.65 0.1 80;
+    --navy: 0.15 0.04 255;
+    --navy-light: 0.22 0.04 255;
+    --chart-1: 0.48 0.22 263;
+    --chart-2: 0.82 0.14 82;
+    --chart-3: 0.55 0.18 160;
+    --chart-4: 0.6 0.2 220;
+    --chart-5: 0.7 0.15 300;
+    --sidebar: 0.1 0.005 260;
+    --sidebar-foreground: 0.85 0.01 260;
+    --sidebar-primary: 0.48 0.22 263;
+    --sidebar-primary-foreground: 1 0 0;
+    --sidebar-accent: 0.18 0.01 260;
+    --sidebar-accent-foreground: 0.85 0.01 260;
+    --sidebar-border: 0.22 0.01 260;
+    --sidebar-ring: 0.48 0.22 263;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Satoshi", system-ui, sans-serif;
+  }
+}

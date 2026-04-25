@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "output_env_file": ".env",
+  "canisters": {
+    "backend": {
+      "type": "custom",
+      "wasm": "src/backend/dist/backend.wasm",
+      "candid": "src/backend/dist/backend.did",
+      "build": "bash -c 'test -f src/backend/dist/backend.wasm && test -f src/backend/dist/backend.did || { echo \"[dfx.json] Pre-built backend artifacts missing.\"; echo \"         Run:  cd src/backend && mops install && mops build\"; exit 1; }'",
+      "metadata": [
+        {
+          "name": "candid:service",
+          "visibility": "public"
+        }
+      ]
+    },
+    "frontend": {
+      "type": "assets",
+      "source": ["src/frontend/dist"],
+      "dependencies": ["backend"],
+      "build": "bash -c 'test -d src/frontend/dist && test -f src/frontend/dist/index.html || { echo \"[dfx.json] Pre-built frontend missing.\"; echo \"         Run:  cd src/frontend && pnpm install && pnpm build\"; exit 1; }'"
+    },
+    "internet_identity": {
+      "type": "custom",
+      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
+      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz",
+      "remote": {
+        "id": {
+          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+        }
+      },
+      "frontend": {}
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:4943",
+      "type": "ephemeral",
+      "replica": {
+        "subnet_type": "application"
+      }
+    },
+    "ic": {
+      "providers": ["https://icp-api.io"],
+      "type": "persistent"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  }
+}

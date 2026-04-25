@@ -1,0 +1,32 @@
+// Asset canister headers for the Banking.Brave / Minegold React frontend.
+//
+// Because this canister is the *canonical origin* for Internet Identity
+// principal derivation (via `.well-known/ii-alternative-origins`), sibling
+// dapps like Cafreso (dqcmv-…) pass
+// `derivationOrigin: "https://cqyto-tiaaa-aaaau-agppa-cai.icp0.io"` to their
+// `AuthClient.login()` call. II will then fetch this canister's
+// `/.well-known/ii-alternative-origins` cross-origin to verify the caller
+// is whitelisted.
+//
+// That fetch requires two things:
+//   1. Content-Type: application/json
+//   2. Access-Control-Allow-Origin: *
+// Both are set explicitly below — otherwise II silently rejects the login.
+[
+  {
+    "match": ".well-known/ii-alternative-origins",
+    "headers": {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    },
+    "ignore": false
+  },
+  {
+    "match": "**/*",
+    "security_policy": "standard",
+    "disable_security_policy_warning": true,
+    "headers": {
+      "Content-Security-Policy": "default-src 'self'; connect-src 'self' https://icp0.io https://*.icp0.io https://icp-api.io https://identity.ic0.app https://*.ic0.app https://api.coingecko.com https://api.geckoterminal.com https://rpc.ankr.com https://*.etherscan.io; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://unpkg.com https://fonts.gstatic.com data:; img-src 'self' data: https:; frame-src 'self' https://identity.ic0.app https://*.ic0.app; frame-ancestors 'none';"
+    }
+  }
+]

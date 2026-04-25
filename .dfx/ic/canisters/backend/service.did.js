@@ -1,0 +1,359 @@
+export const idlFactory = ({ IDL }) => {
+  const TxStatus = IDL.Variant({
+    'Failed' : IDL.Null,
+    'Confirmed' : IDL.Null,
+    'Completed' : IDL.Null,
+    'Pending' : IDL.Null,
+  });
+  const TxType = IDL.Variant({
+    'Mint' : IDL.Null,
+    'Refine' : IDL.Null,
+    'Bridge' : IDL.Null,
+    'Transfer' : IDL.Null,
+  });
+  const TxRecord = IDL.Record({
+    'id' : IDL.Text,
+    'status' : TxStatus,
+    'description' : IDL.Text,
+    'tokenSymbol' : IDL.Text,
+    'timestamp' : IDL.Int,
+    'txType' : TxType,
+    'amount' : IDL.Nat,
+    'errorMsg' : IDL.Opt(IDL.Text),
+    'ethTxHash' : IDL.Opt(IDL.Text),
+    'icpBlockIndex' : IDL.Opt(IDL.Nat),
+  });
+  const UserRole = IDL.Variant({
+    'admin' : IDL.Null,
+    'user' : IDL.Null,
+    'guest' : IDL.Null,
+  });
+  const AutoFinalizeResult = IDL.Variant({
+    'ok' : IDL.Record({ 'requestId' : IDL.Nat, 'txHash' : IDL.Text }),
+    'alreadyExists' : IDL.Record({
+      'status' : IDL.Text,
+      'requestId' : IDL.Nat,
+      'txHash' : IDL.Text,
+    }),
+    'noDepositFound' : IDL.Text,
+    'apiError' : IDL.Text,
+  });
+  const BridgeStatus = IDL.Variant({
+    'pending' : IDL.Null,
+    'approved' : IDL.Null,
+    'rejected' : IDL.Null,
+  });
+  const Time = IDL.Int;
+  const BridgeRequest = IDL.Record({
+    'id' : IDL.Nat,
+    'status' : BridgeStatus,
+    'ethAddress' : IDL.Text,
+    'submitter' : IDL.Principal,
+    'batAmount' : IDL.Nat,
+    'timestamp' : Time,
+  });
+  const ExchangeStatus = IDL.Variant({
+    'pending' : IDL.Null,
+    'approved' : IDL.Null,
+    'rejected' : IDL.Null,
+  });
+  const sGLDTRequest = IDL.Record({
+    'id' : IDL.Nat,
+    'status' : ExchangeStatus,
+    'submitter' : IDL.Principal,
+    'bbTokenAmount' : IDL.Nat,
+    'sgldAmountCalculated' : IDL.Nat,
+    'timestamp' : Time,
+  });
+  const UNIDepositStatus = IDL.Variant({
+    'pending' : IDL.Null,
+    'paid' : IDL.Null,
+    'confirmed' : IDL.Null,
+    'processing' : IDL.Null,
+    'failed' : IDL.Null,
+  });
+  const UniDepositRequest = IDL.Record({
+    'id' : IDL.Nat,
+    'status' : UNIDepositStatus,
+    'uniAmount' : IDL.Nat,
+    'ethAddress' : IDL.Text,
+    'submitter' : IDL.Principal,
+    'lockedExchangeRate' : IDL.Opt(IDL.Nat),
+    'sgldtPaid' : IDL.Nat,
+    'timestamp' : Time,
+    'txHash' : IDL.Text,
+  });
+  const UserProfile = IDL.Record({ 'name' : IDL.Text });
+  const http_header = IDL.Record({ 'value' : IDL.Text, 'name' : IDL.Text });
+  const http_request_result = IDL.Record({
+    'status' : IDL.Nat,
+    'body' : IDL.Vec(IDL.Nat8),
+    'headers' : IDL.Vec(http_header),
+  });
+  const TransformationInput = IDL.Record({
+    'context' : IDL.Vec(IDL.Nat8),
+    'response' : http_request_result,
+  });
+  const TransformationOutput = IDL.Record({
+    'status' : IDL.Nat,
+    'body' : IDL.Vec(IDL.Nat8),
+    'headers' : IDL.Vec(http_header),
+  });
+  return IDL.Service({
+    '_initializeAccessControl' : IDL.Func([], [], []),
+    'addTransaction' : IDL.Func([IDL.Principal, TxRecord], [], []),
+    'adminDissolveCkUNI' : IDL.Func(
+        [IDL.Nat, IDL.Text],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'adminGetUserTransactions' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(TxRecord)],
+        ['query'],
+      ),
+    'adminGrantAdmin' : IDL.Func([IDL.Principal], [IDL.Text], []),
+    'adminInitializeMinterAddress' : IDL.Func([], [IDL.Text], []),
+    'adminMintCkUNI' : IDL.Func(
+        [IDL.Text, IDL.Nat],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'adminTransferCkUNI' : IDL.Func([IDL.Principal, IDL.Nat], [IDL.Text], []),
+    'adminTransferSGLDT' : IDL.Func([IDL.Principal, IDL.Nat], [IDL.Text], []),
+    'approveBridgeRequest' : IDL.Func([IDL.Nat], [], []),
+    'approveSGLDTExchangeRequest' : IDL.Func([IDL.Nat], [], []),
+    'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'autoFinalizeUNIDeposit' : IDL.Func(
+        [IDL.Text, IDL.Nat, IDL.Opt(IDL.Nat)],
+        [AutoFinalizeResult],
+        [],
+      ),
+    'calculateExchangeRate' : IDL.Func(
+        [IDL.Nat],
+        [IDL.Record({ 'bbTokenAmount' : IDL.Nat, 'sgldAmount' : IDL.Nat })],
+        ['query'],
+      ),
+    'deprecated_getBridgeRequests' : IDL.Func(
+        [],
+        [IDL.Vec(BridgeRequest)],
+        ['query'],
+      ),
+    'deprecated_getSGLDTRequests' : IDL.Func(
+        [],
+        [IDL.Vec(sGLDTRequest)],
+        ['query'],
+      ),
+    'diagnosePayoutAbility' : IDL.Func([IDL.Nat], [IDL.Text], []),
+    'getAllUNIDeposits' : IDL.Func([], [IDL.Vec(UniDepositRequest)], ['query']),
+    'getBalance' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
+    'getBatPrice' : IDL.Func([], [IDL.Nat], []),
+    'getBridgeRequests' : IDL.Func([], [IDL.Vec(BridgeRequest)], ['query']),
+    'getBridgeRequestsByUser' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(BridgeRequest)],
+        ['query'],
+      ),
+    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getCanisterPrincipal' : IDL.Func([], [IDL.Principal], ['query']),
+    'getCanisterSGLDTBalance' : IDL.Func([], [IDL.Nat], []),
+    'getCkUNIMinterDepositAddress' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'getCkUNITreasuryBalance' : IDL.Func([], [IDL.Nat], ['query']),
+    'getDepositStatus' : IDL.Func(
+        [IDL.Nat],
+        [
+          IDL.Record({
+            'status' : IDL.Text,
+            'sgldtPaid' : IDL.Nat,
+            'txHash' : IDL.Text,
+          }),
+        ],
+        ['query'],
+      ),
+    'getEthBalanceOnchain' : IDL.Func([IDL.Text], [IDL.Nat], []),
+    'getMinterDepositAddress' : IDL.Func([], [IDL.Text], ['query']),
+    'getMyActiveDeposit' : IDL.Func(
+        [],
+        [
+          IDL.Opt(
+            IDL.Record({
+              'id' : IDL.Nat,
+              'status' : IDL.Text,
+              'sgldtPaid' : IDL.Nat,
+              'txHash' : IDL.Text,
+            })
+          ),
+        ],
+        ['query'],
+      ),
+    'getMyTransactions' : IDL.Func([], [IDL.Vec(TxRecord)], ['query']),
+    'getPayoutDiagnostic' : IDL.Func(
+        [],
+        [
+          IDL.Record({
+            'estimatedSGLDTNeeded' : IDL.Nat,
+            'pendingDeposits' : IDL.Nat,
+            'canisterSGLDTBalance' : IDL.Nat,
+          }),
+        ],
+        [],
+      ),
+    'getPayoutReadiness' : IDL.Func(
+        [],
+        [
+          IDL.Record({
+            'estimatedSGLDTNeeded' : IDL.Nat,
+            'pendingDeposits' : IDL.Nat,
+            'treasurySGLDTBalance' : IDL.Nat,
+            'treasuryPrincipal' : IDL.Text,
+          }),
+        ],
+        [],
+      ),
+    'getPendingBridgeRequests' : IDL.Func(
+        [],
+        [IDL.Vec(BridgeRequest)],
+        ['query'],
+      ),
+    'getPendingSGLDTExchangeRequests' : IDL.Func(
+        [],
+        [IDL.Vec(sGLDTRequest)],
+        ['query'],
+      ),
+    'getRefineryPrincipal' : IDL.Func([], [IDL.Text], ['query']),
+    'getSGLDTExchangeRequests' : IDL.Func(
+        [],
+        [IDL.Vec(sGLDTRequest)],
+        ['query'],
+      ),
+    'getSGLDTExchangeRequestsByUser' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(sGLDTRequest)],
+        ['query'],
+      ),
+    'getSGLDTPrice' : IDL.Func([], [IDL.Nat], []),
+    'getSGLDTTreasuryBalance' : IDL.Func([], [IDL.Nat], ['query']),
+    'getTotalSupply' : IDL.Func([], [IDL.Nat], ['query']),
+    'getTreasuryICRC1Balances' : IDL.Func(
+        [],
+        [IDL.Record({ 'ckUNIBalance' : IDL.Nat, 'sgldtBalance' : IDL.Nat })],
+        ['query'],
+      ),
+    'getTreasuryStats' : IDL.Func(
+        [],
+        [
+          IDL.Record({
+            'sGLDTTreasuryBalance' : IDL.Nat,
+            'batPoolBalance' : IDL.Nat,
+          }),
+        ],
+        ['query'],
+      ),
+    'getTreasuryWalletInfo' : IDL.Func(
+        [],
+        [
+          IDL.Record({
+            'sGLDTBalance' : IDL.Nat,
+            'depositAddress' : IDL.Text,
+            'ckUNIBalance' : IDL.Nat,
+          }),
+        ],
+        ['query'],
+      ),
+    'getUNIExchangeRate' : IDL.Func([], [IDL.Nat], ['query']),
+    'getUniBalanceOnchain' : IDL.Func([IDL.Text], [IDL.Nat], []),
+    'getUserProfile' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(UserProfile)],
+        ['query'],
+      ),
+    'getUserSGLDTBalance' : IDL.Func([IDL.Text], [IDL.Nat], []),
+    'getUserTransactions' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(TxRecord)],
+        ['query'],
+      ),
+    'getUserUNIDeposits' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(UniDepositRequest)],
+        ['query'],
+      ),
+    'getWalletBalances' : IDL.Func(
+        [IDL.Text],
+        [IDL.Record({ 'uniWei' : IDL.Nat, 'ethWei' : IDL.Nat })],
+        [],
+      ),
+    'initializeMinterDepositAddress' : IDL.Func([], [IDL.Text], []),
+    'isAdminCaller' : IDL.Func([], [IDL.Bool], ['query']),
+    'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'migrated_getAllBridgeRequests' : IDL.Func(
+        [],
+        [IDL.Vec(BridgeRequest)],
+        ['query'],
+      ),
+    'migrated_getAllSGLDTRequests' : IDL.Func(
+        [],
+        [IDL.Vec(sGLDTRequest)],
+        ['query'],
+      ),
+    'migration_updateBalance' : IDL.Func([IDL.Nat], [], []),
+    'mintBankingBraveTokens' : IDL.Func([IDL.Principal, IDL.Nat], [], []),
+    'refreshTreasuryBalances' : IDL.Func([], [], []),
+    'rejectBridgeRequest' : IDL.Func([IDL.Nat], [], []),
+    'rejectSGLDTExchangeRequest' : IDL.Func([IDL.Nat], [], []),
+    'resetMiningPhase' : IDL.Func(
+        [IDL.Nat],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'retryUNIDepositPayout' : IDL.Func([IDL.Nat], [IDL.Text], []),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'selfInitializeMinterAddress' : IDL.Func(
+        [],
+        [IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text })],
+        [],
+      ),
+    'setBatPoolBalance' : IDL.Func([IDL.Nat], [], []),
+    'setLiveExchangeRate' : IDL.Func([IDL.Nat], [], []),
+    'setSGLDTTreasuryBalance' : IDL.Func([IDL.Nat], [], []),
+    'setUNIExchangeRate' : IDL.Func([IDL.Nat], [], []),
+    'submitBridgeRequest' : IDL.Func([IDL.Text, IDL.Nat], [IDL.Nat], []),
+    'submitSGLDTExchangeRequest' : IDL.Func([IDL.Nat], [IDL.Nat], []),
+    'submitUNIDeposit' : IDL.Func(
+        [IDL.Text, IDL.Nat, IDL.Text, IDL.Opt(IDL.Nat)],
+        [IDL.Nat],
+        [],
+      ),
+    'syncLiveExchangeRate' : IDL.Func(
+        [IDL.Nat],
+        [IDL.Variant({ 'ok' : IDL.Null, 'err' : IDL.Text })],
+        [],
+      ),
+    'transform' : IDL.Func(
+        [TransformationInput],
+        [TransformationOutput],
+        ['query'],
+      ),
+    'triggerSGLDTPayout' : IDL.Func([IDL.Nat], [IDL.Text], []),
+    'verifyAndPayUNIDeposit' : IDL.Func([IDL.Nat], [IDL.Text], []),
+    'verifyEthTransaction' : IDL.Func([IDL.Nat], [IDL.Text], []),
+    'whoAmI' : IDL.Func(
+        [],
+        [
+          IDL.Record({
+            'hasAdminRole' : IDL.Bool,
+            'isHardcodedAdmin' : IDL.Bool,
+            'caller' : IDL.Text,
+            'isAdmin' : IDL.Bool,
+          }),
+        ],
+        ['query'],
+      ),
+  });
+};
+export const init = ({ IDL }) => { return []; };

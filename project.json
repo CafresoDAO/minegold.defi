@@ -1,0 +1,26 @@
+{
+  "overview": "minegold.defi is a cross-chain DeFi refinery where users bridge Uniswap (UNI) tokens from Ethereum to the Internet Computer and refine them into gold-backed sGLDT tokens. Features automated ckUNI minting via ICP's official ERC-20 minter, a full user transaction history, and an admin treasury management panel.",
+  "features": [
+    "UNI → ckUNI automated bridge via ICP ERC-20 minter",
+    "Full user transaction history with status indicators",
+    "sGLDT refinery — ckUNI → sGLDT swap with live exchange rates",
+    "Brave wallet integration with live ETH/UNI/sGLDT balances",
+    "Internet Identity authentication",
+    "Admin treasury management panel",
+    "ICRC-1 compliant token transfers",
+    "Live CoinGecko price feeds"
+  ],
+  "category": "defi-finance",
+  "tags": [
+    "defi",
+    "bridge",
+    "cross-chain",
+    "icp",
+    "ethereum",
+    "uniswap",
+    "icrc1",
+    "gold",
+    "wallet"
+  ],
+  "last_updated": "2026-04-09T16:52:31.726Z"
+}

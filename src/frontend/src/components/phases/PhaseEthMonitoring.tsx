@@ -11,6 +11,10 @@ type Props = {
   pollAttempt: number;
   currentTxHash: string | null;
   statusMsg: string;
+  /** True for the minter-attribution flow: ckUNI is being minted to the
+   *  user's own account, and the refinery swaps it once it lands. False for
+   *  legacy deposits still being verified against Ethereum by the backend. */
+  minterFlow: boolean;
   checkDisabled: boolean;
   onCheckNow: () => void;
   onCancel: () => void;
@@ -25,6 +29,7 @@ export function PhaseEthMonitoring({
   pollAttempt,
   currentTxHash,
   statusMsg,
+  minterFlow,
   checkDisabled,
   onCheckNow,
   onCancel,
@@ -56,13 +61,13 @@ export function PhaseEthMonitoring({
             {bridgeProgress >= 1
               ? "sGLDT released"
               : bridgeProgress >= 0.8
-                ? "Verified — releasing sGLDT"
+                ? "ckUNI received — refining into sGLDT"
                 : "Awaiting Ethereum confirmations"}
           </p>
           <p className="text-[11px] text-zinc-400 leading-relaxed">
-            The chain-key minter waits for 12 Ethereum
-            blocks, then credits ckUNI to the treasury.
-            sGLDT releases automatically on arrival.
+            {minterFlow
+              ? "The chain-key minter waits for 12 Ethereum blocks, then mints ckUNI straight to your own ICP account. The refinery swaps it for sGLDT the moment it lands."
+              : "The chain-key minter waits for 12 Ethereum blocks, then credits ckUNI to the treasury. sGLDT releases automatically on arrival."}
           </p>
         </div>
       </div>
@@ -108,12 +113,13 @@ export function PhaseEthMonitoring({
           {bridgeProgress >= 1
             ? "Deposit verified — sGLDT released."
             : bridgeProgress >= 0.8
-              ? "Deposit verified on Ethereum — the refinery is releasing your sGLDT now."
-              : "Waiting for Ethereum confirmations. The refinery verifies your deposit on-chain and releases sGLDT automatically — typically 3–5 minutes."}
+              ? "ckUNI is in your account — the refinery is swapping it for sGLDT now."
+              : "Waiting for Ethereum confirmations. Chain-key consensus verifies your deposit and mints ckUNI automatically — typically 3–5 minutes."}
         </p>
         <p className="text-[10px] text-zinc-500 leading-relaxed">
-          Safe to close this tab — your deposit is recorded
-          and the canister will finalize on its own.
+          {minterFlow
+            ? "Safe to close this tab — the ckUNI is minted to your own account, so it is yours whether or not this page is open. Return any time to refine it."
+            : "Safe to close this tab — your deposit is recorded and the canister will finalize on its own."}
         </p>
       </div>
 

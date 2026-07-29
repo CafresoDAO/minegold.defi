@@ -83,6 +83,169 @@ const directDepositIDL = ({ IDL }: { IDL: any }) => {
   });
 };
 
+/** ICRC-2 approve, used to let the refinery canister pull the user's ckUNI. */
+const icrc2ApproveIDL = ({ IDL }: { IDL: any }) => {
+  const Account = IDL.Record({
+    owner: IDL.Principal,
+    subaccount: IDL.Opt(IDL.Vec(IDL.Nat8)),
+  });
+  const ApproveArgs = IDL.Record({
+    from_subaccount: IDL.Opt(IDL.Vec(IDL.Nat8)),
+    spender: Account,
+    amount: IDL.Nat,
+    expected_allowance: IDL.Opt(IDL.Nat),
+    expires_at: IDL.Opt(IDL.Nat64),
+    fee: IDL.Opt(IDL.Nat),
+    memo: IDL.Opt(IDL.Vec(IDL.Nat8)),
+    created_at_time: IDL.Opt(IDL.Nat64),
+  });
+  const ApproveError = IDL.Variant({
+    BadFee: IDL.Record({ expected_fee: IDL.Nat }),
+    InsufficientFunds: IDL.Record({ balance: IDL.Nat }),
+    AllowanceChanged: IDL.Record({ current_allowance: IDL.Nat }),
+    Expired: IDL.Record({ ledger_time: IDL.Nat64 }),
+    TooOld: IDL.Null,
+    CreatedInFuture: IDL.Record({ ledger_time: IDL.Nat64 }),
+    Duplicate: IDL.Record({ duplicate_of: IDL.Nat }),
+    TemporarilyUnavailable: IDL.Null,
+    GenericError: IDL.Record({ error_code: IDL.Nat, message: IDL.Text }),
+  });
+  return IDL.Service({
+    icrc2_approve: IDL.Func(
+      [ApproveArgs],
+      [IDL.Variant({ Ok: IDL.Nat, Err: ApproveError })],
+      [],
+    ),
+  });
+};
+
+/** Backend methods for the direct-refine (minter-attribution) flow. */
+const refineIDL = ({ IDL }: { IDL: any }) => {
+  const RefineOk = IDL.Record({
+    refineId: IDL.Nat,
+    sgldtPaid: IDL.Nat,
+    rate: IDL.Nat,
+    blockIndex: IDL.Nat,
+  });
+  return IDL.Service({
+    getMyCkUNIPosition: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          balance: IDL.Nat,
+          allowance: IDL.Nat,
+          minRefine: IDL.Nat,
+          rate: IDL.Nat,
+        }),
+      ],
+      [],
+    ),
+    refineCkUNI: IDL.Func(
+      [IDL.Nat, IDL.Opt(IDL.Nat)],
+      [IDL.Variant({ ok: RefineOk, err: IDL.Text })],
+      [],
+    ),
+  });
+};
+
+export type CkUNIPosition = {
+  balance: bigint;
+  allowance: bigint;
+  minRefine: bigint;
+  rate: bigint;
+};
+
+/** Read the caller's ckUNI balance and the allowance granted to the refinery.
+ *  The UI polls this to detect when the chain-key minter has credited the
+ *  user (bridge complete) and whether an approve step is still outstanding. */
+export async function fetchMyCkUNIPosition(
+  identity: unknown,
+): Promise<CkUNIPosition | null> {
+  try {
+    const actor = await directActor(refineIDL, { identity });
+    return (await actor.getMyCkUNIPosition()) as CkUNIPosition;
+  } catch (err) {
+    console.warn("[refine] ckUNI position fetch failed:", err);
+    return null;
+  }
+}
+
+/** Approve the refinery canister to pull `amount` ckUNI (e18) from the caller.
+ *  We approve amount + fee so the ledger's fee deduction can't leave the
+ *  allowance a hair short of the refine amount. */
+export async function approveCkUNIForRefinery(opts: {
+  identity: unknown;
+  amount: bigint;
+}): Promise<{ ok: true; blockIndex: bigint } | { ok: false; error: string }> {
+  const actor = await directActor(icrc2ApproveIDL, {
+    identity: opts.identity,
+    canisterId: CKUNI_CANISTER_ID,
+  });
+  const result = await actor.icrc2_approve({
+    from_subaccount: [],
+    spender: {
+      owner: DfinityPrincipal.fromText(BACKEND_CANISTER_ID),
+      subaccount: [],
+    },
+    amount: opts.amount,
+    expected_allowance: [],
+    expires_at: [],
+    fee: [],
+    memo: [],
+    created_at_time: [],
+  });
+  if ("Ok" in result) return { ok: true, blockIndex: result.Ok as bigint };
+  const err = result.Err;
+  if ("InsufficientFunds" in err) {
+    return {
+      ok: false,
+      error: `Not enough ckUNI to cover the approval fee (balance ${err.InsufficientFunds.balance}).`,
+    };
+  }
+  if ("AllowanceChanged" in err) {
+    return {
+      ok: false,
+      error: "Your ckUNI allowance changed mid-flight. Try again.",
+    };
+  }
+  if ("TemporarilyUnavailable" in err) {
+    return { ok: false, error: "ckUNI ledger temporarily unavailable. Try again." };
+  }
+  if ("GenericError" in err) {
+    return {
+      ok: false,
+      error: `Approve failed (${err.GenericError.error_code}): ${err.GenericError.message}`,
+    };
+  }
+  return { ok: false, error: `Approve failed: ${JSON.stringify(err)}` };
+}
+
+export type RefineOutcome =
+  | { ok: true; refineId: bigint; sgldtPaid: bigint; rate: bigint; blockIndex: bigint }
+  | { ok: false; error: string };
+
+/** Swap ckUNI the user already holds for sGLDT. Requires a prior
+ *  approveCkUNIForRefinery for at least `amount`. */
+export async function refineCkUNI(opts: {
+  identity: unknown;
+  amount: bigint;
+  rateHint: bigint | null;
+}): Promise<RefineOutcome> {
+  const actor = await directActor(refineIDL, { identity: opts.identity });
+  const rateOpt: [] | [bigint] = opts.rateHint == null ? [] : [opts.rateHint];
+  const result = await actor.refineCkUNI(opts.amount, rateOpt);
+  if ("ok" in result) {
+    return {
+      ok: true,
+      refineId: result.ok.refineId as bigint,
+      sgldtPaid: result.ok.sgldtPaid as bigint,
+      rate: result.ok.rate as bigint,
+      blockIndex: result.ok.blockIndex as bigint,
+    };
+  }
+  return { ok: false, error: result.err as string };
+}
+
 const directAdminIDL = ({ IDL }: { IDL: any }) => {
   const WhoAmI = IDL.Record({
     caller: IDL.Text,

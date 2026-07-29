@@ -43,6 +43,8 @@ import { UnclaimedDepositsBanner } from "./components/UnclaimedDepositsBanner";
 import { WalletSection } from "./components/WalletSection";
 import { TransactionTimeline } from "./components/TransactionTimeline";
 import { useBackendActor } from "./hooks/useBackendActor";
+import { useRefineFlow } from "./hooks/useRefineFlow";
+import { GoldCTA } from "./components/ui/GoldCTA";
 import { safeBalance } from "./lib/format";
 import {
   autoFinalizeUNIDeposit,
@@ -524,6 +526,10 @@ export default function App() {
         }
       : null;
   const isLoggingIn = iiIsLoggingIn;
+
+  // Owns the post-deposit half of the flow: watching for the chain-key minter
+  // to credit ckUNI, then approve + refine into sGLDT. See useRefineFlow.
+  const refineFlow = useRefineFlow(identity);
 
   const [ethAddress, setEthAddress] = useState<string | null>(null);
   const [uniAmount, setUniAmount] = useState("");
@@ -1091,6 +1097,22 @@ export default function App() {
     return statusKey === "confirmed" || statusKey === "failed";
   });
 
+  // Leftover ckUNI — the minter-attribution counterpart of unclaimedDeposits.
+  // If the user deposited, closed the tab, and came back, the ckUNI the minter
+  // credited is sitting in their account waiting to be refined. One position
+  // read on login surfaces it; the banner's click refines it directly.
+  const refreshRefinePosition = refineFlow.refreshPosition;
+  useEffect(() => {
+    if (!user) return;
+    void refreshRefinePosition();
+  }, [user, refreshRefinePosition]);
+  const leftoverCkUNI =
+    phase === "idle" && refineFlow.state.kind === "idle" && refineFlow.position
+      ? refineFlow.position.balance
+      : 0n;
+  const leftoverRefinable =
+    refineFlow.position != null && leftoverCkUNI >= refineFlow.position.minRefine;
+
   // Treasury wallet info — pre-fetched on mount so deposit address is ready before the user clicks Swap
   const FALLBACK_DEPOSIT_ADDRESS = CKERC20_HELPER_CONTRACT;
   const { data: treasuryWalletInfo } = useGetTreasuryWalletInfo();
@@ -1274,6 +1296,26 @@ export default function App() {
     }
   };
 
+  /** "Check now" — meaning depends on which flow is in play. Under the minter
+   *  flow there is nothing to kick: the poller already runs every 6s, so this
+   *  just gives the user an immediate, honest read of where they stand. */
+  const checkNow = async () => {
+    if (phase === "ckuni_minting") {
+      const pos = await refineFlow.refreshPosition();
+      if (pos && pos.balance > 0n) {
+        toast.success(
+          `ckUNI credited: ${(Number(pos.balance) / 1e18).toFixed(6)}. Refining now…`,
+        );
+      } else {
+        toast.info(
+          "The chain-key minter hasn't credited your ckUNI yet — this takes about 12 Ethereum blocks (2–3 minutes).",
+        );
+      }
+      return;
+    }
+    await checkPayoutNow();
+  };
+
   const estimatedGold = (Number.parseFloat(uniAmount) || 0) * liveRate;
   // Keep the ref in sync so polling callbacks always read the current estimated amount
   estimatedGoldRef.current = estimatedGold;
@@ -1281,6 +1323,7 @@ export default function App() {
     phase === "awaiting_deposit" ||
     phase === "wallet_confirming" ||
     phase === "eth_monitoring" ||
+    phase === "ckuni_minting" ||
     phase === "releasing_sgldt";
 
   // Per-token diagnostics + last-known source (for the collapsible panel).
@@ -2066,8 +2109,15 @@ export default function App() {
         setStatusMsg("Invalid UNI amount.");
         return;
       }
-      const treasuryPrincipal32 = principalToBytes32(
-        Principal.fromText(TREASURY_PRINCIPAL),
+      // Encode the USER'S OWN principal, not the treasury's. The ckERC-20
+      // minter mints ckUNI to whoever is named here, so the user is credited
+      // directly under chain-key consensus after 12 block confirmations —
+      // no Etherscan verification, no tx hash to capture, nothing to lose if
+      // this tab dies. They then approve the refinery and swap ckUNI → sGLDT
+      // entirely on ICP. (Depositing to the treasury is what forced the old
+      // oracle-and-recovery machinery; this is the seam that removes it.)
+      const beneficiaryPrincipal32 = principalToBytes32(
+        Principal.fromText(user.principal),
       );
 
       // ---- Check existing allowance via public RPC (no wallet call) ----
@@ -2218,7 +2268,7 @@ export default function App() {
         const depositData = encodeCkErc20Deposit(
           UNI_CONTRACT_ADDRESS,
           amountWei,
-          treasuryPrincipal32,
+          beneficiaryPrincipal32,
         ) as `0x${string}`;
         // Pre-estimate via public RPC with a 250k fallback. ckERC-20
         // helper.deposit(address, uint256, bytes32) does a transferFrom +
@@ -2320,86 +2370,31 @@ export default function App() {
         expectedNonce: null,
       });
 
-      // ── Register the deposit with the backend, ONE call ──
-      // We hold the signed tx hash, so no Etherscan-scanning loop is needed:
-      // directSubmitUNIDeposit records it #pending, and the backend sweeper
-      // takes it from there (on-chain verification + payout every 30 s).
-      // From this point the frontend is a read-only status observer.
+      // ── Hand off to the chain-key minter ──
+      // The deposit named the USER'S OWN principal, so the ckERC-20 minter
+      // credits ckUNI directly to them once chain-key consensus observes 12
+      // Ethereum block confirmations. Nothing needs registering with our
+      // backend and there is no Ethereum verification for us to run — the
+      // ckUNI landing in their account IS the proof.
+      //
+      // Note what's no longer required here: a captured tx hash. Under the old
+      // treasury-attribution flow, losing the hash meant losing the deposit's
+      // link to its depositor, which is what every recovery path existed to
+      // repair. Now the attribution is carried on-chain by the minter, so a
+      // missing hash costs us only the Etherscan convenience link.
       const rateHintNat: bigint | null = liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
-      const amountE8s = parseDecimalToBigInt(uniAmount, 8);
 
-      if (!signedTxHash) {
-        // Wallet reported success but returned no parseable hash (rare
-        // mobile-bridge quirk). The pending-deposit intent stays persisted;
-        // the server-side discovery button can pick it up.
-        setPhase("error");
-        setStatusMsg(
-          "Your wallet signed the deposit but didn't hand back a transaction hash. Tap 'Finalize my deposit' below — we'll find it on Ethereum and resume automatically.",
-        );
-        return;
-      }
-
-      setPhase("eth_monitoring");
-      setStatusMsg("Watching Ethereum for your deposit…");
-      updateStep("deposit-sign", "Deposit broadcast — registering with the refinery…", "active");
-
-      let requestId: bigint | null = null;
-      try {
-        if (!identity) throw new Error("Not authenticated");
-        requestId = await directSubmitUNIDeposit({
-          identity,
-          ethAddress,
-          uniAmountE8s: amountE8s,
-          txHash: signedTxHash,
-          rateHint: rateHintNat,
-        });
-      } catch (err) {
-        console.warn("[mining] direct deposit submit failed, trying server-side discovery:", err);
-        // Fallback: server-side Etherscan discovery — also creates the record.
-        try {
-          if (identity) {
-            const result = await autoFinalizeUNIDeposit({
-              identity,
-              ethAddress,
-              uniAmountE8s: amountE8s,
-              rateHint: rateHintNat,
-            });
-            if (result.kind === "ok" || result.kind === "alreadyExists") {
-              requestId = result.requestId;
-            }
-          }
-        } catch (fallbackErr) {
-          console.warn("[mining] autoFinalize fallback failed:", fallbackErr);
-        }
-      }
-
-      if (requestId === null) {
-        updateStep("deposit-sign", "Couldn't register the deposit with the backend", "error");
-        setManualTxHash(signedTxHash);
-        setPhase("error");
-        setStatusMsg(
-          "Your deposit is broadcast on Ethereum but we couldn't reach the backend to register it. Your funds are safe — tap 'Resume monitoring' below to retry.",
-        );
-        return;
-      }
-
-      updateStep("deposit-sign", "Deposit registered — refinery is watching Ethereum", "done", signedTxHash.slice(0, 14) + "…");
-      setDepositRequestId(requestId);
       clearPendingDeposit();
-      txHash = signedTxHash as `0x${string}`;
-
-      try {
-        startAutoPolling(requestId);
-      } catch (pollErr) {
-        console.error("[mining] startAutoPolling threw:", pollErr);
-        setPhase("error");
-        setStatusMsg(
-          "Polling setup failed — your deposit is recorded (ID " +
-            requestId.toString() +
-            "). The backend will still pay out automatically; tap 'Check now' or come back later.",
-        );
-      }
-      return; // early return: startAutoPolling handles phase transitions from here
+      updateStep(
+        "ck-mint",
+        "Chain-key minter confirming (12 Ethereum blocks)",
+        "active",
+        signedTxHash ? `${signedTxHash.slice(0, 14)}…` : "awaiting confirmations",
+      );
+      setPhase("ckuni_minting");
+      setStatusMsg("Chain-key minter is confirming your deposit…");
+      refineFlow.beginWatch(amountWei, rateHintNat);
+      return; // early return: useRefineFlow drives the rest
     } catch (err) {
       // Handle user rejection (EIP-1193 error code 4001)
       const code = (err as { code?: number })?.code;
@@ -2582,6 +2577,55 @@ export default function App() {
       cancelled = true;
     };
   }, [actor, identity]);
+
+  // Project the refine flow's own state machine onto the app-wide phase/status
+  // so the existing phase UI keeps working unchanged. useRefineFlow owns the
+  // truth; this effect is a pure projection of it.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: updateStep is stable
+  useEffect(() => {
+    const st = refineFlow.state;
+    switch (st.kind) {
+      case "waiting_mint": {
+        setPhase("ckuni_minting");
+        setBridgeProgress(refineFlow.progress);
+        const mins = Math.floor(st.elapsedMs / 60_000);
+        const secs = Math.floor((st.elapsedMs % 60_000) / 1000);
+        setStatusMsg(
+          `Chain-key minter confirming — ${mins}m ${secs.toString().padStart(2, "0")}s elapsed`,
+        );
+        break;
+      }
+      case "approving":
+        setPhase("releasing_sgldt");
+        setBridgeProgress(refineFlow.progress);
+        setStatusMsg("ckUNI received — authorizing the refinery…");
+        updateStep("ck-mint", "ckUNI credited by the chain-key minter", "done");
+        updateStep("refine", "Authorizing the refinery to swap your ckUNI", "active");
+        break;
+      case "refining":
+        setPhase("releasing_sgldt");
+        setBridgeProgress(refineFlow.progress);
+        setStatusMsg("Swapping ckUNI for sGLDT…");
+        updateStep("refine", "Swapping ckUNI for sGLDT", "active");
+        break;
+      case "done": {
+        const amount = (Number(st.sgldt) / 1e8).toFixed(5);
+        setSgldtReleased(amount);
+        setBridgeProgress(1);
+        setStatusMsg("");
+        updateStep("refine", `Refined — ${amount} sGLDT released`, "done");
+        setPhase("success");
+        break;
+      }
+      case "failed":
+        setPhase("error");
+        setStatusMsg(st.error);
+        updateStep("refine", "Refine did not complete", "error", st.error.slice(0, 120));
+        break;
+      default:
+        break;
+    }
+  }, [refineFlow.state, refineFlow.progress]);
 
   const phaseStep = {
     idle: 0,
@@ -2786,6 +2830,36 @@ export default function App() {
               />
             )}
 
+            {/* Leftover ckUNI banner — the minter credited this user's own
+                account (perhaps in a session that ended before refining), so
+                the swap can finish right here without touching Ethereum. */}
+            {user && leftoverRefinable && (
+              <div className="mb-6 rounded-3xl border border-blue-500/40 bg-blue-500/10 backdrop-blur p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-500">
+                <div className="flex-1">
+                  <p className="text-sm font-black text-blue-300 mb-1">
+                    {(Number(leftoverCkUNI) / 1e18).toFixed(6)} ckUNI is in your account, ready to refine
+                  </p>
+                  <p className="text-xs text-blue-200/70">
+                    The chain-key minter already bridged your UNI. One tap swaps it for sGLDT — no wallet needed.
+                  </p>
+                </div>
+                <GoldCTA
+                  data-ocid="refine.leftover.button"
+                  size="md"
+                  fullWidth={false}
+                  trailingIcon={null}
+                  className="w-full sm:w-auto"
+                  onClick={() => {
+                    const rateHintNat: bigint | null =
+                      liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
+                    void refineFlow.refineNow(leftoverCkUNI, rateHintNat);
+                  }}
+                >
+                  Refine into sGLDT
+                </GoldCTA>
+              </div>
+            )}
+
 {/* Refinery Widget */}
             <RefineryShell
               dimmed={!ethAddress}
@@ -2876,17 +2950,21 @@ export default function App() {
                       setStatusMsg("");
                     }}
                   />
-                ) : phase === "eth_monitoring" ? (
+                ) : phase === "eth_monitoring" || phase === "ckuni_minting" ? (
                   <PhaseEthMonitoring
                     uniAmount={uniAmount}
                     bridgeProgress={bridgeProgress}
                     pollAttempt={pollAttempt}
                     currentTxHash={currentTxHash}
                     statusMsg={statusMsg}
-                    checkDisabled={!actor || !depositRequestId}
-                    onCheckNow={checkPayoutNow}
+                    minterFlow={phase === "ckuni_minting"}
+                    checkDisabled={
+                      phase === "ckuni_minting" ? false : !actor || !depositRequestId
+                    }
+                    onCheckNow={checkNow}
                     onCancel={() => {
                       abortRef.current = true;
+                      refineFlow.reset();
                       setPhase("idle");
                       setStatusMsg("");
                     }}

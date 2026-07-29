@@ -84,6 +84,26 @@ type TransformationInput =
    response: http_request_result;
  };
 type Time = int;
+type RefineStatus = 
+ variant {
+   paid;
+   pulled;
+   refunded;
+   stranded;
+ };
+type RefineRecord = 
+ record {
+   ckuniAmount: nat;
+   errorMsg: opt text;
+   id: nat;
+   payBlock: opt nat;
+   pullBlock: opt nat;
+   rate: nat;
+   sgldtPaid: nat;
+   status: RefineStatus;
+   timestamp: Time;
+   user: principal;
+ };
 type ExchangeStatus = 
  variant {
    approved;
@@ -238,9 +258,6 @@ service : {
   /// This is a query so it works for unauthenticated (anonymous) callers.
   /// Call refreshTreasuryBalances() to update the cache from the ckUNI ledger.
   getCkUNITreasuryBalance: () -> (nat) query;
-  /// Public query: returns the current status of a UNI deposit for frontend polling.
-  /// Any authenticated user may query their own deposit. Admin may query any deposit.
-  /// Returns status as a Text string, the txHash, and the sGLDT amount paid (0 if not yet paid).
   getDepositStatus: (requestId: nat) ->
    (record {
       sgldtPaid: nat;
@@ -270,6 +287,18 @@ service : {
           status: text;
           txHash: text;
         }) query;
+  /// Read the caller's ckUNI balance and the allowance they have granted this
+  /// canister. The UI polls this to decide when the bridge has completed (the
+  /// minter credited them) and whether an approve step is still needed.
+  getMyCkUNIPosition: () ->
+   (record {
+      allowance: nat;
+      balance: nat;
+      minRefine: nat;
+      rate: nat;
+    });
+  /// The caller's own refine history, newest-first.
+  getMyRefines: () -> (vec RefineRecord) query;
   /// Caller's own transaction history.
   getMyTransactions: () -> (vec TxRecord) query;
   /// Alias kept for backward compatibility. Prefer getPayoutReadiness().
@@ -307,6 +336,8 @@ service : {
   /// This is a query so it works for unauthenticated (anonymous) callers.
   /// Call refreshTreasuryBalances() to update the cache from the ledger.
   getSGLDTTreasuryBalance: () -> (nat) query;
+  /// Admin view: every refine that ended #stranded and needs manual resolution.
+  getStrandedRefines: () -> (vec RefineRecord) query;
   getTotalSupply: () -> (nat) query;
   /// Returns cached ICRC-1 balances held by the treasury principal (c626g-iyaaa-aaaau-agpoa-cai).
   /// This is a query so it works for unauthenticated callers.
@@ -365,6 +396,34 @@ service : {
   migrated_getAllSGLDTRequests: () -> (vec sGLDTRequest) query;
   migration_updateBalance: (_balance: nat) -> ();
   mintBankingBraveTokens: (_to: principal, _amount: nat) -> ();
+  /// Refine ckUNI the caller already holds into sGLDT.
+  /// 
+  /// Prerequisites, both performed by the user — not by us:
+  ///   1. They deposited UNI on Ethereum with THEIR OWN principal encoded in
+  ///      the ckERC-20 helper call, so the minter minted ckUNI directly to
+  ///      them once chain-key consensus saw 12 block confirmations.
+  ///   2. They called icrc2_approve on the ckUNI ledger naming this canister
+  ///      as spender for at least `amount` plus the ckUNI transfer fee.
+  /// 
+  /// There is deliberately NO Ethereum verification here. The minter already
+  /// did it under chain-key consensus; the ckUNI in the user's account is the
+  /// proof. That removes the Etherscan oracle, the tx-hash capture race, and
+  /// every recovery path built to work around them.
+  /// 
+  /// Failure handling: if the sGLDT payout fails after the ckUNI was pulled,
+  /// the ckUNI is refunded. If the refund also fails the record is marked
+  /// #stranded — the funds sit in the treasury and the record carries
+  /// everything an admin needs to make the user whole.
+  refineCkUNI: (amount: nat, rateHint: opt nat) ->
+   (variant {
+      err: text;
+      ok: record {
+            blockIndex: nat;
+            rate: nat;
+            refineId: nat;
+            sgldtPaid: nat;
+          };
+    });
   /// Fetches the live ICRC-1 balances for the treasury (this canister's own account) from both ledgers
   /// and stores them in the cache.
   /// This is an update call — anyone may call it to warm the cache.

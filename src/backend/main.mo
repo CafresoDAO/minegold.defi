@@ -117,6 +117,37 @@ actor Self {
 
   type ICRC1TransferResult = { #Ok : Nat; #Err : ICRC1TransferError };
 
+  // ICRC-2 — the direct-refine path. The user holds ckUNI in their OWN account
+  // (the ckERC-20 minter mints it there when they deposit with their own
+  // principal encoded), approves this canister as spender, and refineCkUNI
+  // pulls it with icrc2_transfer_from. No Ethereum oracle is involved.
+  type ICRC2TransferFromArgs = {
+    spender_subaccount : ?Blob;
+    from : ICRC1Account;
+    to : ICRC1Account;
+    amount : Nat;
+    fee : ?Nat;
+    memo : ?Blob;
+    created_at_time : ?Nat64;
+  };
+
+  type ICRC2TransferFromError = {
+    #BadFee : { expected_fee : Nat };
+    #BadBurn : { min_burn_amount : Nat };
+    #InsufficientFunds : { balance : Nat };
+    #InsufficientAllowance : { allowance : Nat };
+    #TooOld;
+    #CreatedInFuture : { ledger_time : Nat64 };
+    #Duplicate : { duplicate_of : Nat };
+    #TemporarilyUnavailable;
+    #GenericError : { error_code : Nat; message : Text };
+  };
+
+  type ICRC2TransferFromResult = { #Ok : Nat; #Err : ICRC2TransferFromError };
+
+  type ICRC2AllowanceArgs = { account : ICRC1Account; spender : ICRC1Account };
+  type ICRC2Allowance = { allowance : Nat; expires_at : ?Nat64 };
+
   // -------------------------------------------------------
   // Payout dedup helpers
   // -------------------------------------------------------
@@ -222,6 +253,21 @@ actor Self {
     icrc1_fee : () -> async Nat;
   } = actor ("ilzky-ayaaa-aaaar-qahha-cai");
 
+  // Same ledger, ICRC-2 view. It is a separate `transient` binding rather than
+  // extra methods on ckUNILedger above because that one is a persistent
+  // variable: widening its type is an upgrade-incompatible change, and Motoko
+  // will not implicitly drop it either. Declaring the richer interface
+  // transiently sidesteps both — a canister id is a constant, so there is
+  // nothing here worth persisting. (Mirrors the existing ckUNIMinter V1/V2
+  // split.) Future ledger-interface growth should extend THIS binding.
+  transient let ckUNILedgerV2 : actor {
+    icrc1_fee : () -> async Nat;
+    icrc1_balance_of : (ICRC1Account) -> async Nat;
+    icrc1_transfer : (ICRC1TransferArgs) -> async ICRC1TransferResult;
+    icrc2_transfer_from : (ICRC2TransferFromArgs) -> async ICRC2TransferFromResult;
+    icrc2_allowance : (ICRC2AllowanceArgs) -> async ICRC2Allowance;
+  } = actor ("ilzky-ayaaa-aaaar-qahha-cai");
+
   // ckERC-20 Minter Canister (sv3dd-oaaaa-aaaar-qacoa-cai) — DFINITY chain-key bridge.
   // The minter exposes get_minter_info() which returns the ERC-20 helper contract address
   // that users interact with on Ethereum to deposit UNI and receive ckUNI.
@@ -294,6 +340,34 @@ actor Self {
   };
 
   // -------------------------------------------------------
+  // Direct refine (ckUNI → sGLDT) — the minter-attribution flow
+  // -------------------------------------------------------
+  // The user's ckUNI is minted straight to their own principal by the ckERC-20
+  // minter, which only mints after 12 Ethereum block confirmations verified by
+  // chain-key consensus. That makes the ckUNI balance itself the proof the
+  // bridge completed — there is no Ethereum transaction for us to verify, no
+  // Etherscan dependency, and no tx hash to capture or lose.
+  type RefineStatus = {
+    #pulled; // ckUNI moved into the treasury, sGLDT not yet sent
+    #paid; // sGLDT delivered
+    #refunded; // sGLDT failed, ckUNI returned to the user
+    #stranded; // sGLDT failed AND the refund failed — needs admin resolution
+  };
+
+  type RefineRecord = {
+    id : Nat;
+    user : Principal;
+    ckuniAmount : Nat; // e18, as pulled from the user
+    sgldtPaid : Nat; // e8s
+    rate : Nat; // 1e8-precision sGLDT per UNI used for this refine
+    status : RefineStatus;
+    timestamp : Time.Time;
+    pullBlock : ?Nat;
+    payBlock : ?Nat;
+    errorMsg : ?Text;
+  };
+
+  // -------------------------------------------------------
   // Transaction History Types
   // -------------------------------------------------------
   public type TxType = {
@@ -332,6 +406,9 @@ actor Self {
   let sGLDTRequests = Map.empty<Nat, sGLDTRequest>();
   let userProfiles = Map.empty<Principal, UserProfile>();
   let uniDeposits = Map.empty<Nat, UniDepositRequest>();
+  // Direct-refine records (ckUNI → sGLDT), keyed by refine id.
+  let refines = Map.empty<Nat, RefineRecord>();
+  var nextRefineId : Nat = 0;
   // Transaction history: keyed by Principal, value is a List of TxRecord (newest-first)
   let userTransactions = Map.empty<Principal, List.List<TxRecord>>();
   var txCounter : Nat = 0;
@@ -2871,6 +2948,372 @@ actor Self {
   /// Public query: returns the current status of a UNI deposit for frontend polling.
   /// Any authenticated user may query their own deposit. Admin may query any deposit.
   /// Returns status as a Text string, the txHash, and the sGLDT amount paid (0 if not yet paid).
+  // =======================================================
+  // DIRECT REFINE — ckUNI → sGLDT (minter-attribution flow)
+  // =======================================================
+
+  /// Smallest refine we accept: 0.001 UNI in e18. Below this the ckUNI ledger
+  /// fee dominates and a failed payout could not be refunded cleanly.
+  let MIN_REFINE_CKUNI : Nat = 1_000_000_000_000_000;
+
+  /// sGLDT (e8s) owed for a given ckUNI amount (e18) at a 1e8-precision rate.
+  ///   ckuni_e18 / 1e18 = whole UNI;  whole UNI * rate = sGLDT e8s
+  /// so the whole thing collapses to (ckuni * rate) / 1e18. Nat division
+  /// truncates, which rounds in the treasury's favour — never the user's.
+  func _sgldtForCkUNI(ckuniAmount : Nat, rate : Nat) : Nat {
+    (ckuniAmount * rate) / 1_000_000_000_000_000_000;
+  };
+
+  /// Read the caller's ckUNI balance and the allowance they have granted this
+  /// canister. The UI polls this to decide when the bridge has completed (the
+  /// minter credited them) and whether an approve step is still needed.
+  public shared ({ caller }) func getMyCkUNIPosition() : async {
+    balance : Nat;
+    allowance : Nat;
+    minRefine : Nat;
+    rate : Nat;
+  } {
+    if (caller.isAnonymous()) {
+      return { balance = 0; allowance = 0; minRefine = MIN_REFINE_CKUNI; rate = uniExchangeRate };
+    };
+    let me = Principal.fromActor(Self);
+    let bal = try {
+      await ckUNILedgerV2.icrc1_balance_of({ owner = caller; subaccount = null });
+    } catch (_) { 0 };
+    let allow = try {
+      let a = await ckUNILedgerV2.icrc2_allowance({
+        account = { owner = caller; subaccount = null };
+        spender = { owner = me; subaccount = null };
+      });
+      a.allowance;
+    } catch (_) { 0 };
+    { balance = bal; allowance = allow; minRefine = MIN_REFINE_CKUNI; rate = uniExchangeRate };
+  };
+
+  /// Refine ckUNI the caller already holds into sGLDT.
+  ///
+  /// Prerequisites, both performed by the user — not by us:
+  ///   1. They deposited UNI on Ethereum with THEIR OWN principal encoded in
+  ///      the ckERC-20 helper call, so the minter minted ckUNI directly to
+  ///      them once chain-key consensus saw 12 block confirmations.
+  ///   2. They called icrc2_approve on the ckUNI ledger naming this canister
+  ///      as spender for at least `amount` plus the ckUNI transfer fee.
+  ///
+  /// There is deliberately NO Ethereum verification here. The minter already
+  /// did it under chain-key consensus; the ckUNI in the user's account is the
+  /// proof. That removes the Etherscan oracle, the tx-hash capture race, and
+  /// every recovery path built to work around them.
+  ///
+  /// Failure handling: if the sGLDT payout fails after the ckUNI was pulled,
+  /// the ckUNI is refunded. If the refund also fails the record is marked
+  /// #stranded — the funds sit in the treasury and the record carries
+  /// everything an admin needs to make the user whole.
+  public shared ({ caller }) func refineCkUNI(amount : Nat, rateHint : ?Nat) : async {
+    #ok : { refineId : Nat; sgldtPaid : Nat; rate : Nat; blockIndex : Nat };
+    #err : Text;
+  } {
+    if (not isAuthenticatedUser(caller)) {
+      return #err("Sign in with Internet Identity before refining.");
+    };
+    if (amount < MIN_REFINE_CKUNI) {
+      return #err("Amount too small. Minimum refine is 0.001 ckUNI.");
+    };
+
+    let rate = _clampRateHint(rateHint);
+    let sgldtAmount = _sgldtForCkUNI(amount, rate);
+    if (sgldtAmount == 0) {
+      return #err("Calculated payout is zero — check the exchange rate.");
+    };
+
+    let me = Principal.fromActor(Self);
+
+    // ── Step 1: pull the ckUNI from the user into the treasury ──
+    // fee = null lets the ledger apply its own current fee, avoiding a BadFee
+    // race if our cached value drifts. The ledger debits amount + fee from the
+    // user and decrements their allowance atomically, so two concurrent calls
+    // cannot both succeed on the same approval — the ledger is the arbiter.
+    let pullResult = try {
+      await ckUNILedgerV2.icrc2_transfer_from({
+        spender_subaccount = null;
+        from = { owner = caller; subaccount = null };
+        to = { owner = me; subaccount = null };
+        amount = amount;
+        fee = null;
+        memo = null;
+        created_at_time = null;
+      });
+    } catch (e) {
+      return #err("Could not reach the ckUNI ledger: " # e.message());
+    };
+
+    let pullBlock = switch (pullResult) {
+      case (#Ok(b)) { b };
+      case (#Err(#InsufficientAllowance { allowance })) {
+        return #err(
+          "Approval too small. Approve at least " # amount.toText()
+          # " ckUNI (current allowance: " # allowance.toText() # ")."
+        );
+      };
+      case (#Err(#InsufficientFunds { balance })) {
+        return #err(
+          "Not enough ckUNI. Your balance is " # balance.toText()
+          # " but " # amount.toText() # " was requested. If you just deposited on "
+          # "Ethereum, the chain-key minter needs ~12 block confirmations."
+        );
+      };
+      case (#Err(#BadFee { expected_fee })) {
+        return #err("ckUNI ledger fee mismatch; expected " # expected_fee.toText() # ". Try again.");
+      };
+      case (#Err(#TemporarilyUnavailable)) {
+        return #err("ckUNI ledger temporarily unavailable. Try again shortly.");
+      };
+      case (#Err(#GenericError { message; error_code })) {
+        return #err("ckUNI transfer failed (" # error_code.toText() # "): " # message);
+      };
+      case (#Err(_)) {
+        return #err("ckUNI transfer was rejected by the ledger.");
+      };
+    };
+
+    // The ckUNI is ours from here on. Every path below must either pay the
+    // user or return their funds.
+    nextRefineId += 1;
+    let refineId = nextRefineId;
+    let startedAt = Time.now();
+    refines.add(
+      refineId,
+      {
+        id = refineId;
+        user = caller;
+        ckuniAmount = amount;
+        sgldtPaid = 0;
+        rate = rate;
+        status = #pulled;
+        timestamp = startedAt;
+        pullBlock = ?pullBlock;
+        payBlock = null;
+        errorMsg = null;
+      },
+    );
+
+    _recordTx(
+      caller,
+      {
+        id = _nextTxId();
+        txType = #Mint;
+        amount = amount;
+        tokenSymbol = "ckUNI";
+        status = #Completed;
+        timestamp = startedAt;
+        ethTxHash = null;
+        icpBlockIndex = ?pullBlock;
+        errorMsg = null;
+        description = "ckUNI received by the refinery: " # amount.toText() # " e18. Block: " # pullBlock.toText();
+      },
+    );
+
+    // ── Step 2: pay the sGLDT ──
+    let sgldtFee = try { await sgldtLedger.icrc1_fee() } catch (_) { 10_000 };
+    let payResult = try {
+      await sgldtLedger.icrc1_transfer({
+        from_subaccount = null;
+        to = { owner = caller; subaccount = null };
+        amount = sgldtAmount;
+        fee = ?sgldtFee;
+        memo = ?_depositMemo(refineId);
+        created_at_time = ?_dedupCreatedAt(startedAt);
+      });
+    } catch (e) {
+      #Err(#GenericError { error_code = 0; message = e.message() });
+    };
+
+    switch (payResult) {
+      case (#Ok(payBlock)) {
+        refines.add(
+          refineId,
+          {
+            id = refineId;
+            user = caller;
+            ckuniAmount = amount;
+            sgldtPaid = sgldtAmount;
+            rate = rate;
+            status = #paid;
+            timestamp = startedAt;
+            pullBlock = ?pullBlock;
+            payBlock = ?payBlock;
+            errorMsg = null;
+          },
+        );
+        _recordTx(
+          caller,
+          {
+            id = _nextTxId();
+            txType = #Refine;
+            amount = sgldtAmount;
+            tokenSymbol = "sGLDT";
+            status = #Completed;
+            timestamp = Time.now();
+            ethTxHash = null;
+            icpBlockIndex = ?payBlock;
+            errorMsg = null;
+            description = "sGLDT released from treasury: " # sgldtAmount.toText() # " e8s. Block: " # payBlock.toText();
+          },
+        );
+        try { ignore await refreshTreasuryBalances() } catch (_) {};
+        #ok({ refineId = refineId; sgldtPaid = sgldtAmount; rate = rate; blockIndex = payBlock });
+      };
+      case (#Err(payErr)) {
+        // Payout failed — give the ckUNI back rather than holding it hostage.
+        let reason = switch (payErr) {
+          case (#InsufficientFunds { balance }) {
+            "The refinery is out of sGLDT (treasury holds " # balance.toText()
+            # " e8s, needed " # sgldtAmount.toText() # " e8s)";
+          };
+          case (#GenericError { message; error_code }) {
+            "sGLDT ledger error " # error_code.toText() # ": " # message;
+          };
+          case (#TemporarilyUnavailable) { "The sGLDT ledger is temporarily unavailable" };
+          case (#BadFee { expected_fee }) { "sGLDT fee mismatch, expected " # expected_fee.toText() };
+          case (_) { "The sGLDT transfer was rejected by the ledger" };
+        };
+        await _refundCkUNI(refineId, caller, amount, rate, startedAt, pullBlock, reason);
+      };
+    };
+  };
+
+  /// Return pulled ckUNI to the user after a failed sGLDT payout. The treasury
+  /// absorbs the ledger fee, so the user is made whole minus nothing — we send
+  /// back the full pulled amount less the single ckUNI transfer fee, which the
+  /// ledger charges the sender (us).
+  func _refundCkUNI(
+    refineId : Nat,
+    user : Principal,
+    amount : Nat,
+    rate : Nat,
+    startedAt : Time.Time,
+    pullBlock : Nat,
+    reason : Text,
+  ) : async { #ok : { refineId : Nat; sgldtPaid : Nat; rate : Nat; blockIndex : Nat }; #err : Text } {
+    let ckFee = try { await ckUNILedgerV2.icrc1_fee() } catch (_) { 0 };
+
+    func markStranded(detail : Text) {
+      refines.add(
+        refineId,
+        {
+          id = refineId;
+          user = user;
+          ckuniAmount = amount;
+          sgldtPaid = 0;
+          rate = rate;
+          status = #stranded;
+          timestamp = startedAt;
+          pullBlock = ?pullBlock;
+          payBlock = null;
+          errorMsg = ?(reason # " | refund failed: " # detail);
+        },
+      );
+      _recordTx(
+        user,
+        {
+          id = _nextTxId();
+          txType = #Refine;
+          amount = amount;
+          tokenSymbol = "ckUNI";
+          status = #Failed;
+          timestamp = Time.now();
+          ethTxHash = null;
+          icpBlockIndex = null;
+          errorMsg = ?(reason # " | refund failed: " # detail);
+          description = "Refine failed and the ckUNI refund did not go through. Refine #" # refineId.toText() # " is held for admin resolution.";
+        },
+      );
+    };
+
+    if (amount <= ckFee) {
+      markStranded("amount is below the ckUNI transfer fee");
+      return #err(reason # ". Your ckUNI could not be auto-refunded (below the ledger fee) — refine #" # refineId.toText() # " has been flagged for support.");
+    };
+
+    let refundAmount = amount - ckFee;
+    let refundResult = try {
+      await ckUNILedgerV2.icrc1_transfer({
+        from_subaccount = null;
+        to = { owner = user; subaccount = null };
+        amount = refundAmount;
+        fee = ?ckFee;
+        memo = ?_depositMemo(refineId);
+        created_at_time = ?_dedupCreatedAt(startedAt);
+      });
+    } catch (e) {
+      #Err(#GenericError { error_code = 0; message = e.message() });
+    };
+
+    switch (refundResult) {
+      // #Duplicate means an earlier attempt already landed — the user has
+      // their ckUNI back, so this is a successful refund, not a failure.
+      case (#Ok(_) or #Err(#Duplicate(_))) {
+        refines.add(
+          refineId,
+          {
+            id = refineId;
+            user = user;
+            ckuniAmount = amount;
+            sgldtPaid = 0;
+            rate = rate;
+            status = #refunded;
+            timestamp = startedAt;
+            pullBlock = ?pullBlock;
+            payBlock = null;
+            errorMsg = ?reason;
+          },
+        );
+        _recordTx(
+          user,
+          {
+            id = _nextTxId();
+            txType = #Refine;
+            amount = refundAmount;
+            tokenSymbol = "ckUNI";
+            status = #Failed;
+            timestamp = Time.now();
+            ethTxHash = null;
+            icpBlockIndex = null;
+            errorMsg = ?reason;
+            description = "Refine could not complete; " # refundAmount.toText() # " e18 ckUNI was refunded to your account.";
+          },
+        );
+        #err(reason # ". Your ckUNI has been refunded — you can try again once the treasury is topped up.");
+      };
+      case (#Err(refundErr)) {
+        markStranded(debug_show (refundErr));
+        #err(reason # ". Automatic refund also failed — refine #" # refineId.toText() # " has been flagged for support with your funds recorded.");
+      };
+    };
+  };
+
+  /// The caller's own refine history, newest-first.
+  public query ({ caller }) func getMyRefines() : async [RefineRecord] {
+    let out = List.empty<RefineRecord>();
+    for ((_, r) in refines.entries()) {
+      if (r.user == caller) { out.add(r) };
+    };
+    let arr = out.toArray();
+    arr.sort(func(a : RefineRecord, b : RefineRecord) : Order.Order { Int.compare(b.timestamp, a.timestamp) });
+  };
+
+  /// Admin view: every refine that ended #stranded and needs manual resolution.
+  public query ({ caller }) func getStrandedRefines() : async [RefineRecord] {
+    if (not isAdmin(caller)) { return [] };
+    let out = List.empty<RefineRecord>();
+    for ((_, r) in refines.entries()) {
+      switch (r.status) {
+        case (#stranded) { out.add(r) };
+        case (_) {};
+      };
+    };
+    out.toArray();
+  };
+
   public query ({ caller }) func getDepositStatus(requestId : Nat) : async {
     status : Text;
     txHash : Text;

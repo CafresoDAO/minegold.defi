@@ -323,6 +323,17 @@ service : {
     });
   getPendingBridgeRequests: () -> (vec BridgeRequest) query;
   getPendingSGLDTExchangeRequests: () -> (vec sGLDTRequest) query;
+  /// Full rate provenance for the UI and ops: where the current rate came
+  /// from and how fresh the on-chain oracle reading is.
+  getRateStatus: () ->
+   (record {
+      autoSyncSeconds: nat;
+      lastError: text;
+      lastSyncNs: int;
+      rate: nat;
+      sgldtUsdE8: nat;
+      uniUsdE8: nat;
+    }) query;
   /// Returns this canister's principal as Text — this IS the treasury (c626g-iyaaa-aaaau-agpoa-cai).
   /// Admin must send sGLDT to this address on the sGLDT ledger (i2s4q-syaaa-aaaan-qz4sq-cai)
   /// to fund user payouts. No separate "refinery payout balance" exists — there is one treasury.
@@ -424,6 +435,14 @@ service : {
             sgldtPaid: nat;
           };
     });
+  /// Force an XRC sync now. Any logged-in user may call — the 60s internal
+  /// gap makes it cycle-safe, and a fresher rate benefits everyone equally.
+  refreshExchangeRate: () ->
+   (record {
+      lastError: text;
+      rate: nat;
+      uniUsdE8: nat;
+    });
   /// Fetches the live ICRC-1 balances for the treasury (this canister's own account) from both ledgers
   /// and stores them in the cache.
   /// This is an update call — anyone may call it to warm the cache.
@@ -487,6 +506,11 @@ service : {
   /// (e.g. 238_000_000 = 2.38 sGLDT per UNI).
   setLiveExchangeRate: (newRate: nat) -> ();
   setSGLDTTreasuryBalance: (_balance: nat) -> ();
+  /// Admin: set the USD reference price of sGLDT (1e8 precision). This is the
+  /// slow leg of the rate — the XRC handles the volatile UNI leg from then
+  /// on. Setting it recomputes the rate immediately from the last XRC
+  /// reading, without the jump guard (an explicit admin action re-anchors).
+  setSGLDTUsdPrice: (priceE8: nat) -> ();
   setUNIExchangeRate: (rate: nat) -> ();
   submitBridgeRequest: (ethAddress: text, batAmount: nat) -> (nat);
   submitSGLDTExchangeRequest: (bbTokenAmount: nat) -> (nat);

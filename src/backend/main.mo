@@ -280,6 +280,126 @@ actor Self {
     get_minter_info : () -> async MinterInfo;
   } = actor ("sv3dd-oaaaa-aaaar-qacoa-cai");
 
+  // -------------------------------------------------------
+  // Exchange Rate Canister (XRC) — on-chain UNI/USD oracle
+  // -------------------------------------------------------
+  // The XRC (uf6dk-hyaaa-aaaaq-qaaaq-cai) aggregates prices across many
+  // exchanges under IC consensus, replacing the admin's manual CoinGecko
+  // sync for the volatile leg of the rate. The sGLDT/USD leg stays an
+  // admin-set reference (sGLDT trades on one DEX pool the XRC can't see).
+  //   uniExchangeRate = UNI/USD ÷ sGLDT/USD
+  // The XRC's candid names an Asset field `class`, a Motoko keyword, so the
+  // binding uses the candid hash label _1213757496_ (= hash("class")).
+  type XRCAssetClass = { #Cryptocurrency; #FiatCurrency };
+  type XRCAsset = { symbol : Text; _1213757496_ : XRCAssetClass };
+  type XRCRequest = {
+    base_asset : XRCAsset;
+    quote_asset : XRCAsset;
+    timestamp : ?Nat64;
+  };
+  // Partial ExchangeRate record — candid subtyping lets us decode only the
+  // fields we use (same trick as MinterInfo above).
+  type XRCExchangeRate = {
+    rate : Nat64;
+    timestamp : Nat64;
+    metadata : { decimals : Nat32 };
+  };
+  // The error variant must be complete: candid decoding fails on an
+  // unrecognized tag, unlike missing record fields.
+  type XRCError = {
+    #AnonymousPrincipalNotAllowed;
+    #Pending;
+    #CryptoBaseAssetNotFound;
+    #CryptoQuoteAssetNotFound;
+    #StablecoinRateNotFound;
+    #StablecoinRateTooFewRates;
+    #StablecoinRateZeroRate;
+    #ForexInvalidTimestamp;
+    #ForexBaseAssetNotFound;
+    #ForexQuoteAssetNotFound;
+    #ForexAssetsNotFound;
+    #RateLimited;
+    #NotEnoughQueriedSources;
+    #InconsistentRatesReceived;
+    #Other : { code : Nat32; description : Text };
+  };
+  type XRCResult = { #Ok : XRCExchangeRate; #Err : XRCError };
+  transient let xrc : actor {
+    get_exchange_rate : (XRCRequest) -> async XRCResult;
+  } = actor ("uf6dk-hyaaa-aaaaq-qaaaq-cai");
+
+  /// Cycles the XRC charges per get_exchange_rate call.
+  let XRC_CALL_CYCLES : Nat = 1_000_000_000;
+  /// Minimum gap between XRC calls — callers inside this window are no-ops,
+  /// so public refreshExchangeRate can't be used to drain cycles.
+  let XRC_MIN_SYNC_GAP_NS : Int = 60_000_000_000;
+  /// Auto-sync cadence: hourly (~0.7T cycles/month).
+  let XRC_AUTO_SYNC_SECONDS : Nat = 3_600;
+
+  /// USD per sGLDT in 1e8 precision, admin-set. 0 = unset: XRC syncs then
+  /// only record UNI/USD telemetry and leave uniExchangeRate untouched.
+  var sgldtUsdPriceE8 : Nat = 0;
+  /// Last UNI/USD reading from the XRC (1e8 precision), 0 = never synced.
+  var lastUniUsdPriceE8 : Nat = 0;
+  /// When the last XRC call was attempted (ns), and its error if it failed.
+  var lastXRCSyncNs : Int = 0;
+  var lastXRCError : Text = "";
+
+  func _xrcRateToE8(rate : Nat64, decimals : Nat32) : Nat {
+    let r = rate.toNat();
+    let d = decimals.toNat();
+    if (d >= 8) { r / (10 ** (d - 8 : Nat)) } else { r * (10 ** (8 - d : Nat)) };
+  };
+
+  /// Pull UNI/USD from the XRC and recompute uniExchangeRate. A ±30% jump
+  /// guard rejects wild readings — a bad oracle sample can't instantly
+  /// reprice the refinery; a genuine larger move needs one admin
+  /// setUNIExchangeRate to re-anchor, after which syncs resume tracking.
+  func _syncRateFromXRC() : async () {
+    let now = Time.now();
+    if (now - lastXRCSyncNs < XRC_MIN_SYNC_GAP_NS) { return };
+    // Stamp before awaiting so concurrent callers inside the gap are no-ops.
+    lastXRCSyncNs := now;
+    try {
+      let result = await (with cycles = XRC_CALL_CYCLES) xrc.get_exchange_rate({
+        base_asset = { symbol = "UNI"; _1213757496_ = #Cryptocurrency };
+        quote_asset = { symbol = "USD"; _1213757496_ = #FiatCurrency };
+        timestamp = null;
+      });
+      switch (result) {
+        case (#Ok(r)) {
+          let uniUsdE8 = _xrcRateToE8(r.rate, r.metadata.decimals);
+          if (uniUsdE8 == 0) {
+            lastXRCError := "XRC returned a zero UNI/USD rate";
+            return;
+          };
+          lastUniUsdPriceE8 := uniUsdE8;
+          lastXRCError := "";
+          if (sgldtUsdPriceE8 > 0) {
+            let newRate = uniUsdE8 * 100_000_000 / sgldtUsdPriceE8;
+            if (newRate == 0) {
+              lastXRCError := "Computed rate rounds to zero — check sGLDT USD price";
+            } else if (
+              uniExchangeRate > 0 and (newRate * 10 > uniExchangeRate * 13 or newRate * 13 < uniExchangeRate * 10)
+            ) {
+              lastXRCError := "Jump guard: XRC-derived rate " # newRate.toText() # " deviates >30% from current " # uniExchangeRate.toText() # "; not applied";
+            } else {
+              uniExchangeRate := newRate;
+            };
+          };
+        };
+        case (#Err(e)) { lastXRCError := debug_show (e) };
+      };
+    } catch (e) { lastXRCError := e.message() };
+  };
+
+  /// Hourly self-rescheduling sync. Rescheduled before the await so a failed
+  /// sync can never kill the timer chain.
+  func _periodicRateSync() : async () {
+    ignore Timer.setTimer<system>(#seconds XRC_AUTO_SYNC_SECONDS, _periodicRateSync);
+    await _syncRateFromXRC();
+  };
+
   // Types
   type BridgeStatus = {
     #pending;
@@ -3395,6 +3515,55 @@ actor Self {
     uniExchangeRate;
   };
 
+  /// Full rate provenance for the UI and ops: where the current rate came
+  /// from and how fresh the on-chain oracle reading is.
+  public query func getRateStatus() : async {
+    rate : Nat;
+    uniUsdE8 : Nat;
+    sgldtUsdE8 : Nat;
+    lastSyncNs : Int;
+    lastError : Text;
+    autoSyncSeconds : Nat;
+  } {
+    {
+      rate = uniExchangeRate;
+      uniUsdE8 = lastUniUsdPriceE8;
+      sgldtUsdE8 = sgldtUsdPriceE8;
+      lastSyncNs = lastXRCSyncNs;
+      lastError = lastXRCError;
+      autoSyncSeconds = XRC_AUTO_SYNC_SECONDS;
+    };
+  };
+
+  /// Force an XRC sync now. Any logged-in user may call — the 60s internal
+  /// gap makes it cycle-safe, and a fresher rate benefits everyone equally.
+  public shared ({ caller }) func refreshExchangeRate() : async {
+    rate : Nat;
+    uniUsdE8 : Nat;
+    lastError : Text;
+  } {
+    if (caller.isAnonymous()) {
+      Runtime.trap("Unauthorized: Must be logged in to refresh the exchange rate");
+    };
+    await _syncRateFromXRC();
+    { rate = uniExchangeRate; uniUsdE8 = lastUniUsdPriceE8; lastError = lastXRCError };
+  };
+
+  /// Admin: set the USD reference price of sGLDT (1e8 precision). This is the
+  /// slow leg of the rate — the XRC handles the volatile UNI leg from then
+  /// on. Setting it recomputes the rate immediately from the last XRC
+  /// reading, without the jump guard (an explicit admin action re-anchors).
+  public shared ({ caller }) func setSGLDTUsdPrice(priceE8 : Nat) : async () {
+    if (not isAdmin(caller)) {
+      Runtime.trap("Unauthorized: admin only");
+    };
+    sgldtUsdPriceE8 := priceE8;
+    if (priceE8 > 0 and lastUniUsdPriceE8 > 0) {
+      let newRate = lastUniUsdPriceE8 * 100_000_000 / priceE8;
+      if (newRate > 0) { uniExchangeRate := newRate };
+    };
+  };
+
   public shared ({ caller }) func setUNIExchangeRate(rate : Nat) : async () {
     if (not isAdmin(caller)) {
       Runtime.trap("Unauthorized: admin only");
@@ -3543,4 +3712,7 @@ actor Self {
   // every 30 s. Registered last so every helper the sweep transitively
   // references (verifyEthTransaction and its parsing utilities) is defined.
   ignore Timer.setTimer<system>(#seconds 10, _sweepConfirmedDeposits);
+
+  // First XRC rate sync 20 s after deploy; self-reschedules hourly.
+  ignore Timer.setTimer<system>(#seconds 20, _periodicRateSync);
 };

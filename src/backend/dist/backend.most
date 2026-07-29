@@ -137,6 +137,9 @@ actor {
   stable SGLDT_DEFAULT_PRICE : Nat;
   stable TREASURY_PRINCIPAL : Principal;
   stable UNI_CONTRACT_ADDRESS_LOWER : Text;
+  stable XRC_AUTO_SYNC_SECONDS : Nat;
+  stable XRC_CALL_CYCLES : Nat;
+  stable XRC_MIN_SYNC_GAP_NS : Int;
   stable var _minterInitAttempts : Nat;
   stable var _outcallWindowCount : Nat;
   stable var _outcallWindowStart : Int;
@@ -174,6 +177,9 @@ actor {
       get_deposit_address :
         shared {owner : Principal; subaccount : ?Blob} -> async Text
     };
+  stable var lastUniUsdPriceE8 : Nat;
+  stable var lastXRCError : Text;
+  stable var lastXRCSyncNs : Int;
   stable var nextBridgeRequestId : Nat;
   stable var nextExchangeRequestId : Nat;
   stable var nextRefineId : Nat;
@@ -199,6 +205,7 @@ actor {
         shared ICRC1TransferArgs__113794070 ->
           async ICRC1TransferResult__34535561
     };
+  stable var sgldtUsdPriceE8 : Nat;
   stable var sweeperInFlight : Bool;
   stable var txCounter : Nat;
   stable uniDeposits :

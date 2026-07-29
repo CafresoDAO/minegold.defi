@@ -118,6 +118,96 @@ actor Self {
   type ICRC1TransferResult = { #Ok : Nat; #Err : ICRC1TransferError };
 
   // -------------------------------------------------------
+  // Payout dedup helpers
+  // -------------------------------------------------------
+  // The automated payout path can be retried by several drivers (sweeper,
+  // frontend poll, manual buttons). If a previous ICRC-1 transfer timed out
+  // ambiguously (call trapped but the ledger applied it), a blind retry
+  // would double-pay. We defend with the ledger's own dedup window: every
+  // payout for deposit N is sent with a deterministic memo (the deposit id)
+  // and a deterministic created_at_time, so an identical retry is rejected
+  // with #Duplicate — which we then treat as success.
+
+  /// Deposit id encoded as an 8-byte big-endian memo blob.
+  func _depositMemo(id : Nat) : Blob {
+    let n = Nat64.fromNat(id % 18_446_744_073_709_551_616);
+    Blob.fromArray(
+      Array.tabulate<Nat8>(8, func(i) {
+        Nat8.fromNat(((n >> Nat64.fromNat(8 * (7 - i))) & 255).toNat());
+      })
+    );
+  };
+
+  /// Deterministic created_at_time for a deposit's payout transfer.
+  /// Bucketed to 12-hour windows anchored at the deposit's own timestamp:
+  /// all retries within the same bucket send the exact same timestamp (so
+  /// the ledger dedups them), and the timestamp is never more than 12 h in
+  /// the past (so it stays inside the ledger's ~24 h transaction window).
+  /// Residual risk: a retry that crosses a bucket boundary immediately
+  /// after an ambiguous failure could evade dedup — a 12 h-wide edge case
+  /// versus the previous behavior where EVERY ambiguous failure could
+  /// double-pay.
+  func _dedupCreatedAt(depositTimestamp : Time.Time) : Nat64 {
+    let BUCKET_NS : Int = 43_200_000_000_000; // 12 hours
+    let now = Time.now();
+    let anchored = if (now <= depositTimestamp) {
+      depositTimestamp
+    } else {
+      depositTimestamp + ((now - depositTimestamp) / BUCKET_NS) * BUCKET_NS
+    };
+    Nat64.fromIntWrap(anchored);
+  };
+
+  /// Clamp a caller-supplied exchange-rate hint to a tight band around the
+  /// canister's own rate. The hint exists only to capture small live-market
+  /// drift between the frontend's CoinGecko read and the admin-synced rate;
+  /// anything outside ±2% falls back to the canister rate. (The previous
+  /// ±50% band let any depositor pay themselves 50% extra.)
+  func _clampRateHint(rateHint : ?Nat) : Nat {
+    switch (rateHint) {
+      case (?hint) {
+        if (hint == 0 or uniExchangeRate == 0) {
+          uniExchangeRate
+        } else {
+          let band = uniExchangeRate / 50; // 2%
+          if (hint > uniExchangeRate + band or hint < uniExchangeRate - band) {
+            uniExchangeRate
+          } else {
+            hint
+          }
+        }
+      };
+      case null { uniExchangeRate };
+    };
+  };
+
+  // -------------------------------------------------------
+  // Etherscan outcall rate limiter
+  // -------------------------------------------------------
+  // The public balance methods trigger paid HTTPS outcalls. The per-address
+  // cache already absorbs honest polling, but an attacker rotating addresses
+  // bypasses it and drains cycles + Etherscan quota. Global token bucket:
+  // at most OUTCALL_WINDOW_MAX outcall-triggering calls per rolling window.
+  var _outcallWindowStart : Time.Time = 0;
+  var _outcallWindowCount : Nat = 0;
+  let OUTCALL_WINDOW_NS : Int = 60_000_000_000; // 60 seconds
+  let OUTCALL_WINDOW_MAX : Nat = 30;
+
+  /// Returns true if the call may proceed; false if rate-limited.
+  func _takeOutcallToken() : Bool {
+    let now = Time.now();
+    if (now - _outcallWindowStart > OUTCALL_WINDOW_NS) {
+      _outcallWindowStart := now;
+      _outcallWindowCount := 0;
+    };
+    if (_outcallWindowCount >= OUTCALL_WINDOW_MAX) {
+      return false;
+    };
+    _outcallWindowCount += 1;
+    true;
+  };
+
+  // -------------------------------------------------------
   // ICRC-1 Ledger Actor References
   // -------------------------------------------------------
   let sgldtLedger : actor {
@@ -372,9 +462,14 @@ actor Self {
   // Transaction History Methods
   // -------------------------------------------------------
 
-  /// Returns all transactions for a given principal, newest-first. No auth restriction —
-  /// the frontend passes the logged-in user's principal.
-  public query func getUserTransactions(user : Principal) : async [TxRecord] {
+  /// Returns transactions for a given principal, newest-first. PRIVACY: only
+  /// the user themselves or the admin may read a history — anyone else gets
+  /// an empty array. (The UI uses getMyTransactions; admins have
+  /// adminGetUserTransactions. This variant is kept for candid compatibility.)
+  public query ({ caller }) func getUserTransactions(user : Principal) : async [TxRecord] {
+    if (caller != user and not isAdmin(caller)) {
+      return [];
+    };
     switch (userTransactions.get(user)) {
       case (?list) { list.toArray() };
       case null { [] };
@@ -786,96 +881,30 @@ actor Self {
   /// Calls the ICP ERC-20 minter withdrawal method to burn ckUNI and trigger UNI release on Ethereum.
   /// ckUNIAmount — amount in e8s (1e8 = 1 ckUNI).
   /// destinationEthAddress — the Ethereum address to receive the released UNI.
+  /// DISABLED — this flow as previously implemented would STRAND FUNDS.
+  ///
+  /// It ICRC-1-transferred ckUNI to the minter's default account and then
+  /// called withdraw_erc20. The real ckERC-20 minter protocol instead
+  /// requires (1) an icrc2_approve of ckETH to cover the Ethereum gas fee,
+  /// (2) an icrc2_approve of the ckERC-20 being withdrawn, and (3) a
+  /// withdraw_erc20 call that pulls the tokens via transfer_from. On top of
+  /// that, the ad-hoc `#Err : Text` result type here doesn't match the
+  /// minter's actual WithdrawErc20Error candid, so the decode failed AFTER
+  /// the ckUNI had already been transferred away — tokens sent to the
+  /// minter's account with no withdrawal executed and no recovery path.
+  /// (There was also an e8s/e18 unit mismatch with the AdminPage.)
+  ///
+  /// The method is retained (candid compatibility) but refuses to move
+  /// funds until the approve-based flow is implemented and tested.
   public shared ({ caller }) func adminDissolveCkUNI(ckUNIAmount : Nat, destinationEthAddress : Text) : async { #ok : Text; #err : Text } {
     if (not isAdmin(caller)) {
       return #err("Unauthorized: admin only");
     };
-    if (ckUNIAmount == 0) {
-      return #err("Invalid amount: must be greater than 0");
-    };
-    if (destinationEthAddress.size() == 0) {
-      return #err("Invalid destination ETH address");
-    };
-
-    // Minter withdrawal type: burns ckUNI and releases ERC-20 UNI on Ethereum
-    type WithdrawErc20Args = {
-      amount : Nat;
-      erc20_contract_address : Text;
-      recipient : Text;
-    };
-    type WithdrawErc20Result = {
-      #Ok : { block_index : Nat };
-      #Err : Text;
-    };
-
-    // UNI ERC-20 contract address on Ethereum mainnet
-    let UNI_ERC20_CONTRACT = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984";
-
-    // DFINITY chain-key ERC-20 minter (also handles ckETH).
-    // Must match the `ckErc20Minter` actor reference at the top of this file.
-    let CKERC20_MINTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai";
-
-    let minterWithdraw : actor {
-      withdraw_erc20 : (WithdrawErc20Args) -> async WithdrawErc20Result;
-    } = actor (CKERC20_MINTER_ID);
-
-    // First burn/transfer the ckUNI from treasury to the minter via ICRC-1.
-    // The minter's own principal is the recipient — it burns the received ckUNI
-    // when it processes the withdraw_erc20 call below.
-    let fee = await ckUNILedger.icrc1_fee();
-    let transferResult = await ckUNILedger.icrc1_transfer({
-      from_subaccount = null;
-      to = { owner = Principal.fromText(CKERC20_MINTER_ID); subaccount = null };
-      amount = ckUNIAmount;
-      fee = ?fee;
-      memo = null;
-      created_at_time = null;
-    });
-
-    switch (transferResult) {
-      case (#Err(#InsufficientFunds { balance })) {
-        return #err("Insufficient ckUNI in treasury. Balance (e8s): " # balance.toText());
-      };
-      case (#Err(_)) {
-        return #err("ckUNI ICRC-1 transfer to minter failed");
-      };
-      case (#Ok(_blockIdx)) {};
-    };
-
-    // Now call the minter to release UNI on Ethereum
-    try {
-      let withdrawResult = await minterWithdraw.withdraw_erc20({
-        amount = ckUNIAmount;
-        erc20_contract_address = UNI_ERC20_CONTRACT;
-        recipient = destinationEthAddress;
-      });
-      switch (withdrawResult) {
-        case (#Ok({ block_index })) {
-          ignore await refreshTreasuryBalances();
-          _recordTx(
-            ADMIN_PRINCIPAL,
-            {
-              id = _nextTxId();
-              txType = #Transfer;
-              amount = ckUNIAmount;
-              tokenSymbol = "ckUNI";
-              status = #Completed;
-              timestamp = Time.now();
-              ethTxHash = null;
-              icpBlockIndex = ?block_index;
-              errorMsg = null;
-              description = "Admin dissolve: " # ckUNIAmount.toText() # " ckUNI (e8s) → UNI on ETH. Recipient: " # destinationEthAddress;
-            },
-          );
-          #ok("ckUNI dissolved. UNI will be released to " # destinationEthAddress # ". Block index: " # block_index.toText());
-        };
-        case (#Err(errMsg)) {
-          #err("Minter withdrawal failed: " # errMsg);
-        };
-      };
-    } catch (e) {
-      #err("Minter withdrawal call failed. The minter interface may not support withdraw_erc20. Error: " # e.message());
-    };
+    ignore ckUNIAmount;
+    ignore destinationEthAddress;
+    #err(
+      "adminDissolveCkUNI is disabled: the previous implementation transferred ckUNI to the minter without the required icrc2_approve flow and would strand the funds. Withdraw manually via the minter's documented icrc2_approve + withdraw_erc20 protocol, or reimplement this method with that flow."
+    );
   };
 
   // -------------------------------------------------------
@@ -1426,23 +1455,9 @@ actor Self {
     let id = nextUNIDepositId;
     nextUNIDepositId += 1;
 
-    // Use rateHint when provided and within a sanity band of the current global rate.
-    // SECURITY: previously accepted ANY hint > 0, which combined with an inflated
-    // uniAmount let a caller specify both sides of the payout formula and drain
-    // the treasury. The hint is now capped at ±50% of the current on-chain rate.
-    // Values outside this band silently fall back to uniExchangeRate.
-    let effectiveLockedRate : Nat = switch (rateHint) {
-      case (?hint) {
-        if (hint == 0 or uniExchangeRate == 0) {
-          uniExchangeRate
-        } else {
-          let upper = uniExchangeRate + (uniExchangeRate / 2);   // +50%
-          let lower = uniExchangeRate - (uniExchangeRate / 2);   // -50%
-          if (hint > upper or hint < lower) uniExchangeRate else hint
-        }
-      };
-      case null { uniExchangeRate };
-    };
+    // Caller-supplied rate hints are clamped to ±2% of the canister rate —
+    // see _clampRateHint for the security rationale.
+    let effectiveLockedRate : Nat = _clampRateHint(rateHint);
 
     // Deposit starts as #pending. The status can only advance to #confirmed by
     // verifyEthTransaction, which now parses the real on-chain tx input and
@@ -1611,17 +1626,7 @@ actor Self {
                         seenTxHashes.add(txHash);
                         let id = nextUNIDepositId;
                         nextUNIDepositId += 1;
-                        let effectiveRate : Nat = switch (rateHint) {
-                          case (?hint) {
-                            if (hint == 0 or uniExchangeRate == 0) { uniExchangeRate }
-                            else {
-                              let upper = uniExchangeRate + (uniExchangeRate / 2);
-                              let lower = uniExchangeRate - (uniExchangeRate / 2);
-                              if (hint > upper or hint < lower) uniExchangeRate else hint
-                            }
-                          };
-                          case null { uniExchangeRate };
-                        };
+                        let effectiveRate : Nat = _clampRateHint(rateHint);
                         let request : UniDepositRequest = {
                           id;
                           submitter = caller;
@@ -1786,15 +1791,17 @@ actor Self {
 
       // Transfer sGLDT from this canister (treasury sender) to the user (recipient) via ICRC-1.
       // from_subaccount = null → default treasury account of this canister.
-      // to = request.submitter → the user who submitted the UNI deposit (recipient).
-      // memo = null, created_at_time = null — identical to the working adminTransferSGLDT call.
+      // memo + created_at_time are DETERMINISTIC per deposit (see _depositMemo /
+      // _dedupCreatedAt): if a previous attempt timed out ambiguously but the
+      // ledger applied it, the retry is rejected with #Duplicate instead of
+      // paying a second time — #Duplicate is handled below as success.
       let transferResult = await sgldtLedger.icrc1_transfer({
         from_subaccount = null;
         to = { owner = liveRequest.submitter; subaccount = null };
         amount = sgldtAmount;
         fee = ?fee;
-        memo = null;
-        created_at_time = null;
+        memo = ?_depositMemo(requestId);
+        created_at_time = ?_dedupCreatedAt(liveRequest.timestamp);
       });
 
       switch (transferResult) {
@@ -1876,6 +1883,28 @@ actor Self {
           ignore debug_show("sGLDT transfer failed: TemporarilyUnavailable");
           "confirmed_payout_failed: TemporarilyUnavailable - sGLDT ledger is temporarily unavailable. Please retry in a moment.";
         };
+        case (#Err(#Duplicate { duplicate_of })) {
+          // The ledger's dedup window matched an earlier transfer with the
+          // same memo/created_at_time — the payout ALREADY LANDED on a prior
+          // attempt whose response we lost. Mark paid; do NOT retry.
+          let paidRequest = {
+            liveRequest with
+            status = #paid;
+            sgldtPaid = sgldtAmount;
+          };
+          uniDeposits.add(requestId, paidRequest);
+          ignore debug_show(("sGLDT transfer deduped — already paid in block:", duplicate_of));
+          "paid: " # sgldtAmount.toText() # " sGLDT released to " # liveRequest.submitter.toText() # " (deduplicated — original transfer in block " # duplicate_of.toText() # ")";
+        };
+        case (#Err(#TooOld)) {
+          // Our deterministic created_at_time fell out of the ledger's
+          // transaction window (deposit stuck unpaid for a long time).
+          // Revert to #confirmed — the next attempt lands in a fresh 12 h
+          // bucket and proceeds with dedup protection restored.
+          let revertedRequest = { liveRequest with status = #confirmed };
+          uniDeposits.add(requestId, revertedRequest);
+          "confirmed_payout_failed: transfer timestamp expired — will retry automatically.";
+        };
         case (#Err(#GenericError { error_code; message })) {
           let revertedRequest = { liveRequest with status = #confirmed };
           uniDeposits.add(requestId, revertedRequest);
@@ -1946,15 +1975,30 @@ actor Self {
     if (sweeperInFlight) { return };
     sweeperInFlight := true;
 
-    let pending = List.empty<Nat>();
+    let now = Time.now();
+    let confirmedIds = List.empty<Nat>();
+    let pendingIds = List.empty<Nat>();
     for ((id, r) in uniDeposits.entries()) {
       switch (r.status) {
-        case (#confirmed) { pending.add(id) };
+        case (#confirmed) { confirmedIds.add(id) };
+        case (#pending) {
+          // The sweeper is the single payout authority: it also VERIFIES
+          // #pending deposits (Etherscan receipt + calldata check inside
+          // verifyEthTransaction) so a user whose browser died right after
+          // signing still gets paid with no frontend involvement.
+          // Bounds: skip deposits younger than 60 s (Ethereum needs ~12
+          // confirmations anyway — saves pointless outcalls) and older
+          // than 24 h (dead submissions; admin can still verify manually).
+          let age = now - r.timestamp;
+          if (r.uniAmount > 0 and age > 60_000_000_000 and age < 86_400_000_000_000) {
+            pendingIds.add(id);
+          };
+        };
         case (_) {};
       };
     };
 
-    for (id in pending.values()) {
+    for (id in confirmedIds.values()) {
       try {
         ignore await verifyAndPayUNIDeposit(id);
       } catch (_) {
@@ -1962,11 +2006,23 @@ actor Self {
       };
     };
 
+    // Cap Etherscan outcalls per sweep: 3 verifications × 2 outcalls each,
+    // every 30 s, stays far under the free-tier quota even with a backlog.
+    var verified = 0;
+    for (id in pendingIds.values()) {
+      if (verified < 3) {
+        verified += 1;
+        try {
+          ignore await verifyEthTransaction(id);
+        } catch (_) {};
+      };
+    };
+
     sweeperInFlight := false;
   };
 
-  // Kick off the first sweep 10 s after deploy; it self-reschedules every 30 s.
-  ignore Timer.setTimer<system>(#seconds 10, _sweepConfirmedDeposits);
+  // (Sweep kick-off is registered at the bottom of the actor — it must come
+  // after every helper the sweep transitively references is defined.)
 
   /// Retries the sGLDT payout for a deposit that is in #confirmed or #failed status.
   ///
@@ -2425,6 +2481,9 @@ actor Self {
     if (ethAddress.size() != 42 or not ethAddress.startsWith(#text "0x")) {
       Runtime.trap("Invalid ethAddress");
     };
+    if (not _takeOutcallToken()) {
+      Runtime.trap("Rate-limited: too many balance lookups — retry in a minute");
+    };
     let url =
       "https://api.etherscan.io/v2/api?chainid=1&module=account&action=balance"
         # "&address=" # ethAddress
@@ -2472,6 +2531,11 @@ actor Self {
       };
       case null {};
     };
+    if (not _takeOutcallToken()) {
+      // Cache miss + budget exhausted — return zeros rather than trapping so
+      // the frontend's fallback paths still run. Not cached (see below).
+      return { ethWei = 0; uniWei = 0 };
+    };
 
     let ethUrl =
       "https://api.etherscan.io/v2/api?chainid=1&module=account&action=balance"
@@ -2514,6 +2578,9 @@ actor Self {
     if (ethAddress.size() != 42 or not ethAddress.startsWith(#text "0x")) {
       Runtime.trap("Invalid ethAddress");
     };
+    if (not _takeOutcallToken()) {
+      Runtime.trap("Rate-limited: too many balance lookups — retry in a minute");
+    };
     // UNI mainnet contract — hardcoded so the frontend can't point us at a
     // different ERC-20 to poll arbitrary token balances (minor hardening).
     let url =
@@ -2551,7 +2618,9 @@ actor Self {
       case (?r) { r };
     };
 
-    if (caller != request.submitter and not isAdmin(caller)) {
+    // Allow: the depositor, the admin, OR this canister itself (the sweeper
+    // routes through the IC message queue, so its caller is Self).
+    if (caller != request.submitter and not isAdmin(caller) and caller != Principal.fromActor(Self)) {
       return "error: Unauthorized — can only verify your own deposit";
     };
 
@@ -3026,4 +3095,9 @@ actor Self {
   public query func deprecated_getSGLDTRequests() : async [sGLDTRequest] {
     Runtime.trap("Function deprecated. Use getAllSGLDTRequests instead.");
   };
+
+  // Kick off the first payout sweep 10 s after deploy; it self-reschedules
+  // every 30 s. Registered last so every helper the sweep transitively
+  // references (verifyEthTransaction and its parsing utilities) is defined.
+  ignore Timer.setTimer<system>(#seconds 10, _sweepConfirmedDeposits);
 };

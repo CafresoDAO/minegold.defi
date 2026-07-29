@@ -127,6 +127,21 @@ service : {
   /// Calls the ICP ERC-20 minter withdrawal method to burn ckUNI and trigger UNI release on Ethereum.
   /// ckUNIAmount — amount in e8s (1e8 = 1 ckUNI).
   /// destinationEthAddress — the Ethereum address to receive the released UNI.
+  /// DISABLED — this flow as previously implemented would STRAND FUNDS.
+  /// 
+  /// It ICRC-1-transferred ckUNI to the minter's default account and then
+  /// called withdraw_erc20. The real ckERC-20 minter protocol instead
+  /// requires (1) an icrc2_approve of ckETH to cover the Ethereum gas fee,
+  /// (2) an icrc2_approve of the ckERC-20 being withdrawn, and (3) a
+  /// withdraw_erc20 call that pulls the tokens via transfer_from. On top of
+  /// that, the ad-hoc `#Err : Text` result type here doesn't match the
+  /// minter's actual WithdrawErc20Error candid, so the decode failed AFTER
+  /// the ckUNI had already been transferred away — tokens sent to the
+  /// minter's account with no withdrawal executed and no recovery path.
+  /// (There was also an e8s/e18 unit mismatch with the AdminPage.)
+  /// 
+  /// The method is retained (candid compatibility) but refuses to move
+  /// funds until the approve-based flow is implemented and tested.
   adminDissolveCkUNI: (ckUNIAmount: nat, destinationEthAddress: text) ->
    (variant {
       err: text;
@@ -326,8 +341,10 @@ service : {
   /// Public query: returns the sGLDT ICRC-1 balance for any given principal (their own ICP account).
   /// No admin restriction — users can check their own balance.
   getUserSGLDTBalance: (principalText: text) -> (nat);
-  /// Returns all transactions for a given principal, newest-first. No auth restriction —
-  /// the frontend passes the logged-in user's principal.
+  /// Returns transactions for a given principal, newest-first. PRIVACY: only
+  /// the user themselves or the admin may read a history — anyone else gets
+  /// an empty array. (The UI uses getMyTransactions; admins have
+  /// adminGetUserTransactions. This variant is kept for candid compatibility.)
   getUserTransactions: (user: principal) -> (vec TxRecord) query;
   getUserUNIDeposits: (user: principal) -> (vec UniDepositRequest) query;
   getWalletBalances: (ethAddress: text) ->

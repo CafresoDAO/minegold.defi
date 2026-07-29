@@ -21,41 +21,32 @@ import {
 } from "./lib/erc20";
 import { Principal } from "@icp-sdk/core/principal";
 import {
-  Activity,
-  AlertCircle,
-  ArrowRightLeft,
-  CheckCircle2,
-  Clock,
-  Coins,
-  Copy,
-  Loader2,
-  Lock,
-  LogOut,
-  Send,
-  Settings,
-  ShieldCheck,
   TrendingUp,
-  UserCircle2,
-  Wallet,
-  XCircle,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { PhaseAwaitingDeposit } from "./components/phases/PhaseAwaitingDeposit";
+import { PhaseError } from "./components/phases/PhaseError";
+import { PhaseEthMonitoring } from "./components/phases/PhaseEthMonitoring";
+import { PhaseIdle } from "./components/phases/PhaseIdle";
+import { PhaseReleasing } from "./components/phases/PhaseReleasing";
 import { PhaseSuccess } from "./components/phases/PhaseSuccess";
 import { PhaseWalletConfirming } from "./components/phases/PhaseWalletConfirming";
-import { PixelAxeAnimation } from "./components/PixelAxeAnimation";
-import { BlockConfirmationMeter } from "./components/BlockConfirmationMeter";
 import { ConnectWalletModal } from "./components/ConnectWalletModal";
-import { CrossChainFlow } from "./components/CrossChainFlow";
+import { LoginOverlay } from "./components/LoginOverlay";
+import { HowItWorksStrip } from "./components/HowItWorksStrip";
+import { NavBar } from "./components/NavBar";
+import { RefineryShell } from "./components/RefineryShell";
+import { ProfileModal } from "./components/ProfileModal";
+import { TransferModal } from "./components/TransferModal";
+import { UnclaimedDepositsBanner } from "./components/UnclaimedDepositsBanner";
+import { WalletSection } from "./components/WalletSection";
 import { TransactionTimeline } from "./components/TransactionTimeline";
-import { GoldCTA } from "./components/ui/GoldCTA";
-import { WorkflowStepper } from "./components/WorkflowStepper";
 import { useBackendActor } from "./hooks/useBackendActor";
+import { safeBalance } from "./lib/format";
 import {
   autoFinalizeUNIDeposit,
   directSubmitUNIDeposit,
-  fetchTreasuryCkUNIBalance,
-  formatTokenAmount,
   icrc1TransferFromCaller,
   useDirectCkUNITreasuryBalance,
   useDirectSGLDTTreasuryBalance,
@@ -75,12 +66,7 @@ import { MinegoldBraveSoon } from "./pages/MinegoldBraveSoon";
 import { TransactionHistoryPage } from "./pages/TransactionHistoryPage";
 
 /** Display a balance string safely — returns "0.0000" for null, undefined, NaN, empty string, or "NaN" */
-function safeBalance(val: string | number | null | undefined): string {
-  if (val === null || val === undefined || val === "" || val === "NaN")
-    return "0.0000";
-  const n = typeof val === "number" ? val : Number.parseFloat(String(val));
-  return Number.isNaN(n) || !Number.isFinite(n) ? "0.0000" : String(val);
-}
+
 
 // UNI ERC-20 contract on Ethereum mainnet
 const UNI_CONTRACT_ADDRESS = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984";
@@ -120,33 +106,6 @@ type MiningPhase =
   | "success"
   | "error";
 
-const StatCard = ({
-  title,
-  value,
-  sub,
-  icon,
-}: {
-  title: string;
-  value: string | number;
-  sub: string;
-  icon: React.ReactNode;
-}) => (
-  <div
-    data-ocid="stat.card"
-    className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-3xl hover:border-zinc-700 transition-all group"
-  >
-    <div className="flex justify-between items-start mb-4">
-      <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
-        {title}
-      </span>
-      <div className="p-2 bg-zinc-800 rounded-xl group-hover:scale-110 transition-transform">
-        {icon}
-      </div>
-    </div>
-    <div className="text-2xl font-black text-white">{value}</div>
-    <div className="text-xs text-zinc-400 mt-1 font-medium">{sub}</div>
-  </div>
-);
 
 // Hex calldata encoders + tx-hash extraction live in ./lib/erc20 — see there.
 
@@ -618,16 +577,12 @@ export default function App() {
   // Keys are scoped by principal to prevent cross-user bleed on shared devices.
   const _principalSlug = user?.principal.slice(0, 16) ?? "";
   const DEPOSIT_ID_KEY = `minegold_deposit_id_${_principalSlug}`;
-  const [depositRequestId, setDepositRequestIdState] = useState<bigint | null>(
-    () => {
-      try {
-        const stored = localStorage.getItem(DEPOSIT_ID_KEY);
-        return stored ? BigInt(stored) : null;
-      } catch {
-        return null;
-      }
-    },
-  );
+  // NOTE: starts null and is HYDRATED from localStorage in an effect once the
+  // II identity resolves — reading here in the initializer ran before `user`
+  // existed, so the key was `minegold_deposit_id_` (empty slug) and stored
+  // deposits under the real principal key were never loaded. That race is why
+  // resume-after-refresh only worked when auth happened to win the first render.
+  const [depositRequestId, setDepositRequestIdState] = useState<bigint | null>(null);
   // Wrapper that keeps localStorage in sync with state
   const setDepositRequestId = (id: bigint | null) => {
     setDepositRequestIdState(id);
@@ -660,23 +615,9 @@ export default function App() {
   const MINING_STEPS_KEY = `minegold_steps_${_principalSlug}`;
   const MINING_STEPS_TTL_MS = 24 * 60 * 60_000; // drop timelines older than 24h
 
-  const [miningSteps, setMiningSteps] = useState<MiningStep[]>(() => {
-    try {
-      const raw = localStorage.getItem(MINING_STEPS_KEY);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw) as MiningStep[];
-      if (!Array.isArray(parsed)) return [];
-      // Drop stale timelines to prevent a months-old run from resurfacing.
-      const newest = parsed.reduce((n, s) => Math.max(n, s.updatedAt ?? 0), 0);
-      if (newest && Date.now() - newest > MINING_STEPS_TTL_MS) {
-        localStorage.removeItem(MINING_STEPS_KEY);
-        return [];
-      }
-      return parsed;
-    } catch {
-      return [];
-    }
-  });
+  // Hydrated from localStorage after auth resolves — see the hydration effect
+  // near the TX_HASH_KEY block.
+  const [miningSteps, setMiningSteps] = useState<MiningStep[]>([]);
   const persistMiningSteps = useCallback((next: MiningStep[]) => {
     try {
       if (next.length === 0) localStorage.removeItem(MINING_STEPS_KEY);
@@ -731,8 +672,6 @@ export default function App() {
       visibilityCleanupRef.current = null;
     }
     pollingCompletedRef.current = false;
-    ckUNISnapshotRef.current = 0n;
-    depositAmountWeiRef.current = 0n;
     setBridgeProgress(0);
   }, []);
 
@@ -757,16 +696,8 @@ export default function App() {
   // + adaptive-interval logic. Survives visibility-change interval resets.
   const pollStartedAtRef = useRef<number>(0);
 
-  // Snapshot of treasury ckUNI balance at the moment the user's deposit is
-  // broadcast. The bridge-completion signal is `currentBalance - snapshot
-  // >= user's depositAmountWei`. Held in a ref (not state) because the
-  // polling tick closure needs the latest value without triggering re-renders.
-  const ckUNISnapshotRef = useRef<bigint>(0n);
-  // User's deposit amount in wei (18 decimals — same as UNI). Snapshot at
-  // deposit-broadcast time so the polling tick can compute progress.
-  const depositAmountWeiRef = useRef<bigint>(0n);
-  // 0..1 progress (treasury ckUNI delta / expected). Drives a real bar,
-  // not a spinner — users see concrete movement as the bridge processes.
+  // 0..1 progress derived from the deposit's backend status (see the tick in
+  // startAutoPolling). Drives the mining animation + progress bar.
   const [bridgeProgress, setBridgeProgress] = useState(0);
 
   /** Stop any running poll and transition to a terminal failure state */
@@ -812,25 +743,23 @@ export default function App() {
 
   /** Start the auto-polling interval for a given requestId.
    *
-   *  NEW DESIGN (2026-05): monitors the ckUNI ledger directly instead of
-   *  polling the backend's verifyEthTransaction update call. The signal we
-   *  actually care about is "has the ckERC-20 minter credited ckUNI to the
-   *  treasury yet?" — that's what tells us the bridge completed. Reading
-   *  the ledger's icrc1_balance_of is a query call (free, ~500ms), whereas
-   *  verifyEthTransaction triggers HTTPS outcalls to Etherscan (slow,
-   *  rate-limited, hardcoded free-tier API key).
+   *  DESIGN (2026-07): the frontend is a READ-ONLY observer. The backend
+   *  sweeper is the single payout authority — every 30 s it verifies
+   *  #pending deposits (Etherscan receipt + calldata) and pays #confirmed
+   *  ones, with ledger-level dedup on the transfer. This loop just polls
+   *  getDepositStatus (a free query call) and translates the deposit's
+   *  status into UI state:
    *
-   *  Flow:
-   *   1. Snapshot treasury ckUNI balance BEFORE this function runs (done
-   *      in startMining, right before the deposit sendTransaction).
-   *   2. This loop polls icrc1_balance_of(treasury) every 3s (6s after
-   *      the first minute) and computes delta vs snapshot.
-   *   3. When delta >= deposit amount wei, the bridge completed → call
-   *      backend's retryUNIDepositPayout ONCE to release sGLDT.
-   *   4. On success, stopWithSuccess with the real paid amount.
+   *    pending              → progress creeps 0.08 → 0.55 on elapsed time
+   *    confirmed/processing → 0.8 / 0.92 (payout imminent)
+   *    paid                 → success screen with the REAL e8s amount paid
+   *    failed / not_found   → error state with recovery actions
    *
-   *  Progress bar in the UI reads bridgeProgress (0..1), which updates
-   *  every tick. Users see concrete movement, not a spinner. */
+   *  Compared to the previous design this fires no update calls on a timer,
+   *  needs no treasury-balance snapshot (whose global delta two concurrent
+   *  deposits could satisfy for each other), and keeps working if the tab
+   *  dies — the sweeper pays regardless, and the next visit resumes via the
+   *  persisted deposit id. */
   const startAutoPolling = useCallback(
     (requestId: bigint) => {
       if (pollingIntervalRef.current !== null) {
@@ -883,85 +812,62 @@ export default function App() {
         if (!actor) return; // actor not ready yet — keep waiting
 
         try {
-          // ── Step 1: poll the ckUNI ledger for treasury balance ──
-          const currentBalance = await fetchTreasuryCkUNIBalance();
-          const snapshot = ckUNISnapshotRef.current;
-          const target = depositAmountWeiRef.current;
-          const delta = currentBalance > snapshot ? currentBalance - snapshot : 0n;
-
-          // Update the visible progress bar — capped at 100%.
-          // BigInt → number safe here because target is ≤ 18 decimals and
-          // never exceeds what fits in a Number.
-          if (target > 0n) {
-            const progress = Number((delta * 10000n) / target) / 10000;
-            setBridgeProgress(Math.min(1, Math.max(0, progress)));
-          }
-
-          // ── Step 2: bridge completed when delta covers our deposit ──
-          if (target > 0n && delta >= target) {
-            // ckUNI has landed in the treasury — the bridge portion is
-            // done. Hit the backend's payout path ONCE to release sGLDT.
-            // We use retryUNIDepositPayout rather than verifyEthTransaction
-            // because the deposit is already recorded (autoFinalize ran
-            // earlier in startMining) and we just need to finalize payout.
-            try {
-              const payoutResult = await (
-                actor as unknown as {
-                  retryUNIDepositPayout: (id: bigint) => Promise<string>;
-                }
-              ).retryUNIDepositPayout(requestId);
-              const raw = typeof payoutResult === "string"
-                ? payoutResult
-                : String(payoutResult ?? "");
-              const status = raw.toLowerCase();
-
-              // ── Terminal success ──
-              if (status.includes("paid") || status.includes("success")) {
-                const amountMatch =
-                  raw.match(/[:\s](\d+\.?\d*)\s*sgldt/i) ??
-                  raw.match(/paid[:\s]+(\d+\.?\d*)/i);
-                setBridgeProgress(1);
-                await stopWithSuccess(amountMatch ? amountMatch[1] : null);
-                return;
-              }
-
-              // ── Definitive payout failure ──
-              if (status.includes("payout_failed:")) {
-                const reason = raw.replace(/^.*payout_failed:\s*/i, "").trim();
-                const isFunds =
-                  reason.toLowerCase().includes("insufficientfunds") ||
-                  reason.toLowerCase().includes("insufficient");
-                stopWithError(
-                  isFunds
-                    ? "Refinery is out of sGLDT right now. Your ckUNI is in the treasury — contact support for a manual payout."
-                    : `Release failed: ${reason || "Unknown error"}`,
-                );
-                return;
-              }
-
-              // Transient error — surface but keep polling until deadline
-              if (raw.trim().length > 0) {
-                setRetryErrorMsg(`Payout still pending: ${raw.trim()}`);
-              }
-              if (Date.now() - pollStartedAtRef.current > POLL_DEADLINE_MS) {
-                stopWithError(
-                  `ckUNI reached the treasury but sGLDT release is taking longer than expected. Deposit ID ${requestId.toString()} is safe — tap "Check now" to retry.`,
-                );
-              }
-            } catch (err) {
-              console.warn("[mining] retryUNIDepositPayout threw:", err);
-              // Network hiccup — keep polling, we'll retry next tick
+          // READ-ONLY status poll. The backend sweeper is the single payout
+          // authority (it verifies #pending deposits and pays #confirmed
+          // ones every 30 s); the frontend just watches the deposit's status
+          // via a free query call. This replaces the old design that (a)
+          // fired retryUNIDepositPayout update calls on a timer and (b)
+          // inferred bridge completion from a GLOBAL treasury balance delta —
+          // which two concurrent deposits could satisfy for each other.
+          const st = await (
+            actor as unknown as {
+              getDepositStatus: (id: bigint) => Promise<{
+                status: string;
+                txHash: string;
+                sgldtPaid: bigint;
+              }>;
             }
-            return;
-          }
+          ).getDepositStatus(requestId);
 
-          // Still waiting — balance hasn't moved enough yet. The ckERC-20
-          // minter needs 12 Ethereum block confirmations (~2-3 min) before
-          // it processes the deposit, so a long wait here is normal.
+          switch (st.status) {
+            case "paid": {
+              setBridgeProgress(1);
+              const paid = Number(st.sgldtPaid) / 1e8;
+              await stopWithSuccess(paid > 0 ? paid.toFixed(5) : null);
+              return;
+            }
+            case "failed": {
+              stopWithError(
+                `sGLDT release hit an error. Deposit ID ${requestId.toString()} is recorded — tap "Check now" to retry the payout, or contact support if it persists.`,
+              );
+              return;
+            }
+            case "not_found": {
+              stopWithError(
+                "This deposit is no longer recorded on the backend. If you signed a deposit, use “Finalize my deposit” to re-register it.",
+              );
+              return;
+            }
+            default: {
+              // pending → waiting on Ethereum confirmations + sweeper verify
+              // confirmed / processing → verified, payout imminent
+              // Progress milestones drive the mining animation + bar. Within
+              // "pending" we creep toward 0.55 on elapsed time (~12 confs is
+              // 2-3 min) so the scene visibly advances between milestones.
+              const el = Date.now() - pollStartedAtRef.current;
+              const target =
+                st.status === "processing"
+                  ? 0.92
+                  : st.status === "confirmed"
+                    ? 0.8
+                    : 0.08 + Math.min(0.47, (el / 180_000) * 0.47);
+              setBridgeProgress((prev) => Math.max(prev, Math.min(1, target)));
+            }
+          }
         } catch (err) {
-          // icrc1_balance_of query failed — likely transient network issue.
-          // Keep polling silently; we'll catch up on the next tick.
-          console.warn("[mining] ckUNI balance query failed:", err);
+          // Query failed — transient network/actor issue. Keep polling
+          // silently; we'll catch up on the next tick.
+          console.warn("[mining] getDepositStatus poll failed:", err);
         }
       };
 
@@ -1213,13 +1119,7 @@ export default function App() {
 
   // Track the live Etherscan tx hash during monitoring — persisted so the link survives page reload
   const TX_HASH_KEY = `minegold_tx_hash_${_principalSlug}`;
-  const [currentTxHash, setCurrentTxHashState] = useState<string | null>(() => {
-    try {
-      return localStorage.getItem(TX_HASH_KEY) ?? null;
-    } catch {
-      return null;
-    }
-  });
+  const [currentTxHash, setCurrentTxHashState] = useState<string | null>(null);
   const setCurrentTxHash = (hash: string | null) => {
     setCurrentTxHashState(hash);
     try {
@@ -1232,6 +1132,41 @@ export default function App() {
       // localStorage unavailable
     }
   };
+
+  // ── Post-auth localStorage hydration ────────────────────────────────────
+  // The persisted mining state (deposit id, tx hash, step timeline) is keyed
+  // by principal, but II auth resolves asynchronously — so these reads MUST
+  // happen after `user` is available, not in useState initializers (which run
+  // on first render with an empty slug and therefore always miss).
+  const hydratedForRef = useRef<string | null>(null);
+  useEffect(() => {
+    const slug = user?.principal.slice(0, 16) ?? "";
+    if (!slug || hydratedForRef.current === slug) return;
+    hydratedForRef.current = slug;
+    try {
+      const storedId = localStorage.getItem(`minegold_deposit_id_${slug}`);
+      if (storedId) setDepositRequestIdState(BigInt(storedId));
+    } catch { /* localStorage unavailable */ }
+    try {
+      const storedHash = localStorage.getItem(`minegold_tx_hash_${slug}`);
+      if (storedHash) setCurrentTxHashState(storedHash);
+    } catch { /* localStorage unavailable */ }
+    try {
+      const raw = localStorage.getItem(`minegold_steps_${slug}`);
+      if (raw) {
+        const parsed = JSON.parse(raw) as MiningStep[];
+        if (Array.isArray(parsed)) {
+          const newest = parsed.reduce((n, s) => Math.max(n, s.updatedAt ?? 0), 0);
+          if (newest && Date.now() - newest > MINING_STEPS_TTL_MS) {
+            localStorage.removeItem(`minegold_steps_${slug}`);
+          } else {
+            setMiningSteps(parsed);
+          }
+        }
+      }
+    } catch { /* localStorage unavailable */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   type PendingDepositIntent = {
     ethAddress: string;
@@ -1294,6 +1229,48 @@ export default function App() {
       document.body.removeChild(el);
       setCopiedDepositAddress(true);
       setTimeout(() => setCopiedDepositAddress(false), 2000);
+    }
+  };
+
+  /** Manual status check for eth_monitoring — kicks the backend's
+   *  verify+payout path once. Same behavior as the auto-poll, but immediate;
+   *  useful on mobile when the browser throttles the polling interval. */
+  const checkPayoutNow = async () => {
+    if (!actor || !depositRequestId) return;
+    try {
+      const result = await (
+        actor as unknown as {
+          retryUNIDepositPayout: (id: bigint) => Promise<string>;
+        }
+      ).retryUNIDepositPayout(depositRequestId);
+      const raw = typeof result === "string" ? result : String(result ?? "");
+      const s = raw.toLowerCase();
+      if (s.includes("paid") || s.includes("success")) {
+        const m =
+          raw.match(/[:\s](\d+\.?\d*)\s*sgldt/i) ??
+          raw.match(/paid[:\s]+(\d+\.?\d*)/i);
+        await stopWithSuccess(m ? m[1] : null);
+      } else if (s.includes("payout_failed:")) {
+        const reason = raw.replace(/^.*payout_failed:\s*/i, "").trim();
+        const isFunds =
+          reason.toLowerCase().includes("insufficientfunds") ||
+          reason.toLowerCase().includes("insufficient");
+        stopWithError(
+          isFunds
+            ? "Refinery is out of sGLDT right now. Your deposit is recorded — try again in a few minutes, or contact support."
+            : `Release failed: ${reason || "Unknown error"}`,
+        );
+      } else {
+        toast.info(
+          raw.trim().length > 0
+            ? `Still processing: ${raw.trim()}`
+            : "Still processing. The backend sweeper runs every 30s — sGLDT will appear automatically.",
+        );
+      }
+    } catch (err) {
+      toast.error(
+        `Check failed: ${err instanceof Error ? err.message : String(err)}`,
+      );
     }
   };
 
@@ -2230,22 +2207,11 @@ export default function App() {
         "active",
         "Wallet prompt should appear now",
       );
-      // ── Snapshot treasury ckUNI balance BEFORE the deposit ──
-      // This is the baseline the polling loop diffs against to detect when
-      // the ckERC-20 minter credits our deposit to the treasury. Query call,
-      // typically <500ms — worth the pre-sign delay for a clean baseline.
-      // If the query fails, we use 0 as the snapshot (the worst case: the
-      // loop detects completion slightly early if there was pre-existing
-      // treasury balance, which is harmless — the backend's own calldata
-      // verification is still the authoritative gate on actual sGLDT payout).
-      try {
-        ckUNISnapshotRef.current = await fetchTreasuryCkUNIBalance();
-        console.log("[mining] snapshot ckUNI balance:", ckUNISnapshotRef.current.toString());
-      } catch (err) {
-        console.warn("[mining] ckUNI snapshot failed, using 0:", err);
-        ckUNISnapshotRef.current = 0n;
-      }
-      depositAmountWeiRef.current = amountWei;
+      // Status polling replaced the old treasury-balance-delta heuristic, so
+      // no pre-sign snapshot is needed anymore — just reset the progress bar.
+      // Capture the signed tx hash locally (state updates are async, so we
+      // can't read currentTxHash back within this same function).
+      let signedTxHash: string | null = null;
       setBridgeProgress(0);
 
       try {
@@ -2282,6 +2248,7 @@ export default function App() {
         const cand = extractTxHash(depositHash) ?? String(depositHash ?? "").trim();
         if (/^0x[a-fA-F0-9]{64}$/.test(cand)) {
           setCurrentTxHash(cand);
+          signedTxHash = cand;
         }
         updateStep(
           "deposit-sign",
@@ -2318,6 +2285,7 @@ export default function App() {
             recoveredHash,
           );
           setCurrentTxHash(recoveredHash);
+          signedTxHash = recoveredHash;
           updateStep(
             "deposit-sign",
             "Deposit broadcast (hash recovered from wallet bridge)",
@@ -2352,87 +2320,83 @@ export default function App() {
         expectedNonce: null,
       });
 
-      // Now phase into ETH monitoring while we wait for the canister to see
-      // the tx land on-chain.
-      setPhase("eth_monitoring");
-      setStatusMsg("Watching Ethereum for your deposit…");
-      updateStep("deposit-sign", "Deposit broadcast — canister is watching Ethereum", "active");
-
-      // Poll autoFinalize until the canister sees the tx or we give up.
-      // Etherscan indexes confirmed txs ~15-30s after broadcast. With 12
-      // block confirmations required by the ckERC-20 helper (~2.5 min at
-      // 12s/block), we give this 6 minutes tops.
-      const POLL_INTERVAL_MS = 5_000;
-      const POLL_DEADLINE_MS = 6 * 60_000;
-      const pollStarted = Date.now();
+      // ── Register the deposit with the backend, ONE call ──
+      // We hold the signed tx hash, so no Etherscan-scanning loop is needed:
+      // directSubmitUNIDeposit records it #pending, and the backend sweeper
+      // takes it from there (on-chain verification + payout every 30 s).
+      // From this point the frontend is a read-only status observer.
       const rateHintNat: bigint | null = liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
       const amountE8s = parseDecimalToBigInt(uniAmount, 8);
 
-      let finalizedRequestId: bigint | null = null;
-      let finalizedHash: string | null = null;
-
-      while (Date.now() - pollStarted < POLL_DEADLINE_MS) {
-        if (abortRef.current) {
-          clearPendingDeposit();
-          return;
-        }
-        try {
-          if (!identity) break;
-          const result = await autoFinalizeUNIDeposit({
-            identity,
-            ethAddress,
-            uniAmountE8s: amountE8s,
-            rateHint: rateHintNat,
-          });
-          if (result.kind === "ok" || result.kind === "alreadyExists") {
-            finalizedRequestId = result.requestId;
-            finalizedHash = result.txHash;
-            break;
-          }
-          // noDepositFound / apiError → keep waiting
-          console.log("[mining] canister poll:", result.kind, "detail" in result ? result.detail : "");
-        } catch (err) {
-          console.warn("[mining] autoFinalize poll threw:", err);
-        }
-        await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
-      }
-
-      if (!finalizedRequestId) {
-        updateStep(
-          "deposit-sign",
-          "Canister couldn't find your deposit in 6 min — manually finalize below",
-          "error",
-        );
-        clearPendingDeposit();
+      if (!signedTxHash) {
+        // Wallet reported success but returned no parseable hash (rare
+        // mobile-bridge quirk). The pending-deposit intent stays persisted;
+        // the server-side discovery button can pick it up.
         setPhase("error");
         setStatusMsg(
-          "The canister hasn't seen your deposit land on Ethereum within 6 minutes. Common causes: (1) wallet app backgrounded before broadcasting, (2) the block is still propagating, (3) ad blockers are throttling our RPC lookups. If you see the tx in your wallet's activity tab it IS on-chain — tap 'Finalize my deposit' below to resume. Otherwise try Mine again.",
+          "Your wallet signed the deposit but didn't hand back a transaction hash. Tap 'Finalize my deposit' below — we'll find it on Ethereum and resume automatically.",
         );
         return;
       }
 
-      console.log("[mining] autoFinalize found deposit:", { hash: finalizedHash, requestId: finalizedRequestId.toString() });
-      updateStep("deposit-sign", "Deposit confirmed on Ethereum", "done", finalizedHash?.slice(0, 14) + "…");
-      setCurrentTxHash(finalizedHash);
-      setDepositRequestId(finalizedRequestId);
-      clearPendingDeposit();
-      txHash = (finalizedHash ?? "0x") as `0x${string}`;
+      setPhase("eth_monitoring");
+      setStatusMsg("Watching Ethereum for your deposit…");
+      updateStep("deposit-sign", "Deposit broadcast — registering with the refinery…", "active");
 
-      // Start verify+payout polling — autoFinalize already kicked off the
-      // backend flow, so this just waits for it to complete. Wrap in
-      // try/catch so that if the polling setup throws (shouldn't happen,
-      // but defensive), the user sees a clear error instead of being stuck
-      // forever in eth_monitoring.
+      let requestId: bigint | null = null;
       try {
-        startAutoPolling(finalizedRequestId);
-        setStatusMsg("Releasing sGLDT — this is the last step…");
+        if (!identity) throw new Error("Not authenticated");
+        requestId = await directSubmitUNIDeposit({
+          identity,
+          ethAddress,
+          uniAmountE8s: amountE8s,
+          txHash: signedTxHash,
+          rateHint: rateHintNat,
+        });
+      } catch (err) {
+        console.warn("[mining] direct deposit submit failed, trying server-side discovery:", err);
+        // Fallback: server-side Etherscan discovery — also creates the record.
+        try {
+          if (identity) {
+            const result = await autoFinalizeUNIDeposit({
+              identity,
+              ethAddress,
+              uniAmountE8s: amountE8s,
+              rateHint: rateHintNat,
+            });
+            if (result.kind === "ok" || result.kind === "alreadyExists") {
+              requestId = result.requestId;
+            }
+          }
+        } catch (fallbackErr) {
+          console.warn("[mining] autoFinalize fallback failed:", fallbackErr);
+        }
+      }
+
+      if (requestId === null) {
+        updateStep("deposit-sign", "Couldn't register the deposit with the backend", "error");
+        setManualTxHash(signedTxHash);
+        setPhase("error");
+        setStatusMsg(
+          "Your deposit is broadcast on Ethereum but we couldn't reach the backend to register it. Your funds are safe — tap 'Resume monitoring' below to retry.",
+        );
+        return;
+      }
+
+      updateStep("deposit-sign", "Deposit registered — refinery is watching Ethereum", "done", signedTxHash.slice(0, 14) + "…");
+      setDepositRequestId(requestId);
+      clearPendingDeposit();
+      txHash = signedTxHash as `0x${string}`;
+
+      try {
+        startAutoPolling(requestId);
       } catch (pollErr) {
         console.error("[mining] startAutoPolling threw:", pollErr);
         setPhase("error");
         setStatusMsg(
           "Polling setup failed — your deposit is recorded (ID " +
-            finalizedRequestId.toString() +
-            "). Tap 'Finalize my deposit' below to resume.",
+            requestId.toString() +
+            "). The backend will still pay out automatically; tap 'Check now' or come back later.",
         );
       }
       return; // early return: startAutoPolling handles phase transitions from here
@@ -2466,54 +2430,53 @@ export default function App() {
     void txHash;
   };
 
-  // On mount: if a depositRequestId is in localStorage and phase is idle,
-  // check the deposit status and auto-resume polling if still pending.
-  // This ensures users don't lose their progress on page refresh.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally runs once when actor becomes available; depositRequestId/phase/startAutoPolling are read from closure
+  // Resume-after-refresh: once the actor is ready AND the persisted deposit
+  // id has been hydrated (both arrive asynchronously after auth), check the
+  // deposit's status via a free query and resume monitoring if it's still in
+  // flight. Runs at most once per session via resumeCheckedRef.
+  const resumeCheckedRef = useRef(false);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: phase/startAutoPolling are read from closure; effect is guarded to run once
   useEffect(() => {
-    if (!actor || !depositRequestId) return;
+    if (!actor || !depositRequestId || resumeCheckedRef.current) return;
+    if (phase !== "idle") return; // user already started a new flow
+    resumeCheckedRef.current = true;
 
-    const checkOnMount = async () => {
+    (async () => {
       try {
-        const verifyResult = await actor.verifyEthTransaction(depositRequestId);
-        const status =
-          typeof verifyResult === "string" ? verifyResult.toLowerCase() : "";
+        const st = await (
+          actor as unknown as {
+            getDepositStatus: (id: bigint) => Promise<{
+              status: string;
+              txHash: string;
+              sgldtPaid: bigint;
+            }>;
+          }
+        ).getDepositStatus(depositRequestId);
 
-        if (status.includes("paid") || status.includes("success")) {
-          // Already paid — show success screen
+        if (st.status === "paid") {
+          const paid = Number(st.sgldtPaid) / 1e8;
           setPhase("success");
           setStatusMsg("Transaction confirmed — sGLDT released!");
-          setSgldtReleased((prev) => prev ?? "check your wallet");
+          setSgldtReleased((prev) => prev ?? (paid > 0 ? paid.toFixed(5) : "check your wallet"));
           setDepositRequestId(null);
           return;
         }
-
-        if (status.includes("failed") || status.includes("rejected")) {
-          // Hard failure — clear and let user try again
+        if (st.status === "failed" || st.status === "not_found") {
+          // Hard failure or stale id — clear and let the user start fresh
           setDepositRequestId(null);
           return;
         }
-
-        // Pending or confirmed — resume the animation and auto-polling
-        if (
-          status.includes("pending") ||
-          status.includes("confirmed") ||
-          status.includes("processing")
-        ) {
-          setPhase("eth_monitoring");
-          setStatusMsg("Waiting for Ethereum confirmation...");
-          startAutoPolling(depositRequestId);
-        }
+        // pending / confirmed / processing — resume monitoring
+        if (st.txHash) setCurrentTxHash(st.txHash);
+        setPhase("eth_monitoring");
+        setStatusMsg("Waiting for Ethereum confirmation...");
+        startAutoPolling(depositRequestId);
       } catch {
-        // Actor not ready or method error — don't resume, let user start fresh
+        // Query failed — allow a later attempt (e.g. actor re-created)
+        resumeCheckedRef.current = false;
       }
-    };
-
-    // Only auto-resume if phase is still idle (user hasn't started a new swap)
-    if (phase === "idle") {
-      checkOnMount();
-    }
-  }, [actor]); // Run once when actor becomes available
+    })();
+  }, [actor, depositRequestId]);
 
   // MOBILE FIX: on mount, if a pending-deposit intent is stored but we don't
   // yet have a tx hash or a backend requestId, it means the user was mid-sign
@@ -2666,365 +2629,46 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#080808] text-zinc-100 font-sans">
       {/* Login Overlay */}
-      {!user && (
-        <div
-          data-ocid="login.modal"
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4"
-        >
-          <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-8 text-center shadow-2xl">
-            {/* Gold pickaxe icon */}
-            <div className="w-20 h-20 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-3xl mx-auto flex items-center justify-center mb-6 shadow-lg shadow-yellow-500/30">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M6 34 L30 8" stroke="#3B1F00" strokeWidth="5" strokeLinecap="square"/>
-                <path d="M6 34 L30 8" stroke="#7B4513" strokeWidth="3" strokeLinecap="square"/>
-                <rect x="24" y="4" width="14" height="6" rx="1" fill="#FFFFF0"/>
-                <rect x="24" y="4" width="14" height="2" rx="1" fill="white"/>
-                <path d="M36 2 L40 6 L36 10 L32 6 Z" fill="#F0F0F0"/>
-                <path d="M24 10 L20 14 L24 14 Z" fill="#D8D8D8"/>
-                <circle cx="8" cy="32" r="3" fill="#FFD700" opacity="0.9"/>
-                <circle cx="13" cy="30" r="2" fill="#FFD700" opacity="0.6"/>
-              </svg>
-            </div>
-            <h1 className="text-3xl font-black text-white mb-1">
-              minegold<span className="text-yellow-400">.defi</span>
-            </h1>
-            <p className="text-xs text-yellow-500/60 font-mono uppercase tracking-widest mb-3">Cross-Chain Gold Refinery</p>
-            <p className="text-zinc-400 text-sm mb-6 px-4">
-              Swap UNI (Ethereum) for sGLDT (synthetic gold) via the Internet Computer Protocol. Trustless. On-chain.
-            </p>
-            {/* How it works — 3 steps */}
-            <div className="grid grid-cols-3 gap-2 mb-6 text-left">
-              {[
-                { n: "1", title: "Connect", sub: "ICP + ETH wallets" },
-                { n: "2", title: "Deposit", sub: "UNI via ckERC-20" },
-                { n: "3", title: "Receive", sub: "sGLDT on ICP" },
-              ].map((step) => (
-                <div key={step.n} className="bg-zinc-800/60 border border-zinc-700/50 rounded-2xl p-3">
-                  <div className="text-[10px] font-black text-yellow-500/60 mb-1">STEP {step.n}</div>
-                  <div className="text-xs font-bold text-white">{step.title}</div>
-                  <div className="text-[9px] text-zinc-500 mt-0.5">{step.sub}</div>
-                </div>
-              ))}
-            </div>
-            <GoldCTA
-              data-ocid="login.primary_button"
-              onClick={handleLogin}
-              loading={isLoggingIn}
-              size="lg"
-              leadingIcon={
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-label="ICP"
-                >
-                  <circle cx="12" cy="12" r="12" fill="url(#icpGrad)" />
-                  <defs>
-                    <radialGradient id="icpGrad" cx="30%" cy="30%" r="80%">
-                      <stop offset="0%" stopColor="#f15a24" />
-                      <stop offset="50%" stopColor="#9b2bff" />
-                      <stop offset="100%" stopColor="#29abe2" />
-                    </radialGradient>
-                  </defs>
-                  <text
-                    x="12"
-                    y="16"
-                    textAnchor="middle"
-                    fontSize="9"
-                    fontWeight="bold"
-                    fill="white"
-                    fontFamily="monospace"
-                  >
-                    ICP
-                  </text>
-                </svg>
-              }
-              trailingIcon={null}
-            >
-              {isLoggingIn ? "Signing in…" : "Sign in with Internet Identity"}
-            </GoldCTA>
-
-          </div>
-        </div>
-      )}
+      {!user && <LoginOverlay isLoggingIn={isLoggingIn} onLogin={handleLogin} />}
 
       {/* Nav */}
-      <nav className="sticky top-0 z-50 bg-[#080808]/80 backdrop-blur-md border-b border-zinc-800/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={backToBankingBrave}
-              aria-label="Back to Banking.Brave"
-              title="Back to Banking.Brave"
-              className="flex items-center gap-2 cursor-pointer bg-transparent border-none p-0 group"
-            >
-              <div
-                className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform"
-                style={{ background: "#1D4ED8" }}
-              >
-                <img
-                  src="/bankingbrave.png"
-                  alt="Banking.Brave"
-                  className="w-[115%] h-[115%] object-cover"
-                />
-              </div>
-              <span className="hidden sm:block text-sm font-black tracking-tight" style={{ color: "var(--bb-brand)" }}>
-                Banking<span style={{ color: "var(--bb-text)" }}>.Brave</span>
-              </span>
-            </button>
-            <span className="text-zinc-700">/</span>
-            <button
-              type="button"
-              className="flex items-center gap-3 cursor-pointer bg-transparent border-none p-0"
-              onClick={() => {
-                setShowAdmin(false);
-                setShowHistory(false);
-                setShowProfile(false);
-              }}
-              aria-label="minegold.defi home"
-            >
-              <div className="w-9 h-9 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-900/30">
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                  <path d="M3 17 L15 4" stroke="#3B1F00" strokeWidth="2.5" strokeLinecap="square"/>
-                  <rect x="12" y="2" width="7" height="3" rx="0.5" fill="white" opacity="0.95"/>
-                  <path d="M18 1 L20 3 L18 5 L16 3 Z" fill="white" opacity="0.85"/>
-                  <path d="M12 5 L10 7 L12 7 Z" fill="white" opacity="0.7"/>
-                  <circle cx="4" cy="16" r="1.5" fill="#FFD700" opacity="0.9"/>
-                </svg>
-              </div>
-              <span className="text-base sm:text-lg font-bold tracking-tight">
-                minegold<span className="text-yellow-400">.defi</span>
-              </span>
-            </button>
-          </div>
-          <div className="flex items-center gap-3">
-            {user && (
-              <button
-                type="button"
-                data-ocid="nav.profile.link"
-                onClick={() => setShowProfile(true)}
-                className="hidden md:flex flex-col items-end mr-2 text-[10px] text-zinc-500 uppercase tracking-tighter hover:text-pink-400 transition-colors cursor-pointer"
-              >
-                <span className="font-bold text-pink-500">
-                  {user.identityType}
-                </span>
-                <span>{user.principal.slice(0, 12)}...</span>
-              </button>
-            )}
-            {/* Treasury panel button + dropdown */}
-            <div className="relative hidden sm:block" ref={treasuryPanelRef}>
-              <button
-                type="button"
-                data-ocid="nav.treasury.button"
-                onClick={() => setShowTreasury(!showTreasury)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
-                  showTreasury
-                    ? "bg-yellow-500/10 border-yellow-500/40 text-yellow-300"
-                    : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
-                }`}
-                title="Treasury Balances"
-              >
-                <Coins size={12} />
-                Treasury
-              </button>
-              {showTreasury && (
-                <div
-                  data-ocid="nav.treasury.panel"
-                  className="absolute right-0 top-full mt-2 w-64 bg-zinc-950 border border-zinc-700 rounded-2xl shadow-2xl z-50 p-4"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">
-                      Treasury Holdings
-                    </span>
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between bg-yellow-500/5 border border-yellow-500/20 rounded-xl p-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                          <span className="text-[9px] font-black text-yellow-400">
-                            S
-                          </span>
-                        </div>
-                        <span className="text-[11px] font-bold text-zinc-300">
-                          sGLDT
-                        </span>
-                      </div>
-                      <span
-                        data-ocid="treasury.panel.sgldt_balance"
-                        className="text-[12px] font-black text-yellow-300 font-mono"
-                      >
-                        {displaySGLDTLoading
-                          ? "..."
-                          : (Number(displaySGLDTBalance) / 1e8).toLocaleString(
-                              undefined,
-                              {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                              },
-                            )}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between bg-blue-500/5 border border-blue-500/20 rounded-xl p-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center">
-                          <span className="text-[9px] font-black text-blue-400">
-                            U
-                          </span>
-                        </div>
-                        <span className="text-[11px] font-bold text-zinc-300">
-                          ckUNI
-                        </span>
-                      </div>
-                      <span
-                        data-ocid="treasury.panel.ckuni_balance"
-                        className="text-[12px] font-black text-blue-300 font-mono"
-                      >
-                        {displayCkUNILoading
-                          ? "..."
-                          : (Number(displayCkUNIBalance) / 1e18).toLocaleString(
-                              undefined,
-                              {
-                                minimumFractionDigits: 4,
-                                maximumFractionDigits: 4,
-                              },
-                            )}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between bg-pink-500/5 border border-pink-500/20 rounded-xl p-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-pink-500/20 flex items-center justify-center">
-                          <span className="text-[9px] font-black text-pink-400">
-                            U
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-[11px] font-bold text-zinc-300">
-                            UNI (ETH)
-                          </span>
-                          <p className="text-[8px] text-zinc-600 font-mono leading-none mt-0.5">
-                            0x2258...B91FF
-                          </p>
-                        </div>
-                      </div>
-                      <span
-                        data-ocid="treasury.panel.eth_uni_balance"
-                        className="text-[12px] font-black text-pink-300 font-mono"
-                        title={
-                          treasuryEthUniUnavailable
-                            ? "Balance temporarily unavailable"
-                            : undefined
-                        }
-                      >
-                        {treasuryEthUniLoading
-                          ? "..."
-                          : treasuryEthUniUnavailable
-                            ? "—"
-                            : (treasuryEthUniBalance ?? "0.0000")}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-[9px] text-zinc-600 mt-3 text-center">
-                    Principal: c626g-iyaaa-aaaau-agpoa-cai
-                  </p>
-                </div>
-              )}
-            </div>
-            {/* Live price ticker */}
-            <div className="hidden sm:flex items-center gap-4 text-[10px] font-bold text-zinc-500 mr-2">
-              {ethPrice && (
-                <span>
-                  ETH{" "}
-                  <span className="text-blue-400">
-                    $
-                    {ethPrice.toLocaleString(undefined, {
-                      maximumFractionDigits: 0,
-                    })}
-                  </span>
-                </span>
-              )}
-              {uniPrice && (
-                <span>
-                  UNI <span className="text-white">${uniPrice.toFixed(2)}</span>
-                </span>
-              )}
-              {sgldtPrice && (
-                <span>
-                  sGLDT{" "}
-                  <span className="text-yellow-400">
-                    ${sgldtPrice.toFixed(4)}
-                  </span>
-                </span>
-              )}
-            </div>
-            {user && isAdmin && (
-              <button
-                type="button"
-                data-ocid="nav.admin.button"
-                onClick={() => {
-                  setShowAdmin(!showAdmin);
-                  setShowHistory(false);
-                  setShowProfile(false);
-                }}
-                className="w-11 h-11 inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
-                title={showAdmin ? "Back to Refinery" : "Admin Panel"}
-                aria-label={showAdmin ? "Back to Refinery" : "Open admin panel"}
-                aria-pressed={showAdmin}
-              >
-                {showAdmin ? <XCircle size={18} /> : <Settings size={18} />}
-              </button>
-            )}
-            {user && (
-              <button
-                type="button"
-                data-ocid="nav.history.button"
-                onClick={() => {
-                  setShowHistory(!showHistory);
-                  setShowAdmin(false);
-                  setShowProfile(false);
-                }}
-                className={`w-11 h-11 inline-flex items-center justify-center border rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400 ${
-                  showHistory
-                    ? "bg-yellow-500/15 border-yellow-500/30 text-yellow-400"
-                    : "bg-zinc-900 hover:bg-zinc-800 border-zinc-800 text-zinc-400"
-                }`}
-                title="Transaction History"
-                aria-label="Transaction history"
-                aria-pressed={showHistory}
-              >
-                <Clock size={18} />
-              </button>
-            )}
-            {user && (
-              <button
-                type="button"
-                data-ocid="nav.profile.button"
-                onClick={() => setShowProfile(true)}
-                className="w-11 h-11 inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 md:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
-                title="Your Profile"
-                aria-label="Open your profile"
-              >
-                <UserCircle2 size={18} />
-              </button>
-            )}
-            {user && (
-              <button
-                type="button"
-                data-ocid="nav.logout.button"
-                onClick={handleLogout}
-                className="w-11 h-11 inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
-                title="Sign out"
-                aria-label="Sign out"
-              >
-                <LogOut size={18} />
-              </button>
-            )}
-            <ThemeToggle />
-          </div>
-        </div>
-      </nav>
+      <NavBar
+        user={user}
+        isAdmin={!!isAdmin}
+        showAdmin={showAdmin}
+        showHistory={showHistory}
+        showTreasury={showTreasury}
+        treasuryPanelRef={treasuryPanelRef}
+        displaySGLDTBalance={displaySGLDTBalance}
+        displaySGLDTLoading={displaySGLDTLoading}
+        displayCkUNIBalance={displayCkUNIBalance}
+        displayCkUNILoading={displayCkUNILoading}
+        treasuryEthUniBalance={treasuryEthUniBalance}
+        treasuryEthUniLoading={treasuryEthUniLoading}
+        treasuryEthUniUnavailable={treasuryEthUniUnavailable}
+        ethPrice={ethPrice}
+        uniPrice={uniPrice}
+        sgldtPrice={sgldtPrice}
+        onBackToBankingBrave={backToBankingBrave}
+        onHome={() => {
+          setShowAdmin(false);
+          setShowHistory(false);
+          setShowProfile(false);
+        }}
+        onToggleTreasury={() => setShowTreasury(!showTreasury)}
+        onToggleAdmin={() => {
+          setShowAdmin(!showAdmin);
+          setShowHistory(false);
+          setShowProfile(false);
+        }}
+        onToggleHistory={() => {
+          setShowHistory(!showHistory);
+          setShowAdmin(false);
+          setShowProfile(false);
+        }}
+        onOpenProfile={() => setShowProfile(true)}
+        onLogout={handleLogout}
+      />
 
       {/* Price feed warning banner */}
       {priceWarning && (
@@ -3051,171 +2695,40 @@ export default function App() {
         }}
       />
 
+      {/* Transfer Modal — top level so profile-initiated sGLDT transfers work
+          even without an ETH wallet connected */}
+      {transferModal && (
+        <TransferModal
+          token={transferModal}
+          to={transferTo}
+          amount={transferAmt}
+          loading={transferLoading}
+          onToChange={setTransferTo}
+          onAmountChange={setTransferAmt}
+          onClose={() => setTransferModal(null)}
+          onSubmit={handleTransferSubmit}
+        />
+      )}
+
       {/* Profile Modal */}
       {showProfile && user && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-          data-ocid="profile.modal"
-        >
-          <div className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-8 w-full max-w-md relative">
-            <button
-              type="button"
-              data-ocid="profile.close_button"
-              onClick={() => setShowProfile(false)}
-              className="absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400"
-            >
-              <XCircle size={18} />
-            </button>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-pink-600 to-pink-400 rounded-xl flex items-center justify-center">
-                <UserCircle2 size={22} className="text-white" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">Your Identity</h2>
-                <p className="text-xs text-zinc-500 uppercase tracking-wider">
-                  {user.identityType}
-                </p>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-                <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">
-                  Principal ID
-                </p>
-                <div className="flex items-center gap-2">
-                  <p className="text-xs font-mono text-zinc-300 break-all flex-1">
-                    {user.principal}
-                  </p>
-                  <button
-                    type="button"
-                    data-ocid="profile.copy.button"
-                    onClick={() => {
-                      navigator.clipboard.writeText(user.principal);
-                      setCopiedPrincipal(true);
-                      setTimeout(() => setCopiedPrincipal(false), 2000);
-                    }}
-                    className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-400 transition-colors shrink-0"
-                    title="Copy to clipboard"
-                  >
-                    {copiedPrincipal ? (
-                      <CheckCircle2 size={14} className="text-green-400" />
-                    ) : (
-                      <Copy size={14} />
-                    )}
-                  </button>
-                </div>
-              </div>
-              {ethAddress && (
-                <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-                  <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">
-                    ETH Wallet
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs font-mono text-zinc-300 break-all flex-1">
-                      {ethAddress}
-                    </p>
-                    <button
-                      type="button"
-                      data-ocid="profile.copy_eth.button"
-                      onClick={async () => {
-                        try {
-                          await navigator.clipboard.writeText(ethAddress);
-                          setCopiedEthAddress(true);
-                          setTimeout(() => setCopiedEthAddress(false), 2000);
-                        } catch {
-                          try {
-                            const ta = document.createElement("textarea");
-                            ta.value = ethAddress;
-                            ta.style.position = "fixed";
-                            ta.style.opacity = "0";
-                            document.body.appendChild(ta);
-                            ta.select();
-                            document.execCommand("copy");
-                            document.body.removeChild(ta);
-                            setCopiedEthAddress(true);
-                            setTimeout(() => setCopiedEthAddress(false), 2000);
-                          } catch {
-                            toast.error(
-                              "Could not copy — please copy manually",
-                            );
-                          }
-                        }
-                      }}
-                      className="p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-400 transition-colors shrink-0"
-                      title="Copy ETH address"
-                    >
-                      {copiedEthAddress ? (
-                        <CheckCircle2 size={14} className="text-green-400" />
-                      ) : (
-                        <Copy size={14} />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              )}
-              {ethBalance !== null && (
-                <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-                  <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">
-                    ETH Balance
-                  </p>
-                  <p className="text-sm font-bold text-white">
-                    {safeBalance(ethBalance)}{" "}
-                    <span className="text-blue-400">ETH</span>
-                    {ethUsd && (
-                      <span className="text-xs text-zinc-500 ml-2">
-                        (~${ethUsd})
-                      </span>
-                    )}
-                  </p>
-                </div>
-              )}
-              {uniBalance !== null && (
-                <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-                  <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">
-                    UNI Balance
-                  </p>
-                  <p className="text-sm font-bold text-white">
-                    {safeBalance(uniBalance)}{" "}
-                    <span className="text-pink-400">UNI</span>
-                    {uniUsd && (
-                      <span className="text-xs text-zinc-500 ml-2">
-                        (~${uniUsd})
-                      </span>
-                    )}
-                  </p>
-                </div>
-              )}
-              {/* sGLDT Balance */}
-              <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-                <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">
-                  sGLDT Balance
-                </p>
-                <p className="text-sm font-bold text-white">
-                  {sgldtBalance ?? "0.0000"}{" "}
-                  <span className="text-yellow-500">sGLDT</span>
-                  {sgldtUsd && (
-                    <span className="text-xs text-zinc-500 ml-2">
-                      (~${sgldtUsd})
-                    </span>
-                  )}
-                </p>
-                <button
-                  type="button"
-                  data-ocid="profile.transfer_sgldt.button"
-                  onClick={() => {
-                    setShowProfile(false);
-                    setTransferModal("sgldt");
-                    setTransferTo("");
-                    setTransferAmt("");
-                  }}
-                  className="mt-2 flex items-center gap-1 text-[10px] font-bold text-yellow-500 hover:text-yellow-400 transition-colors"
-                >
-                  <Send size={10} /> Transfer sGLDT
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ProfileModal
+          user={user}
+          ethAddress={ethAddress}
+          ethBalance={ethBalance}
+          uniBalance={uniBalance}
+          sgldtBalance={sgldtBalance}
+          ethUsd={ethUsd}
+          uniUsd={uniUsd}
+          sgldtUsd={sgldtUsd}
+          onClose={() => setShowProfile(false)}
+          onTransferSgldt={() => {
+            setShowProfile(false);
+            setTransferModal("sgldt");
+            setTransferTo("");
+            setTransferAmt("");
+          }}
+        />
       )}
 
       {/* Main */}
@@ -3226,1415 +2739,210 @@ export default function App() {
           <TransactionHistoryPage />
         ) : (
           <>
-            {/* ETH Wallet Connect */}
-            {!ethAddress ? (
-              <div className="mb-12 bg-gradient-to-br from-zinc-900 to-black border border-zinc-800 p-8 rounded-[2rem]">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                  <div className="max-w-md text-center md:text-left">
-                    <div className="flex items-center gap-2 mb-2 justify-center md:justify-start">
-                      <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-                      <span className="text-[10px] font-black text-yellow-500 uppercase tracking-widest">Step 1 of 2</span>
-                    </div>
-                    <h2 className="text-2xl font-bold mb-2">
-                      Connect Ethereum Wallet
-                    </h2>
-                    <p className="text-zinc-500 text-sm">
-                      Link MetaMask or Brave Wallet to authorize your UNI deposit into the gold refinery.
-                    </p>
-                  </div>
-                  <GoldCTA
-                    data-ocid="wallet.connect.primary_button"
-                    onClick={() => setConnectModalOpen(true)}
-                    size="md"
-                    fullWidth={false}
-                    leadingIcon={<Wallet />}
-                    trailingIcon={null}
-                    className="w-full md:w-auto md:px-10"
-                  >
-                    Connect Wallet
-                  </GoldCTA>
-                </div>
-                {walletConnectLog.length > 0 && (
-                  <details
-                    className="mt-4 rounded-2xl border border-zinc-800 bg-black/40 overflow-hidden group"
-                    open={!!walletConnectionError}
-                  >
-                    <summary className="cursor-pointer select-none list-none flex items-center justify-between gap-2 px-4 py-2.5 text-[10px] font-black text-zinc-500 uppercase tracking-widest hover:text-zinc-300 transition-colors">
-                      <span>Connection diagnostics</span>
-                      <span className="text-[9px] font-normal text-zinc-600 normal-case tracking-normal">
-                        {walletConnectLog.length}{" "}
-                        {walletConnectLog.length === 1 ? "entry" : "entries"}
-                        <span className="ml-2 inline-block transition-transform group-open:rotate-90">
-                          ›
-                        </span>
-                      </span>
-                    </summary>
-                    <div className="border-t border-zinc-800 px-4 py-3 space-y-1 max-h-40 overflow-y-auto font-mono text-[11px]">
-                      {walletConnectLog.map((line, i) => (
-                        <div
-                          key={`${i}-${line.slice(0, 20)}`}
-                          className="text-zinc-400 break-all"
-                        >
-                          {line}
-                        </div>
-                      ))}
-                    </div>
-                  </details>
-                )}
-              </div>
-            ) : (
-              <>
-                {/* Wallet connection error — shown on mobile when all retries fail */}
-                {walletConnectionError && (
-                  <div
-                    data-ocid="wallet.connection_error"
-                    className="mb-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl px-4 py-3 flex items-start gap-3 text-xs text-amber-400 font-medium"
-                  >
-                    <AlertCircle size={14} className="shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <div>{walletConnectionError}</div>
-                      <button
-                        type="button"
-                        disabled={balanceRefreshing}
-                        onClick={() => refreshBalances(ethAddress)}
-                        className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-[11px] font-bold disabled:opacity-50"
-                      >
-                        {balanceRefreshing ? (
-                          <Loader2 size={10} className="animate-spin" />
-                        ) : (
-                          <ArrowRightLeft size={10} />
-                        )}
-                        Retry balance fetch
-                      </button>
-                    </div>
-                  </div>
-                )}
-                {/* Balance diagnostic — visible compact readout of which path
-                    succeeded for each balance. Helps diagnose mobile failures
-                    without Web Inspector. */}
-                {(ethBalanceDiag || uniBalanceDiag) && (
-                  <details className="mb-3 text-[10px] font-mono">
-                    <summary className="cursor-pointer text-zinc-500 hover:text-zinc-400 select-none">
-                      ▸ Balance path diagnostics{ethBalanceDiag?.source ? ` · ETH=${ethBalanceDiag.source}` : ""}{uniBalanceDiag?.source ? ` · UNI=${uniBalanceDiag.source}` : ""}
-                    </summary>
-                    <div className="mt-2 bg-zinc-900/60 border border-zinc-800 rounded-lg p-3 text-zinc-400 space-y-1">
-                      {ethBalanceDiag && (
-                        <div>
-                          <span className="text-zinc-500">ETH ·&nbsp;</span>
-                          {["wallet", "rpc", "canister"].map((k) => {
-                            const o = ethBalanceDiag.outcomes[k];
-                            const color =
-                              o === "ok" ? "text-emerald-400"
-                                : o === "null" ? "text-zinc-500"
-                                  : o === "err" ? "text-red-400" : "text-zinc-700";
-                            return (
-                              <span key={k} className={`mr-2 ${color}`}>
-                                {k}={o ?? "…"}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      )}
-                      {uniBalanceDiag && (
-                        <div>
-                          <span className="text-zinc-500">UNI ·&nbsp;</span>
-                          {["wallet", "rpc", "canister"].map((k) => {
-                            const o = uniBalanceDiag.outcomes[k];
-                            const color =
-                              o === "ok" ? "text-emerald-400"
-                                : o === "null" ? "text-zinc-500"
-                                  : o === "err" ? "text-red-400" : "text-zinc-700";
-                            return (
-                              <span key={k} className={`mr-2 ${color}`}>
-                                {k}={o ?? "…"}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      )}
-                      <button
-                        type="button"
-                        disabled={balanceRefreshing}
-                        onClick={() => refreshBalances(ethAddress)}
-                        className="mt-2 w-full py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-bold disabled:opacity-50"
-                      >
-                        {balanceRefreshing ? "Refreshing…" : "Refresh now"}
-                      </button>
-                    </div>
-                  </details>
-                )}
-                {/* Wallet Stats Dashboard */}
-                <div
-                  data-ocid="wallet.stats.card"
-                  className="mb-6 bg-gradient-to-br from-zinc-900 via-zinc-900 to-black border border-yellow-500/20 rounded-[2rem] overflow-hidden shadow-xl shadow-yellow-500/5"
-                >
-                  <div className="px-6 pt-5 pb-3 border-b border-zinc-800/70 flex items-center gap-2">
-                    <Wallet size={14} className="text-yellow-500" />
-                    <span className="text-[10px] font-black text-yellow-500 uppercase tracking-widest">
-                      Connected Wallet
-                    </span>
-                    <span className="ml-auto text-[10px] font-mono text-zinc-600">
-                      {ethAddress.slice(0, 6)}...{ethAddress.slice(-4)}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-zinc-800/70">
-                    {/* ETH Balance */}
-                    <div className="p-5">
-                      <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">
-                        ETH Balance
-                      </div>
-                      <div className="text-xl font-black text-blue-400">
-                        {ethBalance !== null ? (
-                          safeBalance(ethBalance)
-                        ) : (
-                          <span className="text-zinc-600">&mdash;</span>
-                        )}
-                      </div>
-                      {ethUsd && (
-                        <div className="text-xs text-zinc-400 mt-1">
-                          ${ethUsd} USD
-                        </div>
-                      )}
-                      <button
-                        type="button"
-                        data-ocid="wallet.eth.transfer_button"
-                        onClick={() => {
-                          setTransferModal("eth");
-                          setTransferTo("");
-                          setTransferAmt("");
-                        }}
-                        className="mt-3 flex items-center gap-1 text-[10px] font-bold text-blue-400 hover:text-blue-300 transition-colors"
-                      >
-                        <Send size={10} /> Transfer ETH
-                      </button>
-                    </div>
-                    {/* UNI Balance */}
-                    <div className="p-5">
-                      <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">
-                        UNI Balance
-                      </div>
-                      <div className="text-xl font-black text-pink-400">
-                        {uniBalance !== null ? (
-                          safeBalance(uniBalance)
-                        ) : (
-                          <span className="text-zinc-600">&mdash;</span>
-                        )}
-                      </div>
-                      {uniUsd && (
-                        <div className="text-xs text-zinc-400 mt-1">
-                          ${uniUsd} USD
-                        </div>
-                      )}
-                      <button
-                        type="button"
-                        data-ocid="wallet.uni.transfer_button"
-                        onClick={() => {
-                          setTransferModal("uni");
-                          setTransferTo("");
-                          setTransferAmt("");
-                        }}
-                        className="mt-3 flex items-center gap-1 text-[10px] font-bold text-pink-400 hover:text-pink-300 transition-colors"
-                      >
-                        <Send size={10} /> Transfer UNI
-                      </button>
-                    </div>
-                    {/* sGLDT Balance */}
-                    <div className="p-5">
-                      <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">
-                        sGLDT Balance
-                      </div>
-                      <div className="text-xl font-black text-yellow-500">
-                        {sgldtBalance ?? (
-                          <span className="text-zinc-600">&mdash;</span>
-                        )}
-                      </div>
-                      {sgldtUsd && (
-                        <div className="text-xs text-zinc-400 mt-1">
-                          ${sgldtUsd} USD
-                        </div>
-                      )}
-                      <button
-                        type="button"
-                        data-ocid="wallet.sgldt.transfer_button"
-                        onClick={() => {
-                          setTransferModal("sgldt");
-                          setTransferTo("");
-                          setTransferAmt("");
-                        }}
-                        className="mt-3 flex items-center gap-1 text-[10px] font-bold text-yellow-500 hover:text-yellow-400 transition-colors"
-                      >
-                        <Send size={10} /> Transfer sGLDT
-                      </button>
-                    </div>
-                    {/* Exchange Rate */}
-                    <div className="p-5">
-                      <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">
-                        Exchange Rate
-                      </div>
-                      <div className="text-xl font-black text-yellow-400">
-                        {liveRate > 0 ? (
-                          liveRate.toFixed(4)
-                        ) : (
-                          <span className="text-zinc-600">&mdash;</span>
-                        )}
-                      </div>
-                      <div className="text-xs text-zinc-400 mt-1">
-                        sGLDT per UNI
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Transfer Modal */}
-                {transferModal && (
-                  <div
-                    data-ocid="wallet.transfer.modal"
-                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-                  >
-                    <div className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-8 w-full max-w-md relative">
-                      <button
-                        type="button"
-                        data-ocid="wallet.transfer.close_button"
-                        onClick={() => setTransferModal(null)}
-                        className="absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400"
-                      >
-                        <XCircle size={18} />
-                      </button>
-                      <div className="flex items-center gap-3 mb-6">
-                        <div
-                          className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                            transferModal === "eth"
-                              ? "bg-blue-500/20"
-                              : transferModal === "uni"
-                                ? "bg-pink-500/20"
-                                : "bg-yellow-500/20"
-                          }`}
-                        >
-                          <Send
-                            size={20}
-                            className={
-                              transferModal === "eth"
-                                ? "text-blue-400"
-                                : transferModal === "uni"
-                                  ? "text-pink-400"
-                                  : "text-yellow-500"
-                            }
-                          />
-                        </div>
-                        <div>
-                          <h2 className="text-xl font-bold text-white">
-                            Transfer{" "}
-                            {transferModal === "eth"
-                              ? "ETH"
-                              : transferModal === "uni"
-                                ? "UNI"
-                                : "sGLDT"}
-                          </h2>
-                          <p className="text-xs text-zinc-500">
-                            {transferModal === "sgldt"
-                              ? "ICP Principal required"
-                              : "Ethereum address required"}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="space-y-4">
-                        <div>
-                          <label
-                            htmlFor="transfer-address"
-                            className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block"
-                          >
-                            {transferModal === "sgldt"
-                              ? "Recipient ICP Principal"
-                              : "Recipient ETH Address"}
-                          </label>
-                          <input
-                            id="transfer-address"
-                            type="text"
-                            data-ocid="wallet.transfer.address_input"
-                            value={transferTo}
-                            onChange={(e) => setTransferTo(e.target.value)}
-                            placeholder={
-                              transferModal === "sgldt"
-                                ? "aaaaa-bbbbb-ccccc..."
-                                : "0x..."
-                            }
-                            className="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500/60 text-white placeholder:text-zinc-600 rounded-xl px-4 py-3 text-sm font-mono outline-none transition-colors"
-                          />
-                        </div>
-                        <div>
-                          <label
-                            htmlFor="transfer-amount"
-                            className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block"
-                          >
-                            Amount (
-                            {transferModal === "eth"
-                              ? "ETH"
-                              : transferModal === "uni"
-                                ? "UNI"
-                                : "sGLDT"}
-                            )
-                          </label>
-                          <input
-                            id="transfer-amount"
-                            type="number"
-                            data-ocid="wallet.transfer.amount_input"
-                            value={transferAmt}
-                            min="0"
-                            step="0.0001"
-                            onChange={(e) => setTransferAmt(e.target.value)}
-                            placeholder="0.0000"
-                            className="w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500/60 text-white placeholder:text-zinc-600 rounded-xl px-4 py-3 text-sm font-mono outline-none transition-colors"
-                          />
-                        </div>
-                        <GoldCTA
-                          data-ocid="wallet.transfer.submit_button"
-                          onClick={handleTransferSubmit}
-                          disabled={
-                            !transferTo ||
-                            !transferAmt ||
-                            Number.parseFloat(transferAmt) <= 0
-                          }
-                          loading={transferLoading}
-                          size="md"
-                          leadingIcon={<Send />}
-                          trailingIcon={null}
-                        >
-                          {transferLoading ? "Submitting…" : "Confirm Transfer"}
-                        </GoldCTA>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Stat Cards Row */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12">
-                  <StatCard
-                    title="Linked Address"
-                    value={`${ethAddress.slice(0, 6)}...${ethAddress.slice(-4)}`}
-                    sub="Ethereum Mainnet"
-                    icon={<Activity className="text-pink-500" />}
-                  />
-                  <StatCard
-                    title="UNI Balance"
-                    value={
-                      uniBalance !== null ? safeBalance(uniBalance) : "..."
-                    }
-                    sub={uniUsd ? `\u2248 $${uniUsd} USD` : "Uniswap ERC-20"}
-                    icon={<Coins className="text-pink-400" />}
-                  />
-                  <StatCard
-                    title="Exchange Rate"
-                    value={liveRate.toFixed(4)}
-                    sub={`UNI $${uniPrice?.toFixed(2) ?? "\u2014"} / sGLDT $${sgldtPrice?.toFixed(4) ?? "\u2014"}`}
-                    icon={<ArrowRightLeft className="text-zinc-500" />}
-                  />
-                </div>
-              </>
-            )}
+{/* ETH wallet connect / connected dashboard */}
+            <WalletSection
+              ethAddress={ethAddress}
+              walletConnectLog={walletConnectLog}
+              walletConnectionError={walletConnectionError}
+              balanceRefreshing={balanceRefreshing}
+              ethBalanceDiag={ethBalanceDiag}
+              uniBalanceDiag={uniBalanceDiag}
+              ethBalance={ethBalance}
+              uniBalance={uniBalance}
+              sgldtBalance={sgldtBalance}
+              ethUsd={ethUsd}
+              uniUsd={uniUsd}
+              sgldtUsd={sgldtUsd}
+              liveRate={liveRate}
+              uniPrice={uniPrice}
+              sgldtPrice={sgldtPrice}
+              onOpenConnect={() => setConnectModalOpen(true)}
+              onRefreshBalances={() => {
+                if (ethAddress) void refreshBalances(ethAddress);
+              }}
+              onOpenTransfer={(token) => {
+                setTransferModal(token);
+                setTransferTo("");
+                setTransferAmt("");
+              }}
+            />
 
             {/* Unclaimed deposits banner — safety net for deposits the frontend
                 missed claiming (e.g. user closed tab after tx confirmed). */}
             {user && unclaimedDeposits.length > 0 && phase === "idle" && (
-              <div className="mb-6 rounded-3xl border border-yellow-500/40 bg-yellow-500/10 backdrop-blur p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-500">
-                <div className="shrink-0 w-12 h-12 rounded-2xl bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center">
-                  <Coins className="w-6 h-6 text-yellow-400" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-black text-yellow-300 mb-1">
-                    {unclaimedDeposits.length === 1
-                      ? "1 unclaimed deposit ready to mint sGLDT"
-                      : `${unclaimedDeposits.length} unclaimed deposits ready to mint sGLDT`}
-                  </p>
-                  <p className="text-xs text-yellow-200/70">
-                    Your UNI deposit is confirmed on Ethereum. Claim your sGLDT now — this takes ~5 seconds.
-                  </p>
-                </div>
-                <GoldCTA
-                  data-ocid="deposits.claim.button"
-                  loading={retryPayout.isPending}
-                  onClick={async () => {
-                    for (const d of unclaimedDeposits) {
-                      try {
-                        await retryPayout.mutateAsync(d.id as bigint);
-                      } catch {
-                        // continue — aggregate errors shown after loop
-                      }
+              <UnclaimedDepositsBanner
+                count={unclaimedDeposits.length}
+                claiming={retryPayout.isPending}
+                onClaim={async () => {
+                  for (const d of unclaimedDeposits) {
+                    try {
+                      await retryPayout.mutateAsync(d.id as bigint);
+                    } catch {
+                      // continue — aggregate errors shown after loop
                     }
-                    toast.success("Payout(s) processed — check your sGLDT balance");
-                  }}
-                  size="md"
-                  fullWidth={false}
-                  trailingIcon={null}
-                  className="w-full sm:w-auto"
-                >
-                  {retryPayout.isPending ? "Claiming…" : "Claim sGLDT"}
-                </GoldCTA>
-              </div>
+                  }
+                  toast.success("Payout(s) processed — check your sGLDT balance");
+                }}
+              />
             )}
 
-            {/* Refinery Widget */}
-            <div
-              className={`transition-all duration-700 ${
-                !ethAddress
-                  ? "opacity-30 pointer-events-none scale-95 grayscale"
-                  : ""
-              }`}
+{/* Refinery Widget */}
+            <RefineryShell
+              dimmed={!ethAddress}
+              displaySGLDTBalance={displaySGLDTBalance}
+              displaySGLDTLoading={displaySGLDTLoading}
+              displayCkUNIBalance={displayCkUNIBalance}
+              displayCkUNILoading={displayCkUNILoading}
+              treasuryEthUniBalance={treasuryEthUniBalance}
+              treasuryEthUniLoading={treasuryEthUniLoading}
+              treasuryEthUniUnavailable={treasuryEthUniUnavailable}
+              uniAmount={uniAmount}
+              uniBalance={uniBalance}
+              inputDisabled={isActive}
+              outputDisplay={
+                phase === "success" && sgldtReleased
+                  ? sgldtReleased
+                  : estimatedGold.toFixed(5)
+              }
+              onUniAmountChange={setUniAmount}
+              ckuniLedgerCanisterId={CKUNI_LEDGER_CANISTER_ID}
             >
-              <div className="refinery-panel bg-zinc-900 border border-zinc-800 rounded-[2.5rem] overflow-hidden shadow-2xl">
-                <div className="p-6 sm:p-10">
-                  <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
-                    <div>
-                      <h2 className="text-3xl font-black bg-gradient-to-r from-white to-zinc-600 bg-clip-text text-transparent italic">
-                        THE REFINERY
-                      </h2>
-                      {/* Treasury balances — shown directly below the heading */}
-                      <div className="flex flex-wrap items-center gap-3 mt-1.5">
-                        <div className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
-                          {displaySGLDTLoading ? (
-                            <span className="text-[10px] text-zinc-600 font-mono">
-                              Loading treasury…
-                            </span>
-                          ) : (
-                            <span
-                              className="text-[11px] font-semibold font-mono text-emerald-400/90"
-                              data-ocid="refinery.treasury_balance"
-                            >
-                              <span className="text-emerald-300">
-                                {formatTokenAmount(displaySGLDTBalance)}
-                              </span>{" "}
-                              sGLDT available
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
-                          {displayCkUNILoading ? (
-                            <span className="text-[10px] text-zinc-600 font-mono">
-                              Loading…
-                            </span>
-                          ) : (
-                            <span
-                              className="text-[11px] font-semibold font-mono text-blue-400/90"
-                              data-ocid="refinery.ckuni_balance"
-                            >
-                              <span className="text-blue-300">
-                                {formatTokenAmount(displayCkUNIBalance, 18)}
-                              </span>{" "}
-                              ckUNI minted
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-pink-400 shrink-0" />
-                          {treasuryEthUniLoading ? (
-                            <span className="text-[10px] text-zinc-600 font-mono">
-                              Loading…
-                            </span>
-                          ) : (
-                            <span
-                              className="text-[11px] font-semibold font-mono text-pink-400/90"
-                              data-ocid="refinery.eth_uni_balance"
-                              title={
-                                treasuryEthUniUnavailable
-                                  ? "Balance temporarily unavailable"
-                                  : undefined
-                              }
-                            >
-                              <span className="text-pink-300">
-                                {treasuryEthUniUnavailable
-                                  ? "—"
-                                  : (treasuryEthUniBalance ?? "0.0000")}
-                              </span>{" "}
-                              UNI on ETH
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest">
-                          UNI &rarr; sGLDT
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <div className="bg-black border border-zinc-800 px-4 py-2 rounded-xl text-[10px] font-bold text-zinc-400">
-                        GAS: ~0.002 ETH
-                      </div>
-                      <div className="text-[9px] text-blue-500/60 font-mono">
-                        via ICP ERC-20 Minter
-                      </div>
-                    </div>
-                  </header>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-                    {/* Input UNI */}
-                    <div className="lg:col-span-2 group">
-                      <div className="bg-black/50 p-6 sm:p-8 rounded-3xl border border-zinc-800 group-focus-within:border-pink-500/40 transition-all">
-                        <div className="flex justify-between items-center mb-4">
-                          <span className="text-[10px] font-black text-zinc-500 tracking-widest uppercase">
-                            From (Ethereum)
-                          </span>
-                          <span className="text-xs text-pink-500 font-bold">
-                            UNI
-                          </span>
-                        </div>
-                        <input
-                          data-ocid="refinery.uni.input"
-                          type="text"
-                          inputMode="decimal"
-                          placeholder="0.00"
-                          autoComplete="off"
-                          autoCorrect="off"
-                          autoCapitalize="off"
-                          spellCheck={false}
-                          aria-label="UNI amount to swap"
-                          className="bg-transparent text-3xl sm:text-4xl font-bold w-full outline-none text-white placeholder:text-zinc-600 focus-visible:placeholder:text-zinc-500 tabular-nums min-w-0"
-                          value={uniAmount}
-                          onChange={(e) => {
-                            let val = e.target.value.trim();
-                            // Reject scientific notation, letters, and other invalid chars
-                            // Allow: digits, one decimal point, optional leading "."
-                            if (!/^\d*\.?\d*$/.test(val)) return;
-                            // Collapse a leading "." into "0."
-                            if (val.startsWith(".")) val = `0${val}`;
-                            // Allow empty or partial-input intermediate states
-                            if (val === "" || val === "0" || val.endsWith(".")) {
-                              setUniAmount(val);
-                              return;
-                            }
-                            const raw = Number.parseFloat(val);
-                            if (Number.isNaN(raw) || raw < 0) {
-                              setUniAmount("");
-                              return;
-                            }
-                            const max = Number.parseFloat(uniBalance ?? "");
-                            if (Number.isFinite(max) && raw > max) {
-                              // Clamp to balance without losing user precision
-                              setUniAmount(uniBalance ?? "");
-                              return;
-                            }
-                            // Preserve the user's typed string — avoids precision loss
-                            // from Number→string conversion.
-                            setUniAmount(val);
-                          }}
-                          disabled={isActive}
-                        />
-                        {uniBalance && (
-                          <button
-                            type="button"
-                            onClick={() => setUniAmount(uniBalance)}
-                            className="mt-2 px-3 py-2 text-xs text-pink-500 font-bold hover:underline hover:bg-pink-500/5 rounded-md -ml-1"
-                          >
-                            MAX: {uniBalance} UNI
-                          </button>
-                        )}
-                        {uniBalance &&
-                          Number.parseFloat(uniAmount) >
-                            Number.parseFloat(uniBalance) && (
-                            <p className="mt-1.5 text-xs text-red-400 font-semibold">
-                              Exceeds your UNI balance
-                            </p>
-                          )}
-                      </div>
-                    </div>
-
-                    {/* Arrow */}
-                    <div className="flex items-center justify-center lg:col-span-1 py-4 lg:py-0">
-                      <div className="w-14 h-14 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-yellow-500 shadow-xl">
-                        <ArrowRightLeft size={24} />
-                      </div>
-                    </div>
-
-                    {/* Output sGLDT */}
-                    <div className="lg:col-span-2 group">
-                      <div className="bg-yellow-500/[0.03] p-6 sm:p-8 rounded-3xl border border-yellow-500/10 transition-all">
-                        <div className="flex justify-between items-center mb-4">
-                          <span className="text-[10px] font-black text-yellow-600 tracking-widest uppercase">
-                            To (ICP Network)
-                          </span>
-                          <span className="text-xs text-yellow-500 font-bold">
-                            sGLDT
-                          </span>
-                        </div>
-                        <div className="text-4xl font-bold text-yellow-500 truncate">
-                          {phase === "success" && sgldtReleased
-                            ? sgldtReleased
-                            : estimatedGold.toFixed(5)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Persistent transaction timeline — visible across phases,
-                      surfaces per-step timestamps/durations, survives reloads. */}
-                  {miningSteps.length > 0 && (
-                    <div className="mt-6">
-                      <TransactionTimeline
-                        steps={miningSteps}
-                        defaultOpen={phase === "error" || phase === "success"}
-                        onClear={resetSteps}
-                      />
-                    </div>
-                  )}
-
-                  {/* Progress / Action */}
-                  <div className="mt-10">
-                    {phase === "success" ? (
-                      <PhaseSuccess
-                        sgldtReleased={sgldtReleased}
-                        currentTxHash={currentTxHash}
-                        onStartNew={() => {
-                          setPhase("idle");
-                          setSgldtReleased(null);
-                          setCurrentTxHash(null);
-                        }}
-                      />
-                    ) : phase === "error" ? (
-                      <div
-                        data-ocid="refinery.error_state"
-                        className="space-y-4"
-                      >
-                        {statusMsg === "still_processing" ? (
-                          /* Soft state: ETH confirmed but backend still processing — auto-polling */
-                          <>
-                            <div className="rounded-2xl bg-amber-500/10 border border-amber-500/30 p-5 flex items-start gap-4">
-                              <div className="shrink-0">
-                                <PixelAxeAnimation label="" />
-                              </div>
-                              <div className="flex-1 pt-1">
-                                <p className="font-bold text-amber-400 mb-1">
-                                  Ethereum Transaction Confirmed
-                                </p>
-                                <p className="text-sm text-zinc-400 mb-2">
-                                  Still mining — checking your sGLDT release
-                                  automatically every 3 seconds.
-                                </p>
-                                {currentTxHash && (
-                                  <a
-                                    href={`https://etherscan.io/tx/${currentTxHash}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 underline transition-colors"
-                                    data-ocid="refinery.etherscan_processing.link"
-                                  >
-                                    <Activity size={11} />
-                                    View on Etherscan
-                                  </a>
-                                )}
-                                <p className="text-[10px] text-zinc-600 mt-2 font-mono animate-pulse">
-                                  Checking transaction... (attempt {pollAttempt}
-                                  )
-                                </p>
-                              </div>
-                            </div>
-                            {/* Payout-specific error message — shown if a payout attempt fails */}
-                            {retryErrorMsg && (
-                              <div
-                                data-ocid="refinery.retry_error.error_state"
-                                className="rounded-2xl bg-red-500/10 border border-red-500/30 p-4 flex items-start gap-3"
-                              >
-                                <XCircle
-                                  className="text-red-400 flex-shrink-0 mt-0.5"
-                                  size={18}
-                                />
-                                <div>
-                                  <p className="text-sm font-semibold text-red-400 mb-0.5">
-                                    Payout Error
-                                  </p>
-                                  <p className="text-xs text-zinc-400">
-                                    {retryErrorMsg}
-                                  </p>
-                                  {retryErrorMsg
-                                    .toLowerCase()
-                                    .includes("too low") && (
-                                    <p className="text-xs text-zinc-500 mt-1">
-                                      The treasury needs to be topped up with
-                                      sGLDT before this payout can complete.
-                                      Your deposit is safe — retrying
-                                      automatically.
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-                            <button
-                              type="button"
-                              data-ocid="refinery.view_history.button"
-                              onClick={() => setShowHistory(true)}
-                              className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold h-12 rounded-2xl transition-all text-sm"
-                            >
-                              View Transaction History
-                            </button>
-                          </>
-                        ) : (
-                          /* Hard error state */
-                          <>
-                            <div className="rounded-2xl bg-red-500/10 border border-red-500/30 p-5 flex items-start gap-3">
-                              <XCircle
-                                className="text-red-400 flex-shrink-0 mt-0.5"
-                                size={20}
-                              />
-                              <div>
-                                <p className="font-bold text-red-400 mb-1">
-                                  Error
-                                </p>
-                                <p className="text-sm text-zinc-400">
-                                  {statusMsg}
-                                </p>
-                                {currentTxHash && (
-                                  <a
-                                    href={`https://etherscan.io/tx/${currentTxHash}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="mt-2 inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 underline transition-colors"
-                                    data-ocid="refinery.etherscan_error.link"
-                                  >
-                                    <Activity size={11} />
-                                    Track on Etherscan
-                                  </a>
-                                )}
-                              </div>
-                            </div>
-                            {/* Step tracker + manual recovery panel */}
-                            {miningSteps.length > 0 && (
-                              <div className="rounded-2xl bg-zinc-900 border border-zinc-700/50 p-4 space-y-2">
-                                <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
-                                  Progress
-                                </div>
-                                {miningSteps.map((s) => (
-                                  <div key={s.id} className="flex items-start gap-2 text-xs">
-                                    <span className="mt-0.5 shrink-0 text-sm">
-                                      {s.status === "done" ? "✅" : s.status === "error" ? "❌" : s.status === "active" ? "⏳" : "⚪"}
-                                    </span>
-                                    <div className="flex-1 min-w-0">
-                                      <div className={
-                                        s.status === "done" ? "text-emerald-400"
-                                        : s.status === "error" ? "text-red-400"
-                                        : s.status === "active" ? "text-yellow-400"
-                                        : "text-zinc-500"
-                                      }>
-                                        {s.label}
-                                      </div>
-                                      {s.detail && (
-                                        <div className="text-[10px] text-zinc-500 font-mono break-all mt-0.5">
-                                          {s.detail}
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                            {/* PRIMARY recovery — one-click finalize.
-                                Same button as in wallet_confirming, placed
-                                here too because that's where users land if
-                                the automated hash-capture race fails. */}
-                            <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/40 p-4 space-y-2">
-                              <div className="flex items-start gap-2">
-                                <CheckCircle2 size={14} className="text-emerald-400 shrink-0 mt-0.5" />
-                                <div className="text-[11px] text-emerald-300 leading-relaxed">
-                                  <strong className="block text-emerald-200 mb-0.5">Already signed your deposit?</strong>
-                                  Tap below — we'll find your deposit on Ethereum and finalize it automatically.
-                                </div>
-                              </div>
-                              <button
-                                type="button"
-                                disabled={manualRecoveryBusy}
-                                onClick={finalizeFromChain}
-                                className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 rounded-xl disabled:opacity-50 text-sm flex items-center justify-center gap-2"
-                                data-ocid="refinery.finalize_from_chain.error_button"
-                              >
-                                {manualRecoveryBusy ? (
-                                  <>
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                    Searching Ethereum…
-                                  </>
-                                ) : (
-                                  <>
-                                    <CheckCircle2 size={16} />
-                                    Finalize my deposit
-                                  </>
-                                )}
-                              </button>
-                            </div>
-                            <details className="rounded-2xl bg-zinc-900/60 border border-zinc-800 p-4">
-                              <summary className="cursor-pointer text-xs font-bold text-yellow-400 select-none">
-                                Paste tx hash manually (advanced)
-                              </summary>
-                              <div className="mt-3 space-y-2">
-                                <p className="text-[11px] text-zinc-400 leading-relaxed">
-                                  Rarely needed — the green button above is the fastest path. Use this
-                                  only if you want to explicitly paste a specific deposit hash.
-                                </p>
-                                <input
-                                  type="text"
-                                  value={manualTxHash}
-                                  onChange={(e) => setManualTxHash(e.target.value)}
-                                  placeholder="0x…"
-                                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-xs text-yellow-300 font-mono placeholder:text-zinc-600"
-                                />
-                                <button
-                                  type="button"
-                                  disabled={manualRecoveryBusy || !manualTxHash}
-                                  onClick={() => resumeFromTxHash(manualTxHash)}
-                                  className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2 rounded-lg disabled:opacity-50 text-sm"
-                                >
-                                  {manualRecoveryBusy ? (
-                                    <Loader2 className="w-4 h-4 mx-auto animate-spin" />
-                                  ) : (
-                                    "Resume monitoring"
-                                  )}
-                                </button>
-                              </div>
-                            </details>
-                            <GoldCTA
-                              data-ocid="refinery.try_again.button"
-                              tone="neutral"
-                              size="md"
-                              trailingIcon={null}
-                              onClick={async () => {
-                                // Reset stuck deposit on backend if we have a request ID
-                                if (depositRequestId !== null && actor) {
-                                  try {
-                                    await actor.resetMiningPhase(
-                                      depositRequestId,
-                                    );
-                                  } catch {
-                                    // Non-blocking — reset frontend state regardless
-                                  }
-                                }
-                                setDepositRequestId(null);
-                                setCurrentTxHash(null);
-                                setStatusMsg("");
-                                setRetryErrorMsg(null);
-                                setPhase("idle");
-                              }}
-                            >
-                              Try Again
-                            </GoldCTA>
-                          </>
-                        )}
-                      </div>
-                    ) : phase === "wallet_confirming" ? (
-                      <PhaseWalletConfirming
-                        uniAmount={uniAmount}
-                        depositAddress={depositAddress}
-                        manualTxHash={manualTxHash}
-                        manualRecoveryBusy={manualRecoveryBusy}
-                        onManualTxHashChange={setManualTxHash}
-                        onResumeFromTxHash={resumeFromTxHash}
-                        onFinalizeFromChain={finalizeFromChain}
-                        onCancel={() => {
-                          abortRef.current = true;
-                          setPhase("idle");
-                          setStatusMsg("");
-                        }}
-                      />
-                    ) : phase === "eth_monitoring" ? (
-                      /* Waiting for Ethereum on-chain confirmation — new rich
-                         visualization: stepper + cross-chain flow + live block
-                         meter + prominent pixel mining animation. */
-                      <div
-                        data-ocid="refinery.eth_monitoring.loading_state"
-                        className="space-y-4"
-                      >
-                        <WorkflowStepper currentStep={2} />
-                        <CrossChainFlow phase="bridge" amount={uniAmount} />
-
-                        {/* Calm monitoring hero — the pixel axe is now a
-                         *  subordinate decorative element, scaled down to
-                         *  ~140px and stripped of its arcade HUD + status
-                         *  label. The real status signal is the bridge
-                         *  progress card immediately below. The clean card
-                         *  surface and neutral border (no more fluorescent
-                         *  yellow) tone the whole surface down. */}
-                        <div className="relative rounded-2xl border border-zinc-800 bg-zinc-900/40 overflow-hidden p-5 flex items-center gap-5">
-                          <div className="shrink-0 scale-90 sm:scale-100 origin-left">
-                            <PixelAxeAnimation
-                              label=""
-                              compact
-                              pollPing={pollAttempt > 0 ? pollAttempt : undefined}
-                            />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">
-                              Status
-                            </p>
-                            <p className="font-bold text-white text-sm sm:text-base mb-1 leading-snug">
-                              {bridgeProgress >= 1
-                                ? "Releasing sGLDT"
-                                : bridgeProgress > 0
-                                  ? "Minting ckUNI to treasury"
-                                  : "Awaiting Ethereum confirmations"}
-                            </p>
-                            <p className="text-[11px] text-zinc-400 leading-relaxed">
-                              The chain-key minter waits for 12 Ethereum
-                              blocks, then credits ckUNI to the treasury.
-                              sGLDT releases automatically on arrival.
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Bridge progress — treasury ckUNI delta as a live
-                         *  0→100% bar. Driven by icrc1_balance_of queries
-                         *  every 3-6s, so movement reflects actual on-chain
-                         *  state, not a simulated countdown. */}
-                        <div
-                          className="rounded-2xl border border-zinc-800 bg-black/30 p-4 space-y-2"
-                          aria-live="polite"
-                          aria-atomic="true"
-                        >
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse shrink-0" aria-hidden />
-                              <span className="text-[11px] font-black text-zinc-300 uppercase tracking-widest truncate">
-                                Bridge progress
-                              </span>
-                            </div>
-                            <span
-                              className="text-[11px] font-mono font-bold text-zinc-200 tabular-nums"
-                              data-ocid="refinery.bridge.progress_pct"
-                            >
-                              {Math.round(bridgeProgress * 100)}%
-                            </span>
-                          </div>
-                          <div
-                            className="w-full h-2 rounded-full bg-zinc-800 overflow-hidden"
-                            role="progressbar"
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                            aria-valuenow={Math.round(bridgeProgress * 100)}
-                            aria-label="Bridge progress: percent of your UNI deposit credited to the ICP treasury as ckUNI"
-                          >
-                            <div
-                              className="h-full bg-gradient-to-r from-blue-500 via-blue-400 to-sky-300 transition-[width] duration-500 ease-out"
-                              style={{
-                                width: `${Math.max(2, Math.round(bridgeProgress * 100))}%`,
-                              }}
-                            />
-                          </div>
-                          <p className="text-[11px] text-zinc-400 leading-relaxed">
-                            {bridgeProgress >= 1
-                              ? "ckUNI received — finalizing sGLDT release (under 10 s)."
-                              : bridgeProgress > 0
-                                ? "Minter is crediting ckUNI to the treasury. Typically finishes within a minute of the 12th Ethereum confirmation."
-                                : "Waiting for 12 Ethereum confirmations before the minter releases ckUNI. Typically 3–5 minutes."}
-                          </p>
-                          <p className="text-[10px] text-zinc-500 leading-relaxed">
-                            Safe to close this tab — your deposit is recorded
-                            and the canister will finalize on its own.
-                          </p>
-                        </div>
-
-                        {/* Live block confirmation meter — pulls REAL data
-                            from viem publicClient.getTransactionReceipt +
-                            getBlockNumber. Shows the Ethereum-side
-                            confirmations count alongside the bridge progress
-                            so the user sees both halves of the journey. */}
-                        <BlockConfirmationMeter txHash={currentTxHash} />
-
-                        {/* Etherscan link + tx hash */}
-                        {currentTxHash && (
-                          <div className="rounded-2xl border border-zinc-800 bg-black/30 p-3 flex items-center justify-between gap-3">
-                            <div className="min-w-0">
-                              <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-0.5">
-                                Deposit Tx
-                              </div>
-                              <code className="text-[11px] text-blue-300 font-mono truncate block">
-                                {currentTxHash.slice(0, 14)}…{currentTxHash.slice(-8)}
-                              </code>
-                            </div>
-                            <a
-                              href={`https://etherscan.io/tx/${currentTxHash}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="shrink-0 inline-flex items-center gap-1.5 text-[11px] font-bold text-blue-300 hover:text-blue-200 bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-xl transition-colors"
-                              data-ocid="refinery.etherscan.link"
-                            >
-                              <Activity size={11} />
-                              Etherscan ↗
-                            </a>
-                          </div>
-                        )}
-
-                        {statusMsg && (
-                          <div className="text-center text-xs text-zinc-500 font-medium">
-                            {statusMsg}
-                          </div>
-                        )}
-
-                        {/* Manual status check — useful on mobile when the
-                         *  browser has throttled the polling interval and
-                         *  the user wants to force an immediate recheck.
-                         *  Calls the SAME retryUNIDepositPayout path the
-                         *  auto-poll uses, so behavior is identical. */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          <GoldCTA
-                            data-ocid="refinery.check_now.button"
-                            tone="info"
-                            size="md"
-                            trailingIcon={null}
-                            disabled={!actor || !depositRequestId}
-                            onClick={async () => {
-                              if (!actor || !depositRequestId) return;
-                              try {
-                                const result = await (
-                                  actor as unknown as {
-                                    retryUNIDepositPayout: (id: bigint) => Promise<string>;
-                                  }
-                                ).retryUNIDepositPayout(depositRequestId);
-                                const raw = typeof result === "string" ? result : String(result ?? "");
-                                const s = raw.toLowerCase();
-                                if (s.includes("paid") || s.includes("success")) {
-                                  const m =
-                                    raw.match(/[:\s](\d+\.?\d*)\s*sgldt/i) ??
-                                    raw.match(/paid[:\s]+(\d+\.?\d*)/i);
-                                  await stopWithSuccess(m ? m[1] : null);
-                                } else if (s.includes("payout_failed:")) {
-                                  const reason = raw.replace(/^.*payout_failed:\s*/i, "").trim();
-                                  const isFunds =
-                                    reason.toLowerCase().includes("insufficientfunds") ||
-                                    reason.toLowerCase().includes("insufficient");
-                                  stopWithError(
-                                    isFunds
-                                      ? "Refinery is out of sGLDT right now. Your deposit is recorded — try again in a few minutes, or contact support."
-                                      : `Release failed: ${reason || "Unknown error"}`,
-                                  );
-                                } else {
-                                  toast.info(
-                                    raw.trim().length > 0
-                                      ? `Still processing: ${raw.trim()}`
-                                      : "Still processing. The backend sweeper runs every 30s — sGLDT will appear automatically.",
-                                  );
-                                }
-                              } catch (err) {
-                                toast.error(
-                                  `Check failed: ${err instanceof Error ? err.message : String(err)}`,
-                                );
-                              }
-                            }}
-                          >
-                            Check now
-                          </GoldCTA>
-                          <GoldCTA
-                            data-ocid="refinery.cancel.button"
-                            tone="neutral"
-                            size="md"
-                            trailingIcon={null}
-                            onClick={() => {
-                              abortRef.current = true;
-                              setPhase("idle");
-                              setStatusMsg("");
-                            }}
-                          >
-                            Cancel monitoring
-                          </GoldCTA>
-                        </div>
-                      </div>
-                    ) : phase === "awaiting_deposit" ? (
-                      /* Legacy fallback phase — should not show in normal flow */
-                      <div
-                        data-ocid="refinery.awaiting_deposit_state"
-                        className="space-y-4"
-                      >
-                        <div className="flex items-center gap-2 px-1">
-                          <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse shrink-0" />
-                          <p className="font-bold text-yellow-400 text-sm">
-                            Waiting for your deposit on Ethereum...
-                          </p>
-                        </div>
-                        <div className="rounded-2xl bg-zinc-900 border border-zinc-700 p-4">
-                          <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-2">
-                            Send UNI to this address
-                          </p>
-                          <div className="flex items-center gap-2">
-                            <code
-                              className="flex-1 text-xs text-yellow-300 font-mono break-all leading-relaxed"
-                              data-ocid="refinery.deposit_address"
-                            >
-                              {depositAddress}
-                            </code>
-                            <button
-                              type="button"
-                              data-ocid="refinery.copy_deposit_address.button"
-                              onClick={copyDepositAddress}
-                              aria-label="Copy deposit address"
-                              className="shrink-0 w-9 h-9 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 flex items-center justify-center transition-colors"
-                            >
-                              {copiedDepositAddress ? (
-                                <CheckCircle2
-                                  size={15}
-                                  className="text-emerald-400"
-                                />
-                              ) : (
-                                <Copy size={15} className="text-zinc-400" />
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                        <div className="flex gap-3">
-                          <button
-                            type="button"
-                            data-ocid="refinery.cancel.button"
-                            onClick={() => {
-                              abortRef.current = true;
-                              setPhase("idle");
-                            }}
-                            className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 font-bold h-14 rounded-2xl transition-all"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    ) : isActive ? (
-                      /* Phase: releasing_sgldt — sGLDT being transferred */
-                      <div
-                        data-ocid="refinery.mining.loading_state"
-                        className="space-y-6"
-                      >
-                        {phase === "releasing_sgldt" && (
-                          <div className="rounded-2xl bg-yellow-500/10 border border-yellow-500/30 p-4 flex items-center gap-4">
-                            <div className="shrink-0 bg-zinc-900/80 rounded-xl p-1">
-                              <PixelAxeAnimation label="" success={true} />
-                            </div>
-                            <div>
-                              <p className="font-bold text-yellow-400 text-sm">
-                                Releasing sGLDT to Your Account
-                              </p>
-                              <p className="text-xs text-zinc-400 mt-1">
-                                ETH transaction confirmed — sGLDT is being
-                                transferred from the treasury to your ICP
-                                account.
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                        <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">
-                          <span>{phaseLabels[phaseStep - 1] ?? statusMsg}</span>
-                          <span className="text-pink-500">
-                            {Math.round((phaseStep / 3) * 100)}%
-                          </span>
-                        </div>
-                        <div className="w-full bg-zinc-800 h-3 rounded-full overflow-hidden p-0.5">
-                          <div
-                            className="h-full bg-gradient-to-r from-blue-600 via-yellow-400 to-pink-600 rounded-full transition-all duration-700 shadow-[0_0_15px_rgba(255,0,122,0.3)]"
-                            style={{ width: `${(phaseStep / 3) * 100}%` }}
-                          />
-                        </div>
-                        <div className="text-center text-xs text-zinc-500 font-medium">
-                          {statusMsg}
-                        </div>
-                        <div className="flex justify-center">
-                          <div className="flex items-center gap-2 text-[10px] text-zinc-600 font-bold italic">
-                            <Loader2 size={12} className="animate-spin" />
-                            Processing on ICP...
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <GoldCTA
-                          data-ocid="refinery.start.primary_button"
-                          onClick={startMining}
-                          disabled={
-                            !uniAmount ||
-                            !ethAddress ||
-                            !user ||
-                            (!actor && !actorTimedOut) ||
-                            liveRate <= 0 ||
-                            !uniPrice ||
-                            !sgldtPrice
-                          }
-                          aria-label="Mine sGLDT by depositing UNI"
-                          size="lg"
-                          className="shadow-2xl"
-                        >
-                          ⛏ Mine sGLDT
-                        </GoldCTA>
-                        {(liveRate <= 0 || !uniPrice || !sgldtPrice) && user && ethAddress && (
-                          <p className="mt-2 text-center text-xs text-amber-400">
-                            Waiting for live exchange rate before enabling swap…
-                          </p>
-                        )}
-                        {user && !actor && !actorTimedOut && (
-                          <p className="mt-2 text-center text-xs text-zinc-500 animate-pulse">
-                            Connecting to canister...
-                          </p>
-                        )}
-                        {actorTimedOut && (
-                          <div className="mt-2 text-center space-y-2">
-                            <p className="text-xs text-red-400">
-                              Unable to reach the refinery. Please refresh the
-                              page.
-                            </p>
-                            <button
-                              type="button"
-                              onClick={() => window.location.reload()}
-                              className="text-xs text-zinc-400 underline underline-offset-2 hover:text-white transition-colors"
-                            >
-                              Retry
-                            </button>
-                          </div>
-                        )}
-
-                        {/* Recover-a-previous-deposit panel — shown only when
-                         *  the user is authenticated + has wallet connected +
-                         *  is idle. Hidden behind a subtle text button so it
-                         *  doesn't clutter the primary flow. Covers two
-                         *  scenarios: (a) the user sent UNI but the frontend
-                         *  never recorded the deposit on the canister (tab
-                         *  killed mid-flow, network drop, older version of
-                         *  the dApp) — hit "Scan Ethereum" to have the
-                         *  canister find the tx by address; (b) user has the
-                         *  specific txHash — paste it in for a direct verify
-                         *  + finalize. Both paths run the same canister
-                         *  verification as the happy-path flow, so the
-                         *  verification guarantees are identical.  */}
-                        {user && ethAddress && actor && (
-                          <div className="mt-4">
-                            <button
-                              type="button"
-                              onClick={() => setShowRecoveryPanel((v) => !v)}
-                              className="w-full text-center text-[11px] text-zinc-500 hover:text-zinc-300 underline underline-offset-2 transition-colors py-2"
-                              data-ocid="refinery.recovery.toggle"
-                              aria-expanded={showRecoveryPanel}
-                            >
-                              {showRecoveryPanel
-                                ? "Hide recovery options"
-                                : "Already sent UNI? Recover a previous deposit"}
-                            </button>
-
-                            {showRecoveryPanel && (
-                              <div className="mt-3 rounded-2xl border border-blue-500/30 bg-blue-500/5 p-4 space-y-4">
-                                <div>
-                                  <p className="text-[11px] font-black text-blue-300 uppercase tracking-widest mb-1">
-                                    Recover a previous deposit
-                                  </p>
-                                  <p className="text-[11px] text-zinc-400 leading-relaxed">
-                                    If you sent UNI to the bridge but the dApp
-                                    didn't track the swap, enter the same UNI
-                                    amount above, then either scan for your
-                                    recent tx or paste its hash. The canister
-                                    re-verifies the calldata and releases your
-                                    sGLDT.
-                                  </p>
-                                </div>
-
-                                <button
-                                  type="button"
-                                  data-ocid="refinery.recovery.scan"
-                                  onClick={finalizeFromChain}
-                                  disabled={
-                                    manualRecoveryBusy ||
-                                    !uniAmount ||
-                                    Number.parseFloat(uniAmount || "0") <= 0
-                                  }
-                                  className="w-full min-h-[48px] rounded-xl bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/30 text-blue-200 font-bold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                  {manualRecoveryBusy
-                                    ? "Searching Ethereum…"
-                                    : "Scan Ethereum for my deposit"}
-                                </button>
-
-                                <div className="flex items-center gap-3">
-                                  <span className="flex-1 h-px bg-zinc-800" />
-                                  <span className="text-[10px] text-zinc-600 uppercase tracking-widest">
-                                    or
-                                  </span>
-                                  <span className="flex-1 h-px bg-zinc-800" />
-                                </div>
-
-                                <div className="space-y-2">
-                                  <label
-                                    htmlFor="recovery-tx-hash"
-                                    className="block text-[10px] font-black text-zinc-500 uppercase tracking-widest"
-                                  >
-                                    Paste your deposit tx hash
-                                  </label>
-                                  <input
-                                    id="recovery-tx-hash"
-                                    type="text"
-                                    inputMode="text"
-                                    autoCapitalize="off"
-                                    autoCorrect="off"
-                                    spellCheck={false}
-                                    value={manualTxHash}
-                                    onChange={(e) =>
-                                      setManualTxHash(e.target.value)
-                                    }
-                                    placeholder="0x… 64 hex chars"
-                                    className="w-full h-11 px-3 rounded-xl bg-zinc-900 border border-zinc-700 text-sm text-white placeholder-zinc-600 font-mono focus:outline-none focus:border-blue-400/60"
-                                  />
-                                  <button
-                                    type="button"
-                                    data-ocid="refinery.recovery.tx_submit"
-                                    onClick={() => resumeFromTxHash(manualTxHash)}
-                                    disabled={
-                                      manualRecoveryBusy ||
-                                      !manualTxHash ||
-                                      !uniAmount ||
-                                      Number.parseFloat(uniAmount || "0") <= 0
-                                    }
-                                    className="w-full min-h-[44px] rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                                  >
-                                    {manualRecoveryBusy
-                                      ? "Verifying…"
-                                      : "Verify & release sGLDT"}
-                                  </button>
-                                </div>
-
-                                {(!uniAmount ||
-                                  Number.parseFloat(uniAmount || "0") <= 0) && (
-                                  <p className="text-[10px] text-amber-400 text-center">
-                                    Enter the UNI amount you deposited in the
-                                    input above — the canister needs it to
-                                    match the on-chain tx.
-                                  </p>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
+              {/* Persistent transaction timeline — visible across phases,
+                  surfaces per-step timestamps/durations, survives reloads. */}
+              {miningSteps.length > 0 && (
+                <div className="mt-6">
+                  <TransactionTimeline
+                    steps={miningSteps}
+                    defaultOpen={phase === "error" || phase === "success"}
+                    onClear={resetSteps}
+                  />
                 </div>
+              )}
 
-                {/* Widget Footer */}
-                <div className="bg-black/40 border-t border-zinc-800 p-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-[10px] font-bold text-zinc-600 uppercase tracking-tighter">
-                  <span className="flex items-center gap-1">
-                    <Lock size={10} /> ckUNI Ledger:{" "}
-                    {CKUNI_LEDGER_CANISTER_ID.slice(0, 20)}...
-                  </span>
-                  <span className="hidden sm:block text-zinc-800">|</span>
-                  <span className="flex items-center gap-1">
-                    <Activity size={10} /> ICP ERC-20 Minter: sv3dd-oaaaa...
-                  </span>
-                </div>
+              {/* Progress / Action */}
+              <div className="mt-10">
+                {phase === "success" ? (
+                  <PhaseSuccess
+                    sgldtReleased={sgldtReleased}
+                    currentTxHash={currentTxHash}
+                    onStartNew={() => {
+                      setPhase("idle");
+                      setSgldtReleased(null);
+                      setCurrentTxHash(null);
+                    }}
+                  />
+                ) : phase === "error" ? (
+                  <PhaseError
+                    statusMsg={statusMsg}
+                    bridgeProgress={bridgeProgress}
+                    currentTxHash={currentTxHash}
+                    pollAttempt={pollAttempt}
+                    retryErrorMsg={retryErrorMsg}
+                    miningSteps={miningSteps}
+                    manualTxHash={manualTxHash}
+                    manualRecoveryBusy={manualRecoveryBusy}
+                    onManualTxHashChange={setManualTxHash}
+                    onFinalizeFromChain={finalizeFromChain}
+                    onResumeFromTxHash={resumeFromTxHash}
+                    onViewHistory={() => setShowHistory(true)}
+                    onTryAgain={async () => {
+                      // Reset stuck deposit on backend if we have a request ID
+                      if (depositRequestId !== null && actor) {
+                        try {
+                          await actor.resetMiningPhase(depositRequestId);
+                        } catch {
+                          // Non-blocking — reset frontend state regardless
+                        }
+                      }
+                      setDepositRequestId(null);
+                      setCurrentTxHash(null);
+                      setStatusMsg("");
+                      setRetryErrorMsg(null);
+                      setPhase("idle");
+                    }}
+                  />
+                ) : phase === "wallet_confirming" ? (
+                  <PhaseWalletConfirming
+                    uniAmount={uniAmount}
+                    depositAddress={depositAddress}
+                    manualTxHash={manualTxHash}
+                    manualRecoveryBusy={manualRecoveryBusy}
+                    onManualTxHashChange={setManualTxHash}
+                    onResumeFromTxHash={resumeFromTxHash}
+                    onFinalizeFromChain={finalizeFromChain}
+                    onCancel={() => {
+                      abortRef.current = true;
+                      setPhase("idle");
+                      setStatusMsg("");
+                    }}
+                  />
+                ) : phase === "eth_monitoring" ? (
+                  <PhaseEthMonitoring
+                    uniAmount={uniAmount}
+                    bridgeProgress={bridgeProgress}
+                    pollAttempt={pollAttempt}
+                    currentTxHash={currentTxHash}
+                    statusMsg={statusMsg}
+                    checkDisabled={!actor || !depositRequestId}
+                    onCheckNow={checkPayoutNow}
+                    onCancel={() => {
+                      abortRef.current = true;
+                      setPhase("idle");
+                      setStatusMsg("");
+                    }}
+                  />
+                ) : phase === "awaiting_deposit" ? (
+                  <PhaseAwaitingDeposit
+                    depositAddress={depositAddress}
+                    copied={copiedDepositAddress}
+                    onCopyAddress={copyDepositAddress}
+                    onCancel={() => {
+                      abortRef.current = true;
+                      setPhase("idle");
+                    }}
+                  />
+                ) : isActive ? (
+                  <PhaseReleasing
+                    releasing={phase === "releasing_sgldt"}
+                    phaseStep={phaseStep}
+                    phaseLabels={phaseLabels}
+                    statusMsg={statusMsg}
+                  />
+                ) : (
+                  <PhaseIdle
+                    uniAmount={uniAmount}
+                    startDisabled={
+                      !uniAmount ||
+                      !ethAddress ||
+                      !user ||
+                      (!actor && !actorTimedOut) ||
+                      liveRate <= 0 ||
+                      !uniPrice ||
+                      !sgldtPrice
+                    }
+                    showRateHint={
+                      (liveRate <= 0 || !uniPrice || !sgldtPrice) &&
+                      !!user &&
+                      !!ethAddress
+                    }
+                    showConnecting={!!user && !actor && !actorTimedOut}
+                    actorTimedOut={actorTimedOut}
+                    showRecoveryEntry={!!user && !!ethAddress && !!actor}
+                    showRecoveryPanel={showRecoveryPanel}
+                    manualTxHash={manualTxHash}
+                    manualRecoveryBusy={manualRecoveryBusy}
+                    onStartMining={startMining}
+                    onToggleRecovery={() => setShowRecoveryPanel((v) => !v)}
+                    onManualTxHashChange={setManualTxHash}
+                    onFinalizeFromChain={finalizeFromChain}
+                    onResumeFromTxHash={resumeFromTxHash}
+                  />
+                )}
               </div>
-            </div>
+            </RefineryShell>
 
             {/* How it works strip */}
-            <div className="mt-12 rounded-3xl border border-zinc-800/60 bg-zinc-900/40 p-6 sm:p-8">
-              <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-5 text-center">How the Refinery Works</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                {[
-                  { icon: "🔗", step: "1", title: "Sign In", desc: "Authenticate with Internet Identity — no seed phrase, no custodian." },
-                  { icon: "💼", step: "2", title: "Connect Wallet", desc: "Link MetaMask or Brave Wallet on Ethereum mainnet." },
-                  { icon: "⛏", step: "3", title: "Approve & Deposit", desc: "Approve UNI spend, then the ckERC-20 helper pulls funds on-chain." },
-                  { icon: "🪙", step: "4", title: "Receive sGLDT", desc: "sGLDT (synthetic gold) lands in your ICP account automatically." },
-                ].map((s) => (
-                  <div key={s.step} className="flex flex-col items-center text-center gap-2">
-                    <div className="w-10 h-10 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-lg">{s.icon}</div>
-                    <div className="text-[9px] font-black text-yellow-500/60 uppercase tracking-widest">Step {s.step}</div>
-                    <div className="text-sm font-bold text-white">{s.title}</div>
-                    <div className="text-[11px] text-zinc-500 leading-relaxed">{s.desc}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <HowItWorksStrip />
 
             <footer className="mt-10 text-center text-xs text-zinc-700">
               &copy; {new Date().getFullYear()} minegold.defi &mdash; built on{" "}

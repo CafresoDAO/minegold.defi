@@ -19,7 +19,7 @@ import { Principal } from "@icp-sdk/core/principal";
 import {
   TrendingUp,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PhaseAwaitingDeposit } from "./components/phases/PhaseAwaitingDeposit";
 import { PhaseError } from "./components/phases/PhaseError";
@@ -69,10 +69,30 @@ import {
   CKUNI_FEE_FALLBACK,
 } from "./hooks/useQueries";
 import { ThemeToggle } from "./components/ThemeToggle";
-import { AdminPage } from "./pages/AdminPage";
-import { BankingBraveHome } from "./pages/BankingBraveHome";
-import { MinegoldBraveSoon } from "./pages/MinegoldBraveSoon";
-import { TransactionHistoryPage } from "./pages/TransactionHistoryPage";
+import { useHashRoute } from "./hooks/useHashRoute";
+
+// Secondary pages are code-split out of the money-path bundle. The operator
+// console in particular has no business shipping to every visitor.
+const AdminPage = lazy(() =>
+  import("./pages/AdminPage").then((m) => ({ default: m.AdminPage })),
+);
+const BankingBraveHome = lazy(() =>
+  import("./pages/BankingBraveHome").then((m) => ({ default: m.BankingBraveHome })),
+);
+const MinegoldBraveSoon = lazy(() =>
+  import("./pages/MinegoldBraveSoon").then((m) => ({ default: m.MinegoldBraveSoon })),
+);
+const TransactionHistoryPage = lazy(() =>
+  import("./pages/TransactionHistoryPage").then((m) => ({
+    default: m.TransactionHistoryPage,
+  })),
+);
+
+const PageFallback = () => (
+  <div className="min-h-[40vh] flex items-center justify-center text-xs text-zinc-500 animate-pulse">
+    Loading…
+  </div>
+);
 
 /** Display a balance string safely — returns "0.0000" for null, undefined, NaN, empty string, or "NaN" */
 
@@ -552,29 +572,21 @@ export default function App() {
   // passed to <ConnectWalletModal /> near the bottom of the tree.
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const [liveRate, setLiveRate] = useState(0);
-  const [showAdmin, setShowAdmin] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
-  // Banking.Brave landing: default view on fresh load. Clicking the
-  // minegold.defi card here opens the cross-chain refinery (this dapp).
-  // Three top-level views: "home" (Banking.Brave landing), "uni" (live dApp),
-  // "brave-soon" (Minegold.Brave preview). Persisted so reloads don't bounce
-  // users out of a flow they were mid-way through.
-  type TopView = "home" | "uni" | "brave-soon";
-  const [topView, setTopView] = useState<TopView>(() => {
-    try {
-      const v = localStorage.getItem("banking_brave_view");
-      if (v === "uni" || v === "brave-soon" || v === "home") return v as TopView;
-      // Back-compat with the older "banking_brave_entered_minegold" key.
-      return localStorage.getItem("banking_brave_entered_minegold") === "1" ? "uni" : "home";
-    } catch { return "home" }
-  });
-  const setTopViewPersisted = (v: TopView) => {
-    setTopView(v);
-    try { localStorage.setItem("banking_brave_view", v); } catch { /* noop */ }
-  };
-  const enterMinegoldUni = () => setTopViewPersisted("uni");
-  const enterMinegoldBrave = () => setTopViewPersisted("brave-soon");
-  const backToBankingBrave = () => setTopViewPersisted("home");
+  // ── Routing ──────────────────────────────────────────────────────────
+  // Real (hash) URLs replace the old localStorage view-switch + booleans.
+  // BRAND DECISION: the refinery IS the product, so #/ lands on it; the
+  // Banking.Brave protocol portfolio is demoted to #/portfolio.
+  const [route, navigate] = useHashRoute();
+  const topView: "home" | "uni" | "brave-soon" =
+    route === "portfolio" ? "home" : route === "brave" ? "brave-soon" : "uni";
+  const showAdmin = route === "admin";
+  const showHistory = route === "history";
+  // Thin boolean wrappers keep the many existing call sites unchanged.
+  const setShowAdmin = (v: boolean) => navigate(v ? "admin" : "refinery");
+  const setShowHistory = (v: boolean) => navigate(v ? "history" : "refinery");
+  const enterMinegoldUni = () => navigate("refinery");
+  const enterMinegoldBrave = () => navigate("brave");
+  const backToBankingBrave = () => navigate("portfolio");
   const [showProfile, setShowProfile] = useState(false);
   const [showTreasury, setShowTreasury] = useState(false);
   const [actorTimedOut, setActorTimedOut] = useState(false);
@@ -1001,7 +1013,9 @@ export default function App() {
   const [transferAmt, setTransferAmt] = useState("");
   const [transferLoading, setTransferLoading] = useState(false);
   const [redeemOpen, setRedeemOpen] = useState(false);
-  const [showProof, setShowProof] = useState(false);
+  // Proof panel rides the router so it's linkable (#/proof).
+  const showProof = route === "proof";
+  const setShowProof = (v: boolean) => navigate(v ? "proof" : "refinery");
 
   // Public treasury balance (no auth required)
   // Prefer direct ledger queries (bypass backend cache), fall back to cached backend values
@@ -2633,14 +2647,20 @@ export default function App() {
 
   if (topView === "home") {
     return (
-      <BankingBraveHome
-        onOpenMinegoldUni={enterMinegoldUni}
-        onOpenMinegoldBrave={enterMinegoldBrave}
-      />
+      <Suspense fallback={<PageFallback />}>
+        <BankingBraveHome
+          onOpenMinegoldUni={enterMinegoldUni}
+          onOpenMinegoldBrave={enterMinegoldBrave}
+        />
+      </Suspense>
     );
   }
   if (topView === "brave-soon") {
-    return <MinegoldBraveSoon onBack={backToBankingBrave} onOpenUni={enterMinegoldUni} />;
+    return (
+      <Suspense fallback={<PageFallback />}>
+        <MinegoldBraveSoon onBack={backToBankingBrave} onOpenUni={enterMinegoldUni} />
+      </Suspense>
+    );
   }
 
   return (
@@ -2763,9 +2783,13 @@ export default function App() {
       {/* Main */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {showAdmin && user ? (
-          <AdminPage />
+          <Suspense fallback={<PageFallback />}>
+            <AdminPage />
+          </Suspense>
         ) : showHistory && user ? (
-          <TransactionHistoryPage />
+          <Suspense fallback={<PageFallback />}>
+            <TransactionHistoryPage />
+          </Suspense>
         ) : (
           <>
             {/* The three-beat story, truth-gated: BAT status checked live

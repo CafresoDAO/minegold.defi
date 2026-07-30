@@ -103,13 +103,15 @@ export function ProofPanel({ onClose }: Props) {
     }
   };
 
+  const balances = snap?.balances ?? null;
+  const readiness = snap?.readiness ?? null;
   // Refine coverage: live treasury sGLDT vs what's owed to pending deposits.
   const coverage =
-    snap && snap.estimatedSGLDTNeeded > 0n
-      ? Number(snap.treasurySGLDTLive) / Number(snap.estimatedSGLDTNeeded)
+    readiness && readiness.estimatedSGLDTNeeded > 0n
+      ? Number(readiness.treasurySGLDTLive) / Number(readiness.estimatedSGLDTNeeded)
       : null;
-  const strandedTotal = snap
-    ? snap.strandedRefines + snap.strandedRedeems
+  const strandedTotal = snap?.stranded
+    ? snap.stranded.refines + snap.stranded.redeems
     : null;
 
   return (
@@ -148,7 +150,11 @@ export function ProofPanel({ onClose }: Props) {
           </p>
           <div className="flex items-center gap-2">
             <span className="text-[10px] text-zinc-500">
-              {snap ? `ledger read ${ageLabel(snap.cachedAtNs)}` : "…"}
+              {isLoading
+                ? "…"
+                : balances
+                  ? `ledger read ${ageLabel(balances.cachedAtNs)}`
+                  : "ledger read unavailable"}
             </span>
             <button
               type="button"
@@ -172,7 +178,7 @@ export function ProofPanel({ onClose }: Props) {
               sGLDT (pays refines)
             </p>
             <p className="text-xl font-black text-yellow-400 tabular-nums">
-              {snap ? formatTokenAmount(snap.sgldtBalance) : "…"}
+              {balances ? formatTokenAmount(balances.sgldtBalance) : isLoading ? "…" : "—"}
             </p>
           </div>
           <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4">
@@ -180,7 +186,7 @@ export function ProofPanel({ onClose }: Props) {
               ckUNI (pays redeems)
             </p>
             <p className="text-xl font-black text-blue-300 tabular-nums">
-              {snap ? formatTokenAmount(snap.ckUNIBalance, 18) : "…"}
+              {balances ? formatTokenAmount(balances.ckUNIBalance, 18) : isLoading ? "…" : "—"}
             </p>
           </div>
         </div>
@@ -191,9 +197,11 @@ export function ProofPanel({ onClose }: Props) {
             <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">
               Refine coverage
             </p>
-            {isLoading || !snap ? (
+            {isLoading ? (
               <p className="text-sm text-zinc-500">…</p>
-            ) : snap.pendingDeposits === 0n ? (
+            ) : !readiness ? (
+              <p className="text-sm text-zinc-500">Unavailable right now</p>
+            ) : readiness.pendingDeposits === 0n ? (
               <p className="text-sm font-bold text-emerald-400">
                 No pending payouts owed
               </p>
@@ -209,9 +217,9 @@ export function ProofPanel({ onClose }: Props) {
                     : "—"}
                 </p>
                 <p className="text-[10px] text-zinc-500 mt-0.5">
-                  {formatTokenAmount(snap.treasurySGLDTLive)} live vs{" "}
-                  {formatTokenAmount(snap.estimatedSGLDTNeeded)} owed across{" "}
-                  {snap.pendingDeposits.toString()} pending
+                  {formatTokenAmount(readiness.treasurySGLDTLive)} live vs{" "}
+                  {formatTokenAmount(readiness.estimatedSGLDTNeeded)} owed across{" "}
+                  {readiness.pendingDeposits.toString()} pending
                 </p>
               </>
             )}
@@ -221,7 +229,9 @@ export function ProofPanel({ onClose }: Props) {
               Held (stranded) swaps
             </p>
             {strandedTotal == null ? (
-              <p className="text-sm text-zinc-500">…</p>
+              <p className="text-sm text-zinc-500">
+                {isLoading ? "…" : "Unavailable right now"}
+              </p>
             ) : (
               <>
                 <p

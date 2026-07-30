@@ -348,21 +348,38 @@ const proofIDL = ({ IDL }: { IDL: any }) =>
   });
 
 export type ProofSnapshot = {
-  sgldtBalance: bigint;
-  ckUNIBalance: bigint;
-  /** ns since epoch the balances were pulled from the ledgers; 0n = never. */
-  cachedAtNs: bigint;
+  /** Cached ledger balances. null = the call failed. */
+  balances: {
+    sgldtBalance: bigint;
+    ckUNIBalance: bigint;
+    /** ns since epoch the balances were read; 0n = never warmed. */
+    cachedAtNs: bigint;
+  } | null;
   /** Live (not cached) sGLDT vs total owed across pending deposits. */
-  treasurySGLDTLive: bigint;
-  pendingDeposits: bigint;
-  estimatedSGLDTNeeded: bigint;
-  strandedRefines: bigint;
-  strandedRedeems: bigint;
+  readiness: {
+    treasurySGLDTLive: bigint;
+    pendingDeposits: bigint;
+    estimatedSGLDTNeeded: bigint;
+  } | null;
+  stranded: { refines: bigint; redeems: bigint } | null;
 };
 
-/** One anonymous sweep of every number /proof shows. getPayoutReadiness is an
- *  update call (it reads the ledger live), so this is slower than a query —
- *  fetched on open + on explicit refresh, not on an interval. */
+/** One anonymous sweep of every number /proof shows.
+ *
+ *  Each leg settles INDEPENDENTLY (allSettled, not all): a transparency page
+ *  that blanks entirely because one method is unavailable is worse than one
+ *  that shows the numbers it has and says so about the rest.
+ *
+ *  DEPLOY ORDER: backend first, then this frontend. All three legs need the
+ *  2026-07 backend — getStrandedCounts is new, and getTreasuryICRC1Balances
+ *  gained `cachedAtNs` (a candid record decode needs every field the client
+ *  IDL declares, so the old 2-field response fails this IDL by design). Ship
+ *  the frontend against an un-upgraded backend and /proof honestly reports
+ *  "unavailable" for all three rather than showing stale or invented numbers.
+ *
+ *  getPayoutReadiness is an update call (it reads the ledger live), so this
+ *  is slower than a query — fetched on open + on explicit refresh, never on
+ *  an interval. */
 export function useProofSnapshot(open: boolean) {
   return useQuery<ProofSnapshot>({
     queryKey: ["proofSnapshot"],
@@ -372,20 +389,44 @@ export function useProofSnapshot(open: boolean) {
         agent: getAnonymousAgent(),
         canisterId: BACKEND_CANISTER_ID,
       }) as any;
-      const [balances, readiness, strandedCounts] = await Promise.all([
+      const [balancesR, readinessR, strandedR] = await Promise.allSettled([
         actor.getTreasuryICRC1Balances(),
         actor.getPayoutReadiness(),
         actor.getStrandedCounts(),
       ]);
+      if (balancesR.status === "rejected") {
+        console.warn("[proof] treasury balances unavailable:", balancesR.reason);
+      }
+      if (readinessR.status === "rejected") {
+        console.warn("[proof] payout readiness unavailable:", readinessR.reason);
+      }
+      if (strandedR.status === "rejected") {
+        console.warn("[proof] stranded counts unavailable:", strandedR.reason);
+      }
       return {
-        sgldtBalance: balances.sgldtBalance as bigint,
-        ckUNIBalance: balances.ckUNIBalance as bigint,
-        cachedAtNs: balances.cachedAtNs as bigint,
-        treasurySGLDTLive: readiness.treasurySGLDTBalance as bigint,
-        pendingDeposits: readiness.pendingDeposits as bigint,
-        estimatedSGLDTNeeded: readiness.estimatedSGLDTNeeded as bigint,
-        strandedRefines: strandedCounts.strandedRefines as bigint,
-        strandedRedeems: strandedCounts.strandedRedeems as bigint,
+        balances:
+          balancesR.status === "fulfilled"
+            ? {
+                sgldtBalance: balancesR.value.sgldtBalance as bigint,
+                ckUNIBalance: balancesR.value.ckUNIBalance as bigint,
+                cachedAtNs: balancesR.value.cachedAtNs as bigint,
+              }
+            : null,
+        readiness:
+          readinessR.status === "fulfilled"
+            ? {
+                treasurySGLDTLive: readinessR.value.treasurySGLDTBalance as bigint,
+                pendingDeposits: readinessR.value.pendingDeposits as bigint,
+                estimatedSGLDTNeeded: readinessR.value.estimatedSGLDTNeeded as bigint,
+              }
+            : null,
+        stranded:
+          strandedR.status === "fulfilled"
+            ? {
+                refines: strandedR.value.strandedRefines as bigint,
+                redeems: strandedR.value.strandedRedeems as bigint,
+              }
+            : null,
       };
     },
     staleTime: 30_000,

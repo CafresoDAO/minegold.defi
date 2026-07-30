@@ -1,12 +1,3 @@
-type sGLDTRequest = 
- record {
-   bbTokenAmount: nat;
-   id: nat;
-   sgldAmountCalculated: nat;
-   status: ExchangeStatus;
-   submitter: principal;
-   timestamp: Time;
- };
 type http_request_result = 
  record {
    body: blob;
@@ -117,27 +108,6 @@ type RedeemRecord =
    timestamp: Time;
    user: principal;
  };
-type ExchangeStatus = 
- variant {
-   approved;
-   pending;
-   rejected;
- };
-type BridgeStatus = 
- variant {
-   approved;
-   pending;
-   rejected;
- };
-type BridgeRequest = 
- record {
-   batAmount: nat;
-   ethAddress: text;
-   id: nat;
-   status: BridgeStatus;
-   submitter: principal;
-   timestamp: Time;
- };
 type AutoFinalizeResult = 
  variant {
    alreadyExists: record {
@@ -206,8 +176,6 @@ service : {
   adminTransferCkUNI: (to: principal, amount: nat) -> (text);
   /// Admin transfers sGLDT from this canister's treasury to any principal via ICRC-1.
   adminTransferSGLDT: (to: principal, amount: nat) -> (text);
-  approveBridgeRequest: (id: nat) -> ();
-  approveSGLDTExchangeRequest: (id: nat) -> ();
   assignCallerUserRole: (user: principal, role: UserRole) -> ();
   /// Find the user's most recent UNI deposit tx to the ckERC-20 helper AND
   /// submit it for verification + payout — all in one call. This is the
@@ -229,23 +197,12 @@ service : {
   /// `tx.from == ethAddress`.
   autoFinalizeUNIDeposit: (ethAddress: text, uniAmountE8: nat, rateHint:
    opt nat) -> (AutoFinalizeResult);
-  calculateExchangeRate: (batAmount: nat) ->
-   (record {
-      bbTokenAmount: nat;
-      sgldAmount: nat;
-    }) query;
-  deprecated_getBridgeRequests: () -> (vec BridgeRequest) query;
-  deprecated_getSGLDTRequests: () -> (vec sGLDTRequest) query;
   /// Diagnoses payout ability for a specific deposit — returns a human-readable summary.
   /// Shows the treasury sGLDT balance, exact amount required for this deposit,
   /// the fee, and whether the transfer would succeed with the current balance.
   /// Admin-only.
   diagnosePayoutAbility: (depositId: nat) -> (text);
   getAllUNIDeposits: () -> (vec UniDepositRequest) query;
-  getBalance: (_principal: principal) -> (nat) query;
-  getBatPrice: () -> (nat);
-  getBridgeRequests: () -> (vec BridgeRequest) query;
-  getBridgeRequestsByUser: (user: principal) -> (vec BridgeRequest) query;
   getCallerUserProfile: () -> (opt UserProfile) query;
   getCallerUserRole: () -> (UserRole) query;
   getCanisterPrincipal: () -> (principal) query;
@@ -347,8 +304,6 @@ service : {
       treasuryPrincipal: text;
       treasurySGLDTBalance: nat;
     });
-  getPendingBridgeRequests: () -> (vec BridgeRequest) query;
-  getPendingSGLDTExchangeRequests: () -> (vec sGLDTRequest) query;
   /// Full rate provenance for the UI and ops: where the current rate came
   /// from and how fresh the on-chain oracle reading is.
   getRateStatus: () ->
@@ -364,10 +319,6 @@ service : {
   /// Admin must send sGLDT to this address on the sGLDT ledger (i2s4q-syaaa-aaaan-qz4sq-cai)
   /// to fund user payouts. No separate "refinery payout balance" exists — there is one treasury.
   getRefineryPrincipal: () -> (text) query;
-  getSGLDTExchangeRequests: () -> (vec sGLDTRequest) query;
-  getSGLDTExchangeRequestsByUser: (user: principal) ->
-   (vec sGLDTRequest) query;
-  getSGLDTPrice: () -> (nat);
   /// Returns the cached on-chain sGLDT balance held by the treasury principal (c626g-iyaaa-aaaau-agpoa-cai).
   /// Used by the treasury banner at the top of the page.
   /// This is a query so it works for unauthenticated (anonymous) callers.
@@ -377,7 +328,6 @@ service : {
   getStrandedRedeems: () -> (vec RedeemRecord) query;
   /// Admin view: every refine that ended #stranded and needs manual resolution.
   getStrandedRefines: () -> (vec RefineRecord) query;
-  getTotalSupply: () -> (nat) query;
   /// Returns cached ICRC-1 balances held by the treasury principal (c626g-iyaaa-aaaau-agpoa-cai).
   /// This is a query so it works for unauthenticated callers.
   /// Call refreshTreasuryBalances() to pull fresh values from the ledgers.
@@ -385,11 +335,6 @@ service : {
    (record {
       ckUNIBalance: nat;
       sgldtBalance: nat;
-    }) query;
-  getTreasuryStats: () ->
-   (record {
-      batPoolBalance: nat;
-      sGLDTTreasuryBalance: nat;
     }) query;
   /// Public query — returns treasury wallet info: cached deposit address, ckUNI balance (e8s), sGLDT balance (e8s).
   /// No authentication required — safe for all callers.
@@ -431,10 +376,6 @@ service : {
   /// without any round-trip to the admin panel itself.
   isAdminCaller: () -> (bool) query;
   isCallerAdmin: () -> (bool) query;
-  migrated_getAllBridgeRequests: () -> (vec BridgeRequest) query;
-  migrated_getAllSGLDTRequests: () -> (vec sGLDTRequest) query;
-  migration_updateBalance: (_balance: nat) -> ();
-  mintBankingBraveTokens: (_to: principal, _amount: nat) -> ();
   /// Redeem sGLDT back into ckUNI at the oracle rate. Prerequisite: the user
   /// has icrc2_approve'd this canister on the sGLDT ledger for at least
   /// `amount` plus the sGLDT transfer fee.
@@ -490,8 +431,6 @@ service : {
   /// Called automatically after any admin transfer or sGLDT payout so the banner stays current.
   /// Note: Principal.fromActor(Self) == c626g-iyaaa-aaaau-agpoa-cai (they are the same).
   refreshTreasuryBalances: () -> ();
-  rejectBridgeRequest: (id: nat) -> ();
-  rejectSGLDTExchangeRequest: (id: nat) -> ();
   /// checkAndProcessCkUNIBalance — REMOVED (was a critical treasury-drain vector).
   /// 
   /// This function previously: (a) had no caller authentication (public shared func),
@@ -540,21 +479,17 @@ service : {
                                         err: text;
                                         ok: text;
                                       });
-  setBatPoolBalance: (_balance: nat) -> ();
   /// Syncs the live exchange rate from the frontend CoinGecko feed to the backend.
   /// Called by the frontend after fetching UNI/sGLDT prices so the backend always uses
   /// the same rate the user sees. Only admin may call this; rate is in 1e8 precision
   /// (e.g. 238_000_000 = 2.38 sGLDT per UNI).
   setLiveExchangeRate: (newRate: nat) -> ();
-  setSGLDTTreasuryBalance: (_balance: nat) -> ();
   /// Admin: set the USD reference price of sGLDT (1e8 precision). This is the
   /// slow leg of the rate — the XRC handles the volatile UNI leg from then
   /// on. Setting it recomputes the rate immediately from the last XRC
   /// reading, without the jump guard (an explicit admin action re-anchors).
   setSGLDTUsdPrice: (priceE8: nat) -> ();
   setUNIExchangeRate: (rate: nat) -> ();
-  submitBridgeRequest: (ethAddress: text, batAmount: nat) -> (nat);
-  submitSGLDTExchangeRequest: (bbTokenAmount: nat) -> (nat);
   /// Records a UNI deposit after the frontend has confirmed the ETH transaction on-chain.
   /// 
   /// Trust model: The frontend is responsible for confirming the ETH transaction via

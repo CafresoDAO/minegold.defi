@@ -1381,221 +1381,18 @@ actor Self {
     userProfiles.add(caller, profile);
   };
 
-  // Legacy stubs (kept for backward compat)
-  public shared ({ caller }) func mintBankingBraveTokens(_to : Principal, _amount : Nat) : async () {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-    Runtime.trap("Use adminTransferCkUNI to distribute ckUNI tokens instead.");
-  };
+  // (Banking.Brave-era BB-token stubs mintBankingBraveTokens/getBalance/
+  // getTotalSupply deleted 2026-07-30 — every one only trapped with a
+  // redirect message. Real balances live on the ICRC-1 ledgers.)
 
-  public query func getBalance(_principal : Principal) : async Nat {
-    Runtime.trap("Use getTreasuryICRC1Balances for real ICRC-1 balances.");
-  };
+  // (Bridge-request methods deleted 2026-07-30: submitBridgeRequest recorded
+  // a row and moved NO tokens — first-generation scaffolding superseded by
+  // the chain-key deposit flow. The `bridgeRequests` stable map is retained
+  // untouched for upgrade compatibility and historical data.)
 
-  public query func getTotalSupply() : async Nat {
-    Runtime.trap("Query the ckUNI ledger directly for total supply.");
-  };
-
-  // -------------------------------------------------------
-  // Bridge Request Methods
-  // -------------------------------------------------------
-  public shared ({ caller }) func submitBridgeRequest(ethAddress : Text, batAmount : Nat) : async Nat {
-    if (not isAuthenticatedUser(caller)) {
-      Runtime.trap("Unauthorized: Must be logged in to submit bridge requests");
-    };
-
-    let id = nextBridgeRequestId;
-    nextBridgeRequestId += 1;
-
-    let request : BridgeRequest = {
-      id;
-      submitter = caller;
-      ethAddress;
-      batAmount;
-      status = #pending;
-      timestamp = Time.now();
-    };
-
-    bridgeRequests.add(id, request);
-    id;
-  };
-
-  public shared ({ caller }) func approveBridgeRequest(id : Nat) : async () {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-
-    let request = switch (bridgeRequests.get(id)) {
-      case (null) { Runtime.trap("Bridge request not found") };
-      case (?request) { request };
-    };
-
-    switch (request.status) {
-      case (#approved) { Runtime.trap("Bridge request already approved") };
-      case (#rejected) { Runtime.trap("Bridge request was rejected and cannot be approved") };
-      case (#pending) {
-        let approvedRequest = {
-          request with status = #approved;
-        };
-        bridgeRequests.add(id, approvedRequest);
-        ();
-      };
-    };
-  };
-
-  public shared ({ caller }) func rejectBridgeRequest(id : Nat) : async () {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-
-    let request = switch (bridgeRequests.get(id)) {
-      case (null) { Runtime.trap("Bridge request not found") };
-      case (?request) { request };
-    };
-
-    switch (request.status) {
-      case (#approved) { Runtime.trap("Bridge request already approved") };
-      case (#rejected) { Runtime.trap("Bridge request already rejected") };
-      case (#pending) {
-        let rejectedRequest = {
-          request with status = #rejected;
-        };
-        bridgeRequests.add(id, rejectedRequest);
-        ();
-      };
-    };
-  };
-
-  public query ({ caller }) func getBridgeRequests() : async [BridgeRequest] {
-    if (not isAuthenticatedUser(caller)) {
-      Runtime.trap("Unauthorized: Must be logged in to view bridge requests");
-    };
-    bridgeRequests.values().toArray().sort(Utils.compareBridgeRequestsByTimestamp);
-  };
-
-  public query ({ caller }) func getPendingBridgeRequests() : async [BridgeRequest] {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-    bridgeRequests.values().toArray().filter(
-      func(request) {
-        request.status == #pending;
-      }
-    ).sort(Utils.compareBridgeRequestsByTimestamp);
-  };
-
-  public query ({ caller }) func getBridgeRequestsByUser(user : Principal) : async [BridgeRequest] {
-    if (caller != user and not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: Can only view your own bridge requests");
-    };
-    bridgeRequests.values().toArray().filter(
-      func(request) {
-        request.submitter == user;
-      }
-    ).sort(Utils.compareBridgeRequestsByTimestamp);
-  };
-
-  // -------------------------------------------------------
-  // sGLDT Exchange Request Methods
-  // -------------------------------------------------------
-  public shared ({ caller }) func submitSGLDTExchangeRequest(bbTokenAmount : Nat) : async Nat {
-    if (not isAuthenticatedUser(caller)) {
-      Runtime.trap("Unauthorized: Must be logged in to submit sGLDT exchange requests");
-    };
-
-    let sgldAmount = bbTokenAmount;
-
-    let id = nextExchangeRequestId;
-    nextExchangeRequestId += 1;
-
-    let request : sGLDTRequest = {
-      id;
-      submitter = caller;
-      bbTokenAmount;
-      sgldAmountCalculated = sgldAmount;
-      status = #pending;
-      timestamp = Time.now();
-    };
-
-    sGLDTRequests.add(id, request);
-    id;
-  };
-
-  public shared ({ caller }) func approveSGLDTExchangeRequest(id : Nat) : async () {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-
-    let request = switch (sGLDTRequests.get(id)) {
-      case (null) { Runtime.trap("sGLDT exchange request not found") };
-      case (?request) { request };
-    };
-
-    switch (request.status) {
-      case (#approved) { Runtime.trap("sGLDT exchange request already approved") };
-      case (#rejected) { Runtime.trap("sGLDT exchange request already rejected") };
-      case (#pending) {
-        let approvedRequest = {
-          request with status = #approved;
-        };
-        sGLDTRequests.add(id, approvedRequest);
-        ();
-      };
-    };
-  };
-
-  public shared ({ caller }) func rejectSGLDTExchangeRequest(id : Nat) : async () {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-
-    let request = switch (sGLDTRequests.get(id)) {
-      case (null) { Runtime.trap("sGLDT exchange request not found") };
-      case (?request) { request };
-    };
-
-    switch (request.status) {
-      case (#approved) { Runtime.trap("sGLDT exchange request already approved") };
-      case (#rejected) { Runtime.trap("sGLDT exchange request already rejected") };
-      case (#pending) {
-        let rejectedRequest = {
-          request with status = #rejected;
-        };
-        sGLDTRequests.add(id, rejectedRequest);
-        ();
-      };
-    };
-  };
-
-  public query ({ caller }) func getSGLDTExchangeRequests() : async [sGLDTRequest] {
-    if (not isAuthenticatedUser(caller)) {
-      Runtime.trap("Unauthorized: Must be logged in to view sGLDT exchange requests");
-    };
-    sGLDTRequests.values().toArray().sort(Utils.compareSGLDTRequestsByTimestamp);
-  };
-
-  public query ({ caller }) func getPendingSGLDTExchangeRequests() : async [sGLDTRequest] {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-    sGLDTRequests.values().toArray().filter(
-      func(request) {
-        request.status == #pending;
-      }
-    ).sort(Utils.compareSGLDTRequestsByTimestamp);
-  };
-
-  public query ({ caller }) func getSGLDTExchangeRequestsByUser(user : Principal) : async [sGLDTRequest] {
-    if (caller != user and not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: Can only view your own sGLDT exchange requests");
-    };
-    sGLDTRequests.values().toArray().filter(
-      func(request) {
-        request.submitter == user;
-      }
-    ).sort(Utils.compareSGLDTRequestsByTimestamp);
-  };
+  // (sGLDT exchange-request methods deleted 2026-07-30 — the manual
+  // admin-approval exchange predates refineCkUNI/redeemSGLDT and moved no
+  // tokens itself. The `sGLDTRequests` stable map is retained untouched.)
 
   // -------------------------------------------------------
   // UNI Deposit Methods
@@ -4019,33 +3816,9 @@ actor Self {
     #ok;
   };
 
-  // -------------------------------------------------------
-  // Legacy Treasury Methods (kept for backward compat)
-  // -------------------------------------------------------
-  public shared ({ caller }) func setSGLDTTreasuryBalance(_balance : Nat) : async () {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-    // No-op: treasury balance is now managed via real ICRC-1 transfers.
-    // To fund the treasury, send sGLDT directly to this canister's principal.
-  };
-
-  public shared ({ caller }) func setBatPoolBalance(_balance : Nat) : async () {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-    batPoolBalance := _balance;
-  };
-
-  public query ({ caller }) func getTreasuryStats() : async {
-    sGLDTTreasuryBalance : Nat;
-    batPoolBalance : Nat;
-  } {
-    {
-      sGLDTTreasuryBalance = 0; // Use getTreasuryICRC1Balances() for real balance
-      batPoolBalance;
-    };
-  };
+  // (Legacy treasury methods deleted 2026-07-30: setSGLDTTreasuryBalance was
+  // a no-op, setBatPoolBalance wrote a var nothing reads, getTreasuryStats
+  // hardcoded its sGLDT leg to 0. Use getTreasuryICRC1Balances.)
 
   // -------------------------------------------------------
   // HTTP Transform (kept for potential future outcalls)
@@ -4054,74 +3827,13 @@ actor Self {
     OutCall.transform(input);
   };
 
-  // -------------------------------------------------------
-  // Price Feed Methods
-  // -------------------------------------------------------
-  public shared ({ caller }) func getBatPrice() : async Nat {
-    switch (cachedBatPrice) {
-      case (null) { BAT_DEFAULT_PRICE };
-      case (?{ price; timestamp }) {
-        if (Time.now() - timestamp > PRICE_CACHE_DURATION) {
-          BAT_DEFAULT_PRICE;
-        } else {
-          price;
-        };
-      };
-    };
-  };
+  // (Legacy price-feed methods deleted 2026-07-30: getBatPrice/getSGLDTPrice
+  // read caches that were never written — they always returned the hardcoded
+  // defaults — and calculateExchangeRate was the identity function. The live
+  // rate lives in getRateStatus.)
 
-  public shared ({ caller }) func getSGLDTPrice() : async Nat {
-    switch (cachedSGldtPrice) {
-      case (null) { SGLDT_DEFAULT_PRICE };
-      case (?{ price; timestamp }) {
-        if (Time.now() - timestamp > PRICE_CACHE_DURATION) {
-          SGLDT_DEFAULT_PRICE;
-        } else {
-          price;
-        };
-      };
-    };
-  };
-
-  public query ({ caller }) func calculateExchangeRate(batAmount : Nat) : async {
-    bbTokenAmount : Nat;
-    sgldAmount : Nat;
-  } {
-    {
-      bbTokenAmount = batAmount;
-      sgldAmount = batAmount;
-    };
-  };
-
-  // Migration Logic
-  public query ({ caller }) func migrated_getAllBridgeRequests() : async [BridgeRequest] {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-    bridgeRequests.values().toArray();
-  };
-
-  public query ({ caller }) func migrated_getAllSGLDTRequests() : async [sGLDTRequest] {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-    sGLDTRequests.values().toArray();
-  };
-
-  public shared ({ caller }) func migration_updateBalance(_balance : Nat) : async () {
-    if (not isAdmin(caller)) {
-      Runtime.trap("Unauthorized: admin only");
-    };
-    Runtime.trap("Not implemented!");
-  };
-
-  public query func deprecated_getBridgeRequests() : async [BridgeRequest] {
-    Runtime.trap("Function deprecated. Use getAllBridgeRequests instead.");
-  };
-
-  public query func deprecated_getSGLDTRequests() : async [sGLDTRequest] {
-    Runtime.trap("Function deprecated. Use getAllSGLDTRequests instead.");
-  };
+  // (migrated_* / migration_updateBalance / deprecated_* stubs deleted
+  // 2026-07-30 — every one either duplicated a live query or trapped.)
 
   // Kick off the first payout sweep 10 s after deploy; it self-reschedules
   // every 30 s. Registered last so every helper the sweep transitively

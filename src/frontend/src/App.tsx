@@ -23,6 +23,7 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { toast } from "sonner";
 import { PhaseAwaitingDeposit } from "./components/phases/PhaseAwaitingDeposit";
 import { PhaseError } from "./components/phases/PhaseError";
+import { PreflightSheet } from "./components/PreflightSheet";
 import { PhaseEthMonitoring } from "./components/phases/PhaseEthMonitoring";
 import { PhaseIdle } from "./components/phases/PhaseIdle";
 import { PhaseReleasing } from "./components/phases/PhaseReleasing";
@@ -559,7 +560,24 @@ export default function App() {
   const refineFlow = useRefineFlow(identity);
 
   const [ethAddress, setEthAddress] = useState<string | null>(null);
-  const [uniAmount, setUniAmount] = useState("");
+  // First-run = this browser has never completed a refine. Gates the
+  // unlimited-approval opt-in and seeds a sensible starter amount.
+  const [firstRun, setFirstRun] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("minegold_has_refined") !== "1";
+    } catch {
+      return true;
+    }
+  });
+  const [uniAmount, setUniAmount] = useState(() => {
+    try {
+      // Returning users get their last amount back; first-runners get the
+      // smallest amount that comfortably clears the 0.005 floor + fees.
+      return localStorage.getItem("minegold_last_amount") ?? "0.05";
+    } catch {
+      return "0.05";
+    }
+  });
   const [phase, setPhase] = useState<MiningPhase>("idle");
   const [statusMsg, setStatusMsg] = useState("");
   const [sgldtReleased, setSgldtReleased] = useState<string | null>(null);
@@ -1206,6 +1224,8 @@ export default function App() {
   // what this swap moves. Unlimited (the MAX_UINT256 DeFi pattern that skips
   // the approve signature on future swaps) is an explicit opt-in, remembered
   // per browser.
+  // Pre-signing confirm sheet — the gate between the Mine CTA and the wallet.
+  const [preflightOpen, setPreflightOpen] = useState(false);
   const [unlimitedApproval, setUnlimitedApproval] = useState<boolean>(() => {
     try {
       return localStorage.getItem("minegold_unlimited_approve") === "1";
@@ -2080,48 +2100,70 @@ export default function App() {
   // resumes the mint wait, and the leftover-ckUNI banner / "Refine my ckUNI"
   // error CTA catch everything else — the user's ckUNI balance IS the proof.
 
-  const startMining = async () => {
-    if (!uniAmount || !ethAddress || !user) return;
-    if (!actor) {
-      setPhase("error");
-      setStatusMsg(
-        "Unable to connect to the refinery. Please refresh and try again.",
-      );
-      return;
-    }
-    // Sanity check: require a real injected wallet before proceeding. The
-    // Mine button's disabled gate checks ethAddress, but a stale ethAddress
-    // without an active window.ethereum provider (e.g. wallet uninstalled
-    // mid-session) would otherwise send us down a flow that hangs in the
-    // animation with no wallet prompt.
+  /** Every check that must hold BEFORE any signature — shared by the
+   *  preflight sheet (which shows only when they all pass) and startMining
+   *  (defense in depth; validity could change while the sheet is open).
+   *  Returns an error message, or null when clear to sign. */
+  const preflightError = (): string | null => {
+    if (!uniAmount || !ethAddress || !user) return "Missing wallet or amount.";
+    if (!actor) return "Unable to connect to the refinery. Please refresh and try again.";
+    // Require a real injected wallet: a stale ethAddress without an active
+    // window.ethereum (wallet uninstalled mid-session) would hang the flow
+    // with no wallet prompt.
     if (typeof window === "undefined" || !(window as unknown as { ethereum?: unknown }).ethereum) {
-      setPhase("error");
-      setStatusMsg(
-        "No Ethereum wallet is available in this browser. Open the dApp inside your wallet app's in-app browser (Brave Wallet, MetaMask, Trust, Rainbow) and try again.",
-      );
-      return;
+      return "No Ethereum wallet is available in this browser. Open the dApp inside your wallet app's in-app browser (Brave Wallet, MetaMask, Trust, Rainbow) and try again.";
     }
     const amount = Number.parseFloat(uniAmount);
-    if (Number.isNaN(amount) || amount <= 0) return;
+    if (Number.isNaN(amount) || amount <= 0) return "Enter a UNI amount first.";
     // Soft minimum. The refine leg pays two ckUNI ledger fees (0.001 each,
     // approve + transfer_from) and the backend's MIN_REFINE floor is 0.001,
     // so anything under 0.003 ckUNI is unrefinable after fees. 0.005 leaves
     // honest margin against a fee change.
     if (amount < 0.005) {
-      setPhase("error");
-      setStatusMsg("Minimum swap amount is 0.005 UNI (ledger fees make smaller deposits unrefinable).");
-      return;
+      return "Minimum swap amount is 0.005 UNI (ledger fees make smaller deposits unrefinable).";
     }
     // The spender address comes from the backend at runtime. Assert it IS
     // the canonical DFINITY ckERC-20 helper before ANY signature — a wrong
     // address here would grant an allowance to an arbitrary contract.
     if (depositAddress.toLowerCase() !== CKERC20_HELPER_CONTRACT.toLowerCase()) {
+      return `Deposit halted before signing: the backend returned an unexpected deposit contract (${depositAddress}); expected DFINITY's ckERC-20 helper ${CKERC20_HELPER_CONTRACT}. Nothing was signed and no funds moved.`;
+    }
+    return null;
+  };
+
+  /** The Mine CTA lands here: validate, then show the confirm sheet. The
+   *  wallet only ever opens from the sheet's explicit "Open my wallet". */
+  const requestMining = () => {
+    const err = preflightError();
+    if (err) {
       setPhase("error");
-      setStatusMsg(
-        `Deposit halted before signing: the backend returned an unexpected deposit contract (${depositAddress}); expected DFINITY's ckERC-20 helper ${CKERC20_HELPER_CONTRACT}. Nothing was signed and no funds moved.`,
-      );
+      setStatusMsg(err);
       return;
     }
+    setPreflightOpen(true);
+  };
+
+  // A completed refine ends first-run and remembers the amount for next time.
+  useEffect(() => {
+    if (phase !== "success") return;
+    try {
+      localStorage.setItem("minegold_has_refined", "1");
+      if (uniAmount) localStorage.setItem("minegold_last_amount", uniAmount);
+    } catch {
+      /* localStorage unavailable */
+    }
+    setFirstRun(false);
+  }, [phase, uniAmount]);
+
+  const startMining = async () => {
+    const preErr = preflightError();
+    if (preErr) {
+      setPhase("error");
+      setStatusMsg(preErr);
+      return;
+    }
+    // Narrowing only — preflightError() already guaranteed both non-null.
+    if (!user || !ethAddress) return;
 
     setSgldtReleased(null);
     setDepositRequestId(null);
@@ -2732,6 +2774,26 @@ export default function App() {
         }}
       />
 
+      {/* Pre-signing confirm sheet — names the two wallet taps, states the
+          exact permission and real gas, and is the ONLY path to the wallet. */}
+      {preflightOpen && (
+        <PreflightSheet
+          uniAmount={uniAmount}
+          estSgldt={
+            effectiveRate > 0 && uniAmount
+              ? `${((Number.parseFloat(uniAmount) || 0) * effectiveRate).toFixed(4)} sGLDT`
+              : null
+          }
+          gasEstimate={gasEstimate}
+          unlimitedApproval={unlimitedApproval}
+          onConfirm={() => {
+            setPreflightOpen(false);
+            void startMining();
+          }}
+          onCancel={() => setPreflightOpen(false)}
+        />
+      )}
+
       {/* Transfer Modal — top level so profile-initiated sGLDT transfers work
           even without an ETH wallet connected */}
       {transferModal && (
@@ -2933,6 +2995,7 @@ export default function App() {
                     currentTxHash={currentTxHash}
                     settledRate={successReceipt?.settledRate ?? null}
                     payBlock={successReceipt?.payBlock ?? null}
+                    onRedeem={() => setRedeemOpen(true)}
                     onStartNew={() => {
                       pollEpochRef.current += 1; // kills any settled-amount re-poll
                       clearRefineWatch(_principalSlug);
@@ -3073,7 +3136,9 @@ export default function App() {
                     onUnlimitedApprovalChange={toggleUnlimitedApproval}
                     showConnecting={!!user && !actor && !actorTimedOut}
                     actorTimedOut={actorTimedOut}
-                    onStartMining={startMining}
+                    firstRun={firstRun}
+                    uniAmount={uniAmount}
+                    onStartMining={requestMining}
                   />
                 )}
               </div>

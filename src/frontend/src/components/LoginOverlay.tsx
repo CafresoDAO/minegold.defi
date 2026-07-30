@@ -1,4 +1,5 @@
 import { GoldCTA } from "./ui/GoldCTA";
+import { JOURNEY } from "../lib/journey";
 
 type Props = {
   isLoggingIn: boolean;
@@ -30,20 +31,20 @@ export function LoginOverlay({ isLoggingIn, onLogin }: Props) {
           minegold<span className="text-yellow-400">.defi</span>
         </h1>
         <p className="text-xs text-yellow-500/60 font-mono uppercase tracking-widest mb-3">Cross-Chain Gold Refinery</p>
+        <p className="t-headline text-white mb-2">Where your gold will live</p>
         <p className="t-body text-zinc-400 mb-6 px-4">
-          Swap UNI (Ethereum) for sGLDT — a 1:1 wrapper of Gold DAO’s physically backed GLDT — on the Internet Computer. Your keys, your account.
+          Turn UNI into sGLDT — a 1:1 wrapper of Gold DAO&apos;s physically
+          backed GLDT. Your vault opens with Face&nbsp;ID or a fingerprint:
+          about 20 seconds to create, no seed phrase to lose, and only you
+          can open it.
         </p>
-        {/* How it works — 3 steps */}
-        <div className="grid grid-cols-3 gap-2 mb-6 text-left">
-          {[
-            { n: "1", title: "Connect", sub: "ICP + ETH wallets" },
-            { n: "2", title: "Deposit", sub: "UNI via ckERC-20" },
-            { n: "3", title: "Receive", sub: "sGLDT on ICP" },
-          ].map((step) => (
-            <div key={step.n} className="bg-zinc-800/60 border border-zinc-700/50 rounded-2xl p-3">
-              <div className="text-[10px] font-black text-yellow-500/60 mb-1">STEP {step.n}</div>
+        {/* The canonical journey — same 4 steps everywhere (lib/journey) */}
+        <div className="grid grid-cols-4 gap-1.5 mb-6 text-left">
+          {JOURNEY.map((step) => (
+            <div key={step.n} className="bg-zinc-800/60 border border-zinc-700/50 rounded-2xl p-2.5">
+              <div className="t-label text-yellow-500/70 mb-0.5">{step.n}</div>
               <div className="text-xs font-bold text-white">{step.title}</div>
-              <div className="text-[9px] text-zinc-500 mt-0.5">{step.sub}</div>
+              <div className="text-[10px] text-zinc-500 mt-0.5 leading-snug">{step.sub}</div>
             </div>
           ))}
         </div>
@@ -83,9 +84,12 @@ export function LoginOverlay({ isLoggingIn, onLogin }: Props) {
           }
           trailingIcon={null}
         >
-          {isLoggingIn ? "Signing in…" : "Sign in with Internet Identity"}
+          {isLoggingIn ? "Opening your vault…" : "Create or open your vault"}
         </GoldCTA>
-
+        <p className="mt-3 text-[11px] text-zinc-500">
+          Your vault is an <span className="text-zinc-300 font-semibold">Internet
+          Identity</span> passkey — the sign-in screen that opens next is it.
+        </p>
       </div>
     </div>
   );

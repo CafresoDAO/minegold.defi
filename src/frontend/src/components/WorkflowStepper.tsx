@@ -27,9 +27,9 @@ type Props = {
  */
 export function WorkflowStepper({ currentStep, complete, errored }: Props) {
   const steps: Step[] = [
-    { id: "wallet", label: "Sign in Wallet", icon: Wallet, status: resolveStatus(1, currentStep, complete, errored) },
-    { id: "ethereum", label: "Ethereum Confirm", icon: Activity, status: resolveStatus(2, currentStep, complete, errored) },
-    { id: "release", label: "Release sGLDT", icon: Coins, status: resolveStatus(3, currentStep, complete, errored) },
+    { id: "wallet", label: "Two wallet taps", icon: Wallet, status: resolveStatus(1, currentStep, complete, errored) },
+    { id: "ethereum", label: "Ethereum confirms", icon: Activity, status: resolveStatus(2, currentStep, complete, errored) },
+    { id: "release", label: "Gold arrives", icon: Coins, status: resolveStatus(3, currentStep, complete, errored) },
   ];
 
   return (

@@ -64,18 +64,30 @@ export function PhaseEthMonitoring({
             ? "Waiting for your deposit to be mined"
             : "Watching your account for the ckUNI credit";
 
+  /** The wait-copy arc — a different sentence per PHASE of the wait, keyed
+   *  to real confirmations. A 3-minute wait with one static line feels
+   *  stalled; the same wait narrated in stages feels like progress (which it
+   *  is — every stratum on screen is a mined block). */
+  const waitArc = (c: number): string => {
+    if (c <= 0) return "First confirmation starts the descent — usually within ~15 seconds.";
+    if (c <= 3) return "Under way. Each stratum breaking on screen is a real Ethereum block confirming your deposit.";
+    if (c <= 8) return "Deep in the middle stretch — the pace you see is Ethereum's, not ours. Nothing needs you until the gold.";
+    if (c <= 11) return "Nearly at the seam — a couple of blocks left before the chain-key mint.";
+    return "All 12 blocks confirmed.";
+  };
+
   const sub =
     chain.receiptStatus === "reverted"
       ? "The deposit tx failed on-chain — your UNI did not move. Check the transaction on Etherscan and try again."
       : stage === "sealing"
         ? minterFlow
-          ? "All 12 blocks confirmed. DFINITY's chain-key minter is crediting ckUNI to your own ICP account; the refinery swaps it the moment it lands."
+          ? "All 12 blocks confirmed. DFINITY's chain-key minter is crediting ckUNI to your own account; the refinery swaps it the moment it lands."
           : "All 12 blocks confirmed. The canister is verifying the deposit and releasing your sGLDT."
         : stage === "confirming"
-          ? `~${Math.max(1, Math.ceil(chain.etaSec / 60))} min remaining at current block pace.`
+          ? `${waitArc(confs)} ~${Math.max(1, Math.ceil(chain.etaSec / 60))} min at current pace.`
           : currentTxHash
             ? "Broadcast to Ethereum — the first confirmation starts the descent."
-            : "The deposit tx hash wasn't captured (some mobile wallets do this), but it doesn't matter: the ckUNI is minted to your own account and we're polling for it directly.";
+            : "Watching your account for the ckUNI credit directly — no tx hash needed.";
 
   return (
     <div
@@ -108,6 +120,11 @@ export function PhaseEthMonitoring({
           <p className="text-[11px] text-zinc-400 leading-relaxed mt-0.5">
             {sub}
           </p>
+          {stage !== "surface" && chain.receiptStatus !== "reverted" && (
+            <p className="text-[11px] font-semibold text-emerald-300/90 mt-1">
+              Safe to close this tab — your deposit finishes on its own.
+            </p>
+          )}
         </div>
       </div>
 
@@ -140,8 +157,8 @@ export function PhaseEthMonitoring({
         )}
         <p className="text-[10px] text-zinc-500 leading-relaxed pt-1">
           {minterFlow
-            ? "Safe to close this tab — the ckUNI is minted to your own account, so it is yours whether or not this page is open. Return any time to refine it."
-            : "Safe to close this tab — your deposit is recorded and the canister will finalize on its own."}
+            ? "The ckUNI is minted to your own account, so it is yours whether or not this page is open. Return any time to refine it."
+            : "Your deposit is recorded and the canister will finalize on its own."}
         </p>
         {statusMsg && (
           <p className="text-[10px] text-zinc-500 font-mono">
@@ -157,30 +174,32 @@ export function PhaseEthMonitoring({
         )}
       </div>
 
-      {/* Manual status check — useful on mobile when the browser has
-       *  throttled the polling interval and the user wants to force an
-       *  immediate recheck. */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        <GoldCTA
-          data-ocid="refinery.check_now.button"
-          tone="info"
-          size="md"
-          trailingIcon={null}
-          disabled={checkDisabled}
-          onClick={onCheckNow}
-        >
-          Check now
-        </GoldCTA>
-        <GoldCTA
+      {/* Refresh forces an immediate recheck (mobile browsers throttle the
+       *  poll). Cancel is deliberately a TEXT LINK, not a button: at this
+       *  point the deposit completes with or without this tab, so "cancel"
+       *  only stops the watching — button-sized it read like an abort that
+       *  could still save the funds. */}
+      <GoldCTA
+        data-ocid="refinery.check_now.button"
+        tone="info"
+        size="md"
+        trailingIcon={null}
+        disabled={checkDisabled}
+        onClick={onCheckNow}
+      >
+        Refresh
+      </GoldCTA>
+      <p className="text-center text-[11px] text-zinc-500">
+        <button
+          type="button"
           data-ocid="refinery.cancel.button"
-          tone="neutral"
-          size="md"
-          trailingIcon={null}
           onClick={onCancel}
+          className="underline underline-offset-2 hover:text-zinc-300"
         >
-          Cancel monitoring
-        </GoldCTA>
-      </div>
+          Stop watching
+        </button>{" "}
+        — the deposit itself keeps going either way.
+      </p>
     </div>
   );
 }

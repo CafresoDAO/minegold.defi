@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-DMqjTBY2.js","assets/button-j1YkOqZu.js","assets/TransactionHistoryPage-BvnVIkv2.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-C3b4FHJP.js","assets/button-IOs4E9MA.js","assets/TransactionHistoryPage-Q2kUF2tO.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -33583,7 +33583,7 @@ async function call(client2, args) {
   } catch (err) {
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-ehuqb1QX.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-DWcidXck.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -45065,6 +45065,128 @@ function PhaseError({
     ] })
   ) });
 }
+function PreflightSheet({
+  uniAmount,
+  estSgldt,
+  gasEstimate,
+  unlimitedApproval,
+  onConfirm,
+  onCancel
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      "data-ocid": "refinery.preflight.sheet",
+      className: "fixed inset-0 z-[150] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-t-[2rem] sm:rounded-[2rem] p-6 sm:p-8 relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            "data-ocid": "refinery.preflight.close",
+            onClick: onCancel,
+            className: "absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400",
+            "aria-label": "Close",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 16 })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "t-headline text-white mb-1", children: "Two taps in your wallet, coming up" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[13px] text-zinc-400 leading-relaxed mb-5", children: [
+          "Your wallet will ask you to sign twice. That's one deposit — you are ",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-200 font-semibold", children: "not" }),
+          " ",
+          "paying twice."
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { className: "space-y-3 mb-5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-baseline gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "t-label text-yellow-500", children: "Tap 1" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-bold text-white", children: "Permission" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[12px] text-zinc-400 leading-relaxed mt-1", children: unlimitedApproval ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+              "Grants the deposit contract an",
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-amber-300 font-semibold", children: "unlimited UNI allowance" }),
+              " ",
+              "(you opted in — future swaps skip this tap)."
+            ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+              "Lets the deposit contract move",
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-zinc-200 font-semibold", children: [
+                "exactly ",
+                uniAmount,
+                " UNI"
+              ] }),
+              " ",
+              "— nothing more, nothing again."
+            ] }) })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-baseline gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "t-label text-yellow-500", children: "Tap 2" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-bold text-white", children: "The deposit" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[12px] text-zinc-400 leading-relaxed mt-1", children: [
+              "Sends the ",
+              uniAmount,
+              " UNI",
+              estSgldt ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+                " (≈ ",
+                estSgldt,
+                ")"
+              ] }) : null,
+              ". After 12 Ethereum blocks it's credited to your own account — never to us."
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 space-y-1.5 text-[12px] mb-5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: "Network fee (both taps)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-200 font-mono", children: gasEstimate ?? "estimating…" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: "Deposit contract" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "span",
+              {
+                className: "inline-flex items-center gap-1 text-emerald-300",
+                title: "Checked before this sheet opened: the contract matches DFINITY's published ckERC-20 helper. On a mismatch the flow halts and nothing is signed.",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 11 }),
+                  "verified DFINITY helper"
+                ]
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          GoldCTA,
+          {
+            "data-ocid": "refinery.preflight.confirm",
+            onClick: onConfirm,
+            size: "lg",
+            trailingIcon: null,
+            children: "Open my wallet"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-3 text-center text-[11px] text-zinc-500 leading-relaxed", children: [
+          "Reject either tap by accident? Nothing is lost and nothing moves — just start again.",
+          " ",
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              "data-ocid": "refinery.preflight.cancel",
+              onClick: onCancel,
+              className: "text-zinc-400 underline underline-offset-2 hover:text-zinc-200",
+              children: "Not now"
+            }
+          )
+        ] })
+      ] })
+    }
+  );
+}
 const jitter = (seed) => {
   const s = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
   return s - Math.floor(s);
@@ -45424,9 +45546,9 @@ function MineShaft({
 }
 function WorkflowStepper({ currentStep, complete, errored }) {
   const steps = [
-    { id: "wallet", label: "Sign in Wallet", icon: Wallet, status: resolveStatus(1, currentStep, complete, errored) },
-    { id: "ethereum", label: "Ethereum Confirm", icon: Activity, status: resolveStatus(2, currentStep, complete, errored) },
-    { id: "release", label: "Release sGLDT", icon: Coins, status: resolveStatus(3, currentStep, complete, errored) }
+    { id: "wallet", label: "Two wallet taps", icon: Wallet, status: resolveStatus(1, currentStep, complete, errored) },
+    { id: "ethereum", label: "Ethereum confirms", icon: Activity, status: resolveStatus(2, currentStep, complete, errored) },
+    { id: "release", label: "Gold arrives", icon: Coins, status: resolveStatus(3, currentStep, complete, errored) }
   ];
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative rounded-2xl bg-zinc-900/60 border border-zinc-800 px-4 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between gap-2", children: steps.map((s, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 flex items-center", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(StepNode, { step: s, index: i + 1 }),
@@ -45620,7 +45742,14 @@ function PhaseEthMonitoring({
   const confs = chain2.confirmations;
   const stage = chain2.receiptStatus === "mined" || chain2.receiptStatus === "reverted" ? confs >= TARGET ? "sealing" : "confirming" : "surface";
   const headline = chain2.receiptStatus === "reverted" ? "Deposit transaction reverted on Ethereum" : stage === "sealing" ? minterFlow ? "At the chain-key seam — minting your ckUNI" : "Confirmed — verifying and releasing sGLDT" : stage === "confirming" ? `Breaking through block ${Math.min(confs + 1, TARGET)} of ${TARGET}` : currentTxHash ? "Waiting for your deposit to be mined" : "Watching your account for the ckUNI credit";
-  const sub = chain2.receiptStatus === "reverted" ? "The deposit tx failed on-chain — your UNI did not move. Check the transaction on Etherscan and try again." : stage === "sealing" ? minterFlow ? "All 12 blocks confirmed. DFINITY's chain-key minter is crediting ckUNI to your own ICP account; the refinery swaps it the moment it lands." : "All 12 blocks confirmed. The canister is verifying the deposit and releasing your sGLDT." : stage === "confirming" ? `~${Math.max(1, Math.ceil(chain2.etaSec / 60))} min remaining at current block pace.` : currentTxHash ? "Broadcast to Ethereum — the first confirmation starts the descent." : "The deposit tx hash wasn't captured (some mobile wallets do this), but it doesn't matter: the ckUNI is minted to your own account and we're polling for it directly.";
+  const waitArc = (c2) => {
+    if (c2 <= 0) return "First confirmation starts the descent — usually within ~15 seconds.";
+    if (c2 <= 3) return "Under way. Each stratum breaking on screen is a real Ethereum block confirming your deposit.";
+    if (c2 <= 8) return "Deep in the middle stretch — the pace you see is Ethereum's, not ours. Nothing needs you until the gold.";
+    if (c2 <= 11) return "Nearly at the seam — a couple of blocks left before the chain-key mint.";
+    return "All 12 blocks confirmed.";
+  };
+  const sub = chain2.receiptStatus === "reverted" ? "The deposit tx failed on-chain — your UNI did not move. Check the transaction on Etherscan and try again." : stage === "sealing" ? minterFlow ? "All 12 blocks confirmed. DFINITY's chain-key minter is crediting ckUNI to your own account; the refinery swaps it the moment it lands." : "All 12 blocks confirmed. The canister is verifying the deposit and releasing your sGLDT." : stage === "confirming" ? `${waitArc(confs)} ~${Math.max(1, Math.ceil(chain2.etaSec / 60))} min at current pace.` : currentTxHash ? "Broadcast to Ethereum — the first confirmation starts the descent." : "Watching your account for the ckUNI credit directly — no tx hash needed.";
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
@@ -45654,7 +45783,8 @@ function PhaseEthMonitoring({
                 }
               )
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-zinc-400 leading-relaxed mt-0.5", children: sub })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-zinc-400 leading-relaxed mt-0.5", children: sub }),
+            stage !== "surface" && chain2.receiptStatus !== "reverted" && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-semibold text-emerald-300/90 mt-1", children: "Safe to close this tab — your deposit finishes on its own." })
           ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 space-y-1.5", children: [
@@ -45686,37 +45816,38 @@ function PhaseEthMonitoring({
               }
             )
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 leading-relaxed pt-1", children: minterFlow ? "Safe to close this tab — the ckUNI is minted to your own account, so it is yours whether or not this page is open. Return any time to refine it." : "Safe to close this tab — your deposit is recorded and the canister will finalize on its own." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 leading-relaxed pt-1", children: minterFlow ? "The ckUNI is minted to your own account, so it is yours whether or not this page is open. Return any time to refine it." : "Your deposit is recorded and the canister will finalize on its own." }),
           statusMsg && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-500 font-mono", children: [
             statusMsg,
             pollAttempt > 0 && !minterFlow ? ` · check ${pollAttempt}` : ""
           ] }),
           !minterFlow && bridgeProgress >= 0.8 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-emerald-400/90 font-mono", children: "backend: deposit verified — payout imminent" })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          GoldCTA,
+          {
+            "data-ocid": "refinery.check_now.button",
+            tone: "info",
+            size: "md",
+            trailingIcon: null,
+            disabled: checkDisabled,
+            onClick: onCheckNow,
+            children: "Refresh"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-center text-[11px] text-zinc-500", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
-            GoldCTA,
+            "button",
             {
-              "data-ocid": "refinery.check_now.button",
-              tone: "info",
-              size: "md",
-              trailingIcon: null,
-              disabled: checkDisabled,
-              onClick: onCheckNow,
-              children: "Check now"
+              type: "button",
+              "data-ocid": "refinery.cancel.button",
+              onClick: onCancel,
+              className: "underline underline-offset-2 hover:text-zinc-300",
+              children: "Stop watching"
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            GoldCTA,
-            {
-              "data-ocid": "refinery.cancel.button",
-              tone: "neutral",
-              size: "md",
-              trailingIcon: null,
-              onClick: onCancel,
-              children: "Cancel monitoring"
-            }
-          )
+          " ",
+          "— the deposit itself keeps going either way."
         ] })
       ]
     }
@@ -45724,6 +45855,8 @@ function PhaseEthMonitoring({
 }
 function PhaseIdle({
   startDisabled,
+  firstRun,
+  uniAmount,
   showRateHint,
   showConnecting,
   actorTimedOut,
@@ -45733,7 +45866,7 @@ function PhaseIdle({
   onStartMining
 }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
       GoldCTA,
       {
         "data-ocid": "refinery.start.primary_button",
@@ -45742,9 +45875,14 @@ function PhaseIdle({
         "aria-label": "Mine sGLDT by depositing UNI",
         size: "lg",
         className: "shadow-2xl",
-        children: "⛏ Mine sGLDT"
+        children: [
+          "⛏ Refine",
+          uniAmount ? ` ${uniAmount} UNI` : " UNI",
+          " into gold"
+        ]
       }
     ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1.5 text-center text-[11px] text-zinc-500", children: "Minimum 0.005 UNI — below that, ledger fees eat the deposit." }),
     showRateHint && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-center text-xs text-amber-400", children: "Waiting for the on-chain exchange rate before enabling swap…" }),
     gasShortfall && /* @__PURE__ */ jsxRuntimeExports.jsx(
       "p",
@@ -45754,7 +45892,7 @@ function PhaseIdle({
         children: gasShortfall
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-3", children: [
+    firstRun ? null : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-3", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-start gap-2.5 cursor-pointer select-none", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
@@ -45950,7 +46088,8 @@ function PhaseSuccess({
   currentTxHash,
   settledRate,
   payBlock,
-  onStartNew
+  onStartNew,
+  onRedeem
 }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-ocid": "refinery.success_state", className: "space-y-4", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(WorkflowStepper, { currentStep: 3, complete: true }),
@@ -45977,7 +46116,7 @@ function PhaseSuccess({
             sgldtReleased,
             " sGLDT"
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500", children: "released to your ICP account" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500", children: "in your vault — only your passkey opens it" })
         ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-300 mb-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400 font-black text-lg animate-pulse", children: "Amount confirming…" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500", children: "your sGLDT was released — fetching the exact amount" })
@@ -46027,9 +46166,23 @@ function PhaseSuccess({
         onClick: onStartNew,
         size: "md",
         trailingIcon: null,
-        children: "Start Another Refinery"
+        children: "Refine more UNI"
       }
-    )
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-center text-[12px] text-zinc-400", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          "data-ocid": "refinery.success.redeem",
+          onClick: onRedeem,
+          className: "text-yellow-400 font-semibold underline underline-offset-2 hover:text-yellow-300",
+          children: "Cash out any time ›"
+        }
+      ),
+      " ",
+      "— redeem sGLDT back to ckUNI at the live rate."
+    ] })
   ] });
 }
 function PhaseWalletConfirming({
@@ -46300,7 +46453,7 @@ function ConnectWalletModal({
                 "Banking.Brave · Self-custody"
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { id: "connect-modal-title", className: "font-black text-xl text-white mb-1", children: "Connect your Ethereum wallet" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500 max-w-xs mx-auto leading-relaxed", children: "Pick a wallet to authorize your UNI bridge. Your keys never leave your device." })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500 max-w-xs mx-auto leading-relaxed", children: "Pick the wallet that holds your UNI. Your keys never leave your device." })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 space-y-2", children: [
               wallets.map((w2) => {
@@ -46425,6 +46578,12 @@ function CoinbaseIcon() {
     /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "8", y: "8", width: "8", height: "8", rx: "1.5", fill: "#ffffff" })
   ] });
 }
+const JOURNEY = [
+  { n: 1, title: "Vault", sub: "Face ID or fingerprint — where your gold will live" },
+  { n: 2, title: "Wallet", sub: "connect the wallet holding your UNI" },
+  { n: 3, title: "Refine", sub: "two taps; Ethereum confirms in ~3 min" },
+  { n: 4, title: "Gold", sub: "sGLDT lands in your vault — cash out any time" }
+];
 function LoginOverlay({ isLoggingIn, onLogin }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
@@ -46447,18 +46606,12 @@ function LoginOverlay({ isLoggingIn, onLogin }) {
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400", children: ".defi" })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-yellow-500/60 font-mono uppercase tracking-widest mb-3", children: "Cross-Chain Gold Refinery" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-body text-zinc-400 mb-6 px-4", children: "Swap UNI (Ethereum) for sGLDT — a 1:1 wrapper of Gold DAO’s physically backed GLDT — on the Internet Computer. Your keys, your account." }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-3 gap-2 mb-6 text-left", children: [
-          { n: "1", title: "Connect", sub: "ICP + ETH wallets" },
-          { n: "2", title: "Deposit", sub: "UNI via ckERC-20" },
-          { n: "3", title: "Receive", sub: "sGLDT on ICP" }
-        ].map((step) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-800/60 border border-zinc-700/50 rounded-2xl p-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[10px] font-black text-yellow-500/60 mb-1", children: [
-            "STEP ",
-            step.n
-          ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-headline text-white mb-2", children: "Where your gold will live" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-body text-zinc-400 mb-6 px-4", children: "Turn UNI into sGLDT — a 1:1 wrapper of Gold DAO's physically backed GLDT. Your vault opens with Face ID or a fingerprint: about 20 seconds to create, no seed phrase to lose, and only you can open it." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-4 gap-1.5 mb-6 text-left", children: JOURNEY.map((step) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-800/60 border border-zinc-700/50 rounded-2xl p-2.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "t-label text-yellow-500/70 mb-0.5", children: step.n }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-bold text-white", children: step.title }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[9px] text-zinc-500 mt-0.5", children: step.sub })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] text-zinc-500 mt-0.5 leading-snug", children: step.sub })
         ] }, step.n)) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           GoldCTA,
@@ -46499,9 +46652,14 @@ function LoginOverlay({ isLoggingIn, onLogin }) {
               }
             ),
             trailingIcon: null,
-            children: isLoggingIn ? "Signing in…" : "Sign in with Internet Identity"
+            children: isLoggingIn ? "Opening your vault…" : "Create or open your vault"
           }
-        )
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-3 text-[11px] text-zinc-500", children: [
+          "Your vault is an ",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Internet Identity" }),
+          " passkey — the sign-in screen that opens next is it."
+        ] })
       ] })
     }
   );
@@ -49464,7 +49622,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-nzQOPx6U.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index--LU4Jg3p.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49495,7 +49653,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-nzQOPx6U.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index--LU4Jg3p.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49519,7 +49677,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-nzQOPx6U.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index--LU4Jg3p.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -50153,24 +50311,25 @@ function ProofPanel({ onClose }) {
     }
   );
 }
-const STEPS = [
-  { icon: "🔗", step: "1", title: "Sign In", desc: "Authenticate with Internet Identity — no seed phrase, no custodian." },
-  { icon: "💼", step: "2", title: "Connect Wallet", desc: "Link MetaMask or Brave Wallet on Ethereum mainnet." },
-  { icon: "⛏", step: "3", title: "Approve & Deposit", desc: "Approve UNI spend, then the ckERC-20 helper pulls funds on-chain." },
-  { icon: "🪙", step: "4", title: "Receive sGLDT", desc: "sGLDT — a 1:1 wrapper of Gold DAO's physically backed GLDT — lands in your ICP account." }
+const STEP_ICONS = ["🔐", "💼", "⛏", "🪙"];
+const STEP_DESC = [
+  "Open your vault with Face ID or a fingerprint — no seed phrase, no custodian.",
+  "Connect the Ethereum wallet holding your UNI (MetaMask or Brave Wallet).",
+  "Two taps in your wallet approve the deposit; Ethereum confirms in ~3 minutes.",
+  "sGLDT — a 1:1 wrapper of Gold DAO's physically backed GLDT — lands in your vault."
 ];
 function HowItWorksStrip() {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-12 rounded-3xl border border-zinc-800/60 bg-zinc-900/40 p-6 sm:p-8", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "t-label text-zinc-500 mb-5 text-center", children: "How the Refinery Works" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 sm:grid-cols-4 gap-4", children: STEPS.map((s) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center text-center gap-2", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-lg", children: s.icon }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 sm:grid-cols-4 gap-4", children: JOURNEY.map((s, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center text-center gap-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-lg", children: STEP_ICONS[i] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "t-label text-yellow-500/60", children: [
         "Step ",
-        s.step
+        s.n
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-bold text-white", children: s.title }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] text-zinc-500 leading-relaxed", children: s.desc })
-    ] }, s.step)) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] text-zinc-500 leading-relaxed", children: STEP_DESC[i] })
+    ] }, s.n)) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-5 text-center text-[11px] text-zinc-500 leading-relaxed", children: [
       "Each GLDT is backed by 0.01 g of vaulted physical gold; sGLDT wraps it 1:1 for 10,000× lower fees. New to GLDT?",
       " ",
@@ -51439,10 +51598,27 @@ function WalletSection({
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-md text-center md:text-left", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-2 justify-center md:justify-start", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-yellow-400 animate-pulse" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "t-label text-yellow-500", children: "Step 1 of 2" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "t-label text-yellow-500", children: "Step 2 of 4 · Wallet" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold mb-2", children: "Connect Ethereum Wallet" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-500 text-sm", children: "Link MetaMask or Brave Wallet to authorize your UNI deposit into the gold refinery." })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "t-headline mb-2", children: "You'll use two things — here's why" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "text-sm space-y-1.5 text-left", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex items-start gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-emerald-400 font-bold shrink-0", children: "✓" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-zinc-400", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-200 font-semibold", children: "Your vault" }),
+                " ",
+                "— done. It's where the gold will live."
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex items-start gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400 font-bold shrink-0", children: "2" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-zinc-400", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-200 font-semibold", children: "Your wallet" }),
+                " ",
+                "— next. It holds the UNI you're spending; connect MetaMask or Brave Wallet so you can approve the deposit."
+              ] })
+            ] })
+          ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           GoldCTA,
@@ -52024,16 +52200,16 @@ function usePathRoute() {
   return [match.route, navigate, match.params];
 }
 const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-DMqjTBY2.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+  () => __vitePreload(() => import("./AdminPage-C3b4FHJP.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
 );
 const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-CMYunEWx.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+  () => __vitePreload(() => import("./BankingBraveHome-Xx5DX4aM.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
 );
 const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-xDYtA5FJ.js"), true ? [] : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+  () => __vitePreload(() => import("./MinegoldBraveSoon-lPx1rSdq.js"), true ? [] : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
 );
 const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-BvnVIkv2.js"), true ? __vite__mapDeps([2,1]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./TransactionHistoryPage-Q2kUF2tO.js"), true ? __vite__mapDeps([2,1]) : void 0).then((m2) => ({
     default: m2.TransactionHistoryPage
   }))
 );
@@ -52241,7 +52417,20 @@ function App() {
   const isLoggingIn = iiIsLoggingIn;
   const refineFlow = useRefineFlow(identity);
   const [ethAddress2, setEthAddress] = reactExports.useState(null);
-  const [uniAmount, setUniAmount] = reactExports.useState("");
+  const [firstRun, setFirstRun] = reactExports.useState(() => {
+    try {
+      return localStorage.getItem("minegold_has_refined") !== "1";
+    } catch {
+      return true;
+    }
+  });
+  const [uniAmount, setUniAmount] = reactExports.useState(() => {
+    try {
+      return localStorage.getItem("minegold_last_amount") ?? "0.05";
+    } catch {
+      return "0.05";
+    }
+  });
   const [phase, setPhase] = reactExports.useState("idle");
   const [statusMsg, setStatusMsg] = reactExports.useState("");
   const [sgldtReleased, setSgldtReleased] = reactExports.useState(null);
@@ -52615,6 +52804,7 @@ function App() {
   const FALLBACK_DEPOSIT_ADDRESS = CKERC20_HELPER_CONTRACT;
   const { data: treasuryWalletInfo } = useGetTreasuryWalletInfo();
   const depositAddress = (treasuryWalletInfo == null ? void 0 : treasuryWalletInfo.depositAddress) && treasuryWalletInfo.depositAddress.length > 0 ? treasuryWalletInfo.depositAddress : FALLBACK_DEPOSIT_ADDRESS;
+  const [preflightOpen, setPreflightOpen] = reactExports.useState(false);
   const [unlimitedApproval, setUnlimitedApproval] = reactExports.useState(() => {
     try {
       return localStorage.getItem("minegold_unlimited_approve") === "1";
@@ -53289,36 +53479,48 @@ function App() {
       setTransferLoading(false);
     }
   };
-  const startMining = async () => {
-    if (!uniAmount || !ethAddress2 || !user) return;
-    if (!actor) {
-      setPhase("error");
-      setStatusMsg(
-        "Unable to connect to the refinery. Please refresh and try again."
-      );
-      return;
-    }
+  const preflightError = () => {
+    if (!uniAmount || !ethAddress2 || !user) return "Missing wallet or amount.";
+    if (!actor) return "Unable to connect to the refinery. Please refresh and try again.";
     if (typeof window === "undefined" || !window.ethereum) {
-      setPhase("error");
-      setStatusMsg(
-        "No Ethereum wallet is available in this browser. Open the dApp inside your wallet app's in-app browser (Brave Wallet, MetaMask, Trust, Rainbow) and try again."
-      );
-      return;
+      return "No Ethereum wallet is available in this browser. Open the dApp inside your wallet app's in-app browser (Brave Wallet, MetaMask, Trust, Rainbow) and try again.";
     }
     const amount = Number.parseFloat(uniAmount);
-    if (Number.isNaN(amount) || amount <= 0) return;
+    if (Number.isNaN(amount) || amount <= 0) return "Enter a UNI amount first.";
     if (amount < 5e-3) {
-      setPhase("error");
-      setStatusMsg("Minimum swap amount is 0.005 UNI (ledger fees make smaller deposits unrefinable).");
-      return;
+      return "Minimum swap amount is 0.005 UNI (ledger fees make smaller deposits unrefinable).";
     }
     if (depositAddress.toLowerCase() !== CKERC20_HELPER_CONTRACT.toLowerCase()) {
+      return `Deposit halted before signing: the backend returned an unexpected deposit contract (${depositAddress}); expected DFINITY's ckERC-20 helper ${CKERC20_HELPER_CONTRACT}. Nothing was signed and no funds moved.`;
+    }
+    return null;
+  };
+  const requestMining = () => {
+    const err = preflightError();
+    if (err) {
       setPhase("error");
-      setStatusMsg(
-        `Deposit halted before signing: the backend returned an unexpected deposit contract (${depositAddress}); expected DFINITY's ckERC-20 helper ${CKERC20_HELPER_CONTRACT}. Nothing was signed and no funds moved.`
-      );
+      setStatusMsg(err);
       return;
     }
+    setPreflightOpen(true);
+  };
+  reactExports.useEffect(() => {
+    if (phase !== "success") return;
+    try {
+      localStorage.setItem("minegold_has_refined", "1");
+      if (uniAmount) localStorage.setItem("minegold_last_amount", uniAmount);
+    } catch {
+    }
+    setFirstRun(false);
+  }, [phase, uniAmount]);
+  const startMining = async () => {
+    const preErr = preflightError();
+    if (preErr) {
+      setPhase("error");
+      setStatusMsg(preErr);
+      return;
+    }
+    if (!user || !ethAddress2) return;
     setSgldtReleased(null);
     setDepositRequestId(null);
     setCurrentTxHash(null);
@@ -53735,6 +53937,20 @@ function App() {
         }
       }
     ),
+    preflightOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      PreflightSheet,
+      {
+        uniAmount,
+        estSgldt: effectiveRate > 0 && uniAmount ? `${((Number.parseFloat(uniAmount) || 0) * effectiveRate).toFixed(4)} sGLDT` : null,
+        gasEstimate,
+        unlimitedApproval,
+        onConfirm: () => {
+          setPreflightOpen(false);
+          void startMining();
+        },
+        onCancel: () => setPreflightOpen(false)
+      }
+    ),
     transferModal && /* @__PURE__ */ jsxRuntimeExports.jsx(
       TransferModal,
       {
@@ -53899,6 +54115,7 @@ function App() {
                 currentTxHash,
                 settledRate: (successReceipt == null ? void 0 : successReceipt.settledRate) ?? null,
                 payBlock: (successReceipt == null ? void 0 : successReceipt.payBlock) ?? null,
+                onRedeem: () => setRedeemOpen(true),
                 onStartNew: () => {
                   pollEpochRef.current += 1;
                   clearRefineWatch(_principalSlug);
@@ -54026,7 +54243,9 @@ function App() {
                 onUnlimitedApprovalChange: toggleUnlimitedApproval,
                 showConnecting: !!user && !actor && !actorTimedOut,
                 actorTimedOut,
-                onStartMining: startMining
+                firstRun,
+                uniAmount,
+                onStartMining: requestMining
               }
             ) })
           ]

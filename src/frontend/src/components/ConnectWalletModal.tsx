@@ -210,8 +210,8 @@ export function ConnectWalletModal({
             Connect your Ethereum wallet
           </h2>
           <p className="text-xs text-zinc-500 max-w-xs mx-auto leading-relaxed">
-            Pick a wallet to authorize your UNI bridge. Your keys never leave
-            your device.
+            Pick the wallet that holds your UNI. Your keys never leave your
+            device.
           </p>
         </div>
 

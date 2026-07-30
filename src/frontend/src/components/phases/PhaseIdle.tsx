@@ -2,6 +2,11 @@ import { GoldCTA } from "../ui/GoldCTA";
 
 type Props = {
   startDisabled: boolean;
+  /** True until this browser completes its first refine. First-run hides the
+   *  unlimited-approval opt-in (an advanced tradeoff nobody should meet
+   *  before their first swap) and names the amount in the CTA. */
+  firstRun: boolean;
+  uniAmount: string;
   showRateHint: boolean;
   showConnecting: boolean;
   actorTimedOut: boolean;
@@ -24,6 +29,8 @@ type Props = {
  *  surfaces any un-refined balance the moment the user signs in. */
 export function PhaseIdle({
   startDisabled,
+  firstRun,
+  uniAmount,
   showRateHint,
   showConnecting,
   actorTimedOut,
@@ -42,8 +49,12 @@ export function PhaseIdle({
         size="lg"
         className="shadow-2xl"
       >
-        ⛏ Mine sGLDT
+        ⛏ Refine{uniAmount ? ` ${uniAmount} UNI` : " UNI"} into gold
       </GoldCTA>
+      {/* The floor, stated BEFORE the tap — not as an error after it. */}
+      <p className="mt-1.5 text-center text-[11px] text-zinc-500">
+        Minimum 0.005 UNI — below that, ledger fees eat the deposit.
+      </p>
       {showRateHint && (
         <p className="mt-2 text-center text-xs text-amber-400">
           Waiting for the on-chain exchange rate before enabling swap…
@@ -60,6 +71,7 @@ export function PhaseIdle({
 
       {/* Approval sizing — exact-amount by default; unlimited is an explicit,
        *  remembered opt-in with the tradeoff stated in place. */}
+      {firstRun ? null : (
       <div className="mt-3 rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-3">
         <label className="flex items-start gap-2.5 cursor-pointer select-none">
           <input
@@ -94,6 +106,7 @@ export function PhaseIdle({
           .
         </p>
       </div>
+      )}
       {showConnecting && (
         <p className="mt-2 text-center text-xs text-zinc-500 animate-pulse">
           Connecting to canister...

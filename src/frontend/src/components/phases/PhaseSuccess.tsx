@@ -14,6 +14,8 @@ type Props = {
   settledRate: string | null;
   payBlock: string | null;
   onStartNew: () => void;
+  /** Opens the redeem modal — the exit path offered at peak trust. */
+  onRedeem: () => void;
 };
 
 export function PhaseSuccess({
@@ -22,6 +24,7 @@ export function PhaseSuccess({
   settledRate,
   payBlock,
   onStartNew,
+  onRedeem,
 }: Props) {
   return (
     <div data-ocid="refinery.success_state" className="space-y-4">
@@ -56,7 +59,7 @@ export function PhaseSuccess({
                 </span>
               </p>
               <p className="text-xs text-zinc-500">
-                released to your ICP account
+                in your vault — only your passkey opens it
               </p>
             </>
           ) : (
@@ -109,8 +112,21 @@ export function PhaseSuccess({
         size="md"
         trailingIcon={null}
       >
-        Start Another Refinery
+        Refine more UNI
       </GoldCTA>
+      {/* The exit path, offered at the moment of highest trust — gold that
+          can leave is the proof it's really yours. */}
+      <p className="text-center text-[12px] text-zinc-400">
+        <button
+          type="button"
+          data-ocid="refinery.success.redeem"
+          onClick={onRedeem}
+          className="text-yellow-400 font-semibold underline underline-offset-2 hover:text-yellow-300"
+        >
+          Cash out any time ›
+        </button>{" "}
+        — redeem sGLDT back to ckUNI at the live rate.
+      </p>
     </div>
   );
 }

@@ -99,14 +99,28 @@ export function WalletSection({
           <div className="max-w-md text-center md:text-left">
             <div className="flex items-center gap-2 mb-2 justify-center md:justify-start">
               <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-              <span className="t-label text-yellow-500">Step 1 of 2</span>
+              <span className="t-label text-yellow-500">Step 2 of 4 · Wallet</span>
             </div>
-            <h2 className="text-2xl font-bold mb-2">
-              Connect Ethereum Wallet
+            <h2 className="t-headline mb-2">
+              You&apos;ll use two things — here&apos;s why
             </h2>
-            <p className="text-zinc-500 text-sm">
-              Link MetaMask or Brave Wallet to authorize your UNI deposit into the gold refinery.
-            </p>
+            <ul className="text-sm space-y-1.5 text-left">
+              <li className="flex items-start gap-2">
+                <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                <span className="text-zinc-400">
+                  <span className="text-zinc-200 font-semibold">Your vault</span>{" "}
+                  — done. It&apos;s where the gold will live.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-yellow-400 font-bold shrink-0">2</span>
+                <span className="text-zinc-400">
+                  <span className="text-zinc-200 font-semibold">Your wallet</span>{" "}
+                  — next. It holds the UNI you&apos;re spending; connect
+                  MetaMask or Brave Wallet so you can approve the deposit.
+                </span>
+              </li>
+            </ul>
           </div>
           <GoldCTA
             data-ocid="wallet.connect.primary_button"

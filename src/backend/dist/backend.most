@@ -63,6 +63,19 @@ type Node__537203829<K, V> =
   {#internal : Internal__158750008<K, V>; #leaf : Leaf__992580685<K, V>};
 type Node__703793503<T> =
   {#internal : Internal__743766145<T>; #leaf : Leaf__418528177<T>};
+type RedeemRecord__45704246 =
+  {
+    ckuniPaid : Nat;
+    errorMsg : ?Text;
+    id : Nat;
+    payBlock : ?Nat;
+    pullBlock : ?Nat;
+    rate : Nat;
+    sgldtAmount : Nat;
+    status : RefineStatus__953700336;
+    timestamp : Time__1031644390;
+    user : Principal
+  };
 type RefineRecord__559321398 =
   {
     ckuniAmount : Nat;
@@ -130,6 +143,7 @@ actor {
   stable FIXED_ETH_DEPOSIT_ADDRESS : Text;
   stable MAX_TRANSFER_AMOUNT_CKUNI : Nat;
   stable MAX_TRANSFER_AMOUNT_SGLDT : Nat;
+  stable MIN_REDEEM_SGLDT : Nat;
   stable MIN_REFINE_CKUNI : Nat;
   stable OUTCALL_WINDOW_MAX : Nat;
   stable OUTCALL_WINDOW_NS : Int;
@@ -183,8 +197,14 @@ actor {
   stable var lastXRCSyncNs : Int;
   stable var nextBridgeRequestId : Nat;
   stable var nextExchangeRequestId : Nat;
+  stable var nextRedeemId : Nat;
   stable var nextRefineId : Nat;
   stable var nextUNIDepositId : Nat;
+  stable redeems :
+    {
+      var root : Node__537203829<Nat, RedeemRecord__45704246>;
+      var size : Nat__447653750
+    };
   stable refines :
     {
       var root : Node__537203829<Nat, RefineRecord__559321398>;

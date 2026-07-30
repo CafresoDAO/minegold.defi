@@ -104,6 +104,19 @@ type RefineRecord =
    timestamp: Time;
    user: principal;
  };
+type RedeemRecord = 
+ record {
+   ckuniPaid: nat;
+   errorMsg: opt text;
+   id: nat;
+   payBlock: opt nat;
+   pullBlock: opt nat;
+   rate: nat;
+   sgldtAmount: nat;
+   status: RefineStatus;
+   timestamp: Time;
+   user: principal;
+ };
 type ExchangeStatus = 
  variant {
    approved;
@@ -297,8 +310,21 @@ service : {
       minRefine: nat;
       rate: nat;
     });
+  /// The caller's own redeem history, newest-first.
+  getMyRedeems: () -> (vec RedeemRecord) query;
   /// The caller's own refine history, newest-first.
   getMyRefines: () -> (vec RefineRecord) query;
+  /// The caller's sGLDT balance and the allowance granted to this canister,
+  /// plus what the treasury could currently pay out. The UI uses this to
+  /// gate the redeem button and size the approve step.
+  getMySGLDTPosition: () ->
+   (record {
+      allowance: nat;
+      balance: nat;
+      minRedeem: nat;
+      rate: nat;
+      treasuryCkUNI: nat;
+    });
   /// Caller's own transaction history.
   getMyTransactions: () -> (vec TxRecord) query;
   /// Alias kept for backward compatibility. Prefer getPayoutReadiness().
@@ -347,6 +373,8 @@ service : {
   /// This is a query so it works for unauthenticated (anonymous) callers.
   /// Call refreshTreasuryBalances() to update the cache from the ledger.
   getSGLDTTreasuryBalance: () -> (nat) query;
+  /// Admin view: every redeem that ended #stranded.
+  getStrandedRedeems: () -> (vec RedeemRecord) query;
   /// Admin view: every refine that ended #stranded and needs manual resolution.
   getStrandedRefines: () -> (vec RefineRecord) query;
   getTotalSupply: () -> (nat) query;
@@ -407,6 +435,19 @@ service : {
   migrated_getAllSGLDTRequests: () -> (vec sGLDTRequest) query;
   migration_updateBalance: (_balance: nat) -> ();
   mintBankingBraveTokens: (_to: principal, _amount: nat) -> ();
+  /// Redeem sGLDT back into ckUNI at the oracle rate. Prerequisite: the user
+  /// has icrc2_approve'd this canister on the sGLDT ledger for at least
+  /// `amount` plus the sGLDT transfer fee.
+  redeemSGLDT: (amount: nat, rateHint: opt nat) ->
+   (variant {
+      err: text;
+      ok: record {
+            blockIndex: nat;
+            ckuniPaid: nat;
+            rate: nat;
+            redeemId: nat;
+          };
+    });
   /// Refine ckUNI the caller already holds into sGLDT.
   /// 
   /// Prerequisites, both performed by the user — not by us:

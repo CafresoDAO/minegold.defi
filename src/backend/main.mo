@@ -275,6 +275,17 @@ actor Self {
     icrc2_allowance : (ICRC2AllowanceArgs) -> async ICRC2Allowance;
   } = actor ("ilzky-ayaaa-aaaar-qahha-cai");
 
+  // Same V1/V2 split as ckUNILedgerV2 above: sgldtLedger is a persisted
+  // binding whose type cannot widen across upgrades, so the ICRC-2 methods
+  // the redeem path needs live on this transient sibling.
+  transient let sgldtLedgerV2 : actor {
+    icrc1_fee : () -> async Nat;
+    icrc1_balance_of : (ICRC1Account) -> async Nat;
+    icrc1_transfer : (ICRC1TransferArgs) -> async ICRC1TransferResult;
+    icrc2_transfer_from : (ICRC2TransferFromArgs) -> async ICRC2TransferFromResult;
+    icrc2_allowance : (ICRC2AllowanceArgs) -> async ICRC2Allowance;
+  } = actor ("i2s4q-syaaa-aaaan-qz4sq-cai");
+
   // ckERC-20 Minter Canister (sv3dd-oaaaa-aaaar-qacoa-cai) — DFINITY chain-key bridge.
   // The minter exposes get_minter_info() which returns the ERC-20 helper contract address
   // that users interact with on Ethereum to deposit UNI and receive ckUNI.
@@ -494,6 +505,21 @@ actor Self {
     errorMsg : ?Text;
   };
 
+  /// The reverse leg: sGLDT pulled from the user, ckUNI paid from treasury.
+  /// Shares RefineStatus — the lifecycle is identical with the tokens swapped.
+  type RedeemRecord = {
+    id : Nat;
+    user : Principal;
+    sgldtAmount : Nat; // e8s, as pulled from the user
+    ckuniPaid : Nat; // e18
+    rate : Nat; // 1e8-precision sGLDT per UNI used for this redeem
+    status : RefineStatus;
+    timestamp : Time.Time;
+    pullBlock : ?Nat;
+    payBlock : ?Nat;
+    errorMsg : ?Text;
+  };
+
   // -------------------------------------------------------
   // Transaction History Types
   // -------------------------------------------------------
@@ -536,6 +562,9 @@ actor Self {
   // Direct-refine records (ckUNI → sGLDT), keyed by refine id.
   let refines = Map.empty<Nat, RefineRecord>();
   var nextRefineId : Nat = 0;
+  // Redeem records (sGLDT → ckUNI), keyed by redeem id.
+  let redeems = Map.empty<Nat, RedeemRecord>();
+  var nextRedeemId : Nat = 0;
   // Transaction history: keyed by Principal, value is a List of TxRecord (newest-first)
   let userTransactions = Map.empty<Principal, List.List<TxRecord>>();
   var txCounter : Nat = 0;
@@ -3433,6 +3462,385 @@ actor Self {
     if (not isAdmin(caller)) { return [] };
     let out = List.empty<RefineRecord>();
     for ((_, r) in refines.entries()) {
+      switch (r.status) {
+        case (#stranded) { out.add(r) };
+        case (_) {};
+      };
+    };
+    out.toArray();
+  };
+
+  // =======================================================
+  // REDEEM — sGLDT → ckUNI (the exit path)
+  // =======================================================
+  // The mirror image of refineCkUNI: pull sGLDT via ICRC-2, pay ckUNI from
+  // the treasury at the same oracle rate, refund the sGLDT if the payout
+  // fails, strand for admin resolution if even the refund fails. Once the
+  // user holds ckUNI they can bridge back to native UNI on Ethereum through
+  // DFINITY's standard minter withdrawal — no custom Ethereum leg needed.
+
+  /// Smallest redeem: 0.1 sGLDT (e8s). Below this the ckUNI payout would be
+  /// dominated by the ckUNI ledger fee.
+  let MIN_REDEEM_SGLDT : Nat = 10_000_000;
+
+  /// ckUNI (e18) owed for a given sGLDT amount (e8s) at a 1e8-precision
+  /// sGLDT-per-UNI rate:
+  ///   sgldt_e8s / 1e8 = whole sGLDT;  whole sGLDT / (rate/1e8) = whole UNI
+  /// which collapses to sgldt * 1e18 / rate. Truncation rounds in the
+  /// treasury's favour, mirroring _sgldtForCkUNI.
+  func _ckuniForSGLDT(sgldtAmount : Nat, rate : Nat) : Nat {
+    (sgldtAmount * 1_000_000_000_000_000_000) / rate;
+  };
+
+  /// The caller's sGLDT balance and the allowance granted to this canister,
+  /// plus what the treasury could currently pay out. The UI uses this to
+  /// gate the redeem button and size the approve step.
+  public shared ({ caller }) func getMySGLDTPosition() : async {
+    balance : Nat;
+    allowance : Nat;
+    minRedeem : Nat;
+    rate : Nat;
+    treasuryCkUNI : Nat;
+  } {
+    let me = Principal.fromActor(Self);
+    let treasuryBal = try {
+      await ckUNILedgerV2.icrc1_balance_of({ owner = me; subaccount = null });
+    } catch (_) { 0 };
+    if (caller.isAnonymous()) {
+      return {
+        balance = 0;
+        allowance = 0;
+        minRedeem = MIN_REDEEM_SGLDT;
+        rate = uniExchangeRate;
+        treasuryCkUNI = treasuryBal;
+      };
+    };
+    let bal = try {
+      await sgldtLedgerV2.icrc1_balance_of({ owner = caller; subaccount = null });
+    } catch (_) { 0 };
+    let allow = try {
+      let a = await sgldtLedgerV2.icrc2_allowance({
+        account = { owner = caller; subaccount = null };
+        spender = { owner = me; subaccount = null };
+      });
+      a.allowance;
+    } catch (_) { 0 };
+    {
+      balance = bal;
+      allowance = allow;
+      minRedeem = MIN_REDEEM_SGLDT;
+      rate = uniExchangeRate;
+      treasuryCkUNI = treasuryBal;
+    };
+  };
+
+  /// Redeem sGLDT back into ckUNI at the oracle rate. Prerequisite: the user
+  /// has icrc2_approve'd this canister on the sGLDT ledger for at least
+  /// `amount` plus the sGLDT transfer fee.
+  public shared ({ caller }) func redeemSGLDT(amount : Nat, rateHint : ?Nat) : async {
+    #ok : { redeemId : Nat; ckuniPaid : Nat; rate : Nat; blockIndex : Nat };
+    #err : Text;
+  } {
+    if (not isAuthenticatedUser(caller)) {
+      return #err("Sign in with Internet Identity before redeeming.");
+    };
+    if (amount < MIN_REDEEM_SGLDT) {
+      return #err("Amount too small. Minimum redeem is 0.1 sGLDT.");
+    };
+
+    let rate = _clampRateHint(rateHint);
+    if (rate == 0) {
+      return #err("Exchange rate unavailable — try again shortly.");
+    };
+    let ckuniAmount = _ckuniForSGLDT(amount, rate);
+    if (ckuniAmount == 0) {
+      return #err("Calculated payout is zero — check the exchange rate.");
+    };
+
+    let me = Principal.fromActor(Self);
+
+    // Cheap pre-check: refuse before pulling funds if the treasury clearly
+    // can't pay. The authoritative check is still the payout transfer itself
+    // (which refunds on failure); this just avoids a pointless pull+refund
+    // fee cycle in the common out-of-liquidity case.
+    let treasuryCkUNI = try {
+      await ckUNILedgerV2.icrc1_balance_of({ owner = me; subaccount = null });
+    } catch (_) { 0 };
+    if (treasuryCkUNI < ckuniAmount) {
+      return #err(
+        "The treasury doesn't hold enough ckUNI for this redeem right now (has "
+        # treasuryCkUNI.toText() # " e18, needs " # ckuniAmount.toText() # " e18). Try a smaller amount or come back later."
+      );
+    };
+
+    // ── Step 1: pull the sGLDT from the user ──
+    let pullResult = try {
+      await sgldtLedgerV2.icrc2_transfer_from({
+        spender_subaccount = null;
+        from = { owner = caller; subaccount = null };
+        to = { owner = me; subaccount = null };
+        amount = amount;
+        fee = null;
+        memo = null;
+        created_at_time = null;
+      });
+    } catch (e) {
+      return #err("Could not reach the sGLDT ledger: " # e.message());
+    };
+
+    let pullBlock = switch (pullResult) {
+      case (#Ok(b)) { b };
+      case (#Err(#InsufficientAllowance { allowance })) {
+        return #err(
+          "Approval too small. Approve at least " # amount.toText()
+          # " sGLDT e8s (current allowance: " # allowance.toText() # ")."
+        );
+      };
+      case (#Err(#InsufficientFunds { balance })) {
+        return #err(
+          "Not enough sGLDT. Your balance is " # balance.toText()
+          # " e8s but " # amount.toText() # " e8s was requested."
+        );
+      };
+      case (#Err(#BadFee { expected_fee })) {
+        return #err("sGLDT ledger fee mismatch; expected " # expected_fee.toText() # ". Try again.");
+      };
+      case (#Err(#TemporarilyUnavailable)) {
+        return #err("sGLDT ledger temporarily unavailable. Try again shortly.");
+      };
+      case (#Err(#GenericError { message; error_code })) {
+        return #err("sGLDT transfer failed (" # error_code.toText() # "): " # message);
+      };
+      case (#Err(_)) {
+        return #err("sGLDT transfer was rejected by the ledger.");
+      };
+    };
+
+    // The sGLDT is ours from here on — pay or refund, never keep.
+    nextRedeemId += 1;
+    let redeemId = nextRedeemId;
+    let startedAt = Time.now();
+    redeems.add(
+      redeemId,
+      {
+        id = redeemId;
+        user = caller;
+        sgldtAmount = amount;
+        ckuniPaid = 0;
+        rate = rate;
+        status = #pulled;
+        timestamp = startedAt;
+        pullBlock = ?pullBlock;
+        payBlock = null;
+        errorMsg = null;
+      },
+    );
+
+    _recordTx(
+      caller,
+      {
+        id = _nextTxId();
+        txType = #Refine;
+        amount = amount;
+        tokenSymbol = "sGLDT";
+        status = #Completed;
+        timestamp = startedAt;
+        ethTxHash = null;
+        icpBlockIndex = ?pullBlock;
+        errorMsg = null;
+        description = "sGLDT received for redemption: " # amount.toText() # " e8s. Block: " # pullBlock.toText();
+      },
+    );
+
+    // ── Step 2: pay the ckUNI ──
+    let ckFee = try { await ckUNILedgerV2.icrc1_fee() } catch (_) { 0 };
+    let payResult = try {
+      await ckUNILedgerV2.icrc1_transfer({
+        from_subaccount = null;
+        to = { owner = caller; subaccount = null };
+        amount = ckuniAmount;
+        fee = ?ckFee;
+        memo = ?_depositMemo(redeemId);
+        created_at_time = ?_dedupCreatedAt(startedAt);
+      });
+    } catch (e) {
+      #Err(#GenericError { error_code = 0; message = e.message() });
+    };
+
+    switch (payResult) {
+      case (#Ok(payBlock)) {
+        redeems.add(
+          redeemId,
+          {
+            id = redeemId;
+            user = caller;
+            sgldtAmount = amount;
+            ckuniPaid = ckuniAmount;
+            rate = rate;
+            status = #paid;
+            timestamp = startedAt;
+            pullBlock = ?pullBlock;
+            payBlock = ?payBlock;
+            errorMsg = null;
+          },
+        );
+        _recordTx(
+          caller,
+          {
+            id = _nextTxId();
+            txType = #Mint;
+            amount = ckuniAmount;
+            tokenSymbol = "ckUNI";
+            status = #Completed;
+            timestamp = Time.now();
+            ethTxHash = null;
+            icpBlockIndex = ?payBlock;
+            errorMsg = null;
+            description = "ckUNI released from treasury: " # ckuniAmount.toText() # " e18. Block: " # payBlock.toText();
+          },
+        );
+        try { ignore await refreshTreasuryBalances() } catch (_) {};
+        #ok({ redeemId = redeemId; ckuniPaid = ckuniAmount; rate = rate; blockIndex = payBlock });
+      };
+      case (#Err(payErr)) {
+        let reason = switch (payErr) {
+          case (#InsufficientFunds { balance }) {
+            "The treasury is out of ckUNI (holds " # balance.toText()
+            # " e18, needed " # ckuniAmount.toText() # " e18)";
+          };
+          case (#GenericError { message; error_code }) {
+            "ckUNI ledger error " # error_code.toText() # ": " # message;
+          };
+          case (#TemporarilyUnavailable) { "The ckUNI ledger is temporarily unavailable" };
+          case (#BadFee { expected_fee }) { "ckUNI fee mismatch, expected " # expected_fee.toText() };
+          case (_) { "The ckUNI transfer was rejected by the ledger" };
+        };
+        await _refundSGLDT(redeemId, caller, amount, rate, startedAt, pullBlock, reason);
+      };
+    };
+  };
+
+  /// Return pulled sGLDT after a failed ckUNI payout — the treasury absorbs
+  /// the sGLDT transfer fee. Mirrors _refundCkUNI.
+  func _refundSGLDT(
+    redeemId : Nat,
+    user : Principal,
+    amount : Nat,
+    rate : Nat,
+    startedAt : Time.Time,
+    pullBlock : Nat,
+    reason : Text,
+  ) : async { #ok : { redeemId : Nat; ckuniPaid : Nat; rate : Nat; blockIndex : Nat }; #err : Text } {
+    let sgldtFee = try { await sgldtLedgerV2.icrc1_fee() } catch (_) { 10_000 };
+
+    func markStranded(detail : Text) {
+      redeems.add(
+        redeemId,
+        {
+          id = redeemId;
+          user = user;
+          sgldtAmount = amount;
+          ckuniPaid = 0;
+          rate = rate;
+          status = #stranded;
+          timestamp = startedAt;
+          pullBlock = ?pullBlock;
+          payBlock = null;
+          errorMsg = ?(reason # " | refund failed: " # detail);
+        },
+      );
+      _recordTx(
+        user,
+        {
+          id = _nextTxId();
+          txType = #Refine;
+          amount = amount;
+          tokenSymbol = "sGLDT";
+          status = #Failed;
+          timestamp = Time.now();
+          ethTxHash = null;
+          icpBlockIndex = null;
+          errorMsg = ?(reason # " | refund failed: " # detail);
+          description = "Redeem failed and the sGLDT refund did not go through. Redeem #" # redeemId.toText() # " is held for admin resolution.";
+        },
+      );
+    };
+
+    if (amount <= sgldtFee) {
+      markStranded("amount is below the sGLDT transfer fee");
+      return #err(reason # ". Your sGLDT could not be auto-refunded (below the ledger fee) — redeem #" # redeemId.toText() # " has been flagged for support.");
+    };
+
+    let refundAmount = amount - sgldtFee;
+    let refundResult = try {
+      await sgldtLedgerV2.icrc1_transfer({
+        from_subaccount = null;
+        to = { owner = user; subaccount = null };
+        amount = refundAmount;
+        fee = ?sgldtFee;
+        memo = ?_depositMemo(redeemId);
+        created_at_time = ?_dedupCreatedAt(startedAt);
+      });
+    } catch (e) {
+      #Err(#GenericError { error_code = 0; message = e.message() });
+    };
+
+    switch (refundResult) {
+      case (#Ok(_) or #Err(#Duplicate(_))) {
+        redeems.add(
+          redeemId,
+          {
+            id = redeemId;
+            user = user;
+            sgldtAmount = amount;
+            ckuniPaid = 0;
+            rate = rate;
+            status = #refunded;
+            timestamp = startedAt;
+            pullBlock = ?pullBlock;
+            payBlock = null;
+            errorMsg = ?reason;
+          },
+        );
+        _recordTx(
+          user,
+          {
+            id = _nextTxId();
+            txType = #Refine;
+            amount = refundAmount;
+            tokenSymbol = "sGLDT";
+            status = #Failed;
+            timestamp = Time.now();
+            ethTxHash = null;
+            icpBlockIndex = null;
+            errorMsg = ?reason;
+            description = "Redeem could not complete; " # refundAmount.toText() # " e8s sGLDT was refunded to your account.";
+          },
+        );
+        #err(reason # ". Your sGLDT has been refunded — you can try again once the treasury holds enough ckUNI.");
+      };
+      case (#Err(refundErr)) {
+        markStranded(debug_show (refundErr));
+        #err(reason # ". Automatic refund also failed — redeem #" # redeemId.toText() # " has been flagged for support with your funds recorded.");
+      };
+    };
+  };
+
+  /// The caller's own redeem history, newest-first.
+  public query ({ caller }) func getMyRedeems() : async [RedeemRecord] {
+    let out = List.empty<RedeemRecord>();
+    for ((_, r) in redeems.entries()) {
+      if (r.user == caller) { out.add(r) };
+    };
+    let arr = out.toArray();
+    arr.sort(func(a : RedeemRecord, b : RedeemRecord) : Order.Order { Int.compare(b.timestamp, a.timestamp) });
+  };
+
+  /// Admin view: every redeem that ended #stranded.
+  public query ({ caller }) func getStrandedRedeems() : async [RedeemRecord] {
+    if (not isAdmin(caller)) { return [] };
+    let out = List.empty<RedeemRecord>();
+    for ((_, r) in redeems.entries()) {
       switch (r.status) {
         case (#stranded) { out.add(r) };
         case (_) {};

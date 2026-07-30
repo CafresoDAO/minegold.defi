@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   approveCkUNIForRefinery,
+  fetchCkUNIFee,
   fetchMyCkUNIPosition,
   refineCkUNI,
   type CkUNIPosition,
 } from "./useQueries";
+import { computeRefineAmounts } from "../lib/refineMath";
 
 /**
  * The post-deposit half of the refinery, under minter attribution.
@@ -62,18 +64,54 @@ export function useRefineFlow(identity: unknown) {
   useEffect(() => stopPolling, [stopPolling]);
 
   /** Approve + refine. Safe to call directly when the user already holds
-   *  ckUNI (e.g. resuming after a closed tab). */
+   *  ckUNI (e.g. resuming after a closed tab). The requested amount is
+   *  clamped to what the live balance can actually cover after the two
+   *  ledger fees (approve + transfer_from) — see lib/refineMath.ts. */
   const refineNow = useCallback(
-    async (amount: bigint, rateHint: bigint | null): Promise<void> => {
+    async (requested: bigint, rateHint: bigint | null): Promise<void> => {
       if (busyRef.current) return;
       busyRef.current = true;
       stopPolling();
       try {
-        setState({ kind: "approving", target: amount });
-        const approval = await approveCkUNIForRefinery({ identity, amount });
-        if (!approval.ok) {
-          setState({ kind: "failed", error: approval.error, recoverable: true });
+        const fee = await fetchCkUNIFee();
+        const pos = await fetchMyCkUNIPosition(identity);
+        if (!pos) {
+          setState({
+            kind: "failed",
+            error: "Could not read your ckUNI position. Check your connection and try again.",
+            recoverable: true,
+          });
           return;
+        }
+        setPosition(pos);
+        const { refineAmount: amount, approveAmount } = computeRefineAmounts(
+          pos.balance,
+          requested,
+          fee,
+        );
+        if (amount < pos.minRefine) {
+          setState({
+            kind: "failed",
+            error: `Not enough ckUNI to refine after ledger fees. You need at least ${
+              (Number(pos.minRefine + 2n * fee) / 1e18).toFixed(4)
+            } ckUNI; your balance is ${(Number(pos.balance) / 1e18).toFixed(4)}.`,
+            recoverable: true,
+          });
+          return;
+        }
+
+        // Skip the approve signature when the standing allowance already
+        // covers amount + fee (mirrors the RedeemModal pattern).
+        if (pos.allowance < approveAmount) {
+          setState({ kind: "approving", target: amount });
+          const approval = await approveCkUNIForRefinery({
+            identity,
+            amount: approveAmount,
+          });
+          if (!approval.ok) {
+            setState({ kind: "failed", error: approval.error, recoverable: true });
+            return;
+          }
         }
 
         setState({ kind: "refining", target: amount });
@@ -106,9 +144,12 @@ export function useRefineFlow(identity: unknown) {
    *  automatically. Approving is an Internet Identity signature, not a wallet
    *  popup, so the whole tail of the flow runs without user interaction. */
   const beginWatch = useCallback(
-    (target: bigint, rateHint: bigint | null) => {
+    (target: bigint, rateHint: bigint | null, startedAtMs?: number) => {
       stopPolling();
-      startedAtRef.current = Date.now();
+      // A resumed watch (page refresh) passes the ORIGINAL start time so the
+      // elapsed display and the 40-min timeout survive reloads — otherwise a
+      // stuck deposit could be "watched" forever by refreshing.
+      startedAtRef.current = startedAtMs ?? Date.now();
       setState({ kind: "waiting_mint", target, observed: 0n, elapsedMs: 0 });
 
       const tick = async () => {

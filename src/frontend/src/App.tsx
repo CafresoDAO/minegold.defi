@@ -1,13 +1,9 @@
 import { useInternetIdentity } from "./auth";
 import {
   ethCall,
-  findLatestUserTxTo,
-  findTxByNonce,
   getWalletClient,
   mainnet,
   publicClient,
-  readCurrentNonce,
-  verifyHashIsDeposit,
   type Hash,
 } from "./lib/eth";
 import {
@@ -48,8 +44,11 @@ import { useRefineFlow } from "./hooks/useRefineFlow";
 import { GoldCTA } from "./components/ui/GoldCTA";
 import { safeBalance } from "./lib/format";
 import {
-  autoFinalizeUNIDeposit,
-  directSubmitUNIDeposit,
+  clearRefineWatch,
+  readRefineWatch,
+  writeRefineWatch,
+} from "./lib/refineWatch";
+import {
   icrc1TransferFromCaller,
   useDirectCkUNITreasuryBalance,
   useDirectSGLDTTreasuryBalance,
@@ -61,6 +60,7 @@ import {
   useRefreshTreasuryBalances,
   useRetryUNIDepositPayout,
   useUserSGLDTBalance,
+  CKUNI_FEE_FALLBACK,
 } from "./hooks/useQueries";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { AdminPage } from "./pages/AdminPage";
@@ -577,7 +577,11 @@ export default function App() {
   const [uniPrice, setUniPrice] = useState<number | null>(null);
   const [sgldtPrice, setSgldtPrice] = useState<number | null>(null);
   const [ethPrice, setEthPrice] = useState<number | null>(null);
-  const abortRef = useRef(false);
+  // Poll-session epoch. Cancel paths bump it; each startAutoPolling claims a
+  // fresh epoch and its ticks bail when the epoch has moved on. Unlike the old
+  // boolean latch, a bump can never leak into a FUTURE session — the next
+  // startAutoPolling always claims its own epoch.
+  const pollEpochRef = useRef(0);
   const treasuryPanelRef = useRef<HTMLDivElement>(null);
   // Track the deposit request ID so the error-phase retry button can call resetMiningPhase.
   // Persisted to localStorage so polling resumes automatically on page refresh.
@@ -590,19 +594,25 @@ export default function App() {
   // deposits under the real principal key were never loaded. That race is why
   // resume-after-refresh only worked when auth happened to win the first render.
   const [depositRequestId, setDepositRequestIdState] = useState<bigint | null>(null);
-  // Wrapper that keeps localStorage in sync with state
-  const setDepositRequestId = (id: bigint | null) => {
-    setDepositRequestIdState(id);
-    try {
-      if (id !== null) {
-        localStorage.setItem(DEPOSIT_ID_KEY, id.toString());
-      } else {
-        localStorage.removeItem(DEPOSIT_ID_KEY);
+  // Wrapper that keeps localStorage in sync with state. Memoized on the
+  // per-principal key: callbacks that close over it (stopWithSuccess) must
+  // re-capture when auth resolves, or success clears the EMPTY-slug key from
+  // the first render and leaves the real one to replay a stale success.
+  const setDepositRequestId = useCallback(
+    (id: bigint | null) => {
+      setDepositRequestIdState(id);
+      try {
+        if (id !== null) {
+          localStorage.setItem(DEPOSIT_ID_KEY, id.toString());
+        } else {
+          localStorage.removeItem(DEPOSIT_ID_KEY);
+        }
+      } catch {
+        // localStorage may be unavailable
       }
-    } catch {
-      // localStorage may be unavailable
-    }
-  };
+    },
+    [DEPOSIT_ID_KEY],
+  );
   // Auto-polling state: tracks the attempt count shown below the mining animation
   const [pollAttempt, setPollAttempt] = useState(0);
   // ── Persistent mining timeline ─────────────────────────────────────────
@@ -723,9 +733,10 @@ export default function App() {
     setStatusMsg(message);
   }, []);
 
-  /** Stop any running poll and transition to the success state */
-  // biome-ignore lint/correctness/useExhaustiveDependencies: setDepositRequestId is a stable wrapper function
-  const stopWithSuccess = useCallback(async (sgldtAmount: string | null) => {
+  /** Stop any running poll and transition to the success state.
+   *  `requestId` enables the settled-amount re-poll when the paid figure
+   *  wasn't available at stop time. */
+  const stopWithSuccess = useCallback(async (sgldtAmount: string | null, requestId?: bigint) => {
     if (pollingCompletedRef.current) return; // guard: only fire once per session
     pollingCompletedRef.current = true;
     if (pollingIntervalRef.current !== null) {
@@ -739,14 +750,44 @@ export default function App() {
     setPhase("releasing_sgldt");
     setStatusMsg("sGLDT is being released to your ICP account...");
     await new Promise((r) => setTimeout(r, 1500));
-    const released = sgldtAmount ?? estimatedGoldRef.current.toFixed(5);
-    setSgldtReleased(released);
+    // Never present the client-side estimate as the settled amount. When the
+    // backend hasn't reported the real figure yet, the success screen shows
+    // "Amount confirming…" and we re-poll below until it lands.
+    setSgldtReleased(sgldtAmount);
     setPhase("success");
     setStatusMsg("Transaction confirmed — sGLDT released!");
-    toast.success(`⛏ Gold Mined! ${released} sGLDT released to your ICP account`);
+    toast.success(
+      sgldtAmount != null
+        ? `⛏ Gold Mined! ${sgldtAmount} sGLDT released to your ICP account`
+        : "⛏ Gold Mined! sGLDT released — confirming the exact amount…",
+    );
     setDepositRequestId(null);
     setUniAmount("");
-  }, []);
+    if (sgldtAmount == null && requestId !== undefined && actor) {
+      // Bounded re-poll (10 × 5 s) for the settled amount. Epoch-guarded so
+      // "Start another" / a new flow kills it; if it never lands we leave the
+      // honest "Amount confirming…" rather than inventing a number.
+      const epoch = pollEpochRef.current;
+      for (let i = 0; i < 10; i++) {
+        await new Promise((r) => setTimeout(r, 5_000));
+        if (pollEpochRef.current !== epoch) return;
+        try {
+          const st = await (
+            actor as unknown as {
+              getDepositStatus: (id: bigint) => Promise<{ sgldtPaid: bigint }>;
+            }
+          ).getDepositStatus(requestId);
+          const paid = Number(st.sgldtPaid) / 1e8;
+          if (paid > 0) {
+            setSgldtReleased(paid.toFixed(5));
+            return;
+          }
+        } catch {
+          // transient — keep trying until the budget runs out
+        }
+      }
+    }
+  }, [setDepositRequestId, actor]);
 
   /** Start the auto-polling interval for a given requestId.
    *
@@ -775,14 +816,19 @@ export default function App() {
       }
       // Reset the completion guard so a fresh polling session can run to completion
       pollingCompletedRef.current = false;
+      // Claim a fresh poll epoch — a cancel bumps the counter, so any tick
+      // from an older session (or one cancelled mid-flight) sees a mismatch
+      // and dies without touching state.
+      pollEpochRef.current += 1;
+      const epoch = pollEpochRef.current;
       setPollAttempt(0);
       pollStartedAtRef.current = Date.now();
       let attempt = 0;
       let currentInterval = POLL_FAST_INTERVAL_MS;
 
       const tick = async () => {
-        // Stop immediately if user cancelled or component unmounted
-        if (abortRef.current) {
+        // Stop immediately if this session was cancelled or superseded
+        if (pollEpochRef.current !== epoch) {
           if (pollingIntervalRef.current !== null) {
             clearInterval(pollingIntervalRef.current);
             pollingIntervalRef.current = null;
@@ -840,7 +886,7 @@ export default function App() {
             case "paid": {
               setBridgeProgress(1);
               const paid = Number(st.sgldtPaid) / 1e8;
-              await stopWithSuccess(paid > 0 ? paid.toFixed(5) : null);
+              await stopWithSuccess(paid > 0 ? paid.toFixed(5) : null, requestId);
               return;
             }
             case "failed": {
@@ -1108,12 +1154,18 @@ export default function App() {
     if (!user) return;
     void refreshRefinePosition();
   }, [user, refreshRefinePosition]);
+  // "failed" is included so a refunded refine (backend returns the ckUNI on
+  // payout failure) resurfaces the banner instead of stranding the funds
+  // behind a state the UI never leaves.
   const leftoverCkUNI =
-    phase === "idle" && refineFlow.state.kind === "idle" && refineFlow.position
+    phase === "idle" &&
+    (refineFlow.state.kind === "idle" || refineFlow.state.kind === "failed") &&
+    refineFlow.position
       ? refineFlow.position.balance
       : 0n;
   const leftoverRefinable =
-    refineFlow.position != null && leftoverCkUNI >= refineFlow.position.minRefine;
+    refineFlow.position != null &&
+    leftoverCkUNI >= refineFlow.position.minRefine + 2n * CKUNI_FEE_FALLBACK;
 
   // Treasury wallet info — pre-fetched on mount so deposit address is ready before the user clicks Swap
   const FALLBACK_DEPOSIT_ADDRESS = CKERC20_HELPER_CONTRACT;
@@ -1126,20 +1178,20 @@ export default function App() {
 
   const [copiedDepositAddress, setCopiedDepositAddress] = useState(false);
 
-  // ── Pending-deposit intent (mobile hash-loss recovery) ───────────────────
-  // On mobile, the browser tab can be suspended — or killed outright — while
-  // the user is signing in the wallet app. When that happens, the JS promise
-  // from walletClient.sendTransaction() may never settle (suspended) or the
-  // tab cold-reloads with no in-flight state (killed). Either way the hash is
-  // lost and the deposit never reaches the backend.
-  //
-  // To survive both cases we write a "pending intent" to localStorage BEFORE
-  // calling sendTransaction. If the promise never returns, or the tab is
-  // killed and the user returns later, a mount-time hook reads this intent
-  // and resumes Etherscan polling for the matching tx. The intent expires
-  // after 30 min so a stale marker doesn't trap a future mining attempt.
+  // Legacy "pending deposit intent" cleanup. Under treasury attribution a
+  // lost tx hash meant a lost deposit, so an intent record + Etherscan
+  // scanning existed to recover it. Under minter attribution the ckUNI is
+  // minted to the user's own principal — the balance IS the proof — so the
+  // machinery is gone; we only clear any stale key left by older sessions.
   const PENDING_DEPOSIT_KEY = `minegold_pending_deposit_${_principalSlug}`;
-  const PENDING_DEPOSIT_TTL_MS = 30 * 60_000;
+  useEffect(() => {
+    if (!_principalSlug) return;
+    try {
+      localStorage.removeItem(PENDING_DEPOSIT_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, [PENDING_DEPOSIT_KEY, _principalSlug]);
 
   // Track the live Etherscan tx hash during monitoring — persisted so the link survives page reload
   const TX_HASH_KEY = `minegold_tx_hash_${_principalSlug}`;
@@ -1191,39 +1243,6 @@ export default function App() {
     } catch { /* localStorage unavailable */ }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-
-  type PendingDepositIntent = {
-    ethAddress: string;
-    uniAmount: string;
-    amountWei: string;
-    depositAddress: string;
-    startedAt: number;
-    // Nonce captured right before the wallet was asked to sign. Lets the
-    // mount-time resume hook locate the exact tx via RPC even when Etherscan
-    // is unreachable (mobile Brave Shields).
-    expectedNonce: number | null;
-  };
-  const writePendingDeposit = (intent: PendingDepositIntent) => {
-    try { localStorage.setItem(PENDING_DEPOSIT_KEY, JSON.stringify(intent)); } catch { /* noop */ }
-  };
-  const readPendingDeposit = (): PendingDepositIntent | null => {
-    try {
-      const raw = localStorage.getItem(PENDING_DEPOSIT_KEY);
-      if (!raw) return null;
-      const parsed = JSON.parse(raw) as PendingDepositIntent;
-      if (!parsed?.ethAddress || !parsed?.depositAddress) return null;
-      if (Date.now() - (parsed.startedAt ?? 0) > PENDING_DEPOSIT_TTL_MS) {
-        localStorage.removeItem(PENDING_DEPOSIT_KEY);
-        return null;
-      }
-      return parsed;
-    } catch {
-      return null;
-    }
-  };
-  const clearPendingDeposit = () => {
-    try { localStorage.removeItem(PENDING_DEPOSIT_KEY); } catch { /* noop */ }
-  };
 
   const copyDepositAddress = () => {
     const text = depositAddress;
@@ -1825,8 +1844,10 @@ export default function App() {
 
   const handleLogout = () => {
     stopPolling();
+    pollEpochRef.current += 1;
+    refineFlow.reset();
+    clearRefineWatch(_principalSlug);
     iiClear();
-    clearPendingDeposit();
     setEthAddress(null);
     setEthBalance(null);
     setUniBalance(null);
@@ -1842,7 +1863,8 @@ export default function App() {
         if (!ethAddress) throw new Error("Wallet not connected");
         const wallet = getWalletClient();
         if (!wallet) throw new Error("Wallet not connected");
-        const amtWei = BigInt(Math.round(Number.parseFloat(transferAmt) * 1e18));
+        const amtWei = parseDecimalToBigInt(transferAmt, 18);
+        if (amtWei === 0n) throw new Error("Enter a valid ETH amount");
         // Pre-estimate gas. Plain ETH transfer to an EOA is 21k, but if the
         // recipient is a contract with a receive() fallback, it can climb.
         // 50k fallback covers both cases comfortably; estimate buffers +25%.
@@ -1864,7 +1886,8 @@ export default function App() {
         if (!ethAddress) throw new Error("Wallet not connected");
         const wallet = getWalletClient();
         if (!wallet) throw new Error("Wallet not connected");
-        const amtWei = BigInt(Math.round(Number.parseFloat(transferAmt) * 1e18));
+        const amtWei = parseDecimalToBigInt(transferAmt, 18);
+        if (amtWei === 0n) throw new Error("Enter a valid UNI amount");
         const transferData = encodeERC20Transfer(transferTo, amtWei) as `0x${string}`;
         const uniGas = await estimateGasOrFallback(
           ethAddress as `0x${string}`,
@@ -1882,7 +1905,8 @@ export default function App() {
         toast.success(`UNI transfer submitted: ${hash.slice(0, 14)}…`);
       } else if (transferModal === "sgldt") {
         if (!user || !user.identity) throw new Error("Not authenticated");
-        const amtRaw = BigInt(Math.round(Number.parseFloat(transferAmt) * 1e8));
+        const amtRaw = parseDecimalToBigInt(transferAmt, 8);
+        if (amtRaw === 0n) throw new Error("Enter a valid sGLDT amount");
         const result = await icrc1TransferFromCaller({
           identity: user.identity,
           canisterId: "i2s4q-syaaa-aaaan-qz4sq-cai",
@@ -1904,144 +1928,14 @@ export default function App() {
     }
   };
 
-  // Manual recovery — if the in-browser wallet signing flow hangs (common on
-  // mobile Brave), the user can paste the tx hash directly from their wallet's
-  // activity tab to continue monitoring. Bypasses every wallet-response parsing
-  // issue since we don't need to read anything from the injected provider.
-  const [manualTxHash, setManualTxHash] = useState("");
-  const [manualRecoveryBusy, setManualRecoveryBusy] = useState(false);
-  // Visibility toggle for the "Recover a previous deposit" panel on the idle
-  // screen. Hidden by default to keep the happy-path UI clean; one tap opens
-  // the same autoFinalize + txHash paths the wallet-confirming phase exposes.
-  const [showRecoveryPanel, setShowRecoveryPanel] = useState(false);
-
-  /** One-click "I just signed my deposit — finalize it" flow. The backend
-   *  scans the user's recent on-chain txs for a matching deposit to the
-   *  helper contract, creates the record, verifies calldata, and pays out —
-   *  all in one call. Reliable mobile escape hatch when the automated
-   *  hash-capture path fails. */
-  const finalizeFromChain = async () => {
-    if (!actor) {
-      toast.error("Backend not ready — wait a moment and retry.");
-      return;
-    }
-    if (!ethAddress) {
-      toast.error("Connect your Ethereum wallet first.");
-      return;
-    }
-    if (!identity) {
-      toast.error("Not logged in.");
-      return;
-    }
-    const amountE8s = parseDecimalToBigInt(uniAmount || "0", 8);
-    if (amountE8s === 0n) {
-      toast.error("Enter the UNI amount you just deposited.");
-      return;
-    }
-    setManualRecoveryBusy(true);
-    setStatusMsg("Searching Ethereum for your deposit tx…");
-    const rateHint: bigint | null = liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
-    try {
-      const result = await autoFinalizeUNIDeposit({
-        identity,
-        ethAddress,
-        uniAmountE8s: amountE8s,
-        rateHint,
-      });
-      if (result.kind === "ok") {
-        setCurrentTxHash(result.txHash);
-        setDepositRequestId(result.requestId);
-        setPhase("eth_monitoring");
-        setStatusMsg("Deposit found on-chain — verifying and releasing sGLDT…");
-        startAutoPolling(result.requestId);
-        toast.success("Deposit discovered on Ethereum — releasing sGLDT");
-      } else if (result.kind === "alreadyExists") {
-        setCurrentTxHash(result.txHash);
-        setDepositRequestId(result.requestId);
-        setPhase("eth_monitoring");
-        setStatusMsg(`Deposit already registered (status: ${result.status}) — resuming monitoring`);
-        startAutoPolling(result.requestId);
-      } else if (result.kind === "noDepositFound") {
-        setStatusMsg("");
-        toast.error(result.detail, { duration: 10000 });
-      } else {
-        setStatusMsg("");
-        toast.error(`Backend: ${result.detail}`, { duration: 10000 });
-      }
-    } catch (err) {
-      setStatusMsg("");
-      toast.error(err instanceof Error ? err.message : String(err), { duration: 10000 });
-    } finally {
-      setManualRecoveryBusy(false);
-    }
-  };
-
-  const resumeFromTxHash = async (rawHash: string) => {
-    const extracted = extractTxHash(rawHash) ?? rawHash.trim();
-    if (!/^0x[a-fA-F0-9]{64}$/.test(extracted)) {
-      toast.error("That doesn't look like an Ethereum tx hash (need 0x + 64 hex chars).");
-      return;
-    }
-    if (!actor) {
-      toast.error("Backend actor not ready — wait a moment and retry.");
-      return;
-    }
-    if (!ethAddress) {
-      toast.error("Connect your Ethereum wallet first.");
-      return;
-    }
-    const amountE8s = parseDecimalToBigInt(uniAmount || "0", 8);
-    if (amountE8s === 0n) {
-      toast.error("Enter the UNI amount you deposited so the backend can record it.");
-      return;
-    }
-    setManualRecoveryBusy(true);
-    setStatusMsg("Verifying your tx on Ethereum…");
-
-    // Pre-flight: reject the most common UX failure — the user pastes the
-    // UNI approve hash (the first tx their wallet signed) instead of the
-    // deposit hash. Backend would reject it too, but we'd permanently burn
-    // a deposit record if we submitted. Block it here with a clear message.
-    const check = await verifyHashIsDeposit(extracted, depositAddress);
-    if (!check.ok && check.code !== "rpc_error") {
-      setManualRecoveryBusy(false);
-      toast.error(check.detail, { duration: 10000 });
-      setStatusMsg("");
-      return;
-    }
-    if (!check.ok) {
-      // RPC error — let the user proceed but warn them
-      console.warn("[recovery] tx pre-check RPC error, submitting anyway:", check.detail);
-    }
-
-    setPhase("eth_monitoring");
-    setCurrentTxHash(extracted);
-    setStatusMsg("Registering your tx with the backend…");
-    const rateHint: bigint | null = liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
-    try {
-      if (!identity) throw new Error("Not logged in");
-      console.log("[recovery] directSubmitUNIDeposit", { ethAddress, amountE8s: amountE8s.toString(), txHash: extracted });
-      const requestId = await directSubmitUNIDeposit({
-        identity,
-        ethAddress,
-        uniAmountE8s: amountE8s,
-        txHash: extracted,
-        rateHint,
-      });
-      console.log("[recovery] result:", requestId);
-      setDepositRequestId(requestId);
-      setManualTxHash("");
-      toast.success("Tx registered — monitoring started");
-      startAutoPolling(requestId);
-    } catch (err) {
-      const raw = err instanceof Error ? err.message : String(err);
-      const trapMatch = raw.match(/with message:\s*['"]?([^'"]+?)['"]?\s*$/i);
-      setPhase("error");
-      setStatusMsg(trapMatch ? `Backend rejected: ${trapMatch[1]}` : `Backend error: ${raw}`);
-    } finally {
-      setManualRecoveryBusy(false);
-    }
-  };
+  // NOTE (minter attribution): the old finalizeFromChain / resumeFromTxHash
+  // recovery flows are gone on purpose. They re-registered deposits with the
+  // backend's Etherscan verifier, which only accepts calldata naming the
+  // TREASURY principal — every deposit made since the minter-attribution
+  // switch names the USER'S principal, so those paths could only fail and
+  // leave junk deposit records. Recovery is now: the persisted watch record
+  // resumes the mint wait, and the leftover-ckUNI banner / "Refine my ckUNI"
+  // error CTA catch everything else — the user's ckUNI balance IS the proof.
 
   const startMining = async () => {
     if (!uniAmount || !ethAddress || !user) return;
@@ -2064,19 +1958,18 @@ export default function App() {
       );
       return;
     }
-    // Clear any stale pending-deposit intent from a previous failed run so
-    // the auto-resume hook doesn't race with this fresh attempt.
-    clearPendingDeposit();
     const amount = Number.parseFloat(uniAmount);
     if (Number.isNaN(amount) || amount <= 0) return;
-    // Soft minimum — ckERC-20 minter requires at least 0.001 UNI to cover fees
-    if (amount < 0.001) {
+    // Soft minimum. The refine leg pays two ckUNI ledger fees (0.001 each,
+    // approve + transfer_from) and the backend's MIN_REFINE floor is 0.001,
+    // so anything under 0.003 ckUNI is unrefinable after fees. 0.005 leaves
+    // honest margin against a fee change.
+    if (amount < 0.005) {
       setPhase("error");
-      setStatusMsg("Minimum swap amount is 0.001 UNI. Please enter a larger amount.");
+      setStatusMsg("Minimum swap amount is 0.005 UNI (ledger fees make smaller deposits unrefinable).");
       return;
     }
 
-    abortRef.current = false;
     setSgldtReleased(null);
     setDepositRequestId(null);
     setCurrentTxHash(null);
@@ -2226,7 +2119,6 @@ export default function App() {
           const code = (err as { code?: number })?.code;
           if (code === 4001) {
             updateStep("approve-sign", "Approve rejected in wallet", "error");
-            clearPendingDeposit();
             setPhase("idle");
             setStatusMsg("");
             toast.error("Transaction rejected in wallet — you can try again.");
@@ -2312,7 +2204,6 @@ export default function App() {
         const code = (err as { code?: number })?.code;
         if (code === 4001) {
           updateStep("deposit-sign", "Deposit rejected in wallet", "error");
-          clearPendingDeposit();
           setPhase("idle");
           setStatusMsg("");
           toast.error("Transaction rejected in wallet — you can try again.");
@@ -2353,7 +2244,6 @@ export default function App() {
             `Deposit failed: ${reason.slice(0, 80)}`,
             "error",
           );
-          clearPendingDeposit();
           setPhase("error");
           setStatusMsg(
             `Couldn't broadcast the deposit: ${reason}. Check that your wallet is unlocked, on Ethereum mainnet, and has enough ETH for gas, then tap Mine again.`,
@@ -2361,16 +2251,6 @@ export default function App() {
           return;
         }
       }
-
-      // Persist the intent so a tab kill doesn't leave the user orphaned.
-      writePendingDeposit({
-        ethAddress,
-        uniAmount,
-        amountWei: amountWei.toString(),
-        depositAddress,
-        startedAt: Date.now(),
-        expectedNonce: null,
-      });
 
       // ── Hand off to the chain-key minter ──
       // The deposit named the USER'S OWN principal, so the ckERC-20 minter
@@ -2386,7 +2266,14 @@ export default function App() {
       // missing hash costs us only the Etherscan convenience link.
       const rateHintNat: bigint | null = liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
 
-      clearPendingDeposit();
+      // Persist the watch so a refresh mid-wait resumes this screen instead
+      // of landing on a pristine idle refinery (cleared on done/failed/cancel).
+      writeRefineWatch(_principalSlug, {
+        txHash: signedTxHash,
+        amountWei: amountWei.toString(),
+        rateHint: rateHintNat?.toString() ?? null,
+        startedAt: Date.now(),
+      });
       updateStep(
         "ck-mint",
         "Chain-key minter confirming (12 Ethereum blocks)",
@@ -2401,13 +2288,11 @@ export default function App() {
       // Handle user rejection (EIP-1193 error code 4001)
       const code = (err as { code?: number })?.code;
       if (code === 4001) {
-        clearPendingDeposit();
         setPhase("idle");
         setStatusMsg("");
         toast.error("Transaction rejected in wallet — you can try again.");
         return;
       }
-      clearPendingDeposit();
       setPhase("error");
       setStatusMsg(
         err instanceof Error
@@ -2431,11 +2316,36 @@ export default function App() {
   // id has been hydrated (both arrive asynchronously after auth), check the
   // deposit's status via a free query and resume monitoring if it's still in
   // flight. Runs at most once per session via resumeCheckedRef.
+  // ── Minter-watch resume ──────────────────────────────────────────────────
+  // If the tab was refreshed/killed while the chain-key minter was confirming
+  // a deposit, re-enter the watch from the persisted record. Synchronous
+  // localStorage read; takes precedence over the legacy deposit-id resume.
+  const watchResumedRef = useRef(false);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: guarded to run once; phase read from closure
+  useEffect(() => {
+    if (!user || !identity || watchResumedRef.current) return;
+    if (phase !== "idle" || refineFlow.state.kind !== "idle") return;
+    const rec = readRefineWatch(_principalSlug);
+    if (!rec) return;
+    watchResumedRef.current = true;
+    if (rec.txHash) setCurrentTxHash(rec.txHash);
+    setPhase("ckuni_minting");
+    setStatusMsg("Chain-key minter is confirming your deposit…");
+    refineFlow.beginWatch(
+      BigInt(rec.amountWei),
+      rec.rateHint != null ? BigInt(rec.rateHint) : null,
+      rec.startedAt,
+    );
+  }, [user, identity, phase, refineFlow.state.kind]);
+
   const resumeCheckedRef = useRef(false);
   // biome-ignore lint/correctness/useExhaustiveDependencies: phase/startAutoPolling are read from closure; effect is guarded to run once
   useEffect(() => {
     if (!actor || !depositRequestId || resumeCheckedRef.current) return;
     if (phase !== "idle") return; // user already started a new flow
+    // A live minter-watch record wins — it resumes the NEW flow; the deposit
+    // id belongs to a pre-existing treasury-attributed deposit.
+    if (readRefineWatch(_principalSlug)) return;
     resumeCheckedRef.current = true;
 
     (async () => {
@@ -2454,7 +2364,9 @@ export default function App() {
           const paid = Number(st.sgldtPaid) / 1e8;
           setPhase("success");
           setStatusMsg("Transaction confirmed — sGLDT released!");
-          setSgldtReleased((prev) => prev ?? (paid > 0 ? paid.toFixed(5) : "check your wallet"));
+          // null → PhaseSuccess renders "Amount confirming…" — never a
+          // placeholder string masquerading as an amount.
+          setSgldtReleased((prev) => prev ?? (paid > 0 ? paid.toFixed(5) : null));
           setDepositRequestId(null);
           return;
         }
@@ -2475,110 +2387,10 @@ export default function App() {
     })();
   }, [actor, depositRequestId]);
 
-  // MOBILE FIX: on mount, if a pending-deposit intent is stored but we don't
-  // yet have a tx hash or a backend requestId, it means the user was mid-sign
-  // on mobile and the tab was suspended or killed. Poll Etherscan for their
-  // tx to the helper contract and resume the flow from the hash recovery.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally runs once when actor becomes available; reads intent/hash/id via refs-in-closure
-  useEffect(() => {
-    if (!actor || !identity) return;
-    if (depositRequestId) return;     // backend submission already in flight
-    if (currentTxHash) return;         // we already have the hash
-
-    const intent = readPendingDeposit();
-    if (!intent) return;
-
-    // Only attempt recovery when we're otherwise idle — don't stomp on an
-    // active UI flow.
-    if (phase !== "idle") return;
-
-    let cancelled = false;
-    (async () => {
-      setPhase("wallet_confirming");
-      setStatusMsg(
-        "Resuming from your mobile wallet — looking for the broadcast tx on Ethereum…",
-      );
-      // Race Etherscan + RPC-by-nonce. On mobile Brave, Etherscan is blocked
-      // by Shields, so RPC is the actual winner; on other mobile browsers
-      // either path works and we take whichever finishes first.
-      const etherscan = findLatestUserTxTo(intent.ethAddress, intent.depositAddress, {
-        timeoutMs: 240_000,
-        pollMs: 4_000,
-      }).then((h) => (h as string | null));
-      const rpc: Promise<string | null> =
-        intent.expectedNonce !== null && intent.expectedNonce !== undefined
-          ? findTxByNonce(intent.ethAddress, intent.expectedNonce, intent.depositAddress, {
-              timeoutMs: 240_000,
-              pollMs: 4_000,
-              scanBlocks: 30,
-            }).then((h) => (h as string | null))
-          : Promise.resolve(null);
-      const found = await new Promise<string | null>((resolve) => {
-        let remaining = 2;
-        let done = false;
-        const settle = (h: string | null) => {
-          if (done) return;
-          if (h) {
-            done = true;
-            resolve(h);
-            return;
-          }
-          remaining -= 1;
-          if (remaining === 0 && !done) {
-            done = true;
-            resolve(null);
-          }
-        };
-        etherscan.then(settle).catch(() => settle(null));
-        rpc.then(settle).catch(() => settle(null));
-      });
-      if (cancelled) return;
-      if (!found) {
-        // Etherscan didn't surface a matching tx within the window — wipe the
-        // intent and let the user start fresh. If their tx IS on-chain they
-        // can paste the hash into the manual recovery box.
-        clearPendingDeposit();
-        setPhase("idle");
-        setStatusMsg("");
-        return;
-      }
-      console.log("[mount-resume] recovered pending deposit tx:", found);
-      clearPendingDeposit();
-      setCurrentTxHash(found);
-      setUniAmount(intent.uniAmount);
-      setPhase("eth_monitoring");
-      setStatusMsg("Waiting for Ethereum confirmation...");
-
-      // Push it to the backend so the normal polling flow kicks in.
-      try {
-        const uniAmountE8s = parseDecimalToBigInt(intent.uniAmount, 8);
-        const rateHint: bigint | null =
-          liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
-        const requestId = await directSubmitUNIDeposit({
-          identity,
-          ethAddress: intent.ethAddress,
-          uniAmountE8s,
-          txHash: found,
-          rateHint,
-        });
-        if (cancelled) return;
-        setDepositRequestId(requestId);
-        startAutoPolling(requestId);
-      } catch (err) {
-        console.error("[mount-resume] backend submit failed:", err);
-        if (cancelled) return;
-        setManualTxHash(found);
-        setPhase("error");
-        setStatusMsg(
-          `We found your broadcast tx (${found.slice(0, 14)}…) but the backend rejected the initial submit. Click "Resume monitoring" below to retry.`,
-        );
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [actor, identity]);
+  // (The old "MOBILE FIX" mount-resume effect — Etherscan/nonce scanning for
+  // a lost tx hash, then directSubmitUNIDeposit — is deleted: it re-registered
+  // deposits the backend verifier can no longer accept under minter
+  // attribution. The persisted refine-watch record above is its replacement.)
 
   // Project the refine flow's own state machine onto the app-wide phase/status
   // so the existing phase UI keeps working unchanged. useRefineFlow owns the
@@ -2611,6 +2423,7 @@ export default function App() {
         updateStep("refine", "Swapping ckUNI for sGLDT", "active");
         break;
       case "done": {
+        clearRefineWatch(_principalSlug);
         const amount = (Number(st.sgldt) / 1e8).toFixed(5);
         setSgldtReleased(amount);
         setBridgeProgress(1);
@@ -2620,6 +2433,10 @@ export default function App() {
         break;
       }
       case "failed":
+        // Watch record cleared: the mint either landed (funds recoverable via
+        // the leftover banner / retry CTA) or timed out — either way there is
+        // nothing left to resume on refresh.
+        clearRefineWatch(_principalSlug);
         setPhase("error");
         setStatusMsg(st.error);
         updateStep("refine", "Refine did not complete", "error", st.error.slice(0, 120));
@@ -2891,7 +2708,7 @@ export default function App() {
               outputDisplay={
                 phase === "success" && sgldtReleased
                   ? sgldtReleased
-                  : estimatedGold.toFixed(5)
+                  : `≈ ${estimatedGold.toFixed(5)}`
               }
               onUniAmountChange={setUniAmount}
               ckuniLedgerCanisterId={CKUNI_LEDGER_CANISTER_ID}
@@ -2915,6 +2732,9 @@ export default function App() {
                     sgldtReleased={sgldtReleased}
                     currentTxHash={currentTxHash}
                     onStartNew={() => {
+                      pollEpochRef.current += 1; // kills any settled-amount re-poll
+                      clearRefineWatch(_principalSlug);
+                      refineFlow.reset();
                       setPhase("idle");
                       setSgldtReleased(null);
                       setCurrentTxHash(null);
@@ -2928,11 +2748,22 @@ export default function App() {
                     pollAttempt={pollAttempt}
                     retryErrorMsg={retryErrorMsg}
                     miningSteps={miningSteps}
-                    manualTxHash={manualTxHash}
-                    manualRecoveryBusy={manualRecoveryBusy}
-                    onManualTxHashChange={setManualTxHash}
-                    onFinalizeFromChain={finalizeFromChain}
-                    onResumeFromTxHash={resumeFromTxHash}
+                    retryRefineAvailable={
+                      refineFlow.position != null &&
+                      refineFlow.position.balance >=
+                        refineFlow.position.minRefine + 2n * CKUNI_FEE_FALLBACK
+                    }
+                    retryRefineBalance={
+                      refineFlow.position
+                        ? (Number(refineFlow.position.balance) / 1e18).toFixed(4)
+                        : null
+                    }
+                    onRetryRefine={() => {
+                      if (!refineFlow.position) return;
+                      const hint =
+                        liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
+                      void refineFlow.refineNow(refineFlow.position.balance, hint);
+                    }}
                     onViewHistory={() => setShowHistory(true)}
                     onTryAgain={async () => {
                       // Reset stuck deposit on backend if we have a request ID
@@ -2943,6 +2774,9 @@ export default function App() {
                           // Non-blocking — reset frontend state regardless
                         }
                       }
+                      pollEpochRef.current += 1; // kills any stray poll session
+                      clearRefineWatch(_principalSlug);
+                      refineFlow.reset();
                       setDepositRequestId(null);
                       setCurrentTxHash(null);
                       setStatusMsg("");
@@ -2954,13 +2788,32 @@ export default function App() {
                   <PhaseWalletConfirming
                     uniAmount={uniAmount}
                     depositAddress={depositAddress}
-                    manualTxHash={manualTxHash}
-                    manualRecoveryBusy={manualRecoveryBusy}
-                    onManualTxHashChange={setManualTxHash}
-                    onResumeFromTxHash={resumeFromTxHash}
-                    onFinalizeFromChain={finalizeFromChain}
+                    onBeginWatch={() => {
+                      const amountWei = parseDecimalToBigInt(uniAmount, 18);
+                      if (amountWei === 0n) {
+                        setPhase("idle");
+                        return;
+                      }
+                      const hint =
+                        liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
+                      writeRefineWatch(_principalSlug, {
+                        txHash: currentTxHash,
+                        amountWei: amountWei.toString(),
+                        rateHint: hint?.toString() ?? null,
+                        startedAt: Date.now(),
+                      });
+                      updateStep(
+                        "ck-mint",
+                        "Chain-key minter confirming (12 Ethereum blocks)",
+                        "active",
+                        "watching for ckUNI credit",
+                      );
+                      setPhase("ckuni_minting");
+                      setStatusMsg("Watching for your ckUNI credit…");
+                      refineFlow.beginWatch(amountWei, hint);
+                    }}
                     onCancel={() => {
-                      abortRef.current = true;
+                      pollEpochRef.current += 1;
                       setPhase("idle");
                       setStatusMsg("");
                     }}
@@ -2978,7 +2831,8 @@ export default function App() {
                     }
                     onCheckNow={checkNow}
                     onCancel={() => {
-                      abortRef.current = true;
+                      pollEpochRef.current += 1;
+                      clearRefineWatch(_principalSlug);
                       refineFlow.reset();
                       setPhase("idle");
                       setStatusMsg("");
@@ -2990,7 +2844,7 @@ export default function App() {
                     copied={copiedDepositAddress}
                     onCopyAddress={copyDepositAddress}
                     onCancel={() => {
-                      abortRef.current = true;
+                      pollEpochRef.current += 1;
                       setPhase("idle");
                     }}
                   />
@@ -3003,7 +2857,6 @@ export default function App() {
                   />
                 ) : (
                   <PhaseIdle
-                    uniAmount={uniAmount}
                     startDisabled={
                       !uniAmount ||
                       !ethAddress ||
@@ -3020,15 +2873,7 @@ export default function App() {
                     }
                     showConnecting={!!user && !actor && !actorTimedOut}
                     actorTimedOut={actorTimedOut}
-                    showRecoveryEntry={!!user && !!ethAddress && !!actor}
-                    showRecoveryPanel={showRecoveryPanel}
-                    manualTxHash={manualTxHash}
-                    manualRecoveryBusy={manualRecoveryBusy}
                     onStartMining={startMining}
-                    onToggleRecovery={() => setShowRecoveryPanel((v) => !v)}
-                    onManualTxHashChange={setManualTxHash}
-                    onFinalizeFromChain={finalizeFromChain}
-                    onResumeFromTxHash={resumeFromTxHash}
                   />
                 )}
               </div>

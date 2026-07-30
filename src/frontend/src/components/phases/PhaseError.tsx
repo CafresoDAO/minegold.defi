@@ -1,4 +1,4 @@
-import { Activity, CheckCircle2, Loader2, XCircle } from "lucide-react";
+import { Activity, CheckCircle2, XCircle } from "lucide-react";
 import { MiningAnimation } from "../MiningAnimation";
 import type { TimelineStep } from "../TransactionTimeline";
 import { GoldCTA } from "../ui/GoldCTA";
@@ -10,18 +10,19 @@ type Props = {
   pollAttempt: number;
   retryErrorMsg: string | null;
   miningSteps: TimelineStep[];
-  manualTxHash: string;
-  manualRecoveryBusy: boolean;
-  onManualTxHashChange: (v: string) => void;
-  onFinalizeFromChain: () => void;
-  onResumeFromTxHash: (hash: string) => void;
+  /** True when the user holds refinable ckUNI (e.g. a refunded refine) —
+   *  shows the one correct recovery under minter attribution: retry the swap
+   *  on the ckUNI already sitting in the user's own account. */
+  retryRefineAvailable: boolean;
+  retryRefineBalance: string | null;
+  onRetryRefine: () => void;
   onViewHistory: () => void;
   onTryAgain: () => void;
 };
 
 /** Error phase — either the soft "still processing" state (ETH confirmed,
  *  backend sweeper still working, auto-polling continues) or the hard error
- *  state with the step tracker and manual recovery paths. */
+ *  state with the step tracker and recovery actions. */
 export function PhaseError({
   statusMsg,
   bridgeProgress,
@@ -29,11 +30,9 @@ export function PhaseError({
   pollAttempt,
   retryErrorMsg,
   miningSteps,
-  manualTxHash,
-  manualRecoveryBusy,
-  onManualTxHashChange,
-  onFinalizeFromChain,
-  onResumeFromTxHash,
+  retryRefineAvailable,
+  retryRefineBalance,
+  onRetryRefine,
   onViewHistory,
   onTryAgain,
 }: Props) {
@@ -167,68 +166,34 @@ export function PhaseError({
               ))}
             </div>
           )}
-          {/* PRIMARY recovery — one-click finalize.
-              Same button as in wallet_confirming, placed
-              here too because that's where users land if
-              the automated hash-capture race fails. */}
-          <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/40 p-4 space-y-2">
-            <div className="flex items-start gap-2">
-              <CheckCircle2 size={14} className="text-emerald-400 shrink-0 mt-0.5" />
-              <div className="text-[11px] text-emerald-300 leading-relaxed">
-                <strong className="block text-emerald-200 mb-0.5">Already signed your deposit?</strong>
-                Tap below — we'll find your deposit on Ethereum and finalize it automatically.
+          {/* PRIMARY recovery under minter attribution: the user's ckUNI is
+              already in their own account (DFINITY mints it there, and a
+              failed payout auto-refunds it) — the fix is simply to retry the
+              on-ICP swap. No Ethereum scanning, no tx hashes. */}
+          {retryRefineAvailable && (
+            <div className="rounded-2xl bg-yellow-500/10 border border-yellow-500/40 p-4 space-y-2">
+              <div className="flex items-start gap-2">
+                <CheckCircle2 size={14} className="text-yellow-400 shrink-0 mt-0.5" />
+                <div className="text-[11px] text-yellow-200/90 leading-relaxed">
+                  <strong className="block text-yellow-200 mb-0.5">
+                    Your ckUNI is safe in your own account
+                    {retryRefineBalance ? ` (${retryRefineBalance} ckUNI)` : ""}.
+                  </strong>
+                  The swap into sGLDT didn't complete — tap below to retry it.
+                  Nothing was lost: failed swaps refund the ckUNI automatically.
+                </div>
               </div>
-            </div>
-            <button
-              type="button"
-              disabled={manualRecoveryBusy}
-              onClick={onFinalizeFromChain}
-              className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 rounded-xl disabled:opacity-50 text-sm flex items-center justify-center gap-2"
-              data-ocid="refinery.finalize_from_chain.error_button"
-            >
-              {manualRecoveryBusy ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Searching Ethereum…
-                </>
-              ) : (
-                <>
-                  <CheckCircle2 size={16} />
-                  Finalize my deposit
-                </>
-              )}
-            </button>
-          </div>
-          <details className="rounded-2xl bg-zinc-900/60 border border-zinc-800 p-4">
-            <summary className="cursor-pointer text-xs font-bold text-yellow-400 select-none">
-              Paste tx hash manually (advanced)
-            </summary>
-            <div className="mt-3 space-y-2">
-              <p className="text-[11px] text-zinc-400 leading-relaxed">
-                Rarely needed — the green button above is the fastest path. Use this
-                only if you want to explicitly paste a specific deposit hash.
-              </p>
-              <input
-                type="text"
-                value={manualTxHash}
-                onChange={(e) => onManualTxHashChange(e.target.value)}
-                placeholder="0x…"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-xs text-yellow-300 font-mono placeholder:text-zinc-600"
-              />
-              <button
-                type="button"
-                disabled={manualRecoveryBusy || !manualTxHash}
-                onClick={() => onResumeFromTxHash(manualTxHash)}
-                className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2 rounded-lg disabled:opacity-50 text-sm"
+              <GoldCTA
+                data-ocid="refinery.retry_refine.button"
+                tone="primary"
+                size="md"
+                trailingIcon={null}
+                onClick={onRetryRefine}
               >
-                {manualRecoveryBusy ? (
-                  <Loader2 className="w-4 h-4 mx-auto animate-spin" />
-                ) : (
-                  "Resume monitoring"
-                )}
-              </button>
+                Refine my ckUNI
+              </GoldCTA>
             </div>
-          </details>
+          )}
           <GoldCTA
             data-ocid="refinery.try_again.button"
             tone="neutral"

@@ -170,9 +170,30 @@ export async function fetchMyCkUNIPosition(
   }
 }
 
-/** Approve the refinery canister to pull `amount` ckUNI (e18) from the caller.
- *  We approve amount + fee so the ledger's fee deduction can't leave the
- *  allowance a hair short of the refine amount. */
+/** ckUNI ledger fee (e18). Verified against the live ledger 2026-07-30:
+ *  icrc1_fee = 1_000_000_000_000_000 (0.001 ckUNI). Used as the fallback when
+ *  the live query fails; the cached live value wins otherwise. */
+export const CKUNI_FEE_FALLBACK = 1_000_000_000_000_000n;
+let _ckuniFeeCache: bigint | null = null;
+
+/** The ckUNI ledger fee, fetched once per session (anonymous query). */
+export async function fetchCkUNIFee(): Promise<bigint> {
+  if (_ckuniFeeCache !== null) return _ckuniFeeCache;
+  try {
+    const actor = Actor.createActor(icrc1LedgerIDL, {
+      agent: getAnonymousAgent(),
+      canisterId: CKUNI_CANISTER_ID,
+    }) as any;
+    _ckuniFeeCache = (await actor.icrc1_fee()) as bigint;
+    return _ckuniFeeCache;
+  } catch {
+    return CKUNI_FEE_FALLBACK;
+  }
+}
+
+/** Approve the refinery canister to pull ckUNI (e18) from the caller.
+ *  Approves exactly `amount` — callers add fee headroom themselves (see
+ *  computeRefineAmounts in lib/refineMath.ts). */
 export async function approveCkUNIForRefinery(opts: {
   identity: unknown;
   amount: bigint;
@@ -431,65 +452,11 @@ async function queryIcrc1Balance(canisterId: string): Promise<bigint> {
 /** Direct submitUNIDeposit — registers the deposit with the backend; the
  *  backend sweeper takes it from there (verify on Ethereum, then pay out).
  *  Returns the backend's deposit request ID. */
-export async function directSubmitUNIDeposit(opts: {
-  identity: unknown;
-  ethAddress: string;
-  uniAmountE8s: bigint;
-  txHash: string;
-  rateHint: bigint | null;
-}): Promise<bigint> {
-  const actor = await directActor(directDepositIDL, { identity: opts.identity });
-  // Scrub every arg into plain primitives that Candid accepts unambiguously.
-  const cleanEth = String(opts.ethAddress).trim();
-  const cleanHash = String(opts.txHash).trim();
-  const rateOpt: [] | [bigint] = opts.rateHint == null ? [] : [opts.rateHint];
-  return (await actor.submitUNIDeposit(
-    cleanEth,
-    opts.uniAmountE8s,
-    cleanHash,
-    rateOpt,
-  )) as bigint;
-}
-
-export type AutoFinalizeOutcome =
-  | { kind: "ok"; requestId: bigint; txHash: string }
-  | { kind: "alreadyExists"; requestId: bigint; txHash: string; status: string }
-  | { kind: "noDepositFound"; detail: string }
-  | { kind: "apiError"; detail: string };
-
-/** Ask the backend to find the user's most recent deposit tx on-chain and
- *  finalize it (create record, verify, pay). The reliable escape hatch for
- *  mobile flows where the frontend never captured the deposit tx hash. */
-export async function autoFinalizeUNIDeposit(opts: {
-  identity: unknown;
-  ethAddress: string;
-  uniAmountE8s: bigint;
-  rateHint: bigint | null;
-}): Promise<AutoFinalizeOutcome> {
-  const actor = await directActor(directDepositIDL, { identity: opts.identity });
-  const rateOpt: [] | [bigint] = opts.rateHint == null ? [] : [opts.rateHint];
-  const result = await actor.autoFinalizeUNIDeposit(
-    String(opts.ethAddress).trim(),
-    opts.uniAmountE8s,
-    rateOpt,
-  );
-  // Candid variant → discriminated union
-  if ("ok" in result) {
-    return { kind: "ok", requestId: result.ok.requestId as bigint, txHash: result.ok.txHash as string };
-  }
-  if ("alreadyExists" in result) {
-    return {
-      kind: "alreadyExists",
-      requestId: result.alreadyExists.requestId as bigint,
-      txHash: result.alreadyExists.txHash as string,
-      status: result.alreadyExists.status as string,
-    };
-  }
-  if ("noDepositFound" in result) {
-    return { kind: "noDepositFound", detail: result.noDepositFound as string };
-  }
-  return { kind: "apiError", detail: result.apiError as string };
-}
+// (directSubmitUNIDeposit / autoFinalizeUNIDeposit are deleted: they fed the
+// treasury-attribution recovery flows, whose backend verifier rejects every
+// deposit made since the minter-attribution switch. verifyEthTransaction in
+// directDepositIDL stays — useRetryUNIDepositPayout still drives payouts for
+// PRE-EXISTING deposit records via the UnclaimedDepositsBanner.)
 
 // ── Direct admin calls ───────────────────────────────────────────────────────
 

@@ -4,6 +4,9 @@ import { GoldCTA } from "../ui/GoldCTA";
 import { WorkflowStepper } from "../WorkflowStepper";
 
 type Props = {
+  /** The REAL settled amount from the backend, or null while it's still
+   *  being confirmed. Never pass a client-side estimate here — an unverified
+   *  number presented as settled is the fastest way to lose trust. */
   sgldtReleased: string | null;
   currentTxHash: string | null;
   onStartNew: () => void;
@@ -35,14 +38,29 @@ export function PhaseSuccess({ sgldtReleased, currentTxHash, onStartNew }: Props
             </h2>
             <Sparkles size={16} className="text-yellow-400" />
           </div>
-          <p className="text-sm text-zinc-300 mb-1">
-            <span className="text-yellow-400 font-black text-lg">
-              {sgldtReleased ?? "—"} sGLDT
-            </span>
-          </p>
-          <p className="text-xs text-zinc-500">
-            released to your ICP account
-          </p>
+          {sgldtReleased != null ? (
+            <>
+              <p className="text-sm text-zinc-300 mb-1">
+                <span className="text-yellow-400 font-black text-lg">
+                  {sgldtReleased} sGLDT
+                </span>
+              </p>
+              <p className="text-xs text-zinc-500">
+                released to your ICP account
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-zinc-300 mb-1">
+                <span className="text-yellow-400 font-black text-lg animate-pulse">
+                  Amount confirming…
+                </span>
+              </p>
+              <p className="text-xs text-zinc-500">
+                your sGLDT was released — fetching the exact amount
+              </p>
+            </>
+          )}
           {currentTxHash && (
             <a
               href={`https://etherscan.io/tx/${currentTxHash}`}

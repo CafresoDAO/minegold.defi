@@ -6,6 +6,7 @@ import {
   redeemSGLDT,
   type SGLDTPosition,
 } from "../hooks/useQueries";
+import { parseDecimalToBigInt } from "../lib/erc20";
 import { GoldCTA } from "./ui/GoldCTA";
 
 type Props = {
@@ -59,11 +60,7 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
         ? phase.position
         : null;
 
-  const amountE8s = (() => {
-    const n = Number.parseFloat(amountStr);
-    if (!Number.isFinite(n) || n <= 0) return 0n;
-    return BigInt(Math.round(n * 1e8));
-  })();
+  const amountE8s = parseDecimalToBigInt(amountStr, 8);
 
   const rateNum = position ? Number(position.rate) / 1e8 : 0;
   const estCkUNI = rateNum > 0 ? (Number(amountE8s) / 1e8) / rateNum : 0;

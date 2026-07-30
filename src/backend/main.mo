@@ -37,6 +37,12 @@ actor Self {
   // Hardcoded admin principal — only this principal has admin access
   let ADMIN_PRINCIPAL : Principal = Principal.fromText("rc62u-qypnw-bbkkp-d56wk-tnzaq-vwhi2-cqqay-q56hw-gsqbp-6wegl-jae");
 
+  // The canister's sole controller (the dfx deploy identity). A controller
+  // can already replace this entire module, so app-level admin is a strict
+  // subset of the power it holds — granting it here just lets ops methods
+  // (setSGLDTUsdPrice, getStrandedRefines, …) be called from the CLI.
+  let DEPLOYER_PRINCIPAL : Principal = Principal.fromText("xip3r-mhzcr-csb7y-ilqf5-4tpge-dka64-jv2ow-zon7z-key3x-77kf3-mae");
+
   // FIX-1: Admin transfer caps — prevent a single call from draining the entire treasury.
   // sGLDT cap: 500,000 sGLDT in e8s (sGLDT uses 8 decimals, ICRC-1 standard)
   let MAX_TRANSFER_AMOUNT_SGLDT : Nat = 50_000_000_000_000;
@@ -54,6 +60,7 @@ actor Self {
 
   do {
     accessControlState.userRoles.add(ADMIN_PRINCIPAL, #admin);
+    accessControlState.userRoles.add(DEPLOYER_PRINCIPAL, #admin);
     accessControlState.adminAssigned := true;
   };
 

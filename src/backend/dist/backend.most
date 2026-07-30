@@ -125,6 +125,7 @@ actor {
   stable BAT_DEFAULT_PRICE : Nat;
   stable BB_TOKEN_DECIMALS : Nat;
   stable CKERC20_HELPER_CONTRACT_LOWER : Text;
+  stable DEPLOYER_PRINCIPAL : Principal;
   stable DEPOSIT_SELECTOR : Text;
   stable FIXED_ETH_DEPOSIT_ADDRESS : Text;
   stable MAX_TRANSFER_AMOUNT_CKUNI : Nat;

@@ -16,16 +16,42 @@ export default {
     },
     extend: {
       fontFamily: {
-        // Honest stacks: no webfont is loaded anywhere (no <link>, no
-        // @font-face), so naming Satoshi/Bricolage/Sora/Geist here only
-        // pretended. The app ships in the system UI font on purpose —
-        // fast, zero FOUT — and font-mono resolves to the platform's
-        // real monospace for addresses and hashes.
-        display: ["system-ui", "-apple-system", "'Segoe UI'", "sans-serif"],
-        body: ["system-ui", "-apple-system", "'Segoe UI'", "sans-serif"],
-        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
+        // These are REAL now (I3): Fraunces + Geist + Geist Mono are
+        // self-hosted as latin-subset variable woff2 in public/fonts and
+        // declared @font-face in index.css. Each stack still falls back to
+        // the system face, so a failed font fetch degrades to what the app
+        // shipped with before rather than to a default serif.
+        display: ["Fraunces", "ui-serif", "Georgia", "serif"],
+        body: ["Geist", "ui-sans-serif", "system-ui", "-apple-system", "sans-serif"],
+        mono: ["'Geist Mono'", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       colors: {
+        // I3 design tokens — defined in index.css so they're inspectable in
+        // devtools and usable from inline styles; mirrored here so the same
+        // values are reachable as utilities (bg-ink-800, text-royal-700,
+        // text-trust-verified). One source of truth: index.css.
+        royal: {
+          50: "var(--royal-50)", 100: "var(--royal-100)", 200: "var(--royal-200)",
+          300: "var(--royal-300)", 400: "var(--royal-400)", 500: "var(--royal-500)",
+          600: "var(--royal-600)", 700: "var(--royal-700)", 800: "var(--royal-800)",
+          900: "var(--royal-900)",
+        },
+        ink: {
+          500: "var(--ink-500)", 600: "var(--ink-600)", 700: "var(--ink-700)",
+          800: "var(--ink-800)", 850: "var(--ink-850)", 900: "var(--ink-900)",
+          950: "var(--ink-950)",
+        },
+        gold: {
+          200: "var(--gold-200)", 300: "var(--gold-300)", 400: "var(--gold-400)",
+          500: "var(--gold-500)", 600: "var(--gold-600)", 700: "var(--gold-700)",
+        },
+        trust: {
+          verified: "var(--trust-verified)",
+          attested: "var(--trust-attested)",
+          unknown: "var(--trust-unknown)",
+          fault: "var(--trust-fault)",
+        },
+        bat: "var(--token-bat)",
         border: "oklch(var(--border))",
         input: "oklch(var(--input))",
         ring: "oklch(var(--ring) / <alpha-value>)",

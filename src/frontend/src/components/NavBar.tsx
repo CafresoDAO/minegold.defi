@@ -78,16 +78,18 @@ export function NavBar({
             title="Back to Banking.Brave"
             className="flex items-center gap-2 cursor-pointer bg-transparent border-none p-0 group"
           >
-            <div
-              className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform"
-              style={{ background: "#1D4ED8" }}
-            >
+            {/* The icon file is a blue PLATE (see scripts/mkicons.sh — the
+                rasteriser has no alpha); the disc comes from CSS here. */}
+            <span className="w-8 h-8 shrink-0 rounded-full overflow-hidden block group-hover:scale-105 transition-transform"
+              style={{ transitionTimingFunction: "var(--ease-settle)" }}>
               <img
-                src="/bankingbrave.png"
+                src="/brand/icon-192.png"
                 alt="Banking.Brave"
-                className="w-[115%] h-[115%] object-cover"
+                width={32}
+                height={32}
+                className="w-full h-full"
               />
-            </div>
+            </span>
             <span className="hidden sm:block text-sm font-black tracking-tight" style={{ color: "var(--bb-brand)" }}>
               Banking<span style={{ color: "var(--bb-text)" }}>.Brave</span>
             </span>
@@ -133,7 +135,7 @@ export function NavBar({
               type="button"
               data-ocid="nav.treasury.button"
               onClick={onToggleTreasury}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl t-label border transition-all ${
                 showTreasury
                   ? "bg-yellow-500/10 border-yellow-500/40 text-yellow-300"
                   : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
@@ -149,7 +151,7 @@ export function NavBar({
                 className="absolute right-0 top-full mt-2 w-64 bg-zinc-950 border border-zinc-700 rounded-2xl shadow-2xl z-50 p-4"
               >
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">
+                  <span className="t-label text-zinc-500">
                     Treasury Holdings
                   </span>
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />

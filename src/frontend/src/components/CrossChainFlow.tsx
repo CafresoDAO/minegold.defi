@@ -72,7 +72,7 @@ export function CrossChainFlow({ phase, amount }: Props) {
               />
             </div>
           </div>
-          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-3 text-[9px] font-black uppercase tracking-widest text-zinc-600 whitespace-nowrap">
+          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-3 t-label text-zinc-600 whitespace-nowrap">
             ckERC-20
           </div>
         </div>

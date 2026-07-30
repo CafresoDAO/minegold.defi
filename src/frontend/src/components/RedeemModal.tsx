@@ -134,7 +134,7 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
             <ArrowRightLeft size={20} className="text-pink-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">Redeem sGLDT</h2>
+            <h2 className="t-headline text-white">Redeem sGLDT</h2>
             <p className="text-xs text-zinc-500">
               Swap back to ckUNI at the live oracle rate
             </p>
@@ -194,7 +194,7 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
             {position && (
               <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4 grid grid-cols-2 gap-3 text-xs">
                 <div>
-                  <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-0.5">
+                  <div className="t-label text-zinc-500 mb-0.5">
                     Your sGLDT
                   </div>
                   <div className="text-yellow-500 font-bold">
@@ -202,7 +202,7 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-0.5">
+                  <div className="t-label text-zinc-500 mb-0.5">
                     Rate
                   </div>
                   <div className="text-zinc-200 font-bold">
@@ -210,7 +210,7 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
                   </div>
                 </div>
                 <div className="col-span-2">
-                  <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-0.5">
+                  <div className="t-label text-zinc-500 mb-0.5">
                     Treasury liquidity
                   </div>
                   <div className="text-zinc-300 font-bold">
@@ -223,7 +223,7 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
             <div>
               <label
                 htmlFor="redeem-amount"
-                className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block mb-1.5"
+                className="t-label text-zinc-500 block mb-1.5"
               >
                 Amount (sGLDT)
               </label>
@@ -244,7 +244,7 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
                   data-ocid="wallet.redeem.max_button"
                   disabled={busy || !position}
                   onClick={() => setAmountStr(balanceNum > 0 ? String(balanceNum) : "")}
-                  className="px-3 rounded-xl border border-zinc-800 bg-zinc-900 text-[10px] font-black text-yellow-500 uppercase tracking-widest hover:bg-zinc-800 disabled:opacity-40"
+                  className="px-3 rounded-xl border border-zinc-800 bg-zinc-900 t-label text-yellow-500 hover:bg-zinc-800 disabled:opacity-40"
                 >
                   Max
                 </button>

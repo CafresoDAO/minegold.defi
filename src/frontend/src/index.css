@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═════════════════════════════════════════════════════════════════════════
+   TYPE (I3) — self-hosted, latin subset, variable axes.
+
+   Fraunces is the DISPLAY face only. Its engraved, high-contrast serif is
+   what makes a number read as an assay certificate rather than a dashboard
+   stat, and it harmonises with the lion seal's own classical lettering.
+   Geist carries every functional pixel; Geist Mono carries money.
+
+   Self-hosted on purpose: a CDN <link> is a third-party request on a page
+   whose entire pitch is "no server in the middle", and it would break on
+   the asset canister's CSP. 117KB total, latin subset, all three variable.
+   ═════════════════════════════════════════════════════════════════════════ */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/fraunces-var-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/geist-sans-var-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/geist-mono-var-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ── Global reduce-motion respect ────────────────────────────────────────
    Users who opt into OS-level "reduce motion" (accessibility setting on
    both iOS and macOS/Windows for vestibular sensitivity) should see no
@@ -57,6 +100,124 @@
 }
 .animate-success-pop { animation: success-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
+/* ═════════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS (I3)
+
+   Two palettes, one rule:
+     royal blue + white + serif  = THE HOUSE   (Banking.Brave chrome, landing)
+     warm ink + gold             = THE PRODUCT (the refinery)
+
+   --royal-700 is EYEDROPPED from the Banking.Brave lion seal
+   (public/brand/banking-brave-seal.png, sampled 2026-07-30): the disc fill
+   is #02458c, NOT the #1D4ED8 previously assumed across this file. Every
+   other step is interpolated from that value's own hue/saturation
+   (hsl 211, 97%) so the whole ramp descends from the real mark. If the seal
+   artwork is ever re-cut, re-sample and regenerate — do not hand-tune.
+   White on --royal-700 measures 9.41:1 (passes AAA).
+   ═════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* The house — royal blue */
+  --royal-50:  #ecf4fe;
+  --royal-100: #cfe5fc;
+  --royal-200: #a0cbf8;
+  --royal-300: #69abf2;  /* 8.3:1 on warm ink — links/accents on dark */
+  --royal-400: #2e8cef;  /* 5.83:1 on warm ink — brand accent on dark */
+  --royal-500: #096dd7;
+  --royal-600: #0456af;
+  --royal-700: #02458c;  /* ◄ THE SEAL. white-on = 9.41:1 (AAA) */
+  --royal-800: #023469;
+  --royal-900: #012346;
+
+  /* The product — warm ink. Gold on warm ink reads as metal; on the old
+     zinc-blue it read as plastic. Hue is deliberately warm (~40°), not
+     neutral grey. */
+  --ink-950: #08080a;   /* page */
+  --ink-900: #0e0e11;
+  --ink-850: #141417;
+  --ink-800: #1a1a1f;   /* card */
+  --ink-700: #232329;   /* border */
+  --ink-600: #2c2c33;
+  --ink-500: #3a3a44;   /* hairline / disabled */
+
+  /* The product — gold */
+  --gold-200: #f7e4a8;
+  --gold-300: #f2d479;
+  --gold-400: #edc64f;
+  --gold-500: #e8b62c;  /* primary gold */
+  --gold-600: #c4941c;
+  --gold-700: #9a7213;
+
+  /* Trust tokens — semantic, NOT decorative. Never use --trust-verified for
+     anything a user cannot independently verify on-chain; that is the whole
+     point of the distinction. */
+  --trust-verified: #34d399;  /* on-chain verifiable, right now */
+  --trust-attested: #fbbf24;  /* operator-stated — take our word for it */
+  --trust-unknown:  #a1a1aa;  /* stale / unavailable / not yet known */
+  --trust-fault:    #f87171;  /* actively wrong */
+
+  /* Per-token accents */
+  --token-bat:   #ff7a45;
+
+  /* Motion — named for what they DO, so call sites read intentionally. */
+  --ease-strike:  cubic-bezier(0.2, 0.9, 0.3, 1);    /* pick hits rock */
+  --ease-settle:  cubic-bezier(0.16, 1, 0.3, 1);     /* comes to rest */
+  --ease-descend: cubic-bezier(0.4, 0, 0.2, 1);      /* camera down-shaft */
+  --ease-exit:    cubic-bezier(0.4, 0, 1, 1);        /* leaves frame */
+
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* ── Type scale ──────────────────────────────────────────────────────────
+   Five roles, no more. The old UI had one dominant pattern —
+   `text-[10px] font-black uppercase tracking-widest` — used for EVERY
+   label, which shouts uniformly and so communicates no hierarchy at all,
+   while 10px sits under the legibility floor. `.t-label` replaces it at a
+   readable 12px in sentence case. Uppercase now survives only in CTA
+   labels and status chips, where the shape itself carries meaning.       */
+.t-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  /* Fraunces' optical-size axis: crank it at display sizes so the serifs
+     sharpen into engraved-plate contrast instead of scaling up a text cut. */
+  font-variation-settings: 'opsz' 120, 'SOFT' 0, 'WONK' 0;
+}
+.t-headline {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(1.375rem, 1.2rem + 0.7vw, 1.625rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.t-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 0.9375rem;  /* 15px — the old 11-12px prose was too small */
+  line-height: 1.6;
+}
+.t-label {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.75rem;    /* 12px, sentence case */
+  line-height: 1.35;
+  letter-spacing: 0.005em;
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: 'zero' 1, 'tnum' 1;
+}
+/* Money must never reflow as digits change — tabular everywhere it appears,
+   even when the call site only asked for the mono family. */
+.font-mono, code, kbd, pre, samp {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    Banking.Brave theme — light & dark modes.
 
@@ -67,7 +228,7 @@
    `.theme-light` / `.theme-dark` class on <html>. The theme toggle lives
    in the top-right of the landing + dApp nav.
 
-   Brand accent is Banking.Brave blue (#1D4ED8) regardless of theme.
+   Brand accent is Banking.Brave blue (var(--royal-700)) regardless of theme.
    ───────────────────────────────────────────────────────────────────── */
 
 html.theme-dark, :root {
@@ -79,9 +240,13 @@ html.theme-dark, :root {
   --bb-border-soft: rgba(39, 39, 42, 0.7);
   --bb-text: #fafafa;
   --bb-text-muted: #a1a1aa;
-  --bb-text-dim: #71717a;
-  --bb-brand: #3b82f6;          /* brighter blue for dark bg contrast */
-  --bb-brand-strong: #1D4ED8;   /* canonical Banking.Brave blue */
+  /* Was #71717a (zinc-500) — measured 4.14:1 on the page background, i.e.
+     under AA, and it carried real content ("Protocols we govern", the token
+     flow lines). Raised to clear 4.5:1 with margin; warmed a touch so it
+     sits on warm ink rather than reading blue-grey. */
+  --bb-text-dim: #8b8b93;
+  --bb-brand: var(--royal-400);          /* brighter blue for dark bg contrast */
+  --bb-brand-strong: var(--royal-700);   /* canonical Banking.Brave blue */
 }
 
 html.theme-light {
@@ -99,7 +264,7 @@ html.theme-light {
        text       #0B1E3B    deep navy — primary text, brand-linked
        text-muted #475569    slate-600 — secondary text (AA on white)
        text-dim   #64748B    slate-500 — tertiary
-       brand      #1D4ED8    royal blue primary
+       brand      var(--royal-700)    royal blue primary
        gold       #B8860B    refined darkgoldenrod — readable on white     */
   --bb-bg: #F8FAFC;                  /* slate-50 base */
   --bb-bg-soft: #EFF2F7;             /* inset wash */
@@ -110,8 +275,8 @@ html.theme-light {
   --bb-text: #0B1E3B;                /* deep navy — on-brand primary text */
   --bb-text-muted: #475569;          /* slate-600 — 7.1:1 on white, passes AAA */
   --bb-text-dim: #64748B;            /* slate-500 — 4.6:1 on white, passes AA */
-  --bb-brand: #1D4ED8;               /* royal blue primary */
-  --bb-brand-strong: #1E3A8A;        /* deeper royal for pressed states */
+  --bb-brand: var(--royal-700);               /* royal blue primary */
+  --bb-brand-strong: var(--royal-800);        /* deeper royal for pressed states */
   --bb-gold: #B8860B;                /* refined gold — readable on white */
   --bb-gold-deep: #8B6508;           /* deeper gold for hover/pressed */
   --bb-gold-soft: #D4A94A;           /* lighter gold for subtle accents */
@@ -257,23 +422,23 @@ html.theme-light .shadow-yellow-500\/20 { --tw-shadow-color: rgba(184, 134, 11, 
 html.theme-light .shadow-yellow-500\/30 { --tw-shadow-color: rgba(184, 134, 11, 0.28) !important; }
 
 /* Links */
-html.theme-light a:not(.no-theme-link) { color: #1D4ED8; }
-html.theme-light a:not(.no-theme-link):hover { color: #1E3A8A; }
+html.theme-light a:not(.no-theme-link) { color: var(--royal-700); }
+html.theme-light a:not(.no-theme-link):hover { color: var(--royal-800); }
 
 /* Pink/rose — handled by the global rebrand below. */
 
 /* Blue accents use the Banking.Brave canonical royal blue everywhere */
-html.theme-light .text-blue-300 { color: #1D4ED8 !important; }
-html.theme-light .text-blue-400 { color: #1D4ED8 !important; }
-html.theme-light .text-blue-500 { color: #1E40AF !important; }
-html.theme-light .text-blue-600 { color: #1E3A8A !important; }
-html.theme-light .bg-blue-500 { background-color: #1D4ED8 !important; }
-html.theme-light .bg-blue-600 { background-color: #1E40AF !important; }
-html.theme-light .hover\:bg-blue-400:hover { background-color: #3B82F6 !important; }
-html.theme-light .hover\:bg-blue-500:hover { background-color: #2563EB !important; }
-html.theme-light .border-blue-500 { border-color: #1D4ED8 !important; }
+html.theme-light .text-blue-300 { color: var(--royal-700) !important; }
+html.theme-light .text-blue-400 { color: var(--royal-700) !important; }
+html.theme-light .text-blue-500 { color: var(--royal-600) !important; }
+html.theme-light .text-blue-600 { color: var(--royal-800) !important; }
+html.theme-light .bg-blue-500 { background-color: var(--royal-700) !important; }
+html.theme-light .bg-blue-600 { background-color: var(--royal-600) !important; }
+html.theme-light .hover\:bg-blue-400:hover { background-color: var(--royal-400) !important; }
+html.theme-light .hover\:bg-blue-500:hover { background-color: var(--royal-500) !important; }
+html.theme-light .border-blue-500 { border-color: var(--royal-700) !important; }
 html.theme-light .border-blue-500\/30,
-html.theme-light .border-blue-500\/40 { border-color: rgba(29, 78, 216, 0.35) !important; }
+html.theme-light .border-blue-500\/40 { border-color: rgba(2, 69, 140, 0.35) !important; }
 
 /* Emerald success states */
 html.theme-light .text-emerald-300 { color: #047857 !important; }
@@ -294,7 +459,7 @@ html.theme-light [class*="bg-emerald-500/15"] {
   background-color: rgba(16, 185, 129, 0.12) !important;
 }
 html.theme-light [class*="bg-blue-500/10"] {
-  background-color: rgba(29, 78, 216, 0.10) !important;
+  background-color: rgba(2, 69, 140, 0.10) !important;
 }
 /* NOTE: no light-mode pink override here — the global rebrand (lines below)
    already maps pink → Banking.Brave blue for both themes. A substring
@@ -311,8 +476,8 @@ html.theme-light .bg-zinc-900,
 html.theme-light .bg-zinc-900\/80,
 html.theme-light .bg-zinc-900\/60 {
   box-shadow:
-    0 1px 3px rgba(11, 30, 59, 0.06),
-    0 1px 2px rgba(11, 30, 59, 0.04);
+    0 1px 3px rgba(1, 35, 70, 0.06),
+    0 1px 2px rgba(1, 35, 70, 0.04);
 }
 
 /* Refinery panel — the main swap widget. Uses a near-white elevated
@@ -322,10 +487,10 @@ html.theme-light .bg-zinc-900\/60 {
    CTA and made the panel feel heavier than the action button inside it. */
 html.theme-light .refinery-panel.bg-zinc-900 {
   background-color: #FBFCFE !important;              /* near-white, barely cooler than bg */
-  border-color: rgba(29, 78, 216, 0.22) !important;  /* subtle brand hairline */
+  border-color: rgba(2, 69, 140, 0.22) !important;  /* subtle brand hairline */
   box-shadow:
-    0 1px 2px rgba(11, 30, 59, 0.04),
-    0 8px 24px rgba(29, 78, 216, 0.08) !important;
+    0 1px 2px rgba(1, 35, 70, 0.04),
+    0 8px 24px rgba(2, 69, 140, 0.08) !important;
 }
 /* Nested cards inside the refinery — use a slightly cooler white so they
    register as distinct surfaces without a jarring contrast jump. */
@@ -387,7 +552,7 @@ html.theme-light code.text-yellow-300 { color: #8B6508 !important; }
 /* Selection color — royal blue tint reads as a brand-consistent highlight */
 html.theme-light .selection\:bg-pink-500\/30 ::selection,
 html.theme-light ::selection {
-  background-color: rgba(29, 78, 216, 0.18);
+  background-color: rgba(2, 69, 140, 0.18);
 }
 
 /* Body text default color in light mode — without this, any un-classed
@@ -551,6 +716,6 @@ html:not(.theme-light) .text-zinc-700 { color: #a1a1aa !important; } /* → zinc
   }
   body {
     @apply bg-background text-foreground;
-    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-family: var(--font-sans);
   }
 }

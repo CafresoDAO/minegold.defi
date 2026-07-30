@@ -136,7 +136,7 @@ function AdminContent({ callerPrincipal }: { callerPrincipal: string }) {
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-2">
             <Shield className="w-5 h-5 text-yellow-500" />
-            <span className="text-xs font-black text-yellow-500 uppercase tracking-widest">Admin Panel</span>
+            <span className="t-label text-yellow-500">Admin panel</span>
           </div>
           <h1 className="text-3xl font-black text-white">Treasury Management</h1>
           <p className="text-zinc-500 text-xs mt-1 font-mono break-all">
@@ -240,7 +240,7 @@ function DiagnosticsBar() {
   return (
     <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
       <div className="flex-1">
-        <div className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-1">Treasury Balances (cached)</div>
+        <div className="t-label text-zinc-500 mb-1">Treasury balances (cached)</div>
         <div className="text-sm text-white font-mono">
           sGLDT <span className="text-yellow-400">{balances ? (Number(balances.sgldtBalance) / 1e8).toFixed(4) : "…"}</span>
           <span className="text-zinc-600 mx-2">·</span>
@@ -499,7 +499,7 @@ function DepositsTab() {
           <div key={String(d.id)} className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
             <div className="flex flex-wrap items-center gap-3 mb-2">
               <span className="font-mono text-sm font-bold text-white">#{String(d.id)}</span>
-              <span className={`text-xs font-bold uppercase tracking-widest ${statusColor}`}>{statusKey}</span>
+              <span className={`t-label ${statusColor}`}>{statusKey}</span>
               <span className="text-xs text-zinc-500 font-mono">{uniDisplay} UNI</span>
               <span className="text-zinc-600 text-xs">→</span>
               <span className="text-xs text-zinc-500 font-mono">{sgldtDisplay} sGLDT</span>

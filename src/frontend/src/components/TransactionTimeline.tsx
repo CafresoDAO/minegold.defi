@@ -77,7 +77,7 @@ export function TransactionTimeline({ steps, defaultOpen = false, onClear }: Pro
             <ChevronRight size={14} className="text-zinc-400 shrink-0" />
           )}
           <div className="min-w-0">
-            <div className="text-xs font-bold uppercase tracking-widest text-zinc-300">
+            <div className="t-label text-zinc-300">
               Transaction timeline
             </div>
             <div className="text-[11px] text-zinc-500 truncate">

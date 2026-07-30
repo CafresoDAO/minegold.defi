@@ -202,7 +202,7 @@ export function ConnectWalletModal({
 
         {/* Header */}
         <div className="px-6 pt-8 pb-4 text-center border-b border-zinc-800">
-          <div className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+          <div className="inline-flex items-center gap-1.5 t-label text-zinc-500 mb-2">
             <ShieldCheck size={10} />
             Banking.Brave · Self-custody
           </div>
@@ -250,7 +250,7 @@ export function ConnectWalletModal({
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-bold text-sm text-white">{w.name}</span>
                     {installed && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full px-2 py-0.5">
+                      <span className="inline-flex items-center gap-1 t-label bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full px-2 py-0.5">
                         <Check size={9} strokeWidth={3} /> Detected
                       </span>
                     )}

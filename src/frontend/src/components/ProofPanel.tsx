@@ -134,7 +134,7 @@ export function ProofPanel({ onClose }: Props) {
             <ShieldCheck size={20} className="text-emerald-400" />
           </div>
           <div>
-            <h2 className="font-black text-white text-lg leading-tight">
+            <h2 className="t-headline text-white">
               Proof &amp; transparency
             </h2>
             <p className="text-[11px] text-zinc-500">
@@ -145,7 +145,7 @@ export function ProofPanel({ onClose }: Props) {
 
         {/* Live liquidity — age-stamped, refreshable */}
         <div className="flex items-center justify-between mb-2">
-          <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+          <p className="t-label text-zinc-500">
             Treasury liquidity
           </p>
           <div className="flex items-center gap-2">
@@ -174,7 +174,7 @@ export function ProofPanel({ onClose }: Props) {
         </div>
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4">
-            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">
+            <p className="t-label text-zinc-500 mb-1">
               sGLDT (pays refines)
             </p>
             <p className="text-xl font-black text-yellow-400 tabular-nums">
@@ -182,7 +182,7 @@ export function ProofPanel({ onClose }: Props) {
             </p>
           </div>
           <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4">
-            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">
+            <p className="t-label text-zinc-500 mb-1">
               ckUNI (pays redeems)
             </p>
             <p className="text-xl font-black text-blue-300 tabular-nums">
@@ -194,7 +194,7 @@ export function ProofPanel({ onClose }: Props) {
         {/* Coverage + stranded — the two "is anything wrong?" numbers */}
         <div className="grid grid-cols-2 gap-3 mb-5">
           <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4">
-            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">
+            <p className="t-label text-zinc-500 mb-1">
               Refine coverage
             </p>
             {isLoading ? (
@@ -225,7 +225,7 @@ export function ProofPanel({ onClose }: Props) {
             )}
           </div>
           <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4">
-            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">
+            <p className="t-label text-zinc-500 mb-1">
               Held (stranded) swaps
             </p>
             {strandedTotal == null ? (
@@ -252,7 +252,7 @@ export function ProofPanel({ onClose }: Props) {
 
         {/* Rate provenance */}
         <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400">
-          <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">
+          <p className="t-label text-zinc-500 mb-1.5">
             How the rate is made
           </p>
           {rate ? (
@@ -288,7 +288,7 @@ export function ProofPanel({ onClose }: Props) {
 
         {/* What backs the gold */}
         <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400">
-          <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">
+          <p className="t-label text-zinc-500 mb-1.5">
             What backs sGLDT
           </p>
           <p>
@@ -310,7 +310,7 @@ export function ProofPanel({ onClose }: Props) {
         </div>
 
         {/* The money path, canister by canister, with parties */}
-        <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">
+        <p className="t-label text-zinc-500 mb-2">
           Every canister in the money path — and who controls it
         </p>
         <ul className="space-y-1.5 mb-3">
@@ -346,7 +346,7 @@ export function ProofPanel({ onClose }: Props) {
 
         {/* What we can't promise — neutral chrome, stated on purpose */}
         <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4 text-[11px] leading-relaxed text-zinc-400">
-          <p className="text-[10px] font-black text-zinc-300 uppercase tracking-widest mb-1.5">
+          <p className="t-label text-zinc-300 mb-1.5">
             What we can&apos;t promise (stated on purpose)
           </p>
           <ul className="list-disc pl-4 space-y-1">

@@ -56,7 +56,7 @@ const StatCard = ({
     className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-3xl hover:border-zinc-700 transition-all group"
   >
     <div className="flex justify-between items-start mb-4">
-      <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+      <span className="t-label text-zinc-500">
         {title}
       </span>
       <div className="p-2 bg-zinc-800 rounded-xl group-hover:scale-110 transition-transform">
@@ -99,7 +99,7 @@ export function WalletSection({
           <div className="max-w-md text-center md:text-left">
             <div className="flex items-center gap-2 mb-2 justify-center md:justify-start">
               <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-              <span className="text-[10px] font-black text-yellow-500 uppercase tracking-widest">Step 1 of 2</span>
+              <span className="t-label text-yellow-500">Step 1 of 2</span>
             </div>
             <h2 className="text-2xl font-bold mb-2">
               Connect Ethereum Wallet
@@ -125,7 +125,7 @@ export function WalletSection({
             className="mt-4 rounded-2xl border border-zinc-800 bg-black/40 overflow-hidden group"
             open={!!walletConnectionError}
           >
-            <summary className="cursor-pointer select-none list-none flex items-center justify-between gap-2 px-4 py-2.5 text-[10px] font-black text-zinc-500 uppercase tracking-widest hover:text-zinc-300 transition-colors">
+            <summary className="cursor-pointer select-none list-none flex items-center justify-between gap-2 px-4 py-2.5 t-label text-zinc-500 hover:text-zinc-300 transition-colors">
               <span>Connection diagnostics</span>
               <span className="text-[9px] font-normal text-zinc-600 normal-case tracking-normal">
                 {walletConnectLog.length}{" "}
@@ -239,7 +239,7 @@ export function WalletSection({
       >
         <div className="px-6 pt-5 pb-3 border-b border-zinc-800/70 flex items-center gap-2">
           <Wallet size={14} className="text-yellow-500" />
-          <span className="text-[10px] font-black text-yellow-500 uppercase tracking-widest">
+          <span className="t-label text-yellow-500">
             Connected Wallet
           </span>
           <span className="ml-auto text-[10px] font-mono text-zinc-600">
@@ -249,7 +249,7 @@ export function WalletSection({
         <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-zinc-800/70">
           {/* ETH Balance */}
           <div className="p-5">
-            <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">
+            <div className="t-label text-zinc-500 mb-2">
               ETH Balance
             </div>
             <div className="text-xl font-black text-blue-400">
@@ -275,7 +275,7 @@ export function WalletSection({
           </div>
           {/* UNI Balance */}
           <div className="p-5">
-            <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">
+            <div className="t-label text-zinc-500 mb-2">
               UNI Balance
             </div>
             <div className="text-xl font-black text-pink-400">
@@ -301,7 +301,7 @@ export function WalletSection({
           </div>
           {/* sGLDT Balance */}
           <div className="p-5">
-            <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">
+            <div className="t-label text-zinc-500 mb-2">
               sGLDT Balance
             </div>
             <div className="text-xl font-black text-yellow-500">
@@ -335,7 +335,7 @@ export function WalletSection({
           </div>
           {/* Exchange Rate */}
           <div className="p-5">
-            <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">
+            <div className="t-label text-zinc-500 mb-2">
               Exchange Rate
             </div>
             <div className="text-xl font-black text-yellow-400">

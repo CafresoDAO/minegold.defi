@@ -140,7 +140,7 @@ export function RefineryShell({
               </div>
               <div className="flex items-center gap-2 mt-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest">
+                <p className="text-zinc-500 t-label">
                   UNI &rarr; sGLDT
                 </p>
               </div>

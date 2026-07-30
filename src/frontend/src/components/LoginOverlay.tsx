@@ -26,11 +26,11 @@ export function LoginOverlay({ isLoggingIn, onLogin }: Props) {
             <circle cx="13" cy="30" r="2" fill="#FFD700" opacity="0.6"/>
           </svg>
         </div>
-        <h1 className="text-3xl font-black text-white mb-1">
+        <h1 className="t-display text-white mb-1" style={{ fontSize: "clamp(2rem, 1.6rem + 2vw, 2.75rem)" }}>
           minegold<span className="text-yellow-400">.defi</span>
         </h1>
         <p className="text-xs text-yellow-500/60 font-mono uppercase tracking-widest mb-3">Cross-Chain Gold Refinery</p>
-        <p className="text-zinc-400 text-sm mb-6 px-4">
+        <p className="t-body text-zinc-400 mb-6 px-4">
           Swap UNI (Ethereum) for sGLDT — a 1:1 wrapper of Gold DAO’s physically backed GLDT — on the Internet Computer. Your keys, your account.
         </p>
         {/* How it works — 3 steps */}

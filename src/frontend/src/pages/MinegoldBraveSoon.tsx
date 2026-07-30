@@ -87,7 +87,7 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
 
         {/* Breadcrumb */}
         <div
-          className="text-[10px] font-black uppercase tracking-widest mb-2"
+          className="t-label mb-2"
           style={{ color: "var(--bb-text-dim)" }}
         >
           Banking.Brave · Minegold.Defi
@@ -112,7 +112,7 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
               <div className="inline-flex items-center gap-1.5 mt-1">
                 {loading ? (
                   <span
-                    className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest rounded-full px-2 py-0.5 border"
+                    className="inline-flex items-center gap-1.5 t-label rounded-full px-2 py-0.5 border"
                     style={{
                       background: "var(--bb-surface)",
                       color: "var(--bb-text-muted)",
@@ -124,7 +124,7 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
                   </span>
                 ) : live ? (
                   <span
-                    className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest rounded-full px-2 py-0.5 border"
+                    className="inline-flex items-center gap-1.5 t-label rounded-full px-2 py-0.5 border"
                     style={{
                       background: "rgba(16, 185, 129, 0.12)",
                       color: "#059669",
@@ -136,7 +136,7 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
                   </span>
                 ) : (
                   <span
-                    className="text-[10px] font-black uppercase tracking-widest rounded-full px-2 py-0.5 border"
+                    className="t-label rounded-full px-2 py-0.5 border"
                     style={{
                       background: "rgba(234, 179, 8, 0.12)",
                       color: "#ca8a04",
@@ -164,7 +164,7 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
         <section className="mb-12">
           <div className="flex items-center gap-2 mb-4">
             <span
-              className="text-[11px] font-black uppercase tracking-widest"
+              className="t-label"
               style={{ color: "var(--bb-brand)" }}
             >
               Bridge status · checked live
@@ -241,7 +241,7 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
                 {!loading && !status?.error && tokenCount > 0 && (
                   <div className="mt-4">
                     <div
-                      className="text-[10px] font-black uppercase tracking-widest mb-2"
+                      className="t-label mb-2"
                       style={{ color: "var(--bb-text-dim)" }}
                     >
                       Bridged today · {tokenCount} assets
@@ -299,7 +299,7 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
             >
               <div className="min-w-0">
                 <div
-                  className="text-[10px] font-black uppercase tracking-widest mb-1"
+                  className="t-label mb-1"
                   style={{ color: "var(--bb-brand)" }}
                 >
                   Get notified
@@ -327,7 +327,7 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
         <section className="mb-12">
           <div className="flex items-center gap-2 mb-4">
             <span
-              className="text-[11px] font-black uppercase tracking-widest"
+              className="t-label"
               style={{ color: "var(--bb-brand)" }}
             >
               {live ? "How it works" : "Planned workflow"}
@@ -423,7 +423,7 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
         >
           <div>
             <div
-              className="text-[10px] font-black uppercase tracking-widest mb-1"
+              className="t-label mb-1"
               style={{ color: "var(--bb-brand)" }}
             >
               In the meantime

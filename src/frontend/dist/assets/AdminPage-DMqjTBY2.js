@@ -1,5 +1,5 @@
-import { c as createLucideIcon, j as jsxRuntimeExports, a as cn, r as reactExports, R as React2, b as React, u as useInternetIdentity, d as useIsAdmin, L as LoaderCircle, W as Wallet, C as CircleAlert, e as Coins, f as useTreasuryICRC1Balances, g as RefreshCw, h as useGetTreasuryWalletInfo, i as useUNIExchangeRate, k as useSetUNIExchangeRate, S as Send, l as useAllUNIDeposits, m as useBackendActor, n as useAdminMintCkUNI, o as useAdminDissolveCkUNI, p as useAdminInitializeMinterAddress, q as Copy, s as CircleCheck, t as useStrandedQueue, v as directWhoAmI, w as directAdminGrantAdmin, P as Principal, x as directAdminTransfer } from "./index-ofBK2_dB.js";
-import { c as createSlot$3, a as composeRefs, u as useComposedRefs, B as Button, F as Flame } from "./button-C-AGFJmY.js";
+import { c as createLucideIcon, j as jsxRuntimeExports, a as cn, r as reactExports, R as React2, b as React, u as useInternetIdentity, d as useIsAdmin, L as LoaderCircle, W as Wallet, C as CircleAlert, e as Coins, f as useTreasuryICRC1Balances, g as RefreshCw, h as useGetTreasuryWalletInfo, i as useUNIExchangeRate, k as useSetUNIExchangeRate, S as Send, l as useAllUNIDeposits, m as useBackendActor, n as useAdminMintCkUNI, o as useAdminDissolveCkUNI, p as useAdminInitializeMinterAddress, q as Copy, s as CircleCheck, t as useStrandedQueue, v as directWhoAmI, w as directAdminGrantAdmin, P as Principal, x as directAdminTransfer } from "./index-DWsyxO6p.js";
+import { c as createSlot$3, a as composeRefs, u as useComposedRefs, B as Button, F as Flame } from "./button-j1YkOqZu.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -1279,7 +1279,7 @@ function AdminContent({ callerPrincipal }) {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Shield, { className: "w-5 h-5 text-yellow-500" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-black text-yellow-500 uppercase tracking-widest", children: "Admin Panel" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "t-label text-yellow-500", children: "Admin panel" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl font-black text-white", children: "Treasury Management" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-zinc-500 text-xs mt-1 font-mono break-all", children: [
@@ -1362,7 +1362,7 @@ function DiagnosticsBar() {
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-zinc-900 p-4 flex flex-col sm:flex-row sm:items-center gap-3", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-black text-zinc-500 uppercase tracking-widest mb-1", children: "Treasury Balances (cached)" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "t-label text-zinc-500 mb-1", children: "Treasury balances (cached)" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm text-white font-mono", children: [
         "sGLDT ",
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400", children: balances ? (Number(balances.sgldtBalance) / 1e8).toFixed(4) : "…" }),
@@ -1604,7 +1604,7 @@ function DepositsTab() {
             "#",
             String(d.id)
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-xs font-bold uppercase tracking-widest ${statusColor}`, children: statusKey }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `t-label ${statusColor}`, children: statusKey }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-zinc-500 font-mono", children: [
             uniDisplay,
             " UNI"

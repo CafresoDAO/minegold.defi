@@ -1,4 +1,4 @@
-import { c as createLucideIcon, r as reactExports, E as fetchCkBatStatus, j as jsxRuntimeExports, T as ThemeToggle, L as LoaderCircle, F as Sparkles, z as Clock, G as CK_MINTER_CANISTER_ID, H as BAT_ERC20_ADDRESS, A as ShieldCheck, y as ChevronRight } from "./index-ofBK2_dB.js";
+import { c as createLucideIcon, r as reactExports, E as fetchCkBatStatus, j as jsxRuntimeExports, T as ThemeToggle, L as LoaderCircle, F as Sparkles, z as Clock, G as CK_MINTER_CANISTER_ID, H as BAT_ERC20_ADDRESS, A as ShieldCheck, y as ChevronRight } from "./index-DWsyxO6p.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -102,7 +102,7 @@ function MinegoldBraveSoon({ onBack, onOpenUni }) {
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "div",
           {
-            className: "text-[10px] font-black uppercase tracking-widest mb-2",
+            className: "t-label mb-2",
             style: { color: "var(--bb-text-dim)" },
             children: "Banking.Brave · Minegold.Defi"
           }
@@ -130,7 +130,7 @@ function MinegoldBraveSoon({ onBack, onOpenUni }) {
                 loading ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
                   "span",
                   {
-                    className: "inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest rounded-full px-2 py-0.5 border",
+                    className: "inline-flex items-center gap-1.5 t-label rounded-full px-2 py-0.5 border",
                     style: {
                       background: "var(--bb-surface)",
                       color: "var(--bb-text-muted)",
@@ -144,7 +144,7 @@ function MinegoldBraveSoon({ onBack, onOpenUni }) {
                 ) : live ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
                   "span",
                   {
-                    className: "inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest rounded-full px-2 py-0.5 border",
+                    className: "inline-flex items-center gap-1.5 t-label rounded-full px-2 py-0.5 border",
                     style: {
                       background: "rgba(16, 185, 129, 0.12)",
                       color: "#059669",
@@ -158,7 +158,7 @@ function MinegoldBraveSoon({ onBack, onOpenUni }) {
                 ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "span",
                   {
-                    className: "text-[10px] font-black uppercase tracking-widest rounded-full px-2 py-0.5 border",
+                    className: "t-label rounded-full px-2 py-0.5 border",
                     style: {
                       background: "rgba(234, 179, 8, 0.12)",
                       color: "#ca8a04",
@@ -191,7 +191,7 @@ function MinegoldBraveSoon({ onBack, onOpenUni }) {
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "span",
               {
-                className: "text-[11px] font-black uppercase tracking-widest",
+                className: "t-label",
                 style: { color: "var(--bb-brand)" },
                 children: "Bridge status · checked live"
               }
@@ -233,7 +233,7 @@ function MinegoldBraveSoon({ onBack, onOpenUni }) {
                     /* @__PURE__ */ jsxRuntimeExports.jsxs(
                       "div",
                       {
-                        className: "text-[10px] font-black uppercase tracking-widest mb-2",
+                        className: "t-label mb-2",
                         style: { color: "var(--bb-text-dim)" },
                         children: [
                           "Bridged today · ",
@@ -298,7 +298,7 @@ function MinegoldBraveSoon({ onBack, onOpenUni }) {
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "div",
                   {
-                    className: "text-[10px] font-black uppercase tracking-widest mb-1",
+                    className: "t-label mb-1",
                     style: { color: "var(--bb-brand)" },
                     children: "Get notified"
                   }
@@ -326,7 +326,7 @@ function MinegoldBraveSoon({ onBack, onOpenUni }) {
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "span",
               {
-                className: "text-[11px] font-black uppercase tracking-widest",
+                className: "t-label",
                 style: { color: "var(--bb-brand)" },
                 children: live ? "How it works" : "Planned workflow"
               }
@@ -424,7 +424,7 @@ function MinegoldBraveSoon({ onBack, onOpenUni }) {
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "div",
                   {
-                    className: "text-[10px] font-black uppercase tracking-widest mb-1",
+                    className: "t-label mb-1",
                     style: { color: "var(--bb-brand)" },
                     children: "In the meantime"
                   }

@@ -1,4 +1,4 @@
-import { j as jsxRuntimeExports, T as ThemeToggle, y as ChevronRight, z as Clock, A as ShieldCheck, B as TrendingUp, D as Lock } from "./index-ofBK2_dB.js";
+import { j as jsxRuntimeExports, T as ThemeToggle, y as ChevronRight, z as Clock, A as ShieldCheck, B as TrendingUp, D as Lock } from "./index-DWsyxO6p.js";
 function BankingBraveHome({
   onOpenMinegoldUni,
   onOpenMinegoldBrave
@@ -12,24 +12,23 @@ function BankingBraveHome({
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-end mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, {}) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "flex flex-col items-center text-center mb-16", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "div",
+            "span",
             {
-              className: "w-32 h-32 sm:w-40 sm:h-40 mb-6 rounded-full overflow-hidden flex items-center justify-center",
-              style: {
-                boxShadow: "0 0 30px rgba(29, 78, 216, 0.35)",
-                background: "#1D4ED8"
-              },
+              className: "w-32 h-32 sm:w-40 sm:h-40 mb-6 rounded-full overflow-hidden block",
+              style: { boxShadow: "0 0 30px rgba(2, 69, 140, 0.45)" },
               children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "img",
                 {
-                  src: "/bankingbrave.png",
+                  src: "/brand/icon-512.png",
                   alt: "Banking.Brave",
-                  className: "w-[115%] h-[115%] object-cover object-center"
+                  width: 160,
+                  height: 160,
+                  className: "w-full h-full"
                 }
               )
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "text-4xl sm:text-5xl font-black tracking-tight mb-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "t-display mb-3", children: [
             "Banking",
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
             "Brave"
@@ -41,7 +40,7 @@ function BankingBraveHome({
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "div",
               {
-                className: "text-[10px] font-black uppercase tracking-widest mb-1",
+                className: "t-label mb-1",
                 style: { color: "var(--bb-text-dim)" },
                 children: "Protocols we govern"
               }
@@ -80,7 +79,7 @@ function BankingBraveHome({
                         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
                         "Uni"
                       ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-black uppercase tracking-widest bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-full px-2 py-0.5", children: "Live" })
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "t-label bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-full px-2 py-0.5", children: "Live" })
                     ] }),
                     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-mono mb-2", style: { color: "var(--bb-text-dim)" }, children: "UNI (ERC-20) → ckUNI → sGLDT" }),
                     /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs leading-relaxed", style: { color: "var(--bb-text-muted)" }, children: "Onboard UNI into ckUNI on ICP via the chain-key bridge, then refine into sGLDT — wrapped, physically backed GLDT — at the locked-in live rate." }),
@@ -122,7 +121,7 @@ function BankingBraveHome({
                         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
                         "Brave"
                       ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest bg-amber-500/15 text-amber-500 border border-amber-500/30 rounded-full px-2 py-0.5", children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "inline-flex items-center gap-1 t-label bg-amber-500/15 text-amber-500 border border-amber-500/30 rounded-full px-2 py-0.5", children: [
                         /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { size: 9 }),
                         " Soon"
                       ] })

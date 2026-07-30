@@ -32,20 +32,19 @@ export function BankingBraveHome({
 
         {/* Brand header */}
         <header className="flex flex-col items-center text-center mb-16">
-          <div
-            className="w-32 h-32 sm:w-40 sm:h-40 mb-6 rounded-full overflow-hidden flex items-center justify-center"
-            style={{
-              boxShadow: "0 0 30px rgba(29, 78, 216, 0.35)",
-              background: "#1D4ED8",
-            }}
+          <span
+            className="w-32 h-32 sm:w-40 sm:h-40 mb-6 rounded-full overflow-hidden block"
+            style={{ boxShadow: "0 0 30px rgba(2, 69, 140, 0.45)" }}
           >
             <img
-              src="/bankingbrave.png"
+              src="/brand/icon-512.png"
               alt="Banking.Brave"
-              className="w-[115%] h-[115%] object-cover object-center"
+              width={160}
+              height={160}
+              className="w-full h-full"
             />
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-3">
+          </span>
+          <h1 className="t-display mb-3">
             Banking<span style={{ color: "var(--bb-brand)" }}>.</span>Brave
           </h1>
           <p className="text-sm sm:text-base max-w-xl" style={{ color: "var(--bb-text-muted)" }}>
@@ -59,7 +58,7 @@ export function BankingBraveHome({
           <div className="flex items-end justify-between flex-wrap gap-2 mb-5">
             <div>
               <div
-                className="text-[10px] font-black uppercase tracking-widest mb-1"
+                className="t-label mb-1"
                 style={{ color: "var(--bb-text-dim)" }}
               >
                 Protocols we govern
@@ -102,7 +101,7 @@ export function BankingBraveHome({
                     <h3 className="text-lg font-black">
                       Minegold<span style={{ color: "var(--bb-brand)" }}>.</span>Uni
                     </h3>
-                    <span className="text-[9px] font-black uppercase tracking-widest bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-full px-2 py-0.5">
+                    <span className="t-label bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-full px-2 py-0.5">
                       Live
                     </span>
                   </div>
@@ -147,7 +146,7 @@ export function BankingBraveHome({
                     <h3 className="text-lg font-black">
                       Minegold<span style={{ color: "var(--bb-brand)" }}>.</span>Brave
                     </h3>
-                    <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest bg-amber-500/15 text-amber-500 border border-amber-500/30 rounded-full px-2 py-0.5">
+                    <span className="inline-flex items-center gap-1 t-label bg-amber-500/15 text-amber-500 border border-amber-500/30 rounded-full px-2 py-0.5">
                       <Clock size={9} /> Soon
                     </span>
                   </div>

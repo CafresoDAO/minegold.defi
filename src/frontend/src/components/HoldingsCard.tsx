@@ -118,7 +118,7 @@ export function HoldingsCard({
             <Coins size={18} className="text-yellow-400" />
           </div>
           <div>
-            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+            <p className="t-label text-zinc-500">
               Your Gold
             </p>
             <p className="text-2xl font-black text-yellow-400 tabular-nums leading-tight">
@@ -188,7 +188,7 @@ export function HoldingsCard({
 
       {visibleRows.length > 0 && (
         <div className="mt-4 border-t border-zinc-800 pt-3">
-          <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">
+          <p className="t-label text-zinc-500 mb-2">
             Activity
           </p>
           <ul className="space-y-1.5">

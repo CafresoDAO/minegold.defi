@@ -1,5 +1,5 @@
-import { c as createLucideIcon, j as jsxRuntimeExports, a as cn, I as cva, u as useInternetIdentity, J as useMyTransactions, r as reactExports, A as ShieldCheck, L as LoaderCircle, g as RefreshCw, C as CircleAlert, K as ArrowRightLeft, z as Clock, M as formatTimestamp, N as ExternalLink, O as ChevronDown, e as Coins } from "./index-ofBK2_dB.js";
-import { S as Slot, B as Button, F as Flame } from "./button-C-AGFJmY.js";
+import { c as createLucideIcon, j as jsxRuntimeExports, a as cn, I as cva, u as useInternetIdentity, J as useMyTransactions, r as reactExports, A as ShieldCheck, L as LoaderCircle, g as RefreshCw, C as CircleAlert, K as ArrowRightLeft, z as Clock, M as formatTimestamp, N as ExternalLink, O as ChevronDown, e as Coins } from "./index-DWsyxO6p.js";
+import { S as Slot, B as Button, F as Flame } from "./button-j1YkOqZu.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -308,7 +308,7 @@ function TransactionHistoryPage() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen bg-[#080808] text-zinc-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-4xl mx-auto px-4 sm:px-6 py-10", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "text-3xl font-black text-white", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "t-display text-white", style: { fontSize: "clamp(1.75rem, 1.4rem + 1.6vw, 2.25rem)" }, children: [
           "Transaction ",
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-500", children: "History" })
         ] }),

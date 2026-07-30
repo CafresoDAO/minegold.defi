@@ -136,7 +136,7 @@ export function PhaseError({
           {/* Step tracker + manual recovery panel */}
           {miningSteps.length > 0 && (
             <div className="rounded-2xl bg-zinc-900 border border-zinc-700/50 p-4 space-y-2">
-              <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+              <div className="t-label text-zinc-500">
                 Progress
               </div>
               {miningSteps.map((s) => (

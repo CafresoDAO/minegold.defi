@@ -105,7 +105,7 @@ function StepNode({ step, index }: { step: Step; index: number }) {
         )}
       </div>
       <div className="flex flex-col items-center">
-        <span className={`text-[9px] font-black uppercase tracking-widest ${labelClasses}`}>
+        <span className={`t-label ${labelClasses}`}>
           Step {index}
         </span>
         <span

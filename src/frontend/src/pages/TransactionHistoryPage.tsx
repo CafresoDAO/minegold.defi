@@ -309,7 +309,7 @@ export function TransactionHistoryPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-black text-white">
+            <h1 className="t-display text-white" style={{ fontSize: "clamp(1.75rem, 1.4rem + 1.6vw, 2.25rem)" }}>
               Transaction <span className="text-yellow-500">History</span>
             </h1>
             <p className="text-zinc-500 text-sm mt-1">

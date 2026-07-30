@@ -37,6 +37,12 @@ type Props = {
    *  default: clamp(320, 52vh, 520) — tall enough to read, never most of a
    *  phone screen. */
   height?: number;
+  /** Decorative mode (the landing hero). Suppresses every readout — block
+   *  numbers, confirmation ticks, chain labels — because on a marketing
+   *  surface none of them is bound to a verified quantity. The doctrine:
+   *  a mining image may show a number only when a physical property of the
+   *  picture maps 1:1 to something on-chain. Here nothing does. */
+  decorative?: boolean;
 };
 
 type Particle = {
@@ -88,12 +94,13 @@ export function MineShaft({
   targetConfirmations,
   stage,
   height = 380,
+  decorative = false,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   // Live inputs for the render loop (avoids re-creating the loop per prop).
-  const inputRef = useRef({ confirmations, targetConfirmations, stage });
-  inputRef.current = { confirmations, targetConfirmations, stage };
+  const inputRef = useRef({ confirmations, targetConfirmations, stage, decorative });
+  inputRef.current = { confirmations, targetConfirmations, stage, decorative };
   // Set by the main effect; lets the prop-change effect force a redraw in
   // reduced-motion (static) mode where no animation loop is running.
   const redrawRef = useRef<(() => void) | null>(null);
@@ -218,10 +225,12 @@ export function MineShaft({
       if (surfScreen > -PAD_TOP) {
         ctx.fillStyle = "#0b1020";
         ctx.fillRect(0, surfScreen, cssW, PAD_TOP);
-        ctx.fillStyle = "rgba(148, 163, 184, 0.5)";
-        ctx.font = "700 9px ui-monospace, monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("ETHEREUM SURFACE", cssW / 2, surfScreen + PAD_TOP - 8);
+        if (!inputRef.current.decorative) {
+          ctx.fillStyle = "rgba(148, 163, 184, 0.5)";
+          ctx.font = "700 9px ui-monospace, monospace";
+          ctx.textAlign = "center";
+          ctx.fillText("ETHEREUM SURFACE", cssW / 2, surfScreen + PAD_TOP - 8);
+        }
       }
 
       const shaftL = cssW * 0.16;
@@ -307,16 +316,19 @@ export function MineShaft({
             ctx.stroke();
           }
         }
-        // Depth gauge: block numbers down the left wall.
-        ctx.fillStyle = broken
-          ? "rgba(163, 163, 163, 0.75)"
-          : "rgba(113, 113, 122, 0.55)";
-        ctx.font = "700 9px ui-monospace, monospace";
-        ctx.textAlign = "right";
-        ctx.fillText(`${i + 1}`, shaftL - 8, sy + BAND_H * 0.62);
-        if (broken) {
-          ctx.fillStyle = "rgba(52, 211, 153, 0.9)";
-          ctx.fillText("✓", shaftL - 20, sy + BAND_H * 0.62);
+        // Depth gauge: block numbers down the left wall. Suppressed in
+        // decorative mode — see the `decorative` prop.
+        if (!inputRef.current.decorative) {
+          ctx.fillStyle = broken
+            ? "rgba(163, 163, 163, 0.75)"
+            : "rgba(113, 113, 122, 0.55)";
+          ctx.font = "700 9px ui-monospace, monospace";
+          ctx.textAlign = "right";
+          ctx.fillText(`${i + 1}`, shaftL - 8, sy + BAND_H * 0.62);
+          if (broken) {
+            ctx.fillStyle = "rgba(52, 211, 153, 0.9)";
+            ctx.fillText("✓", shaftL - 20, sy + BAND_H * 0.62);
+          }
         }
       }
 
@@ -346,10 +358,12 @@ export function MineShaft({
           ctx.closePath();
           ctx.fill();
         }
-        ctx.fillStyle = `rgba(165, 243, 252, ${0.75 * pulse + 0.2})`;
-        ctx.font = "800 8px ui-monospace, monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("CHAIN-KEY SEAM · ICP", cssW / 2, seamScreen + SEAM_H / 2 + 3);
+        if (!inputRef.current.decorative) {
+          ctx.fillStyle = `rgba(165, 243, 252, ${0.75 * pulse + 0.2})`;
+          ctx.font = "800 8px ui-monospace, monospace";
+          ctx.textAlign = "center";
+          ctx.fillText("CHAIN-KEY SEAM · ICP", cssW / 2, seamScreen + SEAM_H / 2 + 3);
+        }
       }
 
       // Shaft walls (over bands, under drill).

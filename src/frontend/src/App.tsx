@@ -82,6 +82,9 @@ const AdminPage = lazy(() =>
 const BankingBraveHome = lazy(() =>
   import("./pages/BankingBraveHome").then((m) => ({ default: m.BankingBraveHome })),
 );
+const LandingPage = lazy(() =>
+  import("./pages/LandingPage").then((m) => ({ default: m.LandingPage })),
+);
 const MinegoldBraveSoon = lazy(() =>
   import("./pages/MinegoldBraveSoon").then((m) => ({ default: m.MinegoldBraveSoon })),
 );
@@ -611,6 +614,13 @@ export default function App() {
   const enterMinegoldUni = () => navigate("refinery");
   const enterMinegoldBrave = () => navigate("brave");
   const backToBankingBrave = () => navigate("portfolio");
+  // I6: `/` is adaptive — signed-out visitors get the public landing page,
+  // signed-in users get the dashboard. This flag is the signed-out visitor
+  // saying "show me the refinery anyway"; it renders the refinery behind the
+  // sign-in gate (which now carries a way back). Deliberately state, not a
+  // route: /  must keep meaning "the product's front door" for shares and
+  // crawlers, whichever face it shows.
+  const [enteredRefinery, setEnteredRefinery] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showTreasury, setShowTreasury] = useState(false);
   const [actorTimedOut, setActorTimedOut] = useState(false);
@@ -2027,6 +2037,9 @@ export default function App() {
     setUniBalance(null);
     setPhase("idle");
     setSgldtReleased(null);
+    // Signing out returns to the public landing page, not to a sign-in wall.
+    setEnteredRefinery(false);
+    navigate("refinery");
   };
 
   const handleTransferSubmit = async () => {
@@ -2708,6 +2721,23 @@ export default function App() {
       </Suspense>
     );
   }
+
+  // The adaptive front door: a stranger at `/` reads the landing page —
+  // every claim, the live proof band, and /proof itself — without a passkey.
+  // Signing out returns here rather than to a wall.
+  // `route === "refinery"` (not topView) is the gate: /proof and /receipt/:id
+  // also resolve to topView "uni", and both must stay readable signed-out.
+  if (route === "refinery" && !user && !enteredRefinery) {
+    return (
+      <Suspense fallback={<PageFallback />}>
+        <LandingPage
+          onOpenRefinery={() => setEnteredRefinery(true)}
+          onOpenBrave={enterMinegoldBrave}
+          onOpenProof={() => setShowProof(true)}
+        />
+      </Suspense>
+    );
+  }
   if (topView === "brave-soon") {
     return (
       <Suspense fallback={<PageFallback />}>
@@ -2722,7 +2752,13 @@ export default function App() {
           own receipts-are-private sign-in prompt (a shared link should
           explain itself, not open on a product pitch). */}
       {!user && !showReceipt && (
-        <LoginOverlay isLoggingIn={isLoggingIn} onLogin={handleLogin} />
+        <LoginOverlay
+          isLoggingIn={isLoggingIn}
+          onLogin={handleLogin}
+          onBack={
+            enteredRefinery ? () => setEnteredRefinery(false) : undefined
+          }
+        />
       )}
 
       {/* Nav */}

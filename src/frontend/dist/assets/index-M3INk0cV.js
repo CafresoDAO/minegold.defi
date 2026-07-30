@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-Cs5B_OwR.js","assets/button-DIzQ28Ap.js","assets/MinegoldBraveSoon-nwm_K4lZ.js","assets/arrow-left-CP4yGw5P.js","assets/TransactionHistoryPage-DJldoFay.js","assets/ReceiptBlock-D6rejgAb.js","assets/ReceiptPage-DinaQr8C.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-Dhta13Os.js","assets/button-9ZEbrwYe.js","assets/MinegoldBraveSoon-DZx7se20.js","assets/arrow-left-DL6x6DYE.js","assets/TransactionHistoryPage-BEqMugEg.js","assets/ReceiptBlock-gnoPrV7u.js","assets/ReceiptPage-BXyHemYX.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -33583,7 +33583,7 @@ async function call(client2, args) {
   } catch (err) {
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-DDXjAIm3.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-CU_18O2K.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -45228,12 +45228,13 @@ function MineShaft({
   confirmations,
   targetConfirmations,
   stage,
-  height = 380
+  height = 380,
+  decorative = false
 }) {
   const wrapRef = reactExports.useRef(null);
   const canvasRef = reactExports.useRef(null);
-  const inputRef = reactExports.useRef({ confirmations, targetConfirmations, stage });
-  inputRef.current = { confirmations, targetConfirmations, stage };
+  const inputRef = reactExports.useRef({ confirmations, targetConfirmations, stage, decorative });
+  inputRef.current = { confirmations, targetConfirmations, stage, decorative };
   const redrawRef = reactExports.useRef(null);
   reactExports.useEffect(() => {
     var _a3, _b3, _c2;
@@ -45325,10 +45326,12 @@ function MineShaft({
       if (surfScreen > -PAD_TOP) {
         ctx.fillStyle = "#0b1020";
         ctx.fillRect(0, surfScreen, cssW, PAD_TOP);
-        ctx.fillStyle = "rgba(148, 163, 184, 0.5)";
-        ctx.font = "700 9px ui-monospace, monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("ETHEREUM SURFACE", cssW / 2, surfScreen + PAD_TOP - 8);
+        if (!inputRef.current.decorative) {
+          ctx.fillStyle = "rgba(148, 163, 184, 0.5)";
+          ctx.font = "700 9px ui-monospace, monospace";
+          ctx.textAlign = "center";
+          ctx.fillText("ETHEREUM SURFACE", cssW / 2, surfScreen + PAD_TOP - 8);
+        }
       }
       const shaftL = cssW * 0.16;
       const shaftR = cssW * 0.84;
@@ -45407,13 +45410,15 @@ function MineShaft({
             ctx.stroke();
           }
         }
-        ctx.fillStyle = broken ? "rgba(163, 163, 163, 0.75)" : "rgba(113, 113, 122, 0.55)";
-        ctx.font = "700 9px ui-monospace, monospace";
-        ctx.textAlign = "right";
-        ctx.fillText(`${i + 1}`, shaftL - 8, sy + BAND_H * 0.62);
-        if (broken) {
-          ctx.fillStyle = "rgba(52, 211, 153, 0.9)";
-          ctx.fillText("✓", shaftL - 20, sy + BAND_H * 0.62);
+        if (!inputRef.current.decorative) {
+          ctx.fillStyle = broken ? "rgba(163, 163, 163, 0.75)" : "rgba(113, 113, 122, 0.55)";
+          ctx.font = "700 9px ui-monospace, monospace";
+          ctx.textAlign = "right";
+          ctx.fillText(`${i + 1}`, shaftL - 8, sy + BAND_H * 0.62);
+          if (broken) {
+            ctx.fillStyle = "rgba(52, 211, 153, 0.9)";
+            ctx.fillText("✓", shaftL - 20, sy + BAND_H * 0.62);
+          }
         }
       }
       const seamScreen = toScreen(seamTop);
@@ -45437,10 +45442,12 @@ function MineShaft({
           ctx.closePath();
           ctx.fill();
         }
-        ctx.fillStyle = `rgba(165, 243, 252, ${0.75 * pulse + 0.2})`;
-        ctx.font = "800 8px ui-monospace, monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("CHAIN-KEY SEAM · ICP", cssW / 2, seamScreen + SEAM_H / 2 + 3);
+        if (!inputRef.current.decorative) {
+          ctx.fillStyle = `rgba(165, 243, 252, ${0.75 * pulse + 0.2})`;
+          ctx.font = "800 8px ui-monospace, monospace";
+          ctx.textAlign = "center";
+          ctx.fillText("CHAIN-KEY SEAM · ICP", cssW / 2, seamScreen + SEAM_H / 2 + 3);
+        }
       }
       ctx.fillStyle = "rgba(0,0,0,0.5)";
       ctx.fillRect(0, 0, shaftL, cssH);
@@ -46592,7 +46599,7 @@ const JOURNEY = [
   { n: 3, title: "Refine", sub: "two taps; Ethereum confirms in ~3 min" },
   { n: 4, title: "Gold", sub: "sGLDT lands in your vault — cash out any time" }
 ];
-function LoginOverlay({ isLoggingIn, onLogin }) {
+function LoginOverlay({ isLoggingIn, onLogin, onBack }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
@@ -46667,7 +46674,17 @@ function LoginOverlay({ isLoggingIn, onLogin }) {
           "Your vault is an ",
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Internet Identity" }),
           " passkey — the sign-in screen that opens next is it."
-        ] })
+        ] }),
+        onBack && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            "data-ocid": "login.back",
+            onClick: onBack,
+            className: "mt-3 inline-flex min-h-[36px] items-center text-[11px] text-zinc-500 underline underline-offset-2 hover:text-zinc-300",
+            children: "Not yet — take me back"
+          }
+        )
       ] })
     }
   );
@@ -49751,7 +49768,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-D80rhPnq.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-CFBwhyr-.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49782,7 +49799,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-D80rhPnq.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-CFBwhyr-.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49806,7 +49823,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-D80rhPnq.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-CFBwhyr-.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -52604,21 +52621,24 @@ function usePathRoute() {
   return [match.route, navigate, match.params];
 }
 const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-Cs5B_OwR.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+  () => __vitePreload(() => import("./AdminPage-Dhta13Os.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
 );
 const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-ka_w-5qp.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+  () => __vitePreload(() => import("./BankingBraveHome-NyZEju2I.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+);
+const LandingPage = reactExports.lazy(
+  () => __vitePreload(() => import("./LandingPage-8lYwcDiw.js"), true ? [] : void 0).then((m2) => ({ default: m2.LandingPage }))
 );
 const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-nwm_K4lZ.js"), true ? __vite__mapDeps([2,3]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+  () => __vitePreload(() => import("./MinegoldBraveSoon-DZx7se20.js"), true ? __vite__mapDeps([2,3]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
 );
 const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-DJldoFay.js"), true ? __vite__mapDeps([4,1,5]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./TransactionHistoryPage-BEqMugEg.js"), true ? __vite__mapDeps([4,1,5]) : void 0).then((m2) => ({
     default: m2.TransactionHistoryPage
   }))
 );
 const ReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./ReceiptPage-DinaQr8C.js"), true ? __vite__mapDeps([6,5,3]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
+  () => __vitePreload(() => import("./ReceiptPage-BXyHemYX.js"), true ? __vite__mapDeps([6,5,3]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
 );
 const PageFallback = () => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-[40vh] flex items-center justify-center text-xs text-zinc-500 animate-pulse", children: "Loading…" });
 const UNI_CONTRACT_ADDRESS = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984";
@@ -52856,6 +52876,7 @@ function App() {
   const enterMinegoldUni = () => navigate("refinery");
   const enterMinegoldBrave = () => navigate("brave");
   const backToBankingBrave = () => navigate("portfolio");
+  const [enteredRefinery, setEnteredRefinery] = reactExports.useState(false);
   const [showProfile, setShowProfile] = reactExports.useState(false);
   const [showTreasury, setShowTreasury] = reactExports.useState(false);
   const [actorTimedOut, setActorTimedOut] = reactExports.useState(false);
@@ -53819,6 +53840,8 @@ function App() {
     setUniBalance(null);
     setPhase("idle");
     setSgldtReleased(null);
+    setEnteredRefinery(false);
+    navigate("refinery");
   };
   const handleTransferSubmit = async () => {
     if (!transferModal || !transferTo || !transferAmt) return;
@@ -54277,11 +54300,28 @@ function App() {
       }
     ) });
   }
+  if (route === "refinery" && !user && !enteredRefinery) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(PageFallback, {}), children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      LandingPage,
+      {
+        onOpenRefinery: () => setEnteredRefinery(true),
+        onOpenBrave: enterMinegoldBrave,
+        onOpenProof: () => setShowProof(true)
+      }
+    ) });
+  }
   if (topView === "brave-soon") {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(PageFallback, {}), children: /* @__PURE__ */ jsxRuntimeExports.jsx(MinegoldBraveSoon, { onBack: backToBankingBrave, onOpenUni: enterMinegoldUni }) });
   }
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-[#080808] text-zinc-100 font-sans", children: [
-    !user && !showReceipt && /* @__PURE__ */ jsxRuntimeExports.jsx(LoginOverlay, { isLoggingIn, onLogin: handleLogin }),
+    !user && !showReceipt && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      LoginOverlay,
+      {
+        isLoggingIn,
+        onLogin: handleLogin,
+        onBack: enteredRefinery ? () => setEnteredRefinery(false) : void 0
+      }
+    ),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       NavBar,
       {
@@ -54708,54 +54748,60 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   /* @__PURE__ */ jsxRuntimeExports.jsx(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxRuntimeExports.jsx(InternetIdentityProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) }) })
 );
 export {
-  Text as $,
+  ArrowUpFromLine as $,
   ShieldCheck as A,
   TrendingUp as B,
   CircleAlert as C,
   Lock as D,
-  fetchCkBatStatus as E,
-  Sparkles as F,
-  CK_MINTER_CANISTER_ID as G,
-  BAT_ERC20_ADDRESS as H,
-  useLedger as I,
-  ArrowRightLeft as J,
-  StatusPill as K,
+  useProofSnapshot as E,
+  formatTokenAmount as F,
+  CANISTERS as G,
+  DASHBOARD as H,
+  ExternalLink as I,
+  fetchCkBatStatus as J,
+  JOURNEY as K,
   LoaderCircle as L,
-  ChevronUp as M,
-  ChevronDown as N,
-  ArrowDownToLine as O,
+  MineShaft as M,
+  Sparkles as N,
+  CK_MINTER_CANISTER_ID as O,
   Principal$1 as P,
-  ArrowUpFromLine as Q,
+  BAT_ERC20_ADDRESS as Q,
   React2 as R,
   Send as S,
   ThemeToggle as T,
-  cva as U,
-  findEntry as V,
+  useLedger as U,
+  ArrowRightLeft as V,
   Wallet as W,
-  fmtAmount as X,
-  ExternalLink as Y,
-  ledgerUrl as Z,
-  encode$4 as _,
+  StatusPill as X,
+  ChevronUp as Y,
+  ChevronDown as Z,
+  ArrowDownToLine as _,
   cn as a,
-  isV3ResponseBody as a0,
-  HttpAgent as a1,
-  DelegationIdentity as a2,
-  isDelegationValid as a3,
-  AuthClient as a4,
-  useQueryClient as a5,
-  useQuery as a6,
-  BaseError$1 as a7,
-  getUrl as a8,
-  stringify$1 as a9,
-  decodeErrorResult as aa,
-  isAddressEqual as ab,
-  localBatchGatewayUrl as ac,
-  localBatchGatewayRequest as ad,
-  call as ae,
-  concat$1 as af,
-  encodeAbiParameters as ag,
-  HttpRequestError as ah,
-  isHex as ai,
+  cva as a0,
+  findEntry as a1,
+  fmtAmount as a2,
+  ledgerUrl as a3,
+  encode$4 as a4,
+  Text as a5,
+  isV3ResponseBody as a6,
+  HttpAgent as a7,
+  DelegationIdentity as a8,
+  isDelegationValid as a9,
+  AuthClient as aa,
+  useQueryClient as ab,
+  useQuery as ac,
+  BaseError$1 as ad,
+  getUrl as ae,
+  stringify$1 as af,
+  decodeErrorResult as ag,
+  isAddressEqual as ah,
+  localBatchGatewayUrl as ai,
+  localBatchGatewayRequest as aj,
+  call as ak,
+  concat$1 as al,
+  encodeAbiParameters as am,
+  HttpRequestError as an,
+  isHex as ao,
   React$2 as b,
   createLucideIcon as c,
   useIsAdmin as d,

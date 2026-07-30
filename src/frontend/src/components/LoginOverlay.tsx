@@ -4,10 +4,15 @@ import { JOURNEY } from "../lib/journey";
 type Props = {
   isLoggingIn: boolean;
   onLogin: () => void;
+  /** Escape hatch back to the public landing page. Provided whenever the
+   *  user reached this gate by choice (I6: `/` is a landing page now, not a
+   *  wall) — a full-screen gate with no way out is a trap, and browser Back
+   *  doesn't undo a state-only entry. */
+  onBack?: () => void;
 };
 
 /** Full-screen sign-in gate shown while there is no authenticated II user. */
-export function LoginOverlay({ isLoggingIn, onLogin }: Props) {
+export function LoginOverlay({ isLoggingIn, onLogin, onBack }: Props) {
   return (
     <div
       data-ocid="login.modal"
@@ -90,6 +95,16 @@ export function LoginOverlay({ isLoggingIn, onLogin }: Props) {
           Your vault is an <span className="text-zinc-300 font-semibold">Internet
           Identity</span> passkey — the sign-in screen that opens next is it.
         </p>
+        {onBack && (
+          <button
+            type="button"
+            data-ocid="login.back"
+            onClick={onBack}
+            className="mt-3 inline-flex min-h-[36px] items-center text-[11px] text-zinc-500 underline underline-offset-2 hover:text-zinc-300"
+          >
+            Not yet — take me back
+          </button>
+        )}
       </div>
     </div>
   );

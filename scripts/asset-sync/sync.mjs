@@ -32,6 +32,7 @@ import { AssetManager } from "@dfinity/assets";
 import { HttpAgent } from "@dfinity/agent";
 import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1";
 import mime from "mime/lite.js";
+import { ROUTES } from "../../src/frontend/routes.manifest.mjs";
 
 const CANISTER_ID = "cqyto-tiaaa-aaaau-agppa-cai";
 const HOST = "https://icp-api.io";
@@ -56,6 +57,14 @@ const EXPLICIT_CONTENT_TYPE = {
   ".well-known/ic-domains": "text/plain",
   "favicon.ico": "image/x-icon", // mime/lite has no .ico entry
 };
+// Route shells are ALSO published at their extensionless key ("/proof") —
+// the canonical shareable URL. Directory-index aliasing is unverified on
+// this canister module and unsettable from this @dfinity/assets version,
+// so both keys are explicit. Content types derived from the manifest so
+// they can't drift.
+for (const r of ROUTES.filter((x) => x.shell)) {
+  EXPLICIT_CONTENT_TYPE[r.path.replace(/^\//, "")] = "text/html";
+}
 
 const contentTypeFor = (key) => {
   const explicit = EXPLICIT_CONTENT_TYPE[key];
@@ -85,6 +94,15 @@ let files = walk(DIST).map((abs) => ({
   // Forward slashes, no leading slash (AssetManager prepends "/").
   key: relative(DIST, abs).split(sep).join("/"),
 }));
+// Extensionless twins for the OG shells: /proof serves proof/index.html's
+// bytes under the bare key.
+for (const r of ROUTES.filter((x) => x.shell)) {
+  const seg = r.path.replace(/^\//, "");
+  const abs = join(DIST, seg, "index.html");
+  if (files.some((f) => f.key === `${seg}/index.html`)) {
+    files.push({ abs, key: seg });
+  }
+}
 if (ONLY) {
   files = files.filter((f) => f.key.includes(ONLY));
   console.log(`--only "${ONLY}": ${files.length} file(s) selected`);

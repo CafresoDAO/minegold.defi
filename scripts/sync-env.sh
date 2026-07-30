@@ -21,12 +21,19 @@ fi
 
 BACKEND_ID="$(dfx canister id backend --network "$NETWORK")"
 
+# NOTE: ii_derivation_origin here is DOCUMENTATION ONLY. The authoritative
+# value is hard-coded in src/frontend/src/auth.tsx (II_DERIVATION_ORIGIN) so
+# that a bad env.json deploy can never change principal derivation. This
+# script used to write the literal string "undefined" here — that drift is
+# why the field must never be load-bearing.
+DERIVATION_ORIGIN="https://cqyto-tiaaa-aaaau-agppa-cai.icp0.io"
+
 cat > src/frontend/dist/env.json <<JSON
 {
   "backend_host": "${HOST}",
   "backend_canister_id": "${BACKEND_ID}",
   "project_id": "${PROJECT}",
-  "ii_derivation_origin": "undefined"
+  "ii_derivation_origin": "${DERIVATION_ORIGIN}"
 }
 JSON
 

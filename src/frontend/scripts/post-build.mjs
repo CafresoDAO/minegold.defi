@@ -6,9 +6,22 @@
  * scripts so `pnpm build` works identically on Windows cmd, PowerShell, and
  * any Unix shell. Uses only Node's built-in `fs` — no extra dependency.
  */
-import { copyFileSync, cpSync, existsSync, mkdirSync } from "node:fs";
+import {
+  copyFileSync,
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  OG_ASSET_ORIGIN,
+  ROUTES,
+  SITE_ORIGIN,
+  routeMeta,
+} from "../routes.manifest.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const frontendRoot = resolve(here, "..");
@@ -39,6 +52,64 @@ const icAssets = resolve(frontendRoot, "public", ".ic-assets.json5");
 if (existsSync(icAssets)) {
   copyFileSync(icAssets, resolve(dist, ".ic-assets.json5"));
   console.log("[post-build] copied .ic-assets.json5");
+}
+
+// 4. Per-route OG shells. The asset canister already SPA-fallbacks every
+//    unknown path to the root index.html (verified live), so these shells
+//    exist for ONE reason: route-specific <meta> for social unfurlers, which
+//    never execute JS. Each shell is the freshly built index.html with the
+//    sentinel-delimited meta block swapped — hashed bundle names therefore
+//    stay in sync automatically and can never version-skew.
+const esc = (s) =>
+  String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+
+const metaBlock = (r) => {
+  const m = routeMeta(r);
+  const url = `${SITE_ORIGIN}${m.path}`;
+  const img = `${OG_ASSET_ORIGIN}${m.ogImage}`;
+  return `<!--meta:start-->
+    <title>${esc(m.title)}</title>
+    <meta name="description" content="${esc(m.description)}" />
+    <link rel="canonical" href="${esc(url)}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="minegold.defi" />
+    <meta property="og:title" content="${esc(m.title)}" />
+    <meta property="og:description" content="${esc(m.description)}" />
+    <meta property="og:url" content="${esc(url)}" />
+    <meta property="og:image" content="${esc(img)}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="${esc(m.ogImageAlt)}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${esc(m.title)}" />
+    <meta name="twitter:description" content="${esc(m.description)}" />
+    <meta name="twitter:image" content="${esc(img)}" />
+    ${m.noindex ? '<meta name="robots" content="noindex,nofollow" />' : ""}
+    <!--meta:end-->`;
+};
+
+const indexHtml = readFileSync(resolve(dist, "index.html"), "utf8");
+const SENTINELS = /<!--meta:start-->[\s\S]*?<!--meta:end-->/;
+if (!SENTINELS.test(indexHtml)) {
+  // A silently-unmodified shell is worse than none: it looks deployed while
+  // carrying the wrong route's meta. Fail the build.
+  throw new Error(
+    "[post-build] meta sentinels missing from dist/index.html — cannot generate route shells",
+  );
+}
+for (const r of ROUTES.filter((x) => x.shell)) {
+  const seg = r.path.replace(/^\//, "");
+  const outDir = resolve(dist, seg);
+  mkdirSync(outDir, { recursive: true });
+  writeFileSync(
+    resolve(outDir, "index.html"),
+    indexHtml.replace(SENTINELS, metaBlock(r)),
+  );
+  console.log(`[post-build] shell: /${seg}`);
 }
 
 console.log("[post-build] done");

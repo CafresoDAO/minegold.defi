@@ -69,7 +69,7 @@ import {
   CKUNI_FEE_FALLBACK,
 } from "./hooks/useQueries";
 import { ThemeToggle } from "./components/ThemeToggle";
-import { useHashRoute } from "./hooks/useHashRoute";
+import { usePathRoute } from "./hooks/usePathRoute";
 
 // Secondary pages are code-split out of the money-path bundle. The operator
 // console in particular has no business shipping to every visitor.
@@ -576,7 +576,7 @@ export default function App() {
   // Real (hash) URLs replace the old localStorage view-switch + booleans.
   // BRAND DECISION: the refinery IS the product, so #/ lands on it; the
   // Banking.Brave protocol portfolio is demoted to #/portfolio.
-  const [route, navigate] = useHashRoute();
+  const [route, navigate] = usePathRoute();
   const topView: "home" | "uni" | "brave-soon" =
     route === "portfolio" ? "home" : route === "brave" ? "brave-soon" : "uni";
   const showAdmin = route === "admin";

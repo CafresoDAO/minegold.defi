@@ -1,4 +1,4 @@
-// Version: 3.0.0
+// Version: 1.0.0
 type BalanceCacheEntry__243068242 =
   {cachedAt : Time__772726445; ethWei : Nat; uniWei : Nat};
 type BridgeRequest__526066254 =
@@ -63,21 +63,6 @@ type Node__216023231<K, V> =
   {#internal : Internal__272372588<K, V>; #leaf : Leaf__366843236<K, V>};
 type Node__398398520<T> =
   {#internal : Internal__1061244309<T>; #leaf : Leaf__928866731<T>};
-type OldTxRecord__828820912 =
-  {
-    amount : Nat;
-    description : Text;
-    errorMsg : ?Text;
-    ethTxHash : ?Text;
-    icpBlockIndex : ?Nat;
-    id : Text;
-    status : OldTxStatus__201946792;
-    timestamp : Int;
-    tokenSymbol : Text;
-    txType : OldTxType__25653440
-  };
-type OldTxStatus__201946792 = {#Completed; #Confirmed; #Failed; #Pending};
-type OldTxType__25653440 = {#Bridge; #Mint; #Refine; #Transfer};
 type RedeemRecord__45704246 =
   {
     ckuniPaid : Nat;
@@ -148,118 +133,7 @@ type sGLDTRequest__25166406 =
     submitter : Principal;
     timestamp : Time__772726445
   };
-actor ({
-  stable ADMIN_PRINCIPAL : Principal;
-  stable BALANCE_CACHE_TTL_NS : Int;
-  stable BAT_DEFAULT_PRICE : Nat;
-  stable BB_TOKEN_DECIMALS : Nat;
-  stable CKERC20_HELPER_CONTRACT_LOWER : Text;
-  stable DEPLOYER_PRINCIPAL : Principal;
-  stable DEPOSIT_SELECTOR : Text;
-  stable FIXED_ETH_DEPOSIT_ADDRESS : Text;
-  stable MAX_TRANSFER_AMOUNT_CKUNI : Nat;
-  stable MAX_TRANSFER_AMOUNT_SGLDT : Nat;
-  stable MIN_REDEEM_SGLDT : Nat;
-  stable MIN_REFINE_CKUNI : Nat;
-  stable OUTCALL_WINDOW_MAX : Nat;
-  stable OUTCALL_WINDOW_NS : Int;
-  stable PRICE_CACHE_DURATION : Nat;
-  stable SGLDT_DECIMALS : Nat;
-  stable SGLDT_DEFAULT_PRICE : Nat;
-  stable TREASURY_PRINCIPAL : Principal;
-  stable UNI_CONTRACT_ADDRESS_LOWER : Text;
-  stable XRC_AUTO_SYNC_SECONDS : Nat;
-  stable XRC_CALL_CYCLES : Nat;
-  stable XRC_MIN_SYNC_GAP_NS : Int;
-  stable var _minterInitAttempts : Nat;
-  stable var _outcallWindowCount : Nat;
-  stable var _outcallWindowStart : Int;
-  stable accessControlState :
-    {
-      var adminAssigned : Bool;
-      userRoles : Map__466055834<Principal, UserRole__585387465>
-    };
-  stable balanceCache :
-    {
-      var root : Node__216023231<Text, BalanceCacheEntry__243068242>;
-      var size : Nat__107743821
-    };
-  stable var batPoolBalance : Nat;
-  stable bridgeRequests :
-    {
-      var root : Node__216023231<Nat, BridgeRequest__526066254>;
-      var size : Nat__107743821
-    };
-  stable var cachedBatPrice : ?{price : Nat; timestamp : Time__772726445};
-  stable var cachedCkUNITreasuryBalance : Nat;
-  stable var cachedMinterDepositAddress : Text;
-  stable var cachedSGldtPrice : ?{price : Nat; timestamp : Time__772726445};
-  stable var cachedSgldtTreasuryBalance : Nat;
-  stable ckUNILedger :
-    actor {
-      icrc1_balance_of : shared ICRC1Account__589618788 -> async Nat;
-      icrc1_fee : shared () -> async Nat;
-      icrc1_transfer :
-        shared ICRC1TransferArgs__113794070 ->
-          async ICRC1TransferResult__34535561
-    };
-  stable var ckUNIMinter :
-    actor {
-      get_deposit_address :
-        shared {owner : Principal; subaccount : ?Blob} -> async Text
-    };
-  stable var lastUniUsdPriceE8 : Nat;
-  stable var lastXRCError : Text;
-  stable var lastXRCSyncNs : Int;
-  stable var nextBridgeRequestId : Nat;
-  stable var nextExchangeRequestId : Nat;
-  stable var nextRedeemId : Nat;
-  stable var nextRefineId : Nat;
-  stable var nextUNIDepositId : Nat;
-  stable redeems :
-    {
-      var root : Node__216023231<Nat, RedeemRecord__45704246>;
-      var size : Nat__107743821
-    };
-  stable refines :
-    {
-      var root : Node__216023231<Nat, RefineRecord__559321398>;
-      var size : Nat__107743821
-    };
-  stable sGLDTRequests :
-    {
-      var root : Node__216023231<Nat, sGLDTRequest__25166406>;
-      var size : Nat__107743821
-    };
-  stable var sGLDTTreasuryBalance : Nat;
-  stable seenTxHashes :
-    {var root : Node__398398520<Text>; var size : Nat__107743821};
-  stable sgldtLedger :
-    actor {
-      icrc1_balance_of : shared ICRC1Account__589618788 -> async Nat;
-      icrc1_fee : shared () -> async Nat;
-      icrc1_transfer :
-        shared ICRC1TransferArgs__113794070 ->
-          async ICRC1TransferResult__34535561
-    };
-  stable var sgldtUsdPriceE8 : Nat;
-  stable var sweeperInFlight : Bool;
-  stable var treasuryBalancesCachedAt : Int;
-  stable var txCounter : Nat;
-  stable uniDeposits :
-    {
-      var root : Node__216023231<Nat, UniDepositRequest__322446488>;
-      var size : Nat__107743821
-    };
-  stable var uniExchangeRate : Nat;
-  stable userProfiles :
-    {
-      var root : Node__216023231<Principal, UserProfile__852920818>;
-      var size : Nat__107743821
-    };
-  in userTransactions :
-    Map__466055834<Principal, List__291137870<OldTxRecord__828820912>>
-}, {
+actor {
   stable ADMIN_PRINCIPAL : Principal;
   stable BALANCE_CACHE_TTL_NS : Int;
   stable BAT_DEFAULT_PRICE : Nat;
@@ -374,4 +248,4 @@ actor ({
         Node__216023231<Principal, List__291137870<TxRecord__781861122>>;
       var size : Nat__107743821
     }
-}) ;
+};

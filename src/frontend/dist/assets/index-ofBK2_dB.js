@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-Q5joaJem.js","assets/button-D8QirsJA.js","assets/TransactionHistoryPage-6qeRQ3gP.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-AqT7ZEbx.js","assets/button-C-AGFJmY.js","assets/TransactionHistoryPage-DE_v-nMz.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -33583,7 +33583,7 @@ async function call(client2, args) {
   } catch (err) {
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-CyMsuLDk.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-CZ4ck9mV.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -48971,20 +48971,35 @@ function useProofSnapshot(open) {
         agent: getAnonymousAgent(),
         canisterId: BACKEND_CANISTER_ID
       });
-      const [balances, readiness, strandedCounts] = await Promise.all([
+      const [balancesR, readinessR, strandedR] = await Promise.allSettled([
         actor.getTreasuryICRC1Balances(),
         actor.getPayoutReadiness(),
         actor.getStrandedCounts()
       ]);
+      if (balancesR.status === "rejected") {
+        console.warn("[proof] treasury balances unavailable:", balancesR.reason);
+      }
+      if (readinessR.status === "rejected") {
+        console.warn("[proof] payout readiness unavailable:", readinessR.reason);
+      }
+      if (strandedR.status === "rejected") {
+        console.warn("[proof] stranded counts unavailable:", strandedR.reason);
+      }
       return {
-        sgldtBalance: balances.sgldtBalance,
-        ckUNIBalance: balances.ckUNIBalance,
-        cachedAtNs: balances.cachedAtNs,
-        treasurySGLDTLive: readiness.treasurySGLDTBalance,
-        pendingDeposits: readiness.pendingDeposits,
-        estimatedSGLDTNeeded: readiness.estimatedSGLDTNeeded,
-        strandedRefines: strandedCounts.strandedRefines,
-        strandedRedeems: strandedCounts.strandedRedeems
+        balances: balancesR.status === "fulfilled" ? {
+          sgldtBalance: balancesR.value.sgldtBalance,
+          ckUNIBalance: balancesR.value.ckUNIBalance,
+          cachedAtNs: balancesR.value.cachedAtNs
+        } : null,
+        readiness: readinessR.status === "fulfilled" ? {
+          treasurySGLDTLive: readinessR.value.treasurySGLDTBalance,
+          pendingDeposits: readinessR.value.pendingDeposits,
+          estimatedSGLDTNeeded: readinessR.value.estimatedSGLDTNeeded
+        } : null,
+        stranded: strandedR.status === "fulfilled" ? {
+          refines: strandedR.value.strandedRefines,
+          redeems: strandedR.value.strandedRedeems
+        } : null
       };
     },
     staleTime: 3e4,
@@ -49449,7 +49464,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DsxkddcT.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DUngtNTY.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49480,7 +49495,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DsxkddcT.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DUngtNTY.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49504,7 +49519,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DsxkddcT.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DUngtNTY.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49925,8 +49940,10 @@ function ProofPanel({ onClose }) {
       setRefreshing(false);
     }
   };
-  const coverage = snap && snap.estimatedSGLDTNeeded > 0n ? Number(snap.treasurySGLDTLive) / Number(snap.estimatedSGLDTNeeded) : null;
-  const strandedTotal = snap ? snap.strandedRefines + snap.strandedRedeems : null;
+  const balances = (snap == null ? void 0 : snap.balances) ?? null;
+  const readiness = (snap == null ? void 0 : snap.readiness) ?? null;
+  const coverage = readiness && readiness.estimatedSGLDTNeeded > 0n ? Number(readiness.treasurySGLDTLive) / Number(readiness.estimatedSGLDTNeeded) : null;
+  const strandedTotal = (snap == null ? void 0 : snap.stranded) ? snap.stranded.refines + snap.stranded.redeems : null;
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
@@ -49953,7 +49970,7 @@ function ProofPanel({ onClose }) {
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest", children: "Treasury liquidity" }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-500", children: snap ? `ledger read ${ageLabel(snap.cachedAtNs)}` : "…" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-500", children: isLoading ? "…" : balances ? `ledger read ${ageLabel(balances.cachedAtNs)}` : "ledger read unavailable" }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "button",
               {
@@ -49980,17 +49997,17 @@ function ProofPanel({ onClose }) {
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-3 mb-3", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1", children: "sGLDT (pays refines)" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl font-black text-yellow-400 tabular-nums", children: snap ? formatTokenAmount(snap.sgldtBalance) : "…" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl font-black text-yellow-400 tabular-nums", children: balances ? formatTokenAmount(balances.sgldtBalance) : isLoading ? "…" : "—" })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1", children: "ckUNI (pays redeems)" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl font-black text-blue-300 tabular-nums", children: snap ? formatTokenAmount(snap.ckUNIBalance, 18) : "…" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl font-black text-blue-300 tabular-nums", children: balances ? formatTokenAmount(balances.ckUNIBalance, 18) : isLoading ? "…" : "—" })
           ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-3 mb-5", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1", children: "Refine coverage" }),
-            isLoading || !snap ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-500", children: "…" }) : snap.pendingDeposits === 0n ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-bold text-emerald-400", children: "No pending payouts owed" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-500", children: "…" }) : !readiness ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-500", children: "Unavailable right now" }) : readiness.pendingDeposits === 0n ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-bold text-emerald-400", children: "No pending payouts owed" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "p",
                 {
@@ -49999,20 +50016,20 @@ function ProofPanel({ onClose }) {
                 }
               ),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-500 mt-0.5", children: [
-                formatTokenAmount(snap.treasurySGLDTLive),
+                formatTokenAmount(readiness.treasurySGLDTLive),
                 " live vs",
                 " ",
-                formatTokenAmount(snap.estimatedSGLDTNeeded),
+                formatTokenAmount(readiness.estimatedSGLDTNeeded),
                 " owed across",
                 " ",
-                snap.pendingDeposits.toString(),
+                readiness.pendingDeposits.toString(),
                 " pending"
               ] })
             ] })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1", children: "Held (stranded) swaps" }),
-            strandedTotal == null ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-500", children: "…" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            strandedTotal == null ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-500", children: isLoading ? "…" : "Unavailable right now" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs(
                 "p",
                 {
@@ -52005,16 +52022,16 @@ function usePathRoute() {
   return [match.route, navigate, match.params];
 }
 const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-Q5joaJem.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+  () => __vitePreload(() => import("./AdminPage-AqT7ZEbx.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
 );
 const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-BdEy7juG.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+  () => __vitePreload(() => import("./BankingBraveHome-C5qrsw0w.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
 );
 const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-Z-PLOyH7.js"), true ? [] : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+  () => __vitePreload(() => import("./MinegoldBraveSoon-DomAlelJ.js"), true ? [] : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
 );
 const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-6qeRQ3gP.js"), true ? __vite__mapDeps([2,1]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./TransactionHistoryPage-DE_v-nMz.js"), true ? __vite__mapDeps([2,1]) : void 0).then((m2) => ({
     default: m2.TransactionHistoryPage
   }))
 );

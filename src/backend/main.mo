@@ -21,16 +21,11 @@ import Principal "mo:core/Principal";
 import MixinAuthorization "mo:caffeineai-authorization/MixinAuthorization";
 import AccessControl "mo:caffeineai-authorization/access-control";
 import OutCall "mo:caffeineai-http-outcalls/outcall";
-import Migration "migration";
 
 
 
 
 
-// ONE-TIME migration (2026-07 taxonomy widening) — see migration.mo. Remove
-// this clause AND migration.mo after this upgrade ships, or the next upgrade
-// will fail its migration-input check.
-(with migration = Migration.run)
 actor Self {
   // Constants
   let BB_TOKEN_DECIMALS = 8;

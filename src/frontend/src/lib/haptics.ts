@@ -16,8 +16,28 @@ const canVibrate = (): boolean => {
   }
 };
 
+// Pocket rule: no per-block buzzing while the tab is hidden (it reads as a
+// broken notification), but progress made in the background shouldn't pass
+// silently either — the first return to the tab gets ONE milestone buzz if
+// any ticks were swallowed.
+let ticksSuppressedWhileHidden = false;
+try {
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && ticksSuppressedWhileHidden) {
+      ticksSuppressedWhileHidden = false;
+      if (canVibrate()) navigator.vibrate([30, 40, 30]);
+    }
+  });
+} catch {
+  /* non-DOM environment */
+}
+
 /** One pick strike — a single Ethereum block confirmed. */
 export const hapticTick = (): void => {
+  if (typeof document !== "undefined" && document.hidden) {
+    ticksSuppressedWhileHidden = true;
+    return;
+  }
   if (canVibrate()) navigator.vibrate(18);
 };
 

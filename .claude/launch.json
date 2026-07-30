@@ -2,22 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "frontend-vite",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--dir", "src/frontend", "dev"],
+      "name": "minegold-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "src/frontend"],
       "port": 5173
-    },
-    {
-      "name": "openclawhq",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["-y", "serve", "openclawhq", "-l", "5174"],
-      "port": 5174
-    },
-    {
-      "name": "dfx-local-replica",
-      "runtimeExecutable": "wsl",
-      "runtimeArgs": ["-e", "bash", "-lc", "DFX_WARNING=-mainnet_plaintext_identity dfx start --clean"],
-      "port": 4943
     }
   ]
 }

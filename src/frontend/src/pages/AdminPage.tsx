@@ -31,6 +31,7 @@ import {
   useGetTreasuryWalletInfo,
   useIsAdmin,
   useSetUNIExchangeRate,
+  useStrandedQueue,
   useTreasuryICRC1Balances,
   useUNIExchangeRate,
 } from "../hooks/useQueries";
@@ -159,6 +160,10 @@ function AdminContent({ callerPrincipal }: { callerPrincipal: string }) {
               <ArrowLeftRight className="w-3.5 h-3.5 mr-1.5" />
               Mint &amp; Dissolve
             </TabsTrigger>
+            <TabsTrigger value="stranded" className="data-[state=active]:bg-yellow-500 data-[state=active]:text-black text-zinc-400 font-semibold rounded-lg px-4 py-2">
+              <AlertCircle className="w-3.5 h-3.5 mr-1.5" />
+              Stranded
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="treasury">
@@ -169,6 +174,9 @@ function AdminContent({ callerPrincipal }: { callerPrincipal: string }) {
           </TabsContent>
           <TabsContent value="minter">
             <MinterTab />
+          </TabsContent>
+          <TabsContent value="stranded">
+            <StrandedTab />
           </TabsContent>
         </Tabs>
       </div>
@@ -651,5 +659,102 @@ function MinterTab() {
         <StatusLine status={dissolveStatus} />
       </Section>
     </div>
+  );
+}
+
+// ── Stranded queue ───────────────────────────────────────────────────────────
+
+/** Every refine/redeem whose swap AND auto-refund both failed. The backend
+ *  has no one-click resolver on purpose (a wrong auto-release would be
+ *  unrecoverable) — resolution is a manual Treasury-tab transfer of the owed
+ *  amount to the user's principal, then the record stays as the audit trail. */
+function StrandedTab() {
+  const { identity } = useInternetIdentity();
+  const { data: queue, isLoading, refetch, isFetching } = useStrandedQueue(identity, true);
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const copy = (text: string, key: string) => {
+    void navigator.clipboard.writeText(text);
+    setCopied(key);
+    setTimeout(() => setCopied(null), 1500);
+  };
+
+  return (
+    <Section title="Stranded swaps — manual resolution queue">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-xs text-zinc-500 max-w-md leading-relaxed">
+          Each row is a user whose funds were pulled but neither paid out nor
+          auto-refunded. Resolve by sending the owed amount from the Treasury
+          tab to their principal. The public /proof page shows this queue's
+          count live.
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => void refetch()}
+          disabled={isFetching}
+          className="border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-800 gap-1.5 shrink-0"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? "animate-spin" : ""}`} />
+          Refresh
+        </Button>
+      </div>
+
+      {isLoading ? (
+        <div className="flex items-center gap-2 py-8 justify-center text-zinc-500 text-sm">
+          <Loader2 className="w-4 h-4 animate-spin" /> Loading queue…
+        </div>
+      ) : !queue || queue.length === 0 ? (
+        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-6 text-center">
+          <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2 opacity-70" />
+          <p className="text-sm font-semibold text-emerald-300">
+            Queue is empty — no stranded swaps.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {queue.map((s) => {
+            const key = `${s.kind}-${s.id.toString()}`;
+            return (
+              <div
+                key={key}
+                className="rounded-xl border border-amber-500/25 bg-amber-500/5 p-4 text-xs space-y-1.5"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-black uppercase tracking-wider text-amber-300">
+                    {s.kind} #{s.id.toString()}
+                  </span>
+                  <span className="text-zinc-500">
+                    {new Date(Number(s.timestampNs / 1_000_000n)).toLocaleString()}
+                  </span>
+                </div>
+                <p className="text-zinc-300">
+                  Pulled <span className="font-mono text-white">{s.pulled}</span>{" "}
+                  from the user · owes them{" "}
+                  <span className="font-mono text-white">{s.owed}</span>
+                  {s.pullBlock != null && (
+                    <span className="text-zinc-500"> · pull block #{s.pullBlock.toString()}</span>
+                  )}
+                </p>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-zinc-400 break-all">{s.user}</span>
+                  <button
+                    type="button"
+                    onClick={() => copy(s.user, key)}
+                    className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-zinc-700 bg-zinc-900 text-[10px] font-bold text-zinc-300 hover:bg-zinc-800"
+                  >
+                    <Copy className="w-3 h-3" />
+                    {copied === key ? "Copied" : "Copy principal"}
+                  </button>
+                </div>
+                {s.errorMsg && (
+                  <p className="text-red-300/80 font-mono break-all">{s.errorMsg}</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </Section>
   );
 }

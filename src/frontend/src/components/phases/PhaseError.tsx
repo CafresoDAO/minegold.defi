@@ -1,11 +1,9 @@
-import { Activity, CheckCircle2, XCircle } from "lucide-react";
-import { MiningAnimation } from "../MiningAnimation";
+import { Activity, CheckCircle2, Loader2, XCircle } from "lucide-react";
 import type { TimelineStep } from "../TransactionTimeline";
 import { GoldCTA } from "../ui/GoldCTA";
 
 type Props = {
   statusMsg: string;
-  bridgeProgress: number;
   currentTxHash: string | null;
   pollAttempt: number;
   retryErrorMsg: string | null;
@@ -25,7 +23,6 @@ type Props = {
  *  state with the step tracker and recovery actions. */
 export function PhaseError({
   statusMsg,
-  bridgeProgress,
   currentTxHash,
   pollAttempt,
   retryErrorMsg,
@@ -42,8 +39,8 @@ export function PhaseError({
         /* Soft state: ETH confirmed but backend still processing — auto-polling */
         <>
           <div className="rounded-2xl bg-amber-500/10 border border-amber-500/30 p-5 flex items-start gap-4">
-            <div className="shrink-0">
-              <MiningAnimation progress={bridgeProgress} scale={0.55} />
+            <div className="shrink-0 pt-1">
+              <Loader2 size={22} className="text-amber-400 animate-spin" />
             </div>
             <div className="flex-1 pt-1">
               <p className="font-bold text-amber-400 mb-1">

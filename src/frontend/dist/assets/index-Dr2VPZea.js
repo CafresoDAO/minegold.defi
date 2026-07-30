@@ -1,9 +1,10 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-Q5joaJem.js","assets/button-D8QirsJA.js","assets/TransactionHistoryPage-6qeRQ3gP.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
 };
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defNormalProp = (obj, key2, value) => key2 in obj ? __defProp(obj, key2, { enumerable: true, configurable: true, writable: true, value }) : obj[key2] = value;
+var __publicField = (obj, key2, value) => __defNormalProp(obj, typeof key2 !== "symbol" ? key2 + "" : key2, value);
 var __accessCheck = (obj, member, msg) => member.has(obj) || __typeError("Cannot " + msg);
 var __privateGet = (obj, member, getter) => (__accessCheck(obj, member, "read from private field"), getter ? getter.call(obj) : member.get(obj));
 var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot add the same private member more than once") : member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
@@ -90,9 +91,9 @@ var reactJsxRuntime_production = {};
  */
 var REACT_ELEMENT_TYPE$2 = Symbol.for("react.transitional.element"), REACT_FRAGMENT_TYPE$2 = Symbol.for("react.fragment");
 function jsxProd(type, config, maybeKey) {
-  var key = null;
-  void 0 !== maybeKey && (key = "" + maybeKey);
-  void 0 !== config.key && (key = "" + config.key);
+  var key2 = null;
+  void 0 !== maybeKey && (key2 = "" + maybeKey);
+  void 0 !== config.key && (key2 = "" + config.key);
   if ("key" in config) {
     maybeKey = {};
     for (var propName in config)
@@ -102,7 +103,7 @@ function jsxProd(type, config, maybeKey) {
   return {
     $$typeof: REACT_ELEMENT_TYPE$2,
     type,
-    key,
+    key: key2,
     ref: void 0 !== config ? config : null,
     props: maybeKey
   };
@@ -331,8 +332,8 @@ function hashQueryKeyByOptions(queryKey, options) {
 function hashKey(queryKey) {
   return JSON.stringify(
     queryKey,
-    (_2, val) => isPlainObject(val) ? Object.keys(val).sort().reduce((result, key) => {
-      result[key] = val[key];
+    (_2, val) => isPlainObject(val) ? Object.keys(val).sort().reduce((result, key2) => {
+      result[key2] = val[key2];
       return result;
     }, {}) : val
   );
@@ -345,7 +346,7 @@ function partialMatchKey(a2, b2) {
     return false;
   }
   if (a2 && b2 && typeof a2 === "object" && typeof b2 === "object") {
-    return Object.keys(b2).every((key) => partialMatchKey(a2[key], b2[key]));
+    return Object.keys(b2).every((key2) => partialMatchKey(a2[key2], b2[key2]));
   }
   return false;
 }
@@ -364,20 +365,20 @@ function replaceEqualDeep(a2, b2, depth = 0) {
   const copy = array ? new Array(bSize) : {};
   let equalItems = 0;
   for (let i = 0; i < bSize; i++) {
-    const key = array ? i : bItems[i];
-    const aItem = a2[key];
-    const bItem = b2[key];
+    const key2 = array ? i : bItems[i];
+    const aItem = a2[key2];
+    const bItem = b2[key2];
     if (aItem === bItem) {
-      copy[key] = aItem;
-      if (array ? i < aSize : hasOwn.call(a2, key)) equalItems++;
+      copy[key2] = aItem;
+      if (array ? i < aSize : hasOwn.call(a2, key2)) equalItems++;
       continue;
     }
     if (aItem === null || bItem === null || typeof aItem !== "object" || typeof bItem !== "object") {
-      copy[key] = bItem;
+      copy[key2] = bItem;
       continue;
     }
     const v2 = replaceEqualDeep(aItem, bItem, depth + 1);
-    copy[key] = v2;
+    copy[key2] = v2;
     if (v2 === aItem) equalItems++;
   }
   return aSize === bSize && equalItems === aSize ? a2 : copy;
@@ -386,8 +387,8 @@ function shallowEqualObjects(a2, b2) {
   if (!b2 || Object.keys(a2).length !== Object.keys(b2).length) {
     return false;
   }
-  for (const key in a2) {
-    if (a2[key] !== b2[key]) {
+  for (const key2 in a2) {
+    if (a2[key2] !== b2[key2]) {
       return false;
     }
   }
@@ -1344,10 +1345,10 @@ var QueryObserver = (_f = class extends Subscribable {
   }
   trackResult(result, onPropTracked) {
     return new Proxy(result, {
-      get: (target, key) => {
-        this.trackProp(key);
-        onPropTracked == null ? void 0 : onPropTracked(key);
-        if (key === "promise") {
+      get: (target, key2) => {
+        this.trackProp(key2);
+        onPropTracked == null ? void 0 : onPropTracked(key2);
+        if (key2 === "promise") {
           this.trackProp("data");
           if (!this.options.experimental_prefetchInRender && __privateGet(this, _currentThenable).status === "pending") {
             __privateGet(this, _currentThenable).reject(
@@ -1357,12 +1358,12 @@ var QueryObserver = (_f = class extends Subscribable {
             );
           }
         }
-        return Reflect.get(target, key);
+        return Reflect.get(target, key2);
       }
     });
   }
-  trackProp(key) {
-    __privateGet(this, _trackedProps).add(key);
+  trackProp(key2) {
+    __privateGet(this, _trackedProps).add(key2);
   }
   getCurrentQuery() {
     return __privateGet(this, _currentQuery);
@@ -1554,8 +1555,8 @@ var QueryObserver = (_f = class extends Subscribable {
       if (this.options.throwOnError) {
         includedProps.add("error");
       }
-      return Object.keys(__privateGet(this, _currentResult)).some((key) => {
-        const typedKey = key;
+      return Object.keys(__privateGet(this, _currentResult)).some((key2) => {
+        const typedKey = key2;
         const changed = __privateGet(this, _currentResult)[typedKey] !== prevResult[typedKey];
         return changed && includedProps.has(typedKey);
       });
@@ -2700,7 +2701,7 @@ var react_production = {};
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-var REACT_ELEMENT_TYPE$1 = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE$2 = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE$1 = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE$1 = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE$1 = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE$1 = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE$1 = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE$1 = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE$1 = Symbol.for("react.suspense"), REACT_MEMO_TYPE$1 = Symbol.for("react.memo"), REACT_LAZY_TYPE$2 = Symbol.for("react.lazy"), MAYBE_ITERATOR_SYMBOL$1 = Symbol.iterator;
+var REACT_ELEMENT_TYPE$1 = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE$2 = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE$1 = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE$1 = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE$1 = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE$1 = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE$1 = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE$1 = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE$1 = Symbol.for("react.suspense"), REACT_MEMO_TYPE$1 = Symbol.for("react.memo"), REACT_LAZY_TYPE$1 = Symbol.for("react.lazy"), MAYBE_ITERATOR_SYMBOL$1 = Symbol.iterator;
 function getIteratorFn$1(maybeIterable) {
   if (null === maybeIterable || "object" !== typeof maybeIterable) return null;
   maybeIterable = MAYBE_ITERATOR_SYMBOL$1 && maybeIterable[MAYBE_ITERATOR_SYMBOL$1] || maybeIterable["@@iterator"];
@@ -2748,12 +2749,12 @@ pureComponentPrototype.constructor = PureComponent;
 assign$1(pureComponentPrototype, Component.prototype);
 pureComponentPrototype.isPureReactComponent = true;
 var isArrayImpl$1 = Array.isArray, ReactSharedInternals$2 = { H: null, A: null, T: null, S: null, V: null }, hasOwnProperty$1 = Object.prototype.hasOwnProperty;
-function ReactElement(type, key, self2, source, owner, props) {
+function ReactElement(type, key2, self2, source, owner, props) {
   self2 = props.ref;
   return {
     $$typeof: REACT_ELEMENT_TYPE$1,
     type,
-    key,
+    key: key2,
     ref: void 0 !== self2 ? self2 : null,
     props
   };
@@ -2771,9 +2772,9 @@ function cloneAndReplaceKey(oldElement, newKey) {
 function isValidElement(object) {
   return "object" === typeof object && null !== object && object.$$typeof === REACT_ELEMENT_TYPE$1;
 }
-function escape(key) {
+function escape(key2) {
   var escaperLookup = { "=": "=0", ":": "=2" };
-  return "$" + key.replace(/[=:]/g, function(match) {
+  return "$" + key2.replace(/[=:]/g, function(match) {
     return escaperLookup[match];
   });
 }
@@ -2824,7 +2825,7 @@ function mapIntoArray(children, array, escapedPrefix, nameSoFar, callback) {
           case REACT_PORTAL_TYPE$2:
             invokeCallback = true;
             break;
-          case REACT_LAZY_TYPE$2:
+          case REACT_LAZY_TYPE$1:
             return invokeCallback = children._init, mapIntoArray(
               invokeCallback(children._payload),
               array,
@@ -2882,9 +2883,9 @@ function mapIntoArray(children, array, escapedPrefix, nameSoFar, callback) {
 }
 function mapChildren(children, func, context) {
   if (null == children) return children;
-  var result = [], count2 = 0;
+  var result = [], count = 0;
   mapIntoArray(children, result, "", "", function(child) {
-    return func.call(context, child, count2++);
+    return func.call(context, child, count++);
   });
   return result;
 }
@@ -2978,9 +2979,9 @@ react_production.cloneElement = function(element, config, children) {
     throw Error(
       "The argument must be a React element, but you passed " + element + "."
     );
-  var props = assign$1({}, element.props), key = element.key, owner = void 0;
+  var props = assign$1({}, element.props), key2 = element.key, owner = void 0;
   if (null != config)
-    for (propName in void 0 !== config.ref && (owner = void 0), void 0 !== config.key && (key = "" + config.key), config)
+    for (propName in void 0 !== config.ref && (owner = void 0), void 0 !== config.key && (key2 = "" + config.key), config)
       !hasOwnProperty$1.call(config, propName) || "key" === propName || "__self" === propName || "__source" === propName || "ref" === propName && void 0 === config.ref || (props[propName] = config[propName]);
   var propName = arguments.length - 2;
   if (1 === propName) props.children = children;
@@ -2989,7 +2990,7 @@ react_production.cloneElement = function(element, config, children) {
       childArray[i] = arguments[i + 2];
     props.children = childArray;
   }
-  return ReactElement(element.type, key, void 0, void 0, owner, props);
+  return ReactElement(element.type, key2, void 0, void 0, owner, props);
 };
 react_production.createContext = function(defaultValue) {
   defaultValue = {
@@ -3008,9 +3009,9 @@ react_production.createContext = function(defaultValue) {
   return defaultValue;
 };
 react_production.createElement = function(type, config, children) {
-  var propName, props = {}, key = null;
+  var propName, props = {}, key2 = null;
   if (null != config)
-    for (propName in void 0 !== config.key && (key = "" + config.key), config)
+    for (propName in void 0 !== config.key && (key2 = "" + config.key), config)
       hasOwnProperty$1.call(config, propName) && "key" !== propName && "__self" !== propName && "__source" !== propName && (props[propName] = config[propName]);
   var childrenLength = arguments.length - 2;
   if (1 === childrenLength) props.children = children;
@@ -3022,7 +3023,7 @@ react_production.createElement = function(type, config, children) {
   if (type && type.defaultProps)
     for (propName in childrenLength = type.defaultProps, childrenLength)
       void 0 === props[propName] && (props[propName] = childrenLength[propName]);
-  return ReactElement(type, key, void 0, void 0, null, props);
+  return ReactElement(type, key2, void 0, void 0, null, props);
 };
 react_production.createRef = function() {
   return { current: null };
@@ -3033,7 +3034,7 @@ react_production.forwardRef = function(render) {
 react_production.isValidElement = isValidElement;
 react_production.lazy = function(ctor) {
   return {
-    $$typeof: REACT_LAZY_TYPE$2,
+    $$typeof: REACT_LAZY_TYPE$1,
     _payload: { _status: -1, _result: ctor },
     _init: lazyInitializer
   };
@@ -3625,10 +3626,10 @@ var Internals = {
   findDOMNode: null
 }, REACT_PORTAL_TYPE$1 = Symbol.for("react.portal");
 function createPortal$1(children, containerInfo, implementation) {
-  var key = 3 < arguments.length && void 0 !== arguments[3] ? arguments[3] : null;
+  var key2 = 3 < arguments.length && void 0 !== arguments[3] ? arguments[3] : null;
   return {
     $$typeof: REACT_PORTAL_TYPE$1,
-    key: null == key ? null : "" + key,
+    key: null == key2 ? null : "" + key2,
     children,
     containerInfo,
     implementation
@@ -3642,10 +3643,10 @@ function getCrossOriginStringAs(as, input) {
 }
 reactDom_production.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = Internals;
 reactDom_production.createPortal = function(children, container) {
-  var key = 2 < arguments.length && void 0 !== arguments[2] ? arguments[2] : null;
+  var key2 = 2 < arguments.length && void 0 !== arguments[2] ? arguments[2] : null;
   if (!container || 1 !== container.nodeType && 9 !== container.nodeType && 11 !== container.nodeType)
     throw Error(formatProdErrorMessage$1(299));
-  return createPortal$1(children, container, null, key);
+  return createPortal$1(children, container, null, key2);
 };
 reactDom_production.flushSync = function(fn) {
   var previousTransition = ReactSharedInternals$1.T, previousUpdatePriority = Internals.p;
@@ -3875,7 +3876,7 @@ function findCurrentHostFiberImpl(node) {
   }
   return null;
 }
-var assign = Object.assign, REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_PROVIDER_TYPE = Symbol.for("react.provider"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE$1 = Symbol.for("react.lazy");
+var assign = Object.assign, REACT_LEGACY_ELEMENT_TYPE = Symbol.for("react.element"), REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_PROVIDER_TYPE = Symbol.for("react.provider"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy");
 var REACT_ACTIVITY_TYPE = Symbol.for("react.activity");
 var REACT_MEMO_CACHE_SENTINEL = Symbol.for("react.memo_cache_sentinel");
 var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
@@ -3919,7 +3920,7 @@ function getComponentNameFromType(type) {
         return type;
       case REACT_MEMO_TYPE:
         return innerType = type.displayName || null, null !== innerType ? innerType : getComponentNameFromType(type.type) || "Memo";
-      case REACT_LAZY_TYPE$1:
+      case REACT_LAZY_TYPE:
         innerType = type._payload;
         type = type._init;
         try {
@@ -5059,8 +5060,8 @@ function getEventModifierState() {
 var KeyboardEventInterface = assign({}, UIEventInterface, {
   key: function(nativeEvent) {
     if (nativeEvent.key) {
-      var key = normalizeKey[nativeEvent.key] || nativeEvent.key;
-      if ("Unidentified" !== key) return key;
+      var key2 = normalizeKey[nativeEvent.key] || nativeEvent.key;
+      if ("Unidentified" !== key2) return key2;
     }
     return "keypress" === nativeEvent.type ? (nativeEvent = getEventCharCode(nativeEvent), 13 === nativeEvent ? "Enter" : String.fromCharCode(nativeEvent)) : "keydown" === nativeEvent.type || "keyup" === nativeEvent.type ? translateToKey[nativeEvent.keyCode] || "Unidentified" : "";
   },
@@ -5446,9 +5447,9 @@ function getRootForUpdatedFiber(sourceFiber) {
   return 3 === sourceFiber.tag ? sourceFiber.stateNode : null;
 }
 var emptyContextObject = {};
-function FiberNode(tag, pendingProps, key, mode) {
+function FiberNode(tag, pendingProps, key2, mode) {
   this.tag = tag;
-  this.key = key;
+  this.key = key2;
   this.sibling = this.child = this.return = this.stateNode = this.type = this.elementType = null;
   this.index = 0;
   this.refCleanup = this.ref = null;
@@ -5460,8 +5461,8 @@ function FiberNode(tag, pendingProps, key, mode) {
   this.childLanes = this.lanes = 0;
   this.alternate = null;
 }
-function createFiberImplClass(tag, pendingProps, key, mode) {
-  return new FiberNode(tag, pendingProps, key, mode);
+function createFiberImplClass(tag, pendingProps, key2, mode) {
+  return new FiberNode(tag, pendingProps, key2, mode);
 }
 function shouldConstruct(Component2) {
   Component2 = Component2.prototype;
@@ -5499,7 +5500,7 @@ function resetWorkInProgress(workInProgress2, renderLanes2) {
   });
   return workInProgress2;
 }
-function createFiberFromTypeAndProps(type, key, pendingProps, owner, mode, lanes) {
+function createFiberFromTypeAndProps(type, key2, pendingProps, owner, mode, lanes) {
   var fiberTag = 0;
   owner = type;
   if ("function" === typeof type) shouldConstruct(type) && (fiberTag = 1);
@@ -5512,19 +5513,19 @@ function createFiberFromTypeAndProps(type, key, pendingProps, owner, mode, lanes
   else
     a: switch (type) {
       case REACT_ACTIVITY_TYPE:
-        return type = createFiberImplClass(31, pendingProps, key, mode), type.elementType = REACT_ACTIVITY_TYPE, type.lanes = lanes, type;
+        return type = createFiberImplClass(31, pendingProps, key2, mode), type.elementType = REACT_ACTIVITY_TYPE, type.lanes = lanes, type;
       case REACT_FRAGMENT_TYPE:
-        return createFiberFromFragment(pendingProps.children, mode, lanes, key);
+        return createFiberFromFragment(pendingProps.children, mode, lanes, key2);
       case REACT_STRICT_MODE_TYPE:
         fiberTag = 8;
         mode |= 24;
         break;
       case REACT_PROFILER_TYPE:
-        return type = createFiberImplClass(12, pendingProps, key, mode | 2), type.elementType = REACT_PROFILER_TYPE, type.lanes = lanes, type;
+        return type = createFiberImplClass(12, pendingProps, key2, mode | 2), type.elementType = REACT_PROFILER_TYPE, type.lanes = lanes, type;
       case REACT_SUSPENSE_TYPE:
-        return type = createFiberImplClass(13, pendingProps, key, mode), type.elementType = REACT_SUSPENSE_TYPE, type.lanes = lanes, type;
+        return type = createFiberImplClass(13, pendingProps, key2, mode), type.elementType = REACT_SUSPENSE_TYPE, type.lanes = lanes, type;
       case REACT_SUSPENSE_LIST_TYPE:
-        return type = createFiberImplClass(19, pendingProps, key, mode), type.elementType = REACT_SUSPENSE_LIST_TYPE, type.lanes = lanes, type;
+        return type = createFiberImplClass(19, pendingProps, key2, mode), type.elementType = REACT_SUSPENSE_LIST_TYPE, type.lanes = lanes, type;
       default:
         if ("object" === typeof type && null !== type)
           switch (type.$$typeof) {
@@ -5541,7 +5542,7 @@ function createFiberFromTypeAndProps(type, key, pendingProps, owner, mode, lanes
             case REACT_MEMO_TYPE:
               fiberTag = 14;
               break a;
-            case REACT_LAZY_TYPE$1:
+            case REACT_LAZY_TYPE:
               fiberTag = 16;
               owner = null;
               break a;
@@ -5552,14 +5553,14 @@ function createFiberFromTypeAndProps(type, key, pendingProps, owner, mode, lanes
         );
         owner = null;
     }
-  key = createFiberImplClass(fiberTag, pendingProps, key, mode);
-  key.elementType = type;
-  key.type = owner;
-  key.lanes = lanes;
-  return key;
+  key2 = createFiberImplClass(fiberTag, pendingProps, key2, mode);
+  key2.elementType = type;
+  key2.type = owner;
+  key2.lanes = lanes;
+  return key2;
 }
-function createFiberFromFragment(elements, mode, lanes, key) {
-  elements = createFiberImplClass(7, elements, key, mode);
+function createFiberFromFragment(elements, mode, lanes, key2) {
+  elements = createFiberImplClass(7, elements, key2, mode);
   elements.lanes = lanes;
   return elements;
 }
@@ -6386,7 +6387,7 @@ function useThenable(thenable) {
   null === (null === workInProgressHook ? index2.memoizedState : workInProgressHook.next) && (index2 = index2.alternate, ReactSharedInternals.H = null === index2 || null === index2.memoizedState ? HooksDispatcherOnMount : HooksDispatcherOnUpdate);
   return thenable;
 }
-function use$1(usable) {
+function use(usable) {
   if (null !== usable && "object" === typeof usable) {
     if ("function" === typeof usable.then) return useThenable(usable);
     if (usable.$$typeof === REACT_CONTEXT_TYPE) return readContext(usable);
@@ -7128,7 +7129,7 @@ function entangleTransitionUpdate(root2, queue, lane) {
 }
 var ContextOnlyDispatcher = {
   readContext,
-  use: use$1,
+  use,
   useCallback: throwInvalidHookError,
   useContext: throwInvalidHookError,
   useEffect: throwInvalidHookError,
@@ -7152,7 +7153,7 @@ var ContextOnlyDispatcher = {
   useCacheRefresh: throwInvalidHookError
 }, HooksDispatcherOnMount = {
   readContext,
-  use: use$1,
+  use,
   useCallback: function(callback, deps) {
     mountWorkInProgressHook().memoizedState = [
       callback,
@@ -7328,7 +7329,7 @@ var ContextOnlyDispatcher = {
   }
 }, HooksDispatcherOnUpdate = {
   readContext,
-  use: use$1,
+  use,
   useCallback: updateCallback,
   useContext: readContext,
   useEffect: updateEffect,
@@ -7371,7 +7372,7 @@ var ContextOnlyDispatcher = {
   useCacheRefresh: updateRefresh
 }, HooksDispatcherOnRerender = {
   readContext,
-  use: use$1,
+  use,
   useCallback: updateCallback,
   useContext: readContext,
   useEffect: updateEffect,
@@ -7496,7 +7497,7 @@ function createChildReconciler(shouldTrackSideEffects) {
         lanes,
         element.key
       );
-    if (null !== current && (current.elementType === elementType || "object" === typeof elementType && null !== elementType && elementType.$$typeof === REACT_LAZY_TYPE$1 && resolveLazy(elementType) === current.type))
+    if (null !== current && (current.elementType === elementType || "object" === typeof elementType && null !== elementType && elementType.$$typeof === REACT_LAZY_TYPE && resolveLazy(elementType) === current.type))
       return current = useFiber(current, element.props), coerceRef(current, element), current.return = returnFiber, current;
     current = createFiberFromTypeAndProps(
       element.type,
@@ -7517,13 +7518,13 @@ function createChildReconciler(shouldTrackSideEffects) {
     current.return = returnFiber;
     return current;
   }
-  function updateFragment(returnFiber, current, fragment, lanes, key) {
+  function updateFragment(returnFiber, current, fragment, lanes, key2) {
     if (null === current || 7 !== current.tag)
       return current = createFiberFromFragment(
         fragment,
         returnFiber.mode,
         lanes,
-        key
+        key2
       ), current.return = returnFiber, current;
     current = useFiber(current, fragment);
     current.return = returnFiber;
@@ -7553,7 +7554,7 @@ function createChildReconciler(shouldTrackSideEffects) {
             returnFiber.mode,
             lanes
           ), newChild.return = returnFiber, newChild;
-        case REACT_LAZY_TYPE$1:
+        case REACT_LAZY_TYPE:
           var init = newChild._init;
           newChild = init(newChild._payload);
           return createChild(returnFiber, newChild, lanes);
@@ -7578,20 +7579,20 @@ function createChildReconciler(shouldTrackSideEffects) {
     return null;
   }
   function updateSlot(returnFiber, oldFiber, newChild, lanes) {
-    var key = null !== oldFiber ? oldFiber.key : null;
+    var key2 = null !== oldFiber ? oldFiber.key : null;
     if ("string" === typeof newChild && "" !== newChild || "number" === typeof newChild || "bigint" === typeof newChild)
-      return null !== key ? null : updateTextNode(returnFiber, oldFiber, "" + newChild, lanes);
+      return null !== key2 ? null : updateTextNode(returnFiber, oldFiber, "" + newChild, lanes);
     if ("object" === typeof newChild && null !== newChild) {
       switch (newChild.$$typeof) {
         case REACT_ELEMENT_TYPE:
-          return newChild.key === key ? updateElement(returnFiber, oldFiber, newChild, lanes) : null;
+          return newChild.key === key2 ? updateElement(returnFiber, oldFiber, newChild, lanes) : null;
         case REACT_PORTAL_TYPE:
-          return newChild.key === key ? updatePortal(returnFiber, oldFiber, newChild, lanes) : null;
-        case REACT_LAZY_TYPE$1:
-          return key = newChild._init, newChild = key(newChild._payload), updateSlot(returnFiber, oldFiber, newChild, lanes);
+          return newChild.key === key2 ? updatePortal(returnFiber, oldFiber, newChild, lanes) : null;
+        case REACT_LAZY_TYPE:
+          return key2 = newChild._init, newChild = key2(newChild._payload), updateSlot(returnFiber, oldFiber, newChild, lanes);
       }
       if (isArrayImpl(newChild) || getIteratorFn(newChild))
-        return null !== key ? null : updateFragment(returnFiber, oldFiber, newChild, lanes, null);
+        return null !== key2 ? null : updateFragment(returnFiber, oldFiber, newChild, lanes, null);
       if ("function" === typeof newChild.then)
         return updateSlot(
           returnFiber,
@@ -7623,7 +7624,7 @@ function createChildReconciler(shouldTrackSideEffects) {
           return existingChildren = existingChildren.get(
             null === newChild.key ? newIdx : newChild.key
           ) || null, updatePortal(returnFiber, existingChildren, newChild, lanes);
-        case REACT_LAZY_TYPE$1:
+        case REACT_LAZY_TYPE:
           var init = newChild._init;
           newChild = init(newChild._payload);
           return updateFromMap(
@@ -7744,10 +7745,10 @@ function createChildReconciler(shouldTrackSideEffects) {
       switch (newChild.$$typeof) {
         case REACT_ELEMENT_TYPE:
           a: {
-            for (var key = newChild.key; null !== currentFirstChild; ) {
-              if (currentFirstChild.key === key) {
-                key = newChild.type;
-                if (key === REACT_FRAGMENT_TYPE) {
+            for (var key2 = newChild.key; null !== currentFirstChild; ) {
+              if (currentFirstChild.key === key2) {
+                key2 = newChild.type;
+                if (key2 === REACT_FRAGMENT_TYPE) {
                   if (7 === currentFirstChild.tag) {
                     deleteRemainingChildren(
                       returnFiber,
@@ -7761,7 +7762,7 @@ function createChildReconciler(shouldTrackSideEffects) {
                     returnFiber = lanes;
                     break a;
                   }
-                } else if (currentFirstChild.elementType === key || "object" === typeof key && null !== key && key.$$typeof === REACT_LAZY_TYPE$1 && resolveLazy(key) === currentFirstChild.type) {
+                } else if (currentFirstChild.elementType === key2 || "object" === typeof key2 && null !== key2 && key2.$$typeof === REACT_LAZY_TYPE && resolveLazy(key2) === currentFirstChild.type) {
                   deleteRemainingChildren(
                     returnFiber,
                     currentFirstChild.sibling
@@ -7794,8 +7795,8 @@ function createChildReconciler(shouldTrackSideEffects) {
           return placeSingleChild(returnFiber);
         case REACT_PORTAL_TYPE:
           a: {
-            for (key = newChild.key; null !== currentFirstChild; ) {
-              if (currentFirstChild.key === key)
+            for (key2 = newChild.key; null !== currentFirstChild; ) {
+              if (currentFirstChild.key === key2)
                 if (4 === currentFirstChild.tag && currentFirstChild.stateNode.containerInfo === newChild.containerInfo && currentFirstChild.stateNode.implementation === newChild.implementation) {
                   deleteRemainingChildren(
                     returnFiber,
@@ -7817,8 +7818,8 @@ function createChildReconciler(shouldTrackSideEffects) {
             returnFiber = lanes;
           }
           return placeSingleChild(returnFiber);
-        case REACT_LAZY_TYPE$1:
-          return key = newChild._init, newChild = key(newChild._payload), reconcileChildFibersImpl(
+        case REACT_LAZY_TYPE:
+          return key2 = newChild._init, newChild = key2(newChild._payload), reconcileChildFibersImpl(
             returnFiber,
             currentFirstChild,
             newChild,
@@ -7833,9 +7834,9 @@ function createChildReconciler(shouldTrackSideEffects) {
           lanes
         );
       if (getIteratorFn(newChild)) {
-        key = getIteratorFn(newChild);
-        if ("function" !== typeof key) throw Error(formatProdErrorMessage(150));
-        newChild = key.call(newChild);
+        key2 = getIteratorFn(newChild);
+        if ("function" !== typeof key2) throw Error(formatProdErrorMessage(150));
+        newChild = key2.call(newChild);
         return reconcileChildrenIterator(
           returnFiber,
           currentFirstChild,
@@ -8146,8 +8147,8 @@ function updateForwardRef(current, workInProgress2, Component2, nextProps, rende
   var ref = workInProgress2.ref;
   if ("ref" in nextProps) {
     var propsWithoutRef = {};
-    for (var key in nextProps)
-      "ref" !== key && (propsWithoutRef[key] = nextProps[key]);
+    for (var key2 in nextProps)
+      "ref" !== key2 && (propsWithoutRef[key2] = nextProps[key2]);
   } else propsWithoutRef = nextProps;
   prepareToReadContext(workInProgress2);
   nextProps = renderWithHooks(
@@ -8158,10 +8159,10 @@ function updateForwardRef(current, workInProgress2, Component2, nextProps, rende
     ref,
     renderLanes2
   );
-  key = checkDidRenderIdHook();
+  key2 = checkDidRenderIdHook();
   if (null !== current && !didReceiveUpdate)
     return bailoutHooks(current, workInProgress2, renderLanes2), bailoutOnAlreadyFinishedWork(current, workInProgress2, renderLanes2);
-  isHydrating && key && pushMaterializedTreeId(workInProgress2);
+  isHydrating && key2 && pushMaterializedTreeId(workInProgress2);
   workInProgress2.flags |= 1;
   reconcileChildren(current, workInProgress2, nextProps, renderLanes2);
   return workInProgress2.child;
@@ -12669,8 +12670,8 @@ function checkForUnmatchedText(serverText, clientText) {
 }
 function noop$1() {
 }
-function setProp(domElement, tag, key, value, props, prevValue) {
-  switch (key) {
+function setProp(domElement, tag, key2, value, props, prevValue) {
+  switch (key2) {
     case "children":
       "string" === typeof value ? "body" === tag || "textarea" === tag && "" === value || setTextContent(domElement, value) : ("number" === typeof value || "bigint" === typeof value) && "body" !== tag && setTextContent(domElement, "" + value);
       break;
@@ -12685,7 +12686,7 @@ function setProp(domElement, tag, key, value, props, prevValue) {
     case "viewBox":
     case "width":
     case "height":
-      setValueForKnownAttribute(domElement, key, value);
+      setValueForKnownAttribute(domElement, key2, value);
       break;
     case "style":
       setValueForStyles(domElement, value, prevValue);
@@ -12697,27 +12698,27 @@ function setProp(domElement, tag, key, value, props, prevValue) {
       }
     case "src":
     case "href":
-      if ("" === value && ("a" !== tag || "href" !== key)) {
-        domElement.removeAttribute(key);
+      if ("" === value && ("a" !== tag || "href" !== key2)) {
+        domElement.removeAttribute(key2);
         break;
       }
       if (null == value || "function" === typeof value || "symbol" === typeof value || "boolean" === typeof value) {
-        domElement.removeAttribute(key);
+        domElement.removeAttribute(key2);
         break;
       }
       value = sanitizeURL("" + value);
-      domElement.setAttribute(key, value);
+      domElement.setAttribute(key2, value);
       break;
     case "action":
     case "formAction":
       if ("function" === typeof value) {
         domElement.setAttribute(
-          key,
+          key2,
           "javascript:throw new Error('A React form was unexpectedly submitted. If you called form.submit() manually, consider using form.requestSubmit() instead. If you\\'re trying to use event.stopPropagation() in a submit event handler, consider also calling event.preventDefault().')"
         );
         break;
       } else
-        "function" === typeof prevValue && ("formAction" === key ? ("input" !== tag && setProp(domElement, tag, "name", props.name, props, null), setProp(
+        "function" === typeof prevValue && ("formAction" === key2 ? ("input" !== tag && setProp(domElement, tag, "name", props.name, props, null), setProp(
           domElement,
           tag,
           "formEncType",
@@ -12740,11 +12741,11 @@ function setProp(domElement, tag, key, value, props, prevValue) {
           null
         )) : (setProp(domElement, tag, "encType", props.encType, props, null), setProp(domElement, tag, "method", props.method, props, null), setProp(domElement, tag, "target", props.target, props, null)));
       if (null == value || "symbol" === typeof value || "boolean" === typeof value) {
-        domElement.removeAttribute(key);
+        domElement.removeAttribute(key2);
         break;
       }
       value = sanitizeURL("" + value);
-      domElement.setAttribute(key, value);
+      domElement.setAttribute(key2, value);
       break;
     case "onClick":
       null != value && (domElement.onclick = noop$1);
@@ -12759,10 +12760,10 @@ function setProp(domElement, tag, key, value, props, prevValue) {
       if (null != value) {
         if ("object" !== typeof value || !("__html" in value))
           throw Error(formatProdErrorMessage(61));
-        key = value.__html;
-        if (null != key) {
+        key2 = value.__html;
+        if (null != key2) {
           if (null != props.children) throw Error(formatProdErrorMessage(60));
-          domElement.innerHTML = key;
+          domElement.innerHTML = key2;
         }
       }
       break;
@@ -12786,11 +12787,11 @@ function setProp(domElement, tag, key, value, props, prevValue) {
         domElement.removeAttribute("xlink:href");
         break;
       }
-      key = sanitizeURL("" + value);
+      key2 = sanitizeURL("" + value);
       domElement.setAttributeNS(
         "http://www.w3.org/1999/xlink",
         "xlink:href",
-        key
+        key2
       );
       break;
     case "contentEditable":
@@ -12801,7 +12802,7 @@ function setProp(domElement, tag, key, value, props, prevValue) {
     case "externalResourcesRequired":
     case "focusable":
     case "preserveAlpha":
-      null != value && "function" !== typeof value && "symbol" !== typeof value ? domElement.setAttribute(key, "" + value) : domElement.removeAttribute(key);
+      null != value && "function" !== typeof value && "symbol" !== typeof value ? domElement.setAttribute(key2, "" + value) : domElement.removeAttribute(key2);
       break;
     case "inert":
     case "allowFullScreen":
@@ -12826,21 +12827,21 @@ function setProp(domElement, tag, key, value, props, prevValue) {
     case "scoped":
     case "seamless":
     case "itemScope":
-      value && "function" !== typeof value && "symbol" !== typeof value ? domElement.setAttribute(key, "") : domElement.removeAttribute(key);
+      value && "function" !== typeof value && "symbol" !== typeof value ? domElement.setAttribute(key2, "") : domElement.removeAttribute(key2);
       break;
     case "capture":
     case "download":
-      true === value ? domElement.setAttribute(key, "") : false !== value && null != value && "function" !== typeof value && "symbol" !== typeof value ? domElement.setAttribute(key, value) : domElement.removeAttribute(key);
+      true === value ? domElement.setAttribute(key2, "") : false !== value && null != value && "function" !== typeof value && "symbol" !== typeof value ? domElement.setAttribute(key2, value) : domElement.removeAttribute(key2);
       break;
     case "cols":
     case "rows":
     case "size":
     case "span":
-      null != value && "function" !== typeof value && "symbol" !== typeof value && !isNaN(value) && 1 <= value ? domElement.setAttribute(key, value) : domElement.removeAttribute(key);
+      null != value && "function" !== typeof value && "symbol" !== typeof value && !isNaN(value) && 1 <= value ? domElement.setAttribute(key2, value) : domElement.removeAttribute(key2);
       break;
     case "rowSpan":
     case "start":
-      null == value || "function" === typeof value || "symbol" === typeof value || isNaN(value) ? domElement.removeAttribute(key) : domElement.setAttribute(key, value);
+      null == value || "function" === typeof value || "symbol" === typeof value || isNaN(value) ? domElement.removeAttribute(key2) : domElement.setAttribute(key2, value);
       break;
     case "popover":
       listenToNonDelegatedEvent("beforetoggle", domElement);
@@ -12926,12 +12927,12 @@ function setProp(domElement, tag, key, value, props, prevValue) {
     case "textContent":
       break;
     default:
-      if (!(2 < key.length) || "o" !== key[0] && "O" !== key[0] || "n" !== key[1] && "N" !== key[1])
-        key = aliases.get(key) || key, setValueForAttribute(domElement, key, value);
+      if (!(2 < key2.length) || "o" !== key2[0] && "O" !== key2[0] || "n" !== key2[1] && "N" !== key2[1])
+        key2 = aliases.get(key2) || key2, setValueForAttribute(domElement, key2, value);
   }
 }
-function setPropOnCustomElement(domElement, tag, key, value, props, prevValue) {
-  switch (key) {
+function setPropOnCustomElement(domElement, tag, key2, value, props, prevValue) {
+  switch (key2) {
     case "style":
       setValueForStyles(domElement, value, prevValue);
       break;
@@ -12939,10 +12940,10 @@ function setPropOnCustomElement(domElement, tag, key, value, props, prevValue) {
       if (null != value) {
         if ("object" !== typeof value || !("__html" in value))
           throw Error(formatProdErrorMessage(61));
-        key = value.__html;
-        if (null != key) {
+        key2 = value.__html;
+        if (null != key2) {
           if (null != props.children) throw Error(formatProdErrorMessage(60));
-          domElement.innerHTML = key;
+          domElement.innerHTML = key2;
         }
       }
       break;
@@ -12967,14 +12968,14 @@ function setPropOnCustomElement(domElement, tag, key, value, props, prevValue) {
     case "textContent":
       break;
     default:
-      if (!registrationNameDependencies.hasOwnProperty(key))
+      if (!registrationNameDependencies.hasOwnProperty(key2))
         a: {
-          if ("o" === key[0] && "n" === key[1] && (props = key.endsWith("Capture"), tag = key.slice(2, props ? key.length - 7 : void 0), prevValue = domElement[internalPropsKey] || null, prevValue = null != prevValue ? prevValue[key] : null, "function" === typeof prevValue && domElement.removeEventListener(tag, prevValue, props), "function" === typeof value)) {
-            "function" !== typeof prevValue && null !== prevValue && (key in domElement ? domElement[key] = null : domElement.hasAttribute(key) && domElement.removeAttribute(key));
+          if ("o" === key2[0] && "n" === key2[1] && (props = key2.endsWith("Capture"), tag = key2.slice(2, props ? key2.length - 7 : void 0), prevValue = domElement[internalPropsKey] || null, prevValue = null != prevValue ? prevValue[key2] : null, "function" === typeof prevValue && domElement.removeEventListener(tag, prevValue, props), "function" === typeof value)) {
+            "function" !== typeof prevValue && null !== prevValue && (key2 in domElement ? domElement[key2] = null : domElement.hasAttribute(key2) && domElement.removeAttribute(key2));
             domElement.addEventListener(tag, value, props);
             break a;
           }
-          key in domElement ? domElement[key] = value : true === value ? domElement.setAttribute(key, "") : setValueForAttribute(domElement, key, value);
+          key2 in domElement ? domElement[key2] = value : true === value ? domElement.setAttribute(key2, "") : setValueForAttribute(domElement, key2, value);
         }
   }
 }
@@ -13708,29 +13709,29 @@ function preload(href, as, options) {
     ) + '"]', "string" === typeof options.imageSizes && (preloadSelector += '[imagesizes="' + escapeSelectorAttributeValueInsideDoubleQuotes(
       options.imageSizes
     ) + '"]')) : preloadSelector += '[href="' + escapeSelectorAttributeValueInsideDoubleQuotes(href) + '"]' : preloadSelector += '[href="' + escapeSelectorAttributeValueInsideDoubleQuotes(href) + '"]';
-    var key = preloadSelector;
+    var key2 = preloadSelector;
     switch (as) {
       case "style":
-        key = getStyleKey(href);
+        key2 = getStyleKey(href);
         break;
       case "script":
-        key = getScriptKey(href);
+        key2 = getScriptKey(href);
     }
-    preloadPropsMap.has(key) || (href = assign(
+    preloadPropsMap.has(key2) || (href = assign(
       {
         rel: "preload",
         href: "image" === as && options && options.imageSrcSet ? void 0 : href,
         as
       },
       options
-    ), preloadPropsMap.set(key, href), null !== ownerDocument.querySelector(preloadSelector) || "style" === as && ownerDocument.querySelector(getStylesheetSelectorFromKey(key)) || "script" === as && ownerDocument.querySelector(getScriptSelectorFromKey(key)) || (as = ownerDocument.createElement("link"), setInitialProperties(as, "link", href), markNodeAsHoistable(as), ownerDocument.head.appendChild(as)));
+    ), preloadPropsMap.set(key2, href), null !== ownerDocument.querySelector(preloadSelector) || "style" === as && ownerDocument.querySelector(getStylesheetSelectorFromKey(key2)) || "script" === as && ownerDocument.querySelector(getScriptSelectorFromKey(key2)) || (as = ownerDocument.createElement("link"), setInitialProperties(as, "link", href), markNodeAsHoistable(as), ownerDocument.head.appendChild(as)));
   }
 }
 function preloadModule(href, options) {
   previousDispatcher.m(href, options);
   var ownerDocument = globalDocument;
   if (ownerDocument && href) {
-    var as = options && "string" === typeof options.as ? options.as : "script", preloadSelector = 'link[rel="modulepreload"][as="' + escapeSelectorAttributeValueInsideDoubleQuotes(as) + '"][href="' + escapeSelectorAttributeValueInsideDoubleQuotes(href) + '"]', key = preloadSelector;
+    var as = options && "string" === typeof options.as ? options.as : "script", preloadSelector = 'link[rel="modulepreload"][as="' + escapeSelectorAttributeValueInsideDoubleQuotes(as) + '"][href="' + escapeSelectorAttributeValueInsideDoubleQuotes(href) + '"]', key2 = preloadSelector;
     switch (as) {
       case "audioworklet":
       case "paintworklet":
@@ -13738,9 +13739,9 @@ function preloadModule(href, options) {
       case "sharedworker":
       case "worker":
       case "script":
-        key = getScriptKey(href);
+        key2 = getScriptKey(href);
     }
-    if (!preloadPropsMap.has(key) && (href = assign({ rel: "modulepreload", href }, options), preloadPropsMap.set(key, href), null === ownerDocument.querySelector(preloadSelector))) {
+    if (!preloadPropsMap.has(key2) && (href = assign({ rel: "modulepreload", href }, options), preloadPropsMap.set(key2, href), null === ownerDocument.querySelector(preloadSelector))) {
       switch (as) {
         case "audioworklet":
         case "paintworklet":
@@ -13748,7 +13749,7 @@ function preloadModule(href, options) {
         case "sharedworker":
         case "worker":
         case "script":
-          if (ownerDocument.querySelector(getScriptSelectorFromKey(key)))
+          if (ownerDocument.querySelector(getScriptSelectorFromKey(key2)))
             return;
       }
       as = ownerDocument.createElement("link");
@@ -13762,13 +13763,13 @@ function preinitStyle(href, precedence, options) {
   previousDispatcher.S(href, precedence, options);
   var ownerDocument = globalDocument;
   if (ownerDocument && href) {
-    var styles = getResourcesFromRoot(ownerDocument).hoistableStyles, key = getStyleKey(href);
+    var styles = getResourcesFromRoot(ownerDocument).hoistableStyles, key2 = getStyleKey(href);
     precedence = precedence || "default";
-    var resource = styles.get(key);
+    var resource = styles.get(key2);
     if (!resource) {
       var state = { loading: 0, preload: null };
       if (resource = ownerDocument.querySelector(
-        getStylesheetSelectorFromKey(key)
+        getStylesheetSelectorFromKey(key2)
       ))
         state.loading = 5;
       else {
@@ -13776,7 +13777,7 @@ function preinitStyle(href, precedence, options) {
           { rel: "stylesheet", href, "data-precedence": precedence },
           options
         );
-        (options = preloadPropsMap.get(key)) && adoptPreloadPropsForStylesheet(href, options);
+        (options = preloadPropsMap.get(key2)) && adoptPreloadPropsForStylesheet(href, options);
         var link = resource = ownerDocument.createElement("link");
         markNodeAsHoistable(link);
         setInitialProperties(link, "link", href);
@@ -13799,7 +13800,7 @@ function preinitStyle(href, precedence, options) {
         count: 1,
         state
       };
-      styles.set(key, resource);
+      styles.set(key2, resource);
     }
   }
 }
@@ -13807,26 +13808,26 @@ function preinitScript(src, options) {
   previousDispatcher.X(src, options);
   var ownerDocument = globalDocument;
   if (ownerDocument && src) {
-    var scripts = getResourcesFromRoot(ownerDocument).hoistableScripts, key = getScriptKey(src), resource = scripts.get(key);
-    resource || (resource = ownerDocument.querySelector(getScriptSelectorFromKey(key)), resource || (src = assign({ src, async: true }, options), (options = preloadPropsMap.get(key)) && adoptPreloadPropsForScript(src, options), resource = ownerDocument.createElement("script"), markNodeAsHoistable(resource), setInitialProperties(resource, "link", src), ownerDocument.head.appendChild(resource)), resource = {
+    var scripts = getResourcesFromRoot(ownerDocument).hoistableScripts, key2 = getScriptKey(src), resource = scripts.get(key2);
+    resource || (resource = ownerDocument.querySelector(getScriptSelectorFromKey(key2)), resource || (src = assign({ src, async: true }, options), (options = preloadPropsMap.get(key2)) && adoptPreloadPropsForScript(src, options), resource = ownerDocument.createElement("script"), markNodeAsHoistable(resource), setInitialProperties(resource, "link", src), ownerDocument.head.appendChild(resource)), resource = {
       type: "script",
       instance: resource,
       count: 1,
       state: null
-    }, scripts.set(key, resource));
+    }, scripts.set(key2, resource));
   }
 }
 function preinitModuleScript(src, options) {
   previousDispatcher.M(src, options);
   var ownerDocument = globalDocument;
   if (ownerDocument && src) {
-    var scripts = getResourcesFromRoot(ownerDocument).hoistableScripts, key = getScriptKey(src), resource = scripts.get(key);
-    resource || (resource = ownerDocument.querySelector(getScriptSelectorFromKey(key)), resource || (src = assign({ src, async: true, type: "module" }, options), (options = preloadPropsMap.get(key)) && adoptPreloadPropsForScript(src, options), resource = ownerDocument.createElement("script"), markNodeAsHoistable(resource), setInitialProperties(resource, "link", src), ownerDocument.head.appendChild(resource)), resource = {
+    var scripts = getResourcesFromRoot(ownerDocument).hoistableScripts, key2 = getScriptKey(src), resource = scripts.get(key2);
+    resource || (resource = ownerDocument.querySelector(getScriptSelectorFromKey(key2)), resource || (src = assign({ src, async: true, type: "module" }, options), (options = preloadPropsMap.get(key2)) && adoptPreloadPropsForScript(src, options), resource = ownerDocument.createElement("script"), markNodeAsHoistable(resource), setInitialProperties(resource, "link", src), ownerDocument.head.appendChild(resource)), resource = {
       type: "script",
       instance: resource,
       count: 1,
       state: null
-    }, scripts.set(key, resource));
+    }, scripts.set(key2, resource));
   }
 }
 function getResource(type, currentProps, pendingProps, currentResource) {
@@ -13896,8 +13897,8 @@ function getResource(type, currentProps, pendingProps, currentResource) {
 function getStyleKey(href) {
   return 'href="' + escapeSelectorAttributeValueInsideDoubleQuotes(href) + '"';
 }
-function getStylesheetSelectorFromKey(key) {
-  return 'link[rel="stylesheet"][' + key + "]";
+function getStylesheetSelectorFromKey(key2) {
+  return 'link[rel="stylesheet"][' + key2 + "]";
 }
 function stylesheetPropsFromRawProps(rawProps) {
   return assign({}, rawProps, {
@@ -13905,18 +13906,18 @@ function stylesheetPropsFromRawProps(rawProps) {
     precedence: null
   });
 }
-function preloadStylesheet(ownerDocument, key, preloadProps, state) {
-  ownerDocument.querySelector('link[rel="preload"][as="style"][' + key + "]") ? state.loading = 1 : (key = ownerDocument.createElement("link"), state.preload = key, key.addEventListener("load", function() {
+function preloadStylesheet(ownerDocument, key2, preloadProps, state) {
+  ownerDocument.querySelector('link[rel="preload"][as="style"][' + key2 + "]") ? state.loading = 1 : (key2 = ownerDocument.createElement("link"), state.preload = key2, key2.addEventListener("load", function() {
     return state.loading |= 1;
-  }), key.addEventListener("error", function() {
+  }), key2.addEventListener("error", function() {
     return state.loading |= 2;
-  }), setInitialProperties(key, "link", preloadProps), markNodeAsHoistable(key), ownerDocument.head.appendChild(key));
+  }), setInitialProperties(key2, "link", preloadProps), markNodeAsHoistable(key2), ownerDocument.head.appendChild(key2));
 }
 function getScriptKey(src) {
   return '[src="' + escapeSelectorAttributeValueInsideDoubleQuotes(src) + '"]';
 }
-function getScriptSelectorFromKey(key) {
-  return "script[async]" + key;
+function getScriptSelectorFromKey(key2) {
+  return "script[async]" + key2;
 }
 function acquireResource(hoistableRoot, resource, props) {
   resource.count++;
@@ -14070,8 +14071,8 @@ function suspendResource(hoistableRoot, resource, props) {
   var state = suspendedState;
   if ("stylesheet" === resource.type && ("string" !== typeof props.media || false !== matchMedia(props.media).matches) && 0 === (resource.state.loading & 4)) {
     if (null === resource.instance) {
-      var key = getStyleKey(props.href), instance = hoistableRoot.querySelector(
-        getStylesheetSelectorFromKey(key)
+      var key2 = getStyleKey(props.href), instance = hoistableRoot.querySelector(
+        getStylesheetSelectorFromKey(key2)
       );
       if (instance) {
         hoistableRoot = instance._p;
@@ -14083,7 +14084,7 @@ function suspendResource(hoistableRoot, resource, props) {
       }
       instance = hoistableRoot.ownerDocument || hoistableRoot;
       props = stylesheetPropsFromRawProps(props);
-      (key = preloadPropsMap.get(key)) && adoptPreloadPropsForStylesheet(props, key);
+      (key2 = preloadPropsMap.get(key2)) && adoptPreloadPropsForStylesheet(props, key2);
       instance = instance.createElement("link");
       markNodeAsHoistable(instance);
       var linkInstance = instance;
@@ -14604,8 +14605,8 @@ function attemptReplayContinuousQueuedEvent(queuedEvent) {
   }
   return true;
 }
-function attemptReplayContinuousQueuedEventInMap(queuedEvent, key, map) {
-  attemptReplayContinuousQueuedEvent(queuedEvent) && map.delete(key);
+function attemptReplayContinuousQueuedEventInMap(queuedEvent, key2, map) {
+  attemptReplayContinuousQueuedEvent(queuedEvent) && map.delete(key2);
 }
 function replayUnblockedEvents() {
   hasScheduledReplayAttempt = false;
@@ -14826,6 +14827,70 @@ function checkDCE() {
 }
 var clientExports = client.exports;
 const ReactDOM = /* @__PURE__ */ getDefaultExportFromCjs(clientExports);
+const scriptRel = "modulepreload";
+const assetsURL = function(dep) {
+  return "/" + dep;
+};
+const seen = {};
+const __vitePreload = function preload2(baseModule, deps, importerUrl) {
+  let promise = Promise.resolve();
+  if (deps && deps.length > 0) {
+    document.getElementsByTagName("link");
+    const cspNonceMeta = document.querySelector(
+      "meta[property=csp-nonce]"
+    );
+    const cspNonce = (cspNonceMeta == null ? void 0 : cspNonceMeta.nonce) || (cspNonceMeta == null ? void 0 : cspNonceMeta.getAttribute("nonce"));
+    promise = Promise.allSettled(
+      deps.map((dep) => {
+        dep = assetsURL(dep);
+        if (dep in seen) return;
+        seen[dep] = true;
+        const isCss = dep.endsWith(".css");
+        const cssSelector = isCss ? '[rel="stylesheet"]' : "";
+        if (document.querySelector(`link[href="${dep}"]${cssSelector}`)) {
+          return;
+        }
+        const link = document.createElement("link");
+        link.rel = isCss ? "stylesheet" : scriptRel;
+        if (!isCss) {
+          link.as = "script";
+        }
+        link.crossOrigin = "";
+        link.href = dep;
+        if (cspNonce) {
+          link.setAttribute("nonce", cspNonce);
+        }
+        document.head.appendChild(link);
+        if (isCss) {
+          return new Promise((res, rej) => {
+            link.addEventListener("load", res);
+            link.addEventListener(
+              "error",
+              () => rej(new Error(`Unable to preload CSS for ${dep}`))
+            );
+          });
+        }
+      })
+    );
+  }
+  function handlePreloadError(err) {
+    const e = new Event("vite:preloadError", {
+      cancelable: true
+    });
+    e.payload = err;
+    window.dispatchEvent(e);
+    if (!e.defaultPrevented) {
+      throw err;
+    }
+  }
+  return promise.then((res) => {
+    for (const item of res || []) {
+      if (item.status !== "rejected") continue;
+      handlePreloadError(item.reason);
+    }
+    return baseModule().catch(handlePreloadError);
+  });
+};
 var ReplicaRejectCode;
 (function(ReplicaRejectCode2) {
   ReplicaRejectCode2[ReplicaRejectCode2["SysFatal"] = 1] = "SysFatal";
@@ -17858,8 +17923,8 @@ class RecordClass extends ConstructType {
   tryAsTuple() {
     const res = [];
     for (let i = 0; i < this._fields.length; i++) {
-      const [key, type] = this._fields[i];
-      if (key !== `_${i}_`) {
+      const [key2, type] = this._fields[i];
+      if (key2 !== `_${i}_`) {
         return null;
       }
       res.push(type);
@@ -17883,7 +17948,7 @@ field ${k2} -> ${e.message}`);
     throw new Error(`Invalid ${this.display()} argument: ${toReadableString(x2)}`);
   }
   encodeValue(x2) {
-    const values = this._fields.map(([key]) => x2[key]);
+    const values = this._fields.map(([key2]) => x2[key2]);
     const bufs = zipWith(this._fields, values, ([, c2], d2) => c2.encodeValue(d2));
     return concat$2(...bufs);
   }
@@ -17891,7 +17956,7 @@ field ${k2} -> ${e.message}`);
     this._fields.forEach(([_2, value]) => value.buildTypeTable(T2));
     const opCode = slebEncode(IDLTypeIds.Record);
     const len = lebEncode(this._fields.length);
-    const fields = this._fields.map(([key, value]) => concat$2(lebEncode(idlLabelToId(key)), value.encodeType(T2)));
+    const fields = this._fields.map(([key2, value]) => concat$2(lebEncode(idlLabelToId(key2)), value.encodeType(T2)));
     T2.add(this, concat$2(opCode, len, concat$2(...fields)));
   }
   decodeValue(b2, t) {
@@ -17945,15 +18010,15 @@ field ${k2} -> ${e.message}`);
     return fields;
   }
   get name() {
-    const fields = this._fields.map(([key, value]) => key + ":" + value.name);
+    const fields = this._fields.map(([key2, value]) => key2 + ":" + value.name);
     return `record {${fields.join("; ")}}`;
   }
   display() {
-    const fields = this._fields.map(([key, value]) => key + ":" + value.display());
+    const fields = this._fields.map(([key2, value]) => key2 + ":" + value.display());
     return `record {${fields.join("; ")}}`;
   }
   valueToString(x2) {
-    const values = this._fields.map(([key]) => x2[key]);
+    const values = this._fields.map(([key2]) => x2[key2]);
     const fields = zipWith(this._fields, values, ([k2, c2], d2) => k2 + "=" + c2.valueToString(d2));
     return `record {${fields.join("; ")}}`;
   }
@@ -18062,7 +18127,7 @@ variant ${k2} -> ${e.message}`);
     });
     const opCode = slebEncode(IDLTypeIds.Variant);
     const len = lebEncode(this._fields.length);
-    const fields = this._fields.map(([key, value]) => concat$2(lebEncode(idlLabelToId(key)), value.encodeType(typeTable)));
+    const fields = this._fields.map(([key2, value]) => concat$2(lebEncode(idlLabelToId(key2)), value.encodeType(typeTable)));
     typeTable.add(this, concat$2(opCode, len, ...fields));
   }
   decodeValue(b2, t) {
@@ -18075,20 +18140,20 @@ variant ${k2} -> ${e.message}`);
       throw Error("Invalid variant index: " + idx);
     }
     const [wireHash, wireType] = variant._fields[idx];
-    for (const [key, expectType] of this._fields) {
-      if (idlLabelToId(wireHash) === idlLabelToId(key)) {
+    for (const [key2, expectType] of this._fields) {
+      if (idlLabelToId(wireHash) === idlLabelToId(key2)) {
         const value = expectType.decodeValue(b2, wireType);
-        return { [key]: value };
+        return { [key2]: value };
       }
     }
     throw new Error("Cannot find field hash " + wireHash);
   }
   get name() {
-    const fields = this._fields.map(([key, type]) => key + ":" + type.name);
+    const fields = this._fields.map(([key2, type]) => key2 + ":" + type.name);
     return `variant {${fields.join("; ")}}`;
   }
   display() {
-    const fields = this._fields.map(([key, type]) => key + (type.name === "null" ? "" : `:${type.display()}`));
+    const fields = this._fields.map(([key2, type]) => key2 + (type.name === "null" ? "" : `:${type.display()}`));
     return `variant {${fields.join("; ")}}`;
   }
   valueToString(x2) {
@@ -18361,7 +18426,7 @@ class ServiceClass extends ConstructType {
     return decodePrincipalId(b2);
   }
   get name() {
-    const fields = this._fields.map(([key, value]) => key + ":" + value.name);
+    const fields = this._fields.map(([key2, value]) => key2 + ":" + value.name);
     return `service {${fields.join("; ")}}`;
   }
   valueToString(x2) {
@@ -18689,9 +18754,9 @@ class Relations {
   }
   copy() {
     const copy = /* @__PURE__ */ new Map();
-    for (const [key, value] of this.rels.entries()) {
+    for (const [key2, value] of this.rels.entries()) {
       const valCopy = new Map(value);
-      copy.set(key, valCopy);
+      copy.set(key2, valCopy);
     }
     return new Relations(copy);
   }
@@ -18958,8 +19023,8 @@ function requestIdOf(request2) {
   return hashOfMap(request2);
 }
 function hashOfMap(map) {
-  const hashed = Object.entries(map).filter(([, value]) => value !== void 0).map(([key, value]) => {
-    const hashedKey = hashString(key);
+  const hashed = Object.entries(map).filter(([, value]) => value !== void 0).map(([key2, value]) => {
+    const hashedKey = hashString(key2);
     const hashedValue = hashValue(value);
     return [hashedKey, hashedValue];
   });
@@ -19460,8 +19525,8 @@ function makeNonceTransform(nonceFn = makeNonce) {
 }
 function httpHeadersTransform(headers) {
   const headerFields = [];
-  headers.forEach((value, key) => {
-    headerFields.push([key, value]);
+  headers.forEach((value, key2) => {
+    headerFields.push([key2, value]);
   });
   return headerFields;
 }
@@ -19902,13 +19967,13 @@ function getMinHashLength$1(fieldOrder) {
   const length = getFieldBytesLength$1(fieldOrder);
   return length + Math.ceil(length / 2);
 }
-function mapHashToField$1(key, fieldOrder, isLE2 = false) {
-  const len = key.length;
+function mapHashToField$1(key2, fieldOrder, isLE2 = false) {
+  const len = key2.length;
   const fieldLen = getFieldBytesLength$1(fieldOrder);
   const minLen = getMinHashLength$1(fieldOrder);
   if (len < 16 || len < minLen || len > 1024)
     throw new Error("expected " + minLen + "-1024 bytes of input, got " + len);
-  const num = isLE2 ? bytesToNumberLE$1(key) : bytesToNumberBE$1(key);
+  const num = isLE2 ? bytesToNumberLE$1(key2) : bytesToNumberBE$1(key2);
   const reduced = mod$1(num, fieldOrder - _1n$d) + _1n$d;
   return isLE2 ? numberToBytesLE$1(reduced, fieldLen) : numberToBytesBE$1(reduced, fieldLen);
 }
@@ -20253,7 +20318,7 @@ function expand_message_xof(msg, DST, lenInBytes, k2, H2) {
     throw new Error("expand_message_xof: invalid lenInBytes");
   return H2.create({ dkLen: lenInBytes }).update(msg).update(i2osp(lenInBytes, 2)).update(DST).update(i2osp(DST.length, 1)).digest();
 }
-function hash_to_field(msg, count2, options) {
+function hash_to_field(msg, count, options) {
   _validateObject(options, {
     p: "bigint",
     m: "number",
@@ -20264,10 +20329,10 @@ function hash_to_field(msg, count2, options) {
   if (!isHash(options.hash))
     throw new Error("expected valid hash");
   abytes$1(msg);
-  anum(count2);
+  anum(count);
   const log2p = p2.toString(2).length;
   const L2 = Math.ceil((log2p + k2) / 8);
-  const len_in_bytes = count2 * m2 * L2;
+  const len_in_bytes = count * m2 * L2;
   let prb;
   if (expand === "xmd") {
     prb = expand_message_xmd(msg, DST, len_in_bytes, hash2);
@@ -20278,8 +20343,8 @@ function hash_to_field(msg, count2, options) {
   } else {
     throw new Error('expand must be "xmd" or "xof"');
   }
-  const u2 = new Array(count2);
-  for (let i = 0; i < count2; i++) {
+  const u2 = new Array(count);
+  for (let i = 0; i < count; i++) {
     const e = new Array(m2);
     for (let j2 = 0; j2 < m2; j2++) {
       const elm_offset = L2 * (j2 + i * m2);
@@ -20354,7 +20419,7 @@ class HMAC extends Hash {
     this.finished = false;
     this.destroyed = false;
     ahash(hash2);
-    const key = toBytes$1(_key);
+    const key2 = toBytes$1(_key);
     this.iHash = hash2.create();
     if (typeof this.iHash.update !== "function")
       throw new Error("Expected instance of class which extends utils.Hash");
@@ -20362,7 +20427,7 @@ class HMAC extends Hash {
     this.outputLen = this.iHash.outputLen;
     const blockLen = this.blockLen;
     const pad2 = new Uint8Array(blockLen);
-    pad2.set(key.length > blockLen ? hash2.create().update(key).digest() : key);
+    pad2.set(key2.length > blockLen ? hash2.create().update(key2).digest() : key2);
     for (let i = 0; i < pad2.length; i++)
       pad2[i] ^= 54;
     this.iHash.update(pad2);
@@ -20412,8 +20477,8 @@ class HMAC extends Hash {
     this.iHash.destroy();
   }
 }
-const hmac = (hash2, key, message) => new HMAC(hash2, key).update(message).digest();
-hmac.create = (hash2, key) => new HMAC(hash2, key);
+const hmac = (hash2, key2, message) => new HMAC(hash2, key2).update(message).digest();
+hmac.create = (hash2, key2) => new HMAC(hash2, key2);
 /*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */
 const divNearest$1 = (num, den) => (num + (num >= 0 ? den : -den) / _2n$8) / den;
 function _splitEndoScalar(k2, basis, n) {
@@ -20435,17 +20500,17 @@ function _splitEndoScalar(k2, basis, n) {
   return { k1neg, k1, k2neg, k2: k22 };
 }
 const _0n$a = BigInt(0), _1n$b = BigInt(1), _2n$8 = BigInt(2), _3n$5 = BigInt(3), _4n$3 = BigInt(4);
-function _normFnElement(Fn, key) {
+function _normFnElement(Fn, key2) {
   const { BYTES: expected } = Fn;
   let num;
-  if (typeof key === "bigint") {
-    num = key;
+  if (typeof key2 === "bigint") {
+    num = key2;
   } else {
-    let bytes = ensureBytes$1("private key", key);
+    let bytes = ensureBytes$1("private key", key2);
     try {
       num = Fn.fromBytes(bytes);
     } catch (error) {
-      throw new Error(`invalid private key: expected ui8a of size ${expected}, got ${typeof key}`);
+      throw new Error(`invalid private key: expected ui8a of size ${expected}, got ${typeof key2}`);
     }
   }
   if (!Fn.isValidNot0(num))
@@ -21063,7 +21128,7 @@ function _weierstrass_new_output_to_legacy(c2, Point) {
     CURVE: c2,
     Point,
     ProjectivePoint: Point,
-    normPrivateKeyToScalar: (key) => _normFnElement(Fn, key),
+    normPrivateKeyToScalar: (key2) => _normFnElement(Fn, key2),
     weierstrassEquation,
     isWithinCurveOrder
   });
@@ -22725,7 +22790,7 @@ const _Certificate = class _Certificate {
     const rootHash = await reconstruct(this.cert.tree);
     const derKey = await this._checkDelegationAndGetKey(this.cert.delegation);
     const sig = this.cert.signature;
-    const key = extractDER(derKey);
+    const key2 = extractDER(derKey);
     const msg = concatBytes$2(domain_sep("ic-state-root"), rootHash);
     const lookupTime = lookupResultToBuffer(this.lookup_path(["time"]));
     if (!lookupTime) {
@@ -22755,7 +22820,7 @@ const _Certificate = class _Certificate {
       }
     }
     try {
-      const sigVer = await this._blsVerify(key, sig, msg);
+      const sigVer = await this._blsVerify(key2, sig, msg);
       if (!sigVer) {
         throw TrustError.fromCode(new CertificateVerificationErrorCode("Invalid signature"));
       }
@@ -23548,10 +23613,10 @@ function eddsa(Point, cHash, eddsaOpts = {}) {
   function modN_LE(hash2) {
     return Fn.create(bytesToNumberLE$1(hash2));
   }
-  function getPrivateScalar(key) {
+  function getPrivateScalar(key2) {
     const len = lengths.secretKey;
-    key = ensureBytes$1("private key", key, len);
-    const hashed = ensureBytes$1("hashed private key", cHash(key), 2 * len);
+    key2 = ensureBytes$1("private key", key2, len);
+    const hashed = ensureBytes$1("hashed private key", cHash(key2), 2 * len);
     const head = adjustScalarBytes2(hashed.slice(0, len));
     const prefix2 = hashed.slice(len, 2 * len);
     const scalar = modN_LE(head);
@@ -23626,12 +23691,12 @@ function eddsa(Point, cHash, eddsaOpts = {}) {
     const secretKey = utils.randomSecretKey(seed);
     return { secretKey, publicKey: getPublicKey(secretKey) };
   }
-  function isValidSecretKey(key) {
-    return isBytes$1(key) && key.length === Fn.BYTES;
+  function isValidSecretKey(key2) {
+    return isBytes$1(key2) && key2.length === Fn.BYTES;
   }
-  function isValidPublicKey(key, zip215) {
+  function isValidPublicKey(key2, zip215) {
     try {
-      return !!Point.fromBytes(key, zip215);
+      return !!Point.fromBytes(key2, zip215);
     } catch (error) {
       return false;
     }
@@ -23806,7 +23871,7 @@ class ExpirableMap {
     this[_b] = "ExpirableMap";
     const { source = [], expirationTime = 10 * 60 * 1e3 } = options;
     const currentTime = Date.now();
-    __privateSet(this, _inner, new Map([...source].map(([key, value]) => [key, { value, timestamp: currentTime }])));
+    __privateSet(this, _inner, new Map([...source].map(([key2, value]) => [key2, { value, timestamp: currentTime }])));
     __privateSet(this, _expirationTime, expirationTime);
   }
   /**
@@ -23814,9 +23879,9 @@ class ExpirableMap {
    */
   prune() {
     const currentTime = Date.now();
-    for (const [key, entry] of __privateGet(this, _inner).entries()) {
+    for (const [key2, entry] of __privateGet(this, _inner).entries()) {
       if (currentTime - entry.timestamp > __privateGet(this, _expirationTime)) {
-        __privateGet(this, _inner).delete(key);
+        __privateGet(this, _inner).delete(key2);
       }
     }
     return this;
@@ -23828,13 +23893,13 @@ class ExpirableMap {
    * @param value of the entry
    * @returns this
    */
-  set(key, value) {
+  set(key2, value) {
     this.prune();
     const entry = {
       value,
       timestamp: Date.now()
     };
-    __privateGet(this, _inner).set(key, entry);
+    __privateGet(this, _inner).set(key2, entry);
     return this;
   }
   /**
@@ -23842,13 +23907,13 @@ class ExpirableMap {
    * @param key K
    * @returns the value associated with the key, or undefined if the key is not present or has expired.
    */
-  get(key) {
-    const entry = __privateGet(this, _inner).get(key);
+  get(key2) {
+    const entry = __privateGet(this, _inner).get(key2);
     if (entry === void 0) {
       return void 0;
     }
     if (Date.now() - entry.timestamp > __privateGet(this, _expirationTime)) {
-      __privateGet(this, _inner).delete(key);
+      __privateGet(this, _inner).delete(key2);
       return void 0;
     }
     return entry.value;
@@ -23866,8 +23931,8 @@ class ExpirableMap {
   entries() {
     const iterator = __privateGet(this, _inner).entries();
     const generator = function* () {
-      for (const [key, value] of iterator) {
-        yield [key, value.value];
+      for (const [key2, value] of iterator) {
+        yield [key2, value.value];
       }
       return void 0;
     };
@@ -23900,8 +23965,8 @@ class ExpirableMap {
    * @param thisArg to use as this when calling the callbackfn
    */
   forEach(callbackfn, thisArg) {
-    for (const [key, value] of __privateGet(this, _inner).entries()) {
-      callbackfn.call(thisArg, value.value, key, this);
+    for (const [key2, value] of __privateGet(this, _inner).entries()) {
+      callbackfn.call(thisArg, value.value, key2, this);
     }
   }
   /**
@@ -23909,16 +23974,16 @@ class ExpirableMap {
    * @param key K
    * @returns true if the key exists and has not expired.
    */
-  has(key) {
-    return __privateGet(this, _inner).has(key);
+  has(key2) {
+    return __privateGet(this, _inner).has(key2);
   }
   /**
    * delete the entry for the given key.
    * @param key K
    * @returns true if the key existed and has been deleted.
    */
-  delete(key) {
-    return __privateGet(this, _inner).delete(key);
+  delete(key2) {
+    return __privateGet(this, _inner).delete(key2);
   }
   /**
    * get size of the map.
@@ -24071,17 +24136,17 @@ const unwrapDER = (derEncoded, oid) => {
 };
 let Ed25519PublicKey$1 = (_l = class {
   // `fromRaw` and `fromDer` should be used for instantiation, not this constructor.
-  constructor(key) {
+  constructor(key2) {
     __privateAdd(this, _rawKey);
     __privateAdd(this, _derKey);
-    if (key.byteLength !== _l.RAW_KEY_LENGTH) {
+    if (key2.byteLength !== _l.RAW_KEY_LENGTH) {
       throw InputError.fromCode(new DerDecodeErrorCode("An Ed25519 public key must be exactly 32 bytes long"));
     }
-    __privateSet(this, _rawKey, key);
-    __privateSet(this, _derKey, _l.derEncode(key));
+    __privateSet(this, _rawKey, key2);
+    __privateSet(this, _derKey, _l.derEncode(key2));
   }
-  static from(key) {
-    return this.fromDer(key.toDer());
+  static from(key2) {
+    return this.fromDer(key2.toDer());
   }
   static fromRaw(rawKey) {
     return new _l(rawKey);
@@ -24092,8 +24157,8 @@ let Ed25519PublicKey$1 = (_l = class {
   static derEncode(publicKey) {
     return wrapDER(publicKey, ED25519_OID);
   }
-  static derDecode(key) {
-    const unwrapped = unwrapDER(key, ED25519_OID);
+  static derDecode(key2) {
+    const unwrapped = unwrapDER(key2, ED25519_OID);
     if (unwrapped.length !== this.RAW_KEY_LENGTH) {
       throw InputError.fromCode(new DerDecodeErrorCode("An Ed25519 public key must be exactly 32 bytes long"));
     }
@@ -25538,14 +25603,14 @@ function isObject(value) {
 }
 const _Ed25519PublicKey = class _Ed25519PublicKey {
   // `fromRaw` and `fromDer` should be used for instantiation, not this constructor.
-  constructor(key) {
+  constructor(key2) {
     __privateAdd(this, _rawKey2);
     __privateAdd(this, _derKey2);
-    if (key.byteLength !== _Ed25519PublicKey.RAW_KEY_LENGTH) {
+    if (key2.byteLength !== _Ed25519PublicKey.RAW_KEY_LENGTH) {
       throw new Error("An Ed25519 public key must be exactly 32bytes long");
     }
-    __privateSet(this, _rawKey2, key);
-    __privateSet(this, _derKey2, _Ed25519PublicKey.derEncode(key));
+    __privateSet(this, _rawKey2, key2);
+    __privateSet(this, _derKey2, _Ed25519PublicKey.derEncode(key2));
   }
   /**
    * Construct Ed25519PublicKey from an existing PublicKey
@@ -25554,23 +25619,23 @@ const _Ed25519PublicKey = class _Ed25519PublicKey {
    */
   static from(maybeKey) {
     if (typeof maybeKey === "string") {
-      const key = hexToBytes$2(maybeKey);
-      return this.fromRaw(key);
+      const key2 = hexToBytes$2(maybeKey);
+      return this.fromRaw(key2);
     } else if (isObject(maybeKey)) {
-      const key = maybeKey;
-      if (isObject(key) && Object.hasOwnProperty.call(key, "__derEncodedPublicKey__")) {
-        return this.fromDer(key);
-      } else if (ArrayBuffer.isView(key)) {
-        const view = key;
+      const key2 = maybeKey;
+      if (isObject(key2) && Object.hasOwnProperty.call(key2, "__derEncodedPublicKey__")) {
+        return this.fromDer(key2);
+      } else if (ArrayBuffer.isView(key2)) {
+        const view = key2;
         return this.fromRaw(uint8FromBufLike$1(view.buffer));
-      } else if (key instanceof ArrayBuffer) {
-        return this.fromRaw(uint8FromBufLike$1(key));
-      } else if ("rawKey" in key && key.rawKey instanceof Uint8Array) {
-        return this.fromRaw(key.rawKey);
-      } else if ("derKey" in key) {
-        return this.fromDer(key.derKey);
-      } else if ("toDer" in key) {
-        return this.fromDer(key.toDer());
+      } else if (key2 instanceof ArrayBuffer) {
+        return this.fromRaw(uint8FromBufLike$1(key2));
+      } else if ("rawKey" in key2 && key2.rawKey instanceof Uint8Array) {
+        return this.fromRaw(key2.rawKey);
+      } else if ("derKey" in key2) {
+        return this.fromDer(key2.derKey);
+      } else if ("toDer" in key2) {
+        return this.fromDer(key2.toDer());
       }
     }
     throw new Error("Cannot construct Ed25519PublicKey from the provided key.");
@@ -25582,12 +25647,12 @@ const _Ed25519PublicKey = class _Ed25519PublicKey {
     return new _Ed25519PublicKey(this.derDecode(derKey));
   }
   static derEncode(publicKey) {
-    const key = wrapDER(publicKey, ED25519_OID);
-    key.__derEncodedPublicKey__ = void 0;
-    return key;
+    const key2 = wrapDER(publicKey, ED25519_OID);
+    key2.__derEncodedPublicKey__ = void 0;
+    return key2;
   }
-  static derDecode(key) {
-    const unwrapped = unwrapDER(key, ED25519_OID);
+  static derDecode(key2) {
+    const unwrapped = unwrapDER(key2, ED25519_OID);
     if (unwrapped.length !== this.RAW_KEY_LENGTH) {
       throw new Error("An Ed25519 public key must be exactly 32bytes long");
     }
@@ -25790,11 +25855,11 @@ class ECDSAKeyIdentity extends SignIdentity {
    */
   getPublicKey() {
     const derKey = this._derKey;
-    const key = Object.create(this._keyPair.publicKey);
-    key.toDer = function() {
+    const key2 = Object.create(this._keyPair.publicKey);
+    key2.toDer = function() {
       return derKey;
     };
-    return key;
+    return key2;
   }
   /**
    * Signs a blob of data, with this identity's private key.
@@ -26016,8 +26081,8 @@ class DelegationIdentity extends SignIdentity {
    * @param key The key used to sign the requests.
    * @param delegation A delegation object created using `createDelegation`.
    */
-  static fromDelegation(key, delegation) {
-    return new this(key, delegation);
+  static fromDelegation(key2, delegation) {
+    return new this(key2, delegation);
   }
   constructor(_inner3, _delegation2) {
     super();
@@ -26067,8 +26132,8 @@ const _PartialDelegationIdentity = class _PartialDelegationIdentity extends Part
    * @param key The {@link PublicKey} to delegate to.
    * @param delegation a {@link DelegationChain} targeting the inner key.
    */
-  static fromDelegation(key, delegation) {
-    return new _PartialDelegationIdentity(key, delegation);
+  static fromDelegation(key2, delegation) {
+    return new _PartialDelegationIdentity(key2, delegation);
   }
 };
 _delegation = new WeakMap();
@@ -26394,14 +26459,14 @@ const _openDbStore = async (dbName = AUTH_DB_NAME, storeName = OBJECT_STORE_NAME
     }
   });
 };
-async function _getValue(db, storeName, key) {
-  return await db.get(storeName, key);
+async function _getValue(db, storeName, key2) {
+  return await db.get(storeName, key2);
 }
-async function _setValue(db, storeName, key, value) {
-  return await db.put(storeName, value, key);
+async function _setValue(db, storeName, key2, value) {
+  return await db.put(storeName, value, key2);
 }
-async function _removeValue(db, storeName, key) {
-  return await db.delete(storeName, key);
+async function _removeValue(db, storeName, key2) {
+  return await db.delete(storeName, key2);
 }
 class IdbKeyVal {
   // Do not use - instead prefer create
@@ -26430,8 +26495,8 @@ class IdbKeyVal {
    * @param value value to set
    * @returns void
    */
-  async set(key, value) {
-    return await _setValue(this._db, this._storeName, key, value);
+  async set(key2, value) {
+    return await _setValue(this._db, this._storeName, key2, value);
   }
   /**
    * Basic getter
@@ -26441,16 +26506,16 @@ class IdbKeyVal {
    * @example
    * await get<string>('exampleKey') -> 'exampleValue'
    */
-  async get(key) {
-    return await _getValue(this._db, this._storeName, key) ?? null;
+  async get(key2) {
+    return await _getValue(this._db, this._storeName, key2) ?? null;
   }
   /**
    * Remove a key
    * @param key {@link IDBValidKey}
    * @returns void
    */
-  async remove(key) {
-    return await _removeValue(this._db, this._storeName, key);
+  async remove(key2) {
+    return await _removeValue(this._db, this._storeName, key2);
   }
 }
 const KEY_STORAGE_KEY = "identity";
@@ -26465,15 +26530,15 @@ class LocalStorage {
     this.prefix = prefix2;
     this._localStorage = _localStorage;
   }
-  get(key) {
-    return Promise.resolve(this._getLocalStorage().getItem(this.prefix + key));
+  get(key2) {
+    return Promise.resolve(this._getLocalStorage().getItem(this.prefix + key2));
   }
-  set(key, value) {
-    this._getLocalStorage().setItem(this.prefix + key, value);
+  set(key2, value) {
+    this._getLocalStorage().setItem(this.prefix + key2, value);
     return Promise.resolve();
   }
-  remove(key) {
-    this._getLocalStorage().removeItem(this.prefix + key);
+  remove(key2) {
+    this._getLocalStorage().removeItem(this.prefix + key2);
     return Promise.resolve();
   }
   _getLocalStorage() {
@@ -26516,17 +26581,17 @@ class IdbStorage {
       }).catch(reject);
     });
   }
-  async get(key) {
+  async get(key2) {
     const db = await this._db;
-    return await db.get(key);
+    return await db.get(key2);
   }
-  async set(key, value) {
+  async set(key2, value) {
     const db = await this._db;
-    await db.set(key, value);
+    await db.set(key2, value);
   }
-  async remove(key) {
+  async remove(key2) {
     const db = await this._db;
-    await db.remove(key);
+    await db.remove(key2);
   }
 }
 _options = new WeakMap();
@@ -26583,9 +26648,9 @@ class AuthClient {
     var _a3;
     const storage = options.storage ?? new IdbStorage();
     const keyType = options.keyType ?? ECDSA_KEY_LABEL;
-    let key = null;
+    let key2 = null;
     if (options.identity) {
-      key = options.identity;
+      key2 = options.identity;
     } else {
       let maybeIdentityStorage = await storage.get(KEY_STORAGE_KEY);
       if (!maybeIdentityStorage && isBrowser) {
@@ -26609,12 +26674,12 @@ class AuthClient {
         try {
           if (typeof maybeIdentityStorage === "object") {
             if (keyType === ED25519_KEY_LABEL && typeof maybeIdentityStorage === "string") {
-              key = Ed25519KeyIdentity.fromJSON(maybeIdentityStorage);
+              key2 = Ed25519KeyIdentity.fromJSON(maybeIdentityStorage);
             } else {
-              key = await ECDSAKeyIdentity.fromKeyPair(maybeIdentityStorage);
+              key2 = await ECDSAKeyIdentity.fromKeyPair(maybeIdentityStorage);
             }
           } else if (typeof maybeIdentityStorage === "string") {
-            key = Ed25519KeyIdentity.fromJSON(maybeIdentityStorage);
+            key2 = Ed25519KeyIdentity.fromJSON(maybeIdentityStorage);
           }
         } catch {
         }
@@ -26622,7 +26687,7 @@ class AuthClient {
     }
     let identity = new AnonymousIdentity();
     let chain2 = null;
-    if (key) {
+    if (key2) {
       try {
         const chainStorage = await storage.get(KEY_STORAGE_DELEGATION);
         if (typeof chainStorage === "object" && chainStorage !== null) {
@@ -26634,19 +26699,19 @@ class AuthClient {
           chain2 = DelegationChain.fromJSON(chainStorage);
           if (!isDelegationValid(chain2)) {
             await _deleteStorage(storage);
-            key = null;
+            key2 = null;
           } else {
-            if ("toDer" in key) {
-              identity = PartialDelegationIdentity.fromDelegation(key, chain2);
+            if ("toDer" in key2) {
+              identity = PartialDelegationIdentity.fromDelegation(key2, chain2);
             } else {
-              identity = DelegationIdentity.fromDelegation(key, chain2);
+              identity = DelegationIdentity.fromDelegation(key2, chain2);
             }
           }
         }
       } catch (e) {
         console.error(e);
         await _deleteStorage(storage);
-        key = null;
+        key2 = null;
       }
     }
     let idleManager;
@@ -26655,19 +26720,19 @@ class AuthClient {
     } else if (chain2 || options.identity) {
       idleManager = IdleManager.create(options.idleOptions);
     }
-    if (!key) {
+    if (!key2) {
       if (keyType === ED25519_KEY_LABEL) {
-        key = Ed25519KeyIdentity.generate();
-        await storage.set(KEY_STORAGE_KEY, JSON.stringify(key.toJSON()));
+        key2 = Ed25519KeyIdentity.generate();
+        await storage.set(KEY_STORAGE_KEY, JSON.stringify(key2.toJSON()));
       } else {
         if (options.storage && keyType === ECDSA_KEY_LABEL) {
           console.warn(`You are using a custom storage provider that may not support CryptoKey storage. If you are using a custom storage provider that does not support CryptoKey storage, you should use '${ED25519_KEY_LABEL}' as the key type, as it can serialize to a string`);
         }
-        key = await ECDSAKeyIdentity.generate();
-        await storage.set(KEY_STORAGE_KEY, key.getKeyPair());
+        key2 = await ECDSAKeyIdentity.generate();
+        await storage.set(KEY_STORAGE_KEY, key2.getKeyPair());
       }
     }
-    return new this(identity, key, chain2, storage, idleManager, options);
+    return new this(identity, key2, chain2, storage, idleManager, options);
   }
   _registerDefaultIdleCallback() {
     var _a3, _b3;
@@ -26688,15 +26753,15 @@ class AuthClient {
       };
     });
     const delegationChain = DelegationChain.fromDelegations(delegations, message.userPublicKey);
-    const key = this._key;
-    if (!key) {
+    const key2 = this._key;
+    if (!key2) {
       return;
     }
     this._chain = delegationChain;
-    if ("toDer" in key) {
-      this._identity = PartialDelegationIdentity.fromDelegation(key, this._chain);
+    if ("toDer" in key2) {
+      this._identity = PartialDelegationIdentity.fromDelegation(key2, this._chain);
     } else {
-      this._identity = DelegationIdentity.fromDelegation(key, this._chain);
+      this._identity = DelegationIdentity.fromDelegation(key2, this._chain);
     }
     (_a3 = this._idpWindow) == null ? void 0 : _a3.close();
     const idleOptions = (_b3 = this._createOptions) == null ? void 0 : _b3.idleOptions;
@@ -26848,6 +26913,13 @@ function mergeLoginOptions(loginOptions, otherLoginOptions) {
 }
 const II_URL = "https://identity.ic0.app";
 const DAYS_30_NS = BigInt(30) * BigInt(24) * BigInt(60) * BigInt(60) * BigInt(1e9);
+const II_DERIVATION_ORIGIN = "https://cqyto-tiaaa-aaaau-agppa-cai.icp0.io";
+if (!/^https:\/\/[a-z0-9-]+\.icp0\.io$/.test(II_DERIVATION_ORIGIN)) {
+  throw new Error("II_DERIVATION_ORIGIN malformed — refusing to initialize auth");
+}
+const IS_LOCAL_DEV = /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
+const AUTH_EPOCH = "2026-07-derivation-origin-pin";
+const EPOCH_KEY = "minegold.auth_epoch";
 const Ctx = reactExports.createContext(null);
 function InternetIdentityProvider({ children }) {
   const [authClient, setAuthClient] = reactExports.useState(null);
@@ -26859,6 +26931,19 @@ function InternetIdentityProvider({ children }) {
     AuthClient.create({
       idleOptions: { disableIdle: true, disableDefaultIdleCallback: true }
     }).then(async (client2) => {
+      if (cancelled) return;
+      let stale = false;
+      try {
+        stale = localStorage.getItem(EPOCH_KEY) !== AUTH_EPOCH;
+      } catch {
+      }
+      if (stale) {
+        await client2.logout();
+        try {
+          localStorage.setItem(EPOCH_KEY, AUTH_EPOCH);
+        } catch {
+        }
+      }
       if (cancelled) return;
       setAuthClient(client2);
       if (await client2.isAuthenticated()) {
@@ -26885,6 +26970,11 @@ function InternetIdentityProvider({ children }) {
     setLoginError(void 0);
     authClient.login({
       identityProvider: II_URL,
+      // Pins principal derivation to the canonical origin regardless of which
+      // domain served this page. On the canonical origin itself this is a
+      // no-op (II short-circuits when derivationOrigin === caller origin), so
+      // existing users keep their exact principals.
+      ...IS_LOCAL_DEV ? {} : { derivationOrigin: II_DERIVATION_ORIGIN },
       maxTimeToLive: DAYS_30_NS,
       onSuccess: () => {
         setIdentity(authClient.getIdentity());
@@ -28647,18 +28737,18 @@ let LruMap$1 = class LruMap extends Map {
     });
     this.maxSize = size2;
   }
-  get(key) {
-    const value = super.get(key);
-    if (super.has(key)) {
-      super.delete(key);
-      super.set(key, value);
+  get(key2) {
+    const value = super.get(key2);
+    if (super.has(key2)) {
+      super.delete(key2);
+      super.set(key2, value);
     }
     return value;
   }
-  set(key, value) {
-    if (super.has(key))
-      super.delete(key);
-    super.set(key, value);
+  set(key2, value) {
+    if (super.has(key2))
+      super.delete(key2);
+    super.set(key2, value);
     if (this.maxSize && this.size > this.maxSize) {
       const firstKey = super.keys().next().value;
       if (firstKey !== void 0)
@@ -29256,8 +29346,8 @@ let PositionOutOfBoundsError$1 = class PositionOutOfBoundsError extends BaseErro
   }
 };
 let RecursiveReadLimitExceededError$1 = class RecursiveReadLimitExceededError extends BaseError$1 {
-  constructor({ count: count2, limit }) {
-    super(`Recursive read limit of \`${limit}\` exceeded (recursive read count: \`${count2}\`).`, { name: "RecursiveReadLimitExceededError" });
+  constructor({ count, limit }) {
+    super(`Recursive read limit of \`${limit}\` exceeded (recursive read count: \`${count}\`).`, { name: "RecursiveReadLimitExceededError" });
   }
 };
 const staticCursor$1 = {
@@ -29413,9 +29503,9 @@ const staticCursor$1 = {
   _touch() {
     if (this.recursiveReadLimit === Number.POSITIVE_INFINITY)
       return;
-    const count2 = this.getReadCount();
-    this.positionReadCount.set(this.position, count2 + 1);
-    if (count2 > 0)
+    const count = this.getReadCount();
+    this.positionReadCount.set(this.position, count + 1);
+    if (count > 0)
       this.recursiveReadCount++;
   }
 };
@@ -29661,7 +29751,7 @@ function decodeErrorResult(parameters) {
     errorName: abiItem.name
   };
 }
-const stringify$1 = (value, replacer, space) => JSON.stringify(value, (key, value_) => {
+const stringify$1 = (value, replacer, space) => JSON.stringify(value, (key2, value_) => {
   const value2 = typeof value_ === "bigint" ? value_.toString() : value_;
   return value2;
 }, space);
@@ -29746,13 +29836,13 @@ function prettyStateOverride(stateOverride) {
   }, "  State Override:\n").slice(0, -1);
 }
 function prettyPrint(args) {
-  const entries = Object.entries(args).map(([key, value]) => {
+  const entries = Object.entries(args).map(([key2, value]) => {
     if (value === void 0 || value === false)
       return null;
-    return [key, value];
+    return [key2, value];
   }).filter(Boolean);
-  const maxLength = entries.reduce((acc, [key]) => Math.max(acc, key.length), 0);
-  return entries.map(([key, value]) => `  ${`${key}:`.padEnd(maxLength + 1)}  ${value}`).join("\n");
+  const maxLength = entries.reduce((acc, [key2]) => Math.max(acc, key2.length), 0);
+  return entries.map(([key2, value]) => `  ${`${key2}:`.padEnd(maxLength + 1)}  ${value}`).join("\n");
 }
 class InvalidSerializableTransactionError extends BaseError$1 {
   constructor({ transaction }) {
@@ -30659,70 +30749,6 @@ function publicKeyToAddress(publicKey) {
   const address = keccak256$1(`0x${publicKey.substring(4)}`).substring(26);
   return checksumAddress(`0x${address}`);
 }
-const scriptRel = "modulepreload";
-const assetsURL = function(dep) {
-  return "/" + dep;
-};
-const seen = {};
-const __vitePreload = function preload2(baseModule, deps, importerUrl) {
-  let promise = Promise.resolve();
-  if (deps && deps.length > 0) {
-    document.getElementsByTagName("link");
-    const cspNonceMeta = document.querySelector(
-      "meta[property=csp-nonce]"
-    );
-    const cspNonce = (cspNonceMeta == null ? void 0 : cspNonceMeta.nonce) || (cspNonceMeta == null ? void 0 : cspNonceMeta.getAttribute("nonce"));
-    promise = Promise.allSettled(
-      deps.map((dep) => {
-        dep = assetsURL(dep);
-        if (dep in seen) return;
-        seen[dep] = true;
-        const isCss = dep.endsWith(".css");
-        const cssSelector = isCss ? '[rel="stylesheet"]' : "";
-        if (document.querySelector(`link[href="${dep}"]${cssSelector}`)) {
-          return;
-        }
-        const link = document.createElement("link");
-        link.rel = isCss ? "stylesheet" : scriptRel;
-        if (!isCss) {
-          link.as = "script";
-        }
-        link.crossOrigin = "";
-        link.href = dep;
-        if (cspNonce) {
-          link.setAttribute("nonce", cspNonce);
-        }
-        document.head.appendChild(link);
-        if (isCss) {
-          return new Promise((res, rej) => {
-            link.addEventListener("load", res);
-            link.addEventListener(
-              "error",
-              () => rej(new Error(`Unable to preload CSS for ${dep}`))
-            );
-          });
-        }
-      })
-    );
-  }
-  function handlePreloadError(err) {
-    const e = new Event("vite:preloadError", {
-      cancelable: true
-    });
-    e.payload = err;
-    window.dispatchEvent(e);
-    if (!e.defaultPrevented) {
-      throw err;
-    }
-  }
-  return promise.then((res) => {
-    for (const item of res || []) {
-      if (item.status !== "rejected") continue;
-      handlePreloadError(item.reason);
-    }
-    return baseModule().catch(handlePreloadError);
-  });
-};
 async function recoverPublicKey({ hash: hash2, signature }) {
   const hashHex = isHex(hash2) ? hash2 : toHex(hash2);
   const { secp256k1: secp256k12 } = await __vitePreload(async () => {
@@ -31143,11 +31169,11 @@ function extract$1(value_, { format }) {
   const value = {};
   function extract_(formatted2) {
     const keys = Object.keys(formatted2);
-    for (const key of keys) {
-      if (key in value_)
-        value[key] = value_[key];
-      if (formatted2[key] && typeof formatted2[key] === "object" && !Array.isArray(formatted2[key]))
-        extract_(formatted2[key]);
+    for (const key2 of keys) {
+      if (key2 in value_)
+        value[key2] = value_[key2];
+      if (formatted2[key2] && typeof formatted2[key2] === "object" && !Array.isArray(formatted2[key2]))
+        extract_(formatted2[key2]);
     }
   }
   const formatted = format(value_ || {});
@@ -31515,7 +31541,7 @@ async function internal_estimateFeesPerGas(client2, args) {
   };
 }
 async function getTransactionCount(client2, { address, blockTag = "latest", blockNumber }) {
-  const count2 = await client2.request({
+  const count = await client2.request({
     method: "eth_getTransactionCount",
     params: [
       address,
@@ -31524,7 +31550,7 @@ async function getTransactionCount(client2, { address, blockTag = "latest", bloc
   }, {
     dedupe: Boolean(blockNumber)
   });
-  return hexToNumber$1(count2);
+  return hexToNumber$1(count);
 }
 function blobsToCommitments(parameters) {
   const { kzg } = parameters;
@@ -32291,14 +32317,14 @@ function includesArgs(parameters) {
     });
   }
   if (typeof args === "object" && !Array.isArray(args) && typeof matchArgs === "object" && !Array.isArray(matchArgs))
-    return Object.entries(matchArgs).every(([key, value]) => {
+    return Object.entries(matchArgs).every(([key2, value]) => {
       if (value === null || value === void 0)
         return true;
-      const input = inputs.find((input2) => input2.name === key);
+      const input = inputs.find((input2) => input2.name === key2);
       if (!input)
         return false;
       const value_ = Array.isArray(value) ? value : [value];
-      return value_.some((value2) => isEqual(input, value2, args[key]));
+      return value_.some((value2) => isEqual(input, value2, args[key2]));
     });
   return false;
 }
@@ -32606,7 +32632,7 @@ function pad(hex_, options = {}) {
 }
 const bigIntSuffix = "#__bigint";
 function stringify(value, replacer, space) {
-  return JSON.stringify(value, (key, value2) => {
+  return JSON.stringify(value, (key2, value2) => {
     if (typeof value2 === "bigint")
       return value2.toString() + bigIntSuffix;
     return value2;
@@ -33557,7 +33583,7 @@ async function call(client2, args) {
   } catch (err) {
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-BatJ91ks.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-CyMsuLDk.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -33776,14 +33802,14 @@ function observe(observerId, callbacks, fn) {
   if (listeners && listeners.length > 0)
     return unwatch;
   const emit = {};
-  for (const key in callbacks) {
-    emit[key] = (...args) => {
+  for (const key2 in callbacks) {
+    emit[key2] = (...args) => {
       var _a3, _b3;
       const listeners2 = getListeners();
       if (listeners2.length === 0)
         return;
       for (const listener of listeners2)
-        (_b3 = (_a3 = listener.fns)[key]) == null ? void 0 : _b3.call(_a3, ...args);
+        (_b3 = (_a3 = listener.fns)[key2]) == null ? void 0 : _b3.call(_a3, ...args);
     };
   }
   const cleanup = fn(emit);
@@ -34282,18 +34308,18 @@ class BundleFailedError extends BaseError$1 {
 }
 function withRetry(fn, { delay: delay_ = 100, retryCount = 2, shouldRetry: shouldRetry2 = () => true } = {}) {
   return new Promise((resolve, reject) => {
-    const attemptRetry = async ({ count: count2 = 0 } = {}) => {
+    const attemptRetry = async ({ count = 0 } = {}) => {
       const retry = async ({ error }) => {
-        const delay = typeof delay_ === "function" ? delay_({ count: count2, error }) : delay_;
+        const delay = typeof delay_ === "function" ? delay_({ count, error }) : delay_;
         if (delay)
           await wait(delay);
-        attemptRetry({ count: count2 + 1 });
+        attemptRetry({ count: count + 1 });
       };
       try {
         const data = await fn();
         resolve(data);
       } catch (err) {
-        if (count2 < retryCount && await shouldRetry2({ count: count2, error: err }))
+        if (count < retryCount && await shouldRetry2({ count, error: err }))
           return retry({ error: err });
         reject(err);
       }
@@ -34505,7 +34531,7 @@ async function waitForCallsStatus(client2, parameters) {
     pollingInterval = client2.pollingInterval,
     status = ({ statusCode }) => statusCode === 200 || statusCode >= 300,
     retryCount = 4,
-    retryDelay = ({ count: count2 }) => ~~(1 << count2) * 200,
+    retryDelay = ({ count }) => ~~(1 << count) * 200,
     // exponential backoff
     timeout: timeout2 = 6e4,
     throwOnFailure = false
@@ -34569,7 +34595,7 @@ function uid(length = 11) {
   return buffer.substring(index, index++ + length);
 }
 function createClient(parameters) {
-  const { batch, chain: chain2, ccipRead, dataSuffix, key = "base", name = "Base Client", type = "base" } = parameters;
+  const { batch, chain: chain2, ccipRead, dataSuffix, key: key2 = "base", name = "Base Client", type = "base" } = parameters;
   const experimental_blockTag = parameters.experimental_blockTag ?? (typeof (chain2 == null ? void 0 : chain2.experimental_preconfirmationTime) === "number" ? "pending" : void 0);
   const blockTime = (chain2 == null ? void 0 : chain2.blockTime) ?? 12e3;
   const defaultPollingInterval = Math.min(Math.max(Math.floor(blockTime / 2), 500), 4e3);
@@ -34589,7 +34615,7 @@ function createClient(parameters) {
     ccipRead,
     chain: chain2,
     dataSuffix,
-    key,
+    key: key2,
     name,
     pollingInterval,
     request: request2,
@@ -34601,8 +34627,8 @@ function createClient(parameters) {
   function extend(base) {
     return (extendFn) => {
       const extended = extendFn(base);
-      for (const key2 in client2)
-        delete extended[key2];
+      for (const key3 in client2)
+        delete extended[key3];
       const combined = { ...base, ...extended };
       return Object.assign(combined, { extend: extend(combined) });
     };
@@ -35066,7 +35092,7 @@ async function parseNftAvatarUri(client2, { gatewayUrls, record }) {
   });
 }
 async function getEnsText(client2, parameters) {
-  const { blockNumber, blockTag, key, name, gatewayUrls, strict } = parameters;
+  const { blockNumber, blockTag, key: key2, name, gatewayUrls, strict } = parameters;
   const { chain: chain2 } = client2;
   const universalResolverAddress = (() => {
     if (parameters.universalResolverAddress)
@@ -35091,7 +35117,7 @@ async function getEnsText(client2, parameters) {
         encodeFunctionData({
           abi: textResolverAbi,
           functionName: "text",
-          args: [namehash(name), key]
+          args: [namehash(name), key2]
         }),
         gatewayUrls ?? [localBatchGatewayUrl]
       ],
@@ -35345,19 +35371,19 @@ async function getBlobBaseFee(client2) {
 }
 async function getBlockTransactionCount(client2, { blockHash, blockNumber, blockTag = "latest" } = {}) {
   const blockNumberHex = blockNumber !== void 0 ? numberToHex(blockNumber) : void 0;
-  let count2;
+  let count;
   if (blockHash) {
-    count2 = await client2.request({
+    count = await client2.request({
       method: "eth_getBlockTransactionCountByHash",
       params: [blockHash]
     }, { dedupe: true });
   } else {
-    count2 = await client2.request({
+    count = await client2.request({
       method: "eth_getBlockTransactionCountByNumber",
       params: [blockNumberHex || blockTag]
     }, { dedupe: Boolean(blockNumberHex) });
   }
-  return hexToNumber$1(count2);
+  return hexToNumber$1(count);
 }
 async function getCode(client2, { address, blockNumber, blockTag = "latest" }) {
   const blockNumberHex = blockNumber !== void 0 ? numberToHex(blockNumber) : void 0;
@@ -35579,14 +35605,14 @@ function buildRequest(request2, options = {}) {
         }
       }
     }, {
-      delay: ({ count: count2, error }) => {
+      delay: ({ count, error }) => {
         var _a4;
         if (error && error instanceof HttpRequestError) {
           const retryAfter = (_a4 = error == null ? void 0 : error.headers) == null ? void 0 : _a4.get("Retry-After");
           if (retryAfter == null ? void 0 : retryAfter.match(/\d/))
             return Number.parseInt(retryAfter, 10) * 1e3;
         }
-        return ~~(1 << count2) * retryDelay;
+        return ~~(1 << count) * retryDelay;
       },
       retryCount,
       shouldRetry: ({ error }) => shouldRetry(error)
@@ -36027,16 +36053,16 @@ class LruMap2 extends Map {
     });
     this.maxSize = size2;
   }
-  get(key) {
-    const value = super.get(key);
-    if (super.has(key) && value !== void 0) {
-      this.delete(key);
-      super.set(key, value);
+  get(key2) {
+    const value = super.get(key2);
+    if (super.has(key2) && value !== void 0) {
+      this.delete(key2);
+      super.set(key2, value);
     }
     return value;
   }
-  set(key, value) {
-    super.set(key, value);
+  set(key2, value) {
+    super.set(key2, value);
     if (this.maxSize && this.size > this.maxSize) {
       const firstKey = this.keys().next().value;
       if (firstKey)
@@ -36682,9 +36708,9 @@ const staticCursor = {
   _touch() {
     if (this.recursiveReadLimit === Number.POSITIVE_INFINITY)
       return;
-    const count2 = this.getReadCount();
-    this.positionReadCount.set(this.position, count2 + 1);
-    if (count2 > 0)
+    const count = this.getReadCount();
+    this.positionReadCount.set(this.position, count + 1);
+    if (count > 0)
       this.recursiveReadCount++;
   }
 };
@@ -36719,8 +36745,8 @@ class PositionOutOfBoundsError2 extends BaseError3 {
   }
 }
 class RecursiveReadLimitExceededError2 extends BaseError3 {
-  constructor({ count: count2, limit }) {
-    super(`Recursive read limit of \`${limit}\` exceeded (recursive read count: \`${count2}\`).`);
+  constructor({ count, limit }) {
+    super(`Recursive read limit of \`${limit}\` exceeded (recursive read count: \`${count}\`).`);
     Object.defineProperty(this, "name", {
       enumerable: true,
       configurable: true,
@@ -38485,13 +38511,13 @@ function getMinHashLength(fieldOrder) {
   const length = getFieldBytesLength(fieldOrder);
   return length + Math.ceil(length / 2);
 }
-function mapHashToField(key, fieldOrder, isLE2 = false) {
-  const len = key.length;
+function mapHashToField(key2, fieldOrder, isLE2 = false) {
+  const len = key2.length;
   const fieldLen = getFieldBytesLength(fieldOrder);
   const minLen = getMinHashLength(fieldOrder);
   if (len < 16 || len < minLen || len > 1024)
     throw new Error("expected " + minLen + "-1024 bytes of input, got " + len);
-  const num = isLE2 ? bytesToNumberLE(key) : bytesToNumberBE(key);
+  const num = isLE2 ? bytesToNumberLE(key2) : bytesToNumberBE(key2);
   const reduced = mod(num, fieldOrder - _1n$3) + _1n$3;
   return isLE2 ? numberToBytesLE(reduced, fieldLen) : numberToBytesBE(reduced, fieldLen);
 }
@@ -38905,20 +38931,20 @@ function weierstrassPoints(opts) {
   function isWithinCurveOrder(num) {
     return inRange(num, _1n$1, CURVE.n);
   }
-  function normPrivateKeyToScalar(key) {
+  function normPrivateKeyToScalar(key2) {
     const { allowedPrivateKeyLengths: lengths, nByteLength, wrapPrivateKey, n: N2 } = CURVE;
-    if (lengths && typeof key !== "bigint") {
-      if (isBytes(key))
-        key = bytesToHex(key);
-      if (typeof key !== "string" || !lengths.includes(key.length))
+    if (lengths && typeof key2 !== "bigint") {
+      if (isBytes(key2))
+        key2 = bytesToHex(key2);
+      if (typeof key2 !== "string" || !lengths.includes(key2.length))
         throw new Error("invalid private key");
-      key = key.padStart(nByteLength * 2, "0");
+      key2 = key2.padStart(nByteLength * 2, "0");
     }
     let num;
     try {
-      num = typeof key === "bigint" ? key : bytesToNumberBE(ensureBytes("private key", key, nByteLength));
+      num = typeof key2 === "bigint" ? key2 : bytesToNumberBE(ensureBytes("private key", key2, nByteLength));
     } catch (error) {
-      throw new Error("invalid private key, expected hex or " + nByteLength + " bytes, got " + typeof key);
+      throw new Error("invalid private key, expected hex or " + nByteLength + " bytes, got " + typeof key2);
     }
     if (wrapPrivateKey)
       num = mod(num, N2);
@@ -39616,7 +39642,7 @@ function weierstrass(curveDef) {
 function getHash(hash2) {
   return {
     hash: hash2,
-    hmac: (key, ...msgs) => hmac(hash2, key, concatBytes$2(...msgs)),
+    hmac: (key2, ...msgs) => hmac(hash2, key2, concatBytes$2(...msgs)),
     randomBytes
   };
 }
@@ -40001,7 +40027,7 @@ async function waitForTransactionReceipt(client2, parameters) {
     hash: hash2,
     onReplaced,
     retryCount = 6,
-    retryDelay = ({ count: count2 }) => ~~(1 << count2) * 200,
+    retryDelay = ({ count }) => ~~(1 << count) * 200,
     // exponential backoff
     timeout: timeout2 = 18e4
   } = parameters;
@@ -40625,10 +40651,10 @@ function publicActions(client2) {
   };
 }
 function createPublicClient(parameters) {
-  const { key = "public", name = "Public Client" } = parameters;
+  const { key: key2 = "public", name = "Public Client" } = parameters;
   const client2 = createClient({
     ...parameters,
-    key,
+    key: key2,
     name,
     type: "publicClient"
   });
@@ -40676,10 +40702,10 @@ async function getCapabilities(client2, parameters = {}) {
   const capabilities = {};
   for (const [chainId2, capabilities_] of Object.entries(capabilities_raw)) {
     capabilities[Number(chainId2)] = {};
-    for (let [key, value] of Object.entries(capabilities_)) {
-      if (key === "addSubAccount")
-        key = "unstable_addSubAccount";
-      capabilities[Number(chainId2)][key] = value;
+    for (let [key2, value] of Object.entries(capabilities_)) {
+      if (key2 === "addSubAccount")
+        key2 = "unstable_addSubAccount";
+      capabilities[Number(chainId2)][key2] = value;
     }
   }
   return typeof chainId === "number" ? capabilities[chainId] : capabilities;
@@ -41050,21 +41076,21 @@ function walletActions(client2) {
   };
 }
 function createWalletClient(parameters) {
-  const { key = "wallet", name = "Wallet Client", transport } = parameters;
+  const { key: key2 = "wallet", name = "Wallet Client", transport } = parameters;
   const client2 = createClient({
     ...parameters,
-    key,
+    key: key2,
     name,
     transport,
     type: "walletClient"
   });
   return client2.extend(walletActions);
 }
-function createTransport({ key, methods, name, request: request2, retryCount = 3, retryDelay = 150, timeout: timeout2, type }, value) {
+function createTransport({ key: key2, methods, name, request: request2, retryCount = 3, retryDelay = 150, timeout: timeout2, type }, value) {
   const uid$1 = uid();
   return {
     config: {
-      key,
+      key: key2,
       methods,
       name,
       request: request2,
@@ -41078,9 +41104,9 @@ function createTransport({ key, methods, name, request: request2, retryCount = 3
   };
 }
 function custom(provider, config = {}) {
-  const { key = "custom", methods, name = "Custom Provider", retryDelay } = config;
+  const { key: key2 = "custom", methods, name = "Custom Provider", retryDelay } = config;
   return ({ retryCount: defaultRetryCount }) => createTransport({
-    key,
+    key: key2,
     methods,
     name,
     request: provider.request.bind(provider),
@@ -41090,13 +41116,13 @@ function custom(provider, config = {}) {
   });
 }
 function fallback(transports_, config = {}) {
-  const { key = "fallback", name = "Fallback", rank = false, shouldThrow: shouldThrow_ = shouldThrow, retryCount, retryDelay } = config;
+  const { key: key2 = "fallback", name = "Fallback", rank = false, shouldThrow: shouldThrow_ = shouldThrow, retryCount, retryDelay } = config;
   return ({ chain: chain2, pollingInterval = 4e3, timeout: timeout2, ...rest }) => {
     let transports = transports_;
     let onResponse = () => {
     };
     const transport = createTransport({
-      key,
+      key: key2,
       name,
       async request({ method, params }) {
         let includes;
@@ -41229,7 +41255,7 @@ class UrlRequiredError extends BaseError$1 {
   }
 }
 function http(url, config = {}) {
-  const { batch, fetchFn, fetchOptions, key = "http", methods, name = "HTTP JSON-RPC", onFetchRequest, onFetchResponse, retryDelay, raw } = config;
+  const { batch, fetchFn, fetchOptions, key: key2 = "http", methods, name = "HTTP JSON-RPC", onFetchRequest, onFetchResponse, retryDelay, raw } = config;
   return ({ chain: chain2, retryCount: retryCount_, timeout: timeout_ }) => {
     const { batchSize = 1e3, wait: wait2 = 0 } = typeof batch === "object" ? batch : {};
     const retryCount = config.retryCount ?? retryCount_;
@@ -41245,7 +41271,7 @@ function http(url, config = {}) {
       timeout: timeout2
     });
     return createTransport({
-      key,
+      key: key2,
       methods,
       name,
       async request({ method, params }) {
@@ -41345,132 +41371,6 @@ async function ethCall(params) {
   const result = await publicClient.call({ to: params.to, data: params.data });
   return result.data ?? "0x";
 }
-async function findLatestUserTxTo(userAddress, toContract, options = {}) {
-  const timeoutMs = options.timeoutMs ?? 45e3;
-  const pollMs = options.pollMs ?? 3e3;
-  const deadline = Date.now() + timeoutMs;
-  const user = userAddress.toLowerCase();
-  const target = toContract.toLowerCase();
-  const API_KEY = "***REMOVED-ETHERSCAN-KEY***";
-  while (Date.now() < deadline) {
-    try {
-      const url = `https://api.etherscan.io/v2/api?chainid=1&module=account&action=txlist&address=${user}&sort=desc&page=1&offset=5&apikey=${API_KEY}`;
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5e3);
-      const res = await fetch(url, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        const json = await res.json();
-        if ((json == null ? void 0 : json.status) === "1" && Array.isArray(json.result)) {
-          const match = json.result.find(
-            (tx) => typeof tx.to === "string" && tx.to.toLowerCase() === target && typeof tx.hash === "string" && /^0x[a-fA-F0-9]{64}$/.test(tx.hash)
-          );
-          if (match == null ? void 0 : match.hash) return match.hash;
-        }
-      }
-    } catch {
-    }
-    await new Promise((r2) => setTimeout(r2, pollMs));
-  }
-  return null;
-}
-async function findTxByNonce(userAddress, expectedNonce, toContract, options = {}) {
-  var _a3, _b3;
-  const timeoutMs = options.timeoutMs ?? 18e4;
-  const pollMs = options.pollMs ?? 4e3;
-  const scanBlocks = options.scanBlocks ?? 20;
-  const deadline = Date.now() + timeoutMs;
-  const user = userAddress.toLowerCase();
-  const target = toContract.toLowerCase();
-  while (Date.now() < deadline) {
-    try {
-      const pendingNonce = await publicClient.getTransactionCount({
-        address: user,
-        blockTag: "pending"
-      });
-      if (pendingNonce > expectedNonce) break;
-    } catch {
-    }
-    await new Promise((r2) => setTimeout(r2, pollMs));
-  }
-  if (Date.now() >= deadline) return null;
-  while (Date.now() < deadline) {
-    try {
-      const latest = await publicClient.getBlockNumber();
-      const blockTags = ["pending"];
-      const block = async (tag) => publicClient.getBlock({ blockTag: tag, includeTransactions: true });
-      const numbered = async (n) => publicClient.getBlock({ blockNumber: n, includeTransactions: true });
-      for (const tag of blockTags) {
-        try {
-          const b2 = await block(tag);
-          for (const tx of b2.transactions) {
-            if (typeof tx === "string") continue;
-            if (((_a3 = tx.from) == null ? void 0 : _a3.toLowerCase()) === user && Number(tx.nonce) === expectedNonce && typeof tx.to === "string" && tx.to.toLowerCase() === target) {
-              return tx.hash;
-            }
-          }
-        } catch {
-        }
-      }
-      for (let i = 0; i < scanBlocks; i++) {
-        const bn = latest - BigInt(i);
-        if (bn < 0n) break;
-        try {
-          const b2 = await numbered(bn);
-          for (const tx of b2.transactions) {
-            if (typeof tx === "string") continue;
-            if (((_b3 = tx.from) == null ? void 0 : _b3.toLowerCase()) === user && Number(tx.nonce) === expectedNonce && typeof tx.to === "string" && tx.to.toLowerCase() === target) {
-              return tx.hash;
-            }
-          }
-        } catch {
-        }
-      }
-    } catch {
-    }
-    await new Promise((r2) => setTimeout(r2, pollMs));
-  }
-  return null;
-}
-const CKERC20_DEPOSIT_SELECTOR = "0x26b3293f";
-const ERC20_APPROVE_SELECTOR = "0x095ea7b3";
-async function verifyHashIsDeposit(txHash, expectedTo) {
-  try {
-    const tx = await publicClient.getTransaction({ hash: txHash });
-    if (!tx) return { ok: false, code: "not_found", detail: "Transaction not found on Ethereum mainnet." };
-    const actualTo = (tx.to ?? "").toLowerCase();
-    const expected = expectedTo.toLowerCase();
-    const input = (tx.input ?? "0x").toLowerCase();
-    if (input.startsWith(ERC20_APPROVE_SELECTOR)) {
-      return {
-        ok: false,
-        code: "approve_tx",
-        detail: "This is the UNI approve transaction (the first one your wallet signed). The deposit is the NEXT transaction — check your wallet's activity tab for one sent to the Banking.Brave bridge contract."
-      };
-    }
-    if (actualTo !== expected) {
-      return {
-        ok: false,
-        code: "wrong_to",
-        detail: `Transaction is to ${actualTo || "(none)"}, not the bridge contract ${expected}. Did you paste the wrong hash?`
-      };
-    }
-    if (!input.startsWith(CKERC20_DEPOSIT_SELECTOR)) {
-      return {
-        ok: false,
-        code: "wrong_selector",
-        detail: `Transaction to the bridge doesn't look like a deposit call (selector ${input.slice(0, 10)}). Double-check the hash.`
-      };
-    }
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      code: "rpc_error",
-      detail: `Couldn't reach Ethereum RPC to pre-check (${err instanceof Error ? err.message : String(err)}). Submitting anyway — the backend will verify.`
-    };
-  }
-}
 function parseDecimalToBigInt(value, decimals) {
   const clean2 = value.trim();
   if (!/^\d*\.?\d*$/.test(clean2) || clean2 === "" || clean2 === ".") {
@@ -41497,8 +41397,8 @@ function extractTxHash(value) {
   if (typeof value === "string") return fromString2(value);
   if (!value || typeof value !== "object") return null;
   const obj = value;
-  for (const key of ["hash", "transactionHash", "txHash", "result", "tx"]) {
-    const v2 = obj[key];
+  for (const key2 of ["hash", "transactionHash", "txHash", "result", "tx"]) {
+    const v2 = obj[key2];
     if (typeof v2 === "string") {
       const hit = fromString2(v2);
       if (hit) return hit;
@@ -41658,7 +41558,7 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$B = [
+const __iconNode$v = [
   [
     "path",
     {
@@ -41667,143 +41567,68 @@ const __iconNode$B = [
     }
   ]
 ];
-const Activity = createLucideIcon("activity", __iconNode$B);
+const Activity = createLucideIcon("activity", __iconNode$v);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$A = [
-  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
-  ["path", { d: "M4 7h16", key: "6tx8e3" }],
-  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
-  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+const __iconNode$u = [
+  ["path", { d: "M12 17V3", key: "1cwfxf" }],
+  ["path", { d: "m6 11 6 6 6-6", key: "12ii2o" }],
+  ["path", { d: "M19 21H5", key: "150jfl" }]
 ];
-const ArrowLeftRight = createLucideIcon("arrow-left-right", __iconNode$A);
+const ArrowDownToLine = createLucideIcon("arrow-down-to-line", __iconNode$u);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$z = [
-  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
-  ["path", { d: "M19 12H5", key: "x3x0zl" }]
-];
-const ArrowLeft = createLucideIcon("arrow-left", __iconNode$z);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$y = [
+const __iconNode$t = [
   ["path", { d: "m16 3 4 4-4 4", key: "1x1c3m" }],
   ["path", { d: "M20 7H4", key: "zbl0bi" }],
   ["path", { d: "m8 21-4-4 4-4", key: "h9nckh" }],
   ["path", { d: "M4 17h16", key: "g4d7ey" }]
 ];
-const ArrowRightLeft = createLucideIcon("arrow-right-left", __iconNode$y);
+const ArrowRightLeft = createLucideIcon("arrow-right-left", __iconNode$t);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$x = [
-  ["path", { d: "M7 7h10v10", key: "1tivn9" }],
-  ["path", { d: "M7 17 17 7", key: "1vkiza" }]
+const __iconNode$s = [
+  ["path", { d: "m18 9-6-6-6 6", key: "kcunyi" }],
+  ["path", { d: "M12 3v14", key: "7cf3v8" }],
+  ["path", { d: "M5 21h14", key: "11awu3" }]
 ];
-const ArrowUpRight = createLucideIcon("arrow-up-right", __iconNode$x);
+const ArrowUpFromLine = createLucideIcon("arrow-up-from-line", __iconNode$s);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$w = [
-  [
-    "path",
-    {
-      d: "M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042.348-1.97M7.48 20.364l3.126-17.727",
-      key: "yr8idg"
-    }
-  ]
-];
-const Bitcoin = createLucideIcon("bitcoin", __iconNode$w);
+const __iconNode$r = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$r);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$v = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$v);
+const __iconNode$q = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$q);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$u = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$u);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$t = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("chevron-right", __iconNode$t);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$s = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
-const ChevronUp = createLucideIcon("chevron-up", __iconNode$s);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$r = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
-];
-const CircleAlert = createLucideIcon("circle-alert", __iconNode$r);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$q = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
-];
-const CircleCheck = createLucideIcon("circle-check", __iconNode$q);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$p = [
-  ["path", { d: "M10.1 2.182a10 10 0 0 1 3.8 0", key: "5ilxe3" }],
-  ["path", { d: "M13.9 21.818a10 10 0 0 1-3.8 0", key: "11zvb9" }],
-  ["path", { d: "M17.609 3.721a10 10 0 0 1 2.69 2.7", key: "1iw5b2" }],
-  ["path", { d: "M2.182 13.9a10 10 0 0 1 0-3.8", key: "c0bmvh" }],
-  ["path", { d: "M20.279 17.609a10 10 0 0 1-2.7 2.69", key: "1ruxm7" }],
-  ["path", { d: "M21.818 10.1a10 10 0 0 1 0 3.8", key: "qkgqxc" }],
-  ["path", { d: "M3.721 6.391a10 10 0 0 1 2.7-2.69", key: "1mcia2" }],
-  ["path", { d: "M6.391 20.279a10 10 0 0 1-2.69-2.7", key: "1fvljs" }]
-];
-const CircleDashed = createLucideIcon("circle-dashed", __iconNode$p);
+const __iconNode$p = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$p);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41811,11 +41636,11 @@ const CircleDashed = createLucideIcon("circle-dashed", __iconNode$p);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$o = [
-  ["path", { d: "M18 20a6 6 0 0 0-12 0", key: "1qehca" }],
-  ["circle", { cx: "12", cy: "10", r: "4", key: "1h16sb" }],
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
 ];
-const CircleUserRound = createLucideIcon("circle-user-round", __iconNode$o);
+const CircleAlert = createLucideIcon("circle-alert", __iconNode$o);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41824,10 +41649,9 @@ const CircleUserRound = createLucideIcon("circle-user-round", __iconNode$o);
  */
 const __iconNode$n = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CircleX = createLucideIcon("circle-x", __iconNode$n);
+const CircleCheck = createLucideIcon("circle-check", __iconNode$n);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41835,10 +41659,11 @@ const CircleX = createLucideIcon("circle-x", __iconNode$n);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$m = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
+  ["path", { d: "M18 20a6 6 0 0 0-12 0", key: "1qehca" }],
+  ["circle", { cx: "12", cy: "10", r: "4", key: "1h16sb" }],
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
 ];
-const Clock = createLucideIcon("clock", __iconNode$m);
+const CircleUserRound = createLucideIcon("circle-user-round", __iconNode$m);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41846,12 +41671,11 @@ const Clock = createLucideIcon("clock", __iconNode$m);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$l = [
-  ["circle", { cx: "8", cy: "8", r: "6", key: "3yglwk" }],
-  ["path", { d: "M18.09 10.37A6 6 0 1 1 10.34 18", key: "t5s6rm" }],
-  ["path", { d: "M7 6h1v4", key: "1obek4" }],
-  ["path", { d: "m16.71 13.88.7.71-2.82 2.82", key: "1rbuyh" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
 ];
-const Coins = createLucideIcon("coins", __iconNode$l);
+const CircleX = createLucideIcon("circle-x", __iconNode$l);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41859,10 +41683,10 @@ const Coins = createLucideIcon("coins", __iconNode$l);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$k = [
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
 ];
-const Copy = createLucideIcon("copy", __iconNode$k);
+const Clock = createLucideIcon("clock", __iconNode$k);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41870,11 +41694,12 @@ const Copy = createLucideIcon("copy", __iconNode$k);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$j = [
-  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
-  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
-  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
+  ["circle", { cx: "8", cy: "8", r: "6", key: "3yglwk" }],
+  ["path", { d: "M18.09 10.37A6 6 0 1 1 10.34 18", key: "t5s6rm" }],
+  ["path", { d: "M7 6h1v4", key: "1obek4" }],
+  ["path", { d: "m16.71 13.88.7.71-2.82 2.82", key: "1rbuyh" }]
 ];
-const ExternalLink = createLucideIcon("external-link", __iconNode$j);
+const Coins = createLucideIcon("coins", __iconNode$j);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41882,15 +41707,10 @@ const ExternalLink = createLucideIcon("external-link", __iconNode$j);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$i = [
-  [
-    "path",
-    {
-      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
-      key: "96xj49"
-    }
-  ]
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const Flame = createLucideIcon("flame", __iconNode$i);
+const Copy = createLucideIcon("copy", __iconNode$i);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41898,15 +41718,11 @@ const Flame = createLucideIcon("flame", __iconNode$i);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$h = [
-  [
-    "path",
-    {
-      d: "M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z",
-      key: "sc7q7i"
-    }
-  ]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
+  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
+  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
 ];
-const Funnel = createLucideIcon("funnel", __iconNode$h);
+const Ellipsis = createLucideIcon("ellipsis", __iconNode$h);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41914,28 +41730,29 @@ const Funnel = createLucideIcon("funnel", __iconNode$h);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$g = [
+  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
+  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
+  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
+];
+const ExternalLink = createLucideIcon("external-link", __iconNode$g);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$f = [
   ["path", { d: "M6 16c5 0 7-8 12-8a4 4 0 0 1 0 8c-5 0-7-8-12-8a4 4 0 1 0 0 8", key: "18ogeb" }]
 ];
-const Infinity$1 = createLucideIcon("infinity", __iconNode$g);
+const Infinity$1 = createLucideIcon("infinity", __iconNode$f);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$f = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("loader-circle", __iconNode$f);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$e = [
-  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
-  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
-];
-const Lock = createLucideIcon("lock", __iconNode$e);
+const __iconNode$e = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("loader-circle", __iconNode$e);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41943,11 +41760,10 @@ const Lock = createLucideIcon("lock", __iconNode$e);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$d = [
-  ["path", { d: "m16 17 5-5-5-5", key: "1bji2h" }],
-  ["path", { d: "M21 12H9", key: "dn1m92" }],
-  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }]
+  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
+  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
 ];
-const LogOut = createLucideIcon("log-out", __iconNode$d);
+const Lock = createLucideIcon("lock", __iconNode$d);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41955,9 +41771,11 @@ const LogOut = createLucideIcon("log-out", __iconNode$d);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$c = [
-  ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
+  ["path", { d: "m16 17 5-5-5-5", key: "1bji2h" }],
+  ["path", { d: "M21 12H9", key: "dn1m92" }],
+  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }]
 ];
-const Moon = createLucideIcon("moon", __iconNode$c);
+const LogOut = createLucideIcon("log-out", __iconNode$c);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41965,12 +41783,9 @@ const Moon = createLucideIcon("moon", __iconNode$c);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$b = [
-  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
-  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
-  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
-  ["path", { d: "M8 16H3v5", key: "1cv678" }]
+  ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
 ];
-const RefreshCw = createLucideIcon("refresh-cw", __iconNode$b);
+const Moon = createLucideIcon("moon", __iconNode$b);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41978,16 +41793,30 @@ const RefreshCw = createLucideIcon("refresh-cw", __iconNode$b);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$a = [
+  ["path", { d: "M14.531 12.469 6.619 20.38a1 1 0 1 1-3-3l7.912-7.912", key: "we99rg" }],
   [
     "path",
     {
-      d: "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z",
-      key: "1ffxy3"
+      d: "M15.686 4.314A12.5 12.5 0 0 0 5.461 2.958 1 1 0 0 0 5.58 4.71a22 22 0 0 1 6.318 3.393",
+      key: "1w6hck"
     }
   ],
-  ["path", { d: "m21.854 2.147-10.94 10.939", key: "12cjpa" }]
+  [
+    "path",
+    {
+      d: "M17.7 3.7a1 1 0 0 0-1.4 0l-4.6 4.6a1 1 0 0 0 0 1.4l2.6 2.6a1 1 0 0 0 1.4 0l4.6-4.6a1 1 0 0 0 0-1.4z",
+      key: "15hgfx"
+    }
+  ],
+  [
+    "path",
+    {
+      d: "M19.686 8.314a12.501 12.501 0 0 1 1.356 10.225 1 1 0 0 1-1.751-.119 22 22 0 0 0-3.393-6.319",
+      key: "452b4h"
+    }
+  ]
 ];
-const Send = createLucideIcon("send", __iconNode$a);
+const Pickaxe = createLucideIcon("pickaxe", __iconNode$a);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41995,16 +41824,12 @@ const Send = createLucideIcon("send", __iconNode$a);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$9 = [
-  [
-    "path",
-    {
-      d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",
-      key: "1qme2f"
-    }
-  ],
-  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
+  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
+  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
+  ["path", { d: "M8 16H3v5", key: "1cv678" }]
 ];
-const Settings = createLucideIcon("settings", __iconNode$9);
+const RefreshCw = createLucideIcon("refresh-cw", __iconNode$9);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -42015,13 +41840,13 @@ const __iconNode$8 = [
   [
     "path",
     {
-      d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
-      key: "oel41y"
+      d: "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z",
+      key: "1ffxy3"
     }
   ],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+  ["path", { d: "m21.854 2.147-10.94 10.939", key: "12cjpa" }]
 ];
-const ShieldCheck = createLucideIcon("shield-check", __iconNode$8);
+const Send = createLucideIcon("send", __iconNode$8);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -42032,12 +41857,13 @@ const __iconNode$7 = [
   [
     "path",
     {
-      d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
-      key: "oel41y"
+      d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",
+      key: "1qme2f"
     }
-  ]
+  ],
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
 ];
-const Shield = createLucideIcon("shield", __iconNode$7);
+const Settings = createLucideIcon("settings", __iconNode$7);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -42045,10 +41871,16 @@ const Shield = createLucideIcon("shield", __iconNode$7);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$6 = [
-  ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2", key: "1yt0o3" }],
-  ["path", { d: "M12 18h.01", key: "mhygvu" }]
+  [
+    "path",
+    {
+      d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
+      key: "oel41y"
+    }
+  ],
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const Smartphone = createLucideIcon("smartphone", __iconNode$6);
+const ShieldCheck = createLucideIcon("shield-check", __iconNode$6);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -42056,6 +41888,17 @@ const Smartphone = createLucideIcon("smartphone", __iconNode$6);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$5 = [
+  ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2", key: "1yt0o3" }],
+  ["path", { d: "M12 18h.01", key: "mhygvu" }]
+];
+const Smartphone = createLucideIcon("smartphone", __iconNode$5);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$4 = [
   [
     "path",
     {
@@ -42068,14 +41911,14 @@ const __iconNode$5 = [
   ["path", { d: "M4 17v2", key: "vumght" }],
   ["path", { d: "M5 18H3", key: "zchphs" }]
 ];
-const Sparkles = createLucideIcon("sparkles", __iconNode$5);
+const Sparkles = createLucideIcon("sparkles", __iconNode$4);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$4 = [
+const __iconNode$3 = [
   ["circle", { cx: "12", cy: "12", r: "4", key: "4exip2" }],
   ["path", { d: "M12 2v2", key: "tus03m" }],
   ["path", { d: "M12 20v2", key: "1lh1kg" }],
@@ -42086,18 +41929,7 @@ const __iconNode$4 = [
   ["path", { d: "m6.34 17.66-1.41 1.41", key: "1m8zz5" }],
   ["path", { d: "m19.07 4.93-1.41 1.41", key: "1shlcs" }]
 ];
-const Sun = createLucideIcon("sun", __iconNode$4);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$3 = [
-  ["path", { d: "M16 7h6v6", key: "box55l" }],
-  ["path", { d: "m22 7-8.5 8.5-5-5L2 17", key: "1t1m79" }]
-];
-const TrendingUp = createLucideIcon("trending-up", __iconNode$3);
+const Sun = createLucideIcon("sun", __iconNode$3);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -42105,6 +41937,17 @@ const TrendingUp = createLucideIcon("trending-up", __iconNode$3);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$2 = [
+  ["path", { d: "M16 7h6v6", key: "box55l" }],
+  ["path", { d: "m22 7-8.5 8.5-5-5L2 17", key: "1t1m79" }]
+];
+const TrendingUp = createLucideIcon("trending-up", __iconNode$2);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$1 = [
   [
     "path",
     {
@@ -42114,18 +41957,7 @@ const __iconNode$2 = [
   ],
   ["path", { d: "M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4", key: "xoc0q4" }]
 ];
-const Wallet = createLucideIcon("wallet", __iconNode$2);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$1 = [
-  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
-  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
-];
-const X = createLucideIcon("x", __iconNode$1);
+const Wallet = createLucideIcon("wallet", __iconNode$1);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -42133,15 +41965,10 @@ const X = createLucideIcon("x", __iconNode$1);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode = [
-  [
-    "path",
-    {
-      d: "M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z",
-      key: "1xq2db"
-    }
-  ]
+  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
+  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
 ];
-const Zap = createLucideIcon("zap", __iconNode);
+const X = createLucideIcon("x", __iconNode);
 var jt = (n) => {
   switch (n) {
     case "success":
@@ -42418,110 +42245,59 @@ reactExports.forwardRef(function(e, t) {
     })) : null;
   }));
 });
-function CrossChainFlow({ phase, amount }) {
-  const flowing = phase !== "done";
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative rounded-2xl border border-zinc-800 bg-black/30 p-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      ChainCard,
-      {
-        title: "Ethereum",
-        subtitle: amount ? `${amount} UNI` : "UNI",
-        accent: "#627EEA",
-        glyph: /* @__PURE__ */ jsxRuntimeExports.jsx(EthGlyph, {}),
-        active: phase === "eth",
-        done: phase !== "eth"
-      }
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative flex-1 mx-2 self-center", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-px bg-gradient-to-r from-[#627EEA]/40 via-zinc-700 to-[#F15A24]/40 relative overflow-hidden rounded-full", children: flowing && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "span",
-          {
-            className: "absolute inset-y-0 w-6 rounded-full bg-gradient-to-r from-transparent via-yellow-300/80 to-transparent",
-            style: { animation: "xchain-flow 2.4s linear infinite" }
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "span",
-          {
-            className: "absolute inset-y-0 w-3 rounded-full bg-gradient-to-r from-transparent via-emerald-300/60 to-transparent",
-            style: { animation: "xchain-flow 2.4s linear infinite", animationDelay: "1.2s" }
-          }
-        )
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "div",
-        {
-          className: `w-7 h-7 rounded-full flex items-center justify-center border-2 shadow-lg transition-all ${phase === "bridge" ? "bg-yellow-500/20 border-yellow-400 animate-pulse" : phase === "done" ? "bg-emerald-500/20 border-emerald-400" : "bg-zinc-900 border-zinc-700"}`,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Infinity$1,
-            {
-              size: 14,
-              className: phase === "bridge" ? "text-yellow-300" : phase === "done" ? "text-emerald-400" : "text-zinc-500"
-            }
-          )
-        }
-      ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute left-1/2 -translate-x-1/2 top-full mt-3 text-[9px] font-black uppercase tracking-widest text-zinc-600 whitespace-nowrap", children: "ckERC-20" })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      ChainCard,
-      {
-        title: "ICP",
-        subtitle: phase === "done" ? "sGLDT minted" : "ckUNI → sGLDT",
-        accent: "#F15A24",
-        glyph: /* @__PURE__ */ jsxRuntimeExports.jsx(IcpGlyph, {}),
-        active: phase === "icp" || phase === "done",
-        done: phase === "done"
-      }
-    )
-  ] }) });
-}
-function ChainCard({
-  title,
-  subtitle,
-  accent,
-  glyph,
-  active,
-  done
+function PhaseAwaitingDeposit({
+  depositAddress,
+  copied,
+  onCopyAddress,
+  onCancel
 }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
-      className: `rounded-xl border p-3 min-w-[100px] transition-all ${active ? "border-yellow-400/50 bg-yellow-500/5" : done ? "border-emerald-500/30 bg-emerald-500/5" : "border-zinc-800 bg-zinc-900/40"}`,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
+      "data-ocid": "refinery.awaiting_deposit_state",
+      className: "space-y-4",
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 px-1", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-yellow-400 animate-pulse shrink-0" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-yellow-400 text-sm", children: "Waiting for your deposit on Ethereum..." })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-zinc-900 border border-zinc-700 p-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-2", children: "Send UNI to this address" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "code",
+              {
+                className: "flex-1 text-xs text-yellow-300 font-mono break-all leading-relaxed",
+                "data-ocid": "refinery.deposit_address",
+                children: depositAddress
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                "data-ocid": "refinery.copy_deposit_address.button",
+                onClick: onCopyAddress,
+                "aria-label": "Copy deposit address",
+                className: "shrink-0 w-9 h-9 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 flex items-center justify-center transition-colors",
+                children: copied ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 15, className: "text-emerald-400" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 15, className: "text-zinc-400" })
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex gap-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
           {
-            className: "w-7 h-7 rounded-full flex items-center justify-center shrink-0",
-            style: { background: accent },
-            children: glyph
+            type: "button",
+            "data-ocid": "refinery.cancel.button",
+            onClick: onCancel,
+            className: "flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 font-bold h-14 rounded-2xl transition-all",
+            children: "Cancel"
           }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] font-black text-white leading-tight", children: title }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[9px] text-zinc-400 font-mono truncate", children: subtitle })
-        ] })
-      ] })
+        ) })
+      ]
     }
   );
-}
-function EthGlyph() {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "14", height: "14", viewBox: "0 0 16 16", "aria-hidden": true, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M8 1.5 L3.5 8.5 L8 11 L12.5 8.5 Z", fill: "#ffffff", opacity: "0.95" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M8 1.5 L3.5 8.5 L8 6 Z", fill: "#ffffff", opacity: "0.6" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M8 12 L3.5 9 L8 14.5 Z", fill: "#ffffff", opacity: "0.8" })
-  ] });
-}
-function IcpGlyph() {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { width: "14", height: "14", viewBox: "0 0 24 24", "aria-hidden": true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-    "path",
-    {
-      d: "M3 12c0-3 2.5-5.5 5.5-5.5 1.7 0 3.3.8 4.3 2l3.4 3.8c1 1.1 2.4 1.7 3.8 1.7 1.4 0 2.5-1.1 2.5-2.5S21.4 9 20 9c-1.4 0-2.8.6-3.8 1.7l-3.4 3.8c-1 1.2-2.6 2-4.3 2C5.5 16.5 3 14 3 12Z",
-      fill: "#ffffff",
-      opacity: "0.95"
-    }
-  ) });
 }
 function r(e) {
   var t, f2, n = "";
@@ -42550,24 +42326,24 @@ const cva = (base, config) => (props) => {
     return variants[variant][variantKey];
   });
   const propsWithoutUndefined = props && Object.entries(props).reduce((acc, param) => {
-    let [key, value] = param;
+    let [key2, value] = param;
     if (value === void 0) {
       return acc;
     }
-    acc[key] = value;
+    acc[key2] = value;
     return acc;
   }, {});
   const getCompoundVariantClassNames = config === null || config === void 0 ? void 0 : (_config_compoundVariants = config.compoundVariants) === null || _config_compoundVariants === void 0 ? void 0 : _config_compoundVariants.reduce((acc, param) => {
     let { class: cvClass, className: cvClassName, ...compoundVariantOptions } = param;
     return Object.entries(compoundVariantOptions).every((param2) => {
-      let [key, value] = param2;
+      let [key2, value] = param2;
       return Array.isArray(value) ? value.includes({
         ...defaultVariants,
         ...propsWithoutUndefined
-      }[key]) : {
+      }[key2]) : {
         ...defaultVariants,
         ...propsWithoutUndefined
-      }[key] === value;
+      }[key2] === value;
     }) ? [
       ...acc,
       cvClass,
@@ -42664,8 +42440,8 @@ const processClassesRecursively = (classGroup, classPartObject, classGroupId, th
       });
       return;
     }
-    Object.entries(classDefinition).forEach(([key, classGroup2]) => {
-      processClassesRecursively(classGroup2, getPart(classPartObject, key), classGroupId, theme);
+    Object.entries(classDefinition).forEach(([key2, classGroup2]) => {
+      processClassesRecursively(classGroup2, getPart(classPartObject, key2), classGroupId, theme);
     });
   });
 };
@@ -42693,7 +42469,7 @@ const getPrefixedClassGroupEntries = (classGroupEntries, prefix2) => {
         return prefix2 + classDefinition;
       }
       if (typeof classDefinition === "object") {
-        return Object.fromEntries(Object.entries(classDefinition).map(([key, value]) => [prefix2 + key, value]));
+        return Object.fromEntries(Object.entries(classDefinition).map(([key2, value]) => [prefix2 + key2, value]));
       }
       return classDefinition;
     });
@@ -42711,8 +42487,8 @@ const createLruCache = (maxCacheSize) => {
   let cacheSize = 0;
   let cache = /* @__PURE__ */ new Map();
   let previousCache = /* @__PURE__ */ new Map();
-  const update = (key, value) => {
-    cache.set(key, value);
+  const update = (key2, value) => {
+    cache.set(key2, value);
     cacheSize++;
     if (cacheSize > maxCacheSize) {
       cacheSize = 0;
@@ -42721,21 +42497,21 @@ const createLruCache = (maxCacheSize) => {
     }
   };
   return {
-    get(key) {
-      let value = cache.get(key);
+    get(key2) {
+      let value = cache.get(key2);
       if (value !== void 0) {
         return value;
       }
-      if ((value = previousCache.get(key)) !== void 0) {
-        update(key, value);
+      if ((value = previousCache.get(key2)) !== void 0) {
+        update(key2, value);
         return value;
       }
     },
-    set(key, value) {
-      if (cache.has(key)) {
-        cache.set(key, value);
+    set(key2, value) {
+      if (cache.has(key2)) {
+        cache.set(key2, value);
       } else {
-        update(key, value);
+        update(key2, value);
       }
     }
   };
@@ -42920,8 +42696,8 @@ function createTailwindMerge(createConfigFirst, ...createConfigRest) {
     return functionToCall(twJoin.apply(null, arguments));
   };
 }
-const fromTheme = (key) => {
-  const themeGetter = (theme) => theme[key] || [];
+const fromTheme = (key2) => {
+  const themeGetter = (theme) => theme[key2] || [];
   themeGetter.isThemeGetter = true;
   return themeGetter;
 };
@@ -45138,6 +44914,514 @@ function GoldCTA({
     }
   );
 }
+function PhaseError({
+  statusMsg,
+  currentTxHash,
+  pollAttempt,
+  retryErrorMsg,
+  miningSteps,
+  retryRefineAvailable,
+  retryRefineBalance,
+  onRetryRefine,
+  onViewHistory,
+  onTryAgain
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { "data-ocid": "refinery.error_state", className: "space-y-4", children: statusMsg === "still_processing" ? (
+    /* Soft state: ETH confirmed but backend still processing — auto-polling */
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-amber-500/10 border border-amber-500/30 p-5 flex items-start gap-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "shrink-0 pt-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 22, className: "text-amber-400 animate-spin" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 pt-1", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-amber-400 mb-1", children: "Ethereum Transaction Confirmed" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-400 mb-2", children: "Still mining — checking your sGLDT release automatically every 3 seconds." }),
+          currentTxHash && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "a",
+            {
+              href: `https://etherscan.io/tx/${currentTxHash}`,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 underline transition-colors",
+              "data-ocid": "refinery.etherscan_processing.link",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { size: 11 }),
+                "View on Etherscan"
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-600 mt-2 font-mono animate-pulse", children: [
+            "Checking transaction... (attempt ",
+            pollAttempt,
+            ")"
+          ] })
+        ] })
+      ] }),
+      retryErrorMsg && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
+        {
+          "data-ocid": "refinery.retry_error.error_state",
+          className: "rounded-2xl bg-red-500/10 border border-red-500/30 p-4 flex items-start gap-3",
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              CircleX,
+              {
+                className: "text-red-400 flex-shrink-0 mt-0.5",
+                size: 18
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-semibold text-red-400 mb-0.5", children: "Payout Error" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-400", children: retryErrorMsg }),
+              retryErrorMsg.toLowerCase().includes("too low") && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500 mt-1", children: "The treasury needs to be topped up with sGLDT before this payout can complete. Your deposit is safe — retrying automatically." })
+            ] })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          "data-ocid": "refinery.view_history.button",
+          onClick: onViewHistory,
+          className: "w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold h-12 rounded-2xl transition-all text-sm",
+          children: "View Transaction History"
+        }
+      )
+    ] })
+  ) : (
+    /* Hard error state */
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-red-500/10 border border-red-500/30 p-5 flex items-start gap-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          CircleX,
+          {
+            className: "text-red-400 flex-shrink-0 mt-0.5",
+            size: 20
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-red-400 mb-1", children: "Error" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-400", children: statusMsg }),
+          currentTxHash && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "a",
+            {
+              href: `https://etherscan.io/tx/${currentTxHash}`,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "mt-2 inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 underline transition-colors",
+              "data-ocid": "refinery.etherscan_error.link",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { size: 11 }),
+                "Track on Etherscan"
+              ]
+            }
+          )
+        ] })
+      ] }),
+      miningSteps.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-zinc-900 border border-zinc-700/50 p-4 space-y-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest", children: "Progress" }),
+        miningSteps.map((s) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-2 text-xs", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "mt-0.5 shrink-0 text-sm", children: s.status === "done" ? "✅" : s.status === "error" ? "❌" : s.status === "active" ? "⏳" : "⚪" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: s.status === "done" ? "text-emerald-400" : s.status === "error" ? "text-red-400" : s.status === "active" ? "text-yellow-400" : "text-zinc-500", children: s.label }),
+            s.detail && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] text-zinc-500 font-mono break-all mt-0.5", children: s.detail })
+          ] })
+        ] }, s.id))
+      ] }),
+      retryRefineAvailable && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-yellow-500/10 border border-yellow-500/40 p-4 space-y-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14, className: "text-yellow-400 shrink-0 mt-0.5" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[11px] text-yellow-200/90 leading-relaxed", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("strong", { className: "block text-yellow-200 mb-0.5", children: [
+              "Your ckUNI is safe in your own account",
+              retryRefineBalance ? ` (${retryRefineBalance} ckUNI)` : "",
+              "."
+            ] }),
+            "The swap into sGLDT didn't complete — tap below to retry it. Nothing was lost: failed swaps refund the ckUNI automatically."
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          GoldCTA,
+          {
+            "data-ocid": "refinery.retry_refine.button",
+            tone: "primary",
+            size: "md",
+            trailingIcon: null,
+            onClick: onRetryRefine,
+            children: "Refine my ckUNI"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        GoldCTA,
+        {
+          "data-ocid": "refinery.try_again.button",
+          tone: "neutral",
+          size: "md",
+          trailingIcon: null,
+          onClick: onTryAgain,
+          children: "Try Again"
+        }
+      )
+    ] })
+  ) });
+}
+const jitter = (seed) => {
+  const s = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
+  return s - Math.floor(s);
+};
+function MineShaftDemo() {
+  const [confs, setConfs] = reactExports.useState(0);
+  reactExports.useEffect(() => {
+    const id = setInterval(() => setConfs((c2) => c2 >= 14 ? 0 : c2 + 1), 2500);
+    return () => clearInterval(id);
+  }, []);
+  const stage = confs === 0 ? "surface" : confs >= 12 ? "sealing" : "confirming";
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen bg-black flex items-center justify-center p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-sm space-y-3", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-center text-xs font-mono text-zinc-500", children: [
+      "shaft demo · conf ",
+      Math.min(confs, 12),
+      "/12 · stage ",
+      stage
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      MineShaft,
+      {
+        confirmations: Math.min(confs, 12),
+        targetConfirmations: 12,
+        stage,
+        height: 480
+      }
+    ) })
+  ] }) });
+}
+function MineShaft({
+  confirmations,
+  targetConfirmations,
+  stage,
+  height = 380
+}) {
+  const wrapRef = reactExports.useRef(null);
+  const canvasRef = reactExports.useRef(null);
+  const inputRef = reactExports.useRef({ confirmations, targetConfirmations, stage });
+  inputRef.current = { confirmations, targetConfirmations, stage };
+  const redrawRef = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    var _a3, _b3, _c2;
+    const wrap2 = wrapRef.current;
+    const canvas = canvasRef.current;
+    if (!wrap2 || !canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const rmQuery = (_a3 = window.matchMedia) == null ? void 0 : _a3.call(window, "(prefers-reduced-motion: reduce)");
+    let reduced = (rmQuery == null ? void 0 : rmQuery.matches) ?? false;
+    let cssW = wrap2.clientWidth || 300;
+    const computeH = () => height ?? Math.max(320, Math.min(520, Math.round((window.innerHeight || 760) * 0.52)));
+    let cssH = computeH();
+    const applySize = () => {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      cssW = wrap2.clientWidth || 300;
+      cssH = computeH();
+      canvas.width = Math.round(cssW * dpr);
+      canvas.height = Math.round(cssH * dpr);
+      canvas.style.width = `${cssW}px`;
+      canvas.style.height = `${cssH}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    applySize();
+    const ro = new ResizeObserver(() => {
+      applySize();
+      if (reduced) drawFrame(0);
+    });
+    ro.observe(wrap2);
+    const onWinResize = () => {
+      applySize();
+      if (reduced) drawFrame(0);
+    };
+    window.addEventListener("resize", onWinResize);
+    const PAD_TOP = 44;
+    const BAND_H = 46;
+    const SEAM_H = 42;
+    const CHAMBER_H = 150;
+    let cameraY = 0;
+    let drillYSmooth = PAD_TOP;
+    let breakProgress = 0;
+    let lastConfs = -1;
+    let particles = [];
+    let t = 0;
+    const spawnBurst = (x2, y2, gold, n) => {
+      for (let i = 0; i < n; i++) {
+        particles.push({
+          x: x2 + (Math.random() - 0.5) * 24,
+          y: y2 + (Math.random() - 0.5) * 8,
+          vx: (Math.random() - 0.5) * 1.6,
+          vy: -Math.random() * 1.4 - 0.2,
+          life: 1,
+          gold
+        });
+      }
+      if (particles.length > 160) particles = particles.slice(-160);
+    };
+    const drawFrame = (dt) => {
+      const { confirmations: confsRaw, targetConfirmations: target, stage: st2 } = inputRef.current;
+      const confs = Math.min(confsRaw, target);
+      const seamTop = PAD_TOP + target * BAND_H;
+      const chamberTop = seamTop + SEAM_H;
+      const worldH = chamberTop + CHAMBER_H;
+      const drillTargetY = st2 === "surface" ? PAD_TOP : st2 === "sealing" ? seamTop + SEAM_H * 0.5 : PAD_TOP + confs * BAND_H;
+      drillYSmooth += (drillTargetY - drillYSmooth) * Math.min(1, dt * 2.2);
+      if (confs !== lastConfs) {
+        if (lastConfs >= 0 && confs > lastConfs && !reduced) {
+          spawnBurst(cssW / 2, PAD_TOP + confs * BAND_H, false, 14);
+        }
+        lastConfs = confs;
+        breakProgress = 0;
+      }
+      breakProgress = Math.min(1, breakProgress + dt * 0.55);
+      const camTarget = Math.max(
+        0,
+        Math.min(drillYSmooth - cssH * 0.42, worldH - cssH)
+      );
+      cameraY += (camTarget - cameraY) * Math.min(1, dt * 2);
+      if (reduced) cameraY = camTarget;
+      const toScreen = (wy) => wy - cameraY;
+      ctx.clearRect(0, 0, cssW, cssH);
+      const bg = ctx.createLinearGradient(0, 0, 0, cssH);
+      const depthFrac = Math.min(1, cameraY / Math.max(1, worldH - cssH));
+      bg.addColorStop(0, `hsl(240 8% ${13 - depthFrac * 5}%)`);
+      bg.addColorStop(1, `hsl(240 10% ${9 - depthFrac * 4}%)`);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, cssW, cssH);
+      const surfScreen = toScreen(0);
+      if (surfScreen > -PAD_TOP) {
+        ctx.fillStyle = "#0b1020";
+        ctx.fillRect(0, surfScreen, cssW, PAD_TOP);
+        ctx.fillStyle = "rgba(148, 163, 184, 0.5)";
+        ctx.font = "700 9px ui-monospace, monospace";
+        ctx.textAlign = "center";
+        ctx.fillText("ETHEREUM SURFACE", cssW / 2, surfScreen + PAD_TOP - 8);
+      }
+      const shaftL = cssW * 0.16;
+      const shaftR = cssW * 0.84;
+      const glowStrength = st2 === "sealing" ? 1 : 0.25 + 0.75 * (confs / Math.max(1, target));
+      const chamberScreen = toScreen(chamberTop);
+      if (chamberScreen < cssH + CHAMBER_H) {
+        const gy = Math.min(cssH + 40, chamberScreen + CHAMBER_H * 0.55);
+        const glow = ctx.createRadialGradient(
+          cssW / 2,
+          gy,
+          6,
+          cssW / 2,
+          gy,
+          CHAMBER_H * 1.4
+        );
+        glow.addColorStop(0, `rgba(250, 204, 21, ${0.5 * glowStrength})`);
+        glow.addColorStop(0.5, `rgba(202, 138, 4, ${0.22 * glowStrength})`);
+        glow.addColorStop(1, "rgba(202, 138, 4, 0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, chamberScreen - CHAMBER_H, cssW, CHAMBER_H * 2.6);
+        for (let i = 0; i < 7; i++) {
+          const sx = shaftL + jitter(i * 3.7) * (shaftR - shaftL);
+          const sy = chamberScreen + 14 + jitter(i * 9.1) * (CHAMBER_H - 40);
+          const tw = reduced ? 0.6 : 0.4 + 0.6 * Math.abs(Math.sin(t * 2 + i * 1.9));
+          ctx.fillStyle = `rgba(253, 224, 71, ${0.35 + 0.5 * tw * glowStrength})`;
+          ctx.beginPath();
+          ctx.arc(sx, sy, 1.6 + tw * 1.4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      for (let i = 0; i < target; i++) {
+        const bandTop = PAD_TOP + i * BAND_H;
+        const sy = toScreen(bandTop);
+        if (sy > cssH || sy + BAND_H < 0) continue;
+        const broken = i < confs;
+        const active = i === confs && st2 === "confirming";
+        const hue = 25 + jitter(i) * 14;
+        const lit = broken ? 9 : 17 + jitter(i * 2.3) * 5;
+        ctx.fillStyle = `hsl(${hue} ${broken ? 8 : 22}% ${lit}%)`;
+        ctx.beginPath();
+        ctx.moveTo(shaftL, sy);
+        const steps = 7;
+        for (let s = 0; s <= steps; s++) {
+          const x2 = shaftL + (shaftR - shaftL) * s / steps;
+          ctx.lineTo(x2, sy + (jitter(i * 13 + s) - 0.5) * 7);
+        }
+        for (let s = steps; s >= 0; s--) {
+          const x2 = shaftL + (shaftR - shaftL) * s / steps;
+          ctx.lineTo(x2, sy + BAND_H + (jitter(i * 17 + s) - 0.5) * 7);
+        }
+        ctx.closePath();
+        ctx.fill();
+        if (broken) {
+          ctx.strokeStyle = "rgba(0,0,0,0.35)";
+          ctx.lineWidth = 1;
+          for (let r2 = 0; r2 < 4; r2++) {
+            const rx = shaftL + jitter(i * 31 + r2) * (shaftR - shaftL);
+            const ry = sy + 6 + jitter(i * 37 + r2) * (BAND_H - 12);
+            ctx.beginPath();
+            ctx.moveTo(rx - 5, ry);
+            ctx.lineTo(rx + 5, ry + 3);
+            ctx.stroke();
+          }
+        }
+        if (active) {
+          ctx.strokeStyle = `rgba(253, 224, 71, ${0.25 + 0.45 * breakProgress})`;
+          ctx.lineWidth = 1.4;
+          const cx2 = cssW / 2;
+          const cy2 = sy + BAND_H * 0.35;
+          for (let c2 = 0; c2 < 5; c2++) {
+            const ang = -Math.PI / 2 + (c2 - 2) * 0.5;
+            const len = (10 + jitter(i * 7 + c2) * 18) * breakProgress;
+            ctx.beginPath();
+            ctx.moveTo(cx2, cy2);
+            ctx.lineTo(cx2 + Math.cos(ang) * len, cy2 + Math.sin(ang) * len + len * 0.6);
+            ctx.stroke();
+          }
+        }
+        ctx.fillStyle = broken ? "rgba(163, 163, 163, 0.75)" : "rgba(113, 113, 122, 0.55)";
+        ctx.font = "700 9px ui-monospace, monospace";
+        ctx.textAlign = "right";
+        ctx.fillText(`${i + 1}`, shaftL - 8, sy + BAND_H * 0.62);
+        if (broken) {
+          ctx.fillStyle = "rgba(52, 211, 153, 0.9)";
+          ctx.fillText("✓", shaftL - 20, sy + BAND_H * 0.62);
+        }
+      }
+      const seamScreen = toScreen(seamTop);
+      if (seamScreen < cssH && seamScreen + SEAM_H > 0) {
+        const pulse = st2 === "sealing" && !reduced ? 0.55 + 0.45 * Math.abs(Math.sin(t * 3)) : 0.55;
+        const seamGrad = ctx.createLinearGradient(0, seamScreen, 0, seamScreen + SEAM_H);
+        seamGrad.addColorStop(0, `rgba(34, 211, 238, ${0.12 * pulse})`);
+        seamGrad.addColorStop(0.5, `rgba(103, 232, 249, ${0.3 * pulse})`);
+        seamGrad.addColorStop(1, `rgba(34, 211, 238, ${0.12 * pulse})`);
+        ctx.fillStyle = seamGrad;
+        ctx.fillRect(shaftL, seamScreen, shaftR - shaftL, SEAM_H);
+        for (let c2 = 0; c2 < 6; c2++) {
+          const cx2 = shaftL + 12 + jitter(c2 * 5.1) * (shaftR - shaftL - 24);
+          const cy2 = seamScreen + SEAM_H * (0.3 + jitter(c2 * 8.3) * 0.4);
+          ctx.fillStyle = `rgba(165, 243, 252, ${0.5 * pulse + 0.2})`;
+          ctx.beginPath();
+          ctx.moveTo(cx2, cy2 - 6);
+          ctx.lineTo(cx2 + 4, cy2);
+          ctx.lineTo(cx2, cy2 + 6);
+          ctx.lineTo(cx2 - 4, cy2);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.fillStyle = `rgba(165, 243, 252, ${0.75 * pulse + 0.2})`;
+        ctx.font = "800 8px ui-monospace, monospace";
+        ctx.textAlign = "center";
+        ctx.fillText("CHAIN-KEY SEAM · ICP", cssW / 2, seamScreen + SEAM_H / 2 + 3);
+      }
+      ctx.fillStyle = "rgba(0,0,0,0.5)";
+      ctx.fillRect(0, 0, shaftL, cssH);
+      ctx.fillRect(shaftR, 0, cssW - shaftR, cssH);
+      ctx.strokeStyle = "rgba(255,255,255,0.06)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(shaftL, 0);
+      ctx.lineTo(shaftL, cssH);
+      ctx.moveTo(shaftR, 0);
+      ctx.lineTo(shaftR, cssH);
+      ctx.stroke();
+      const dScreen = toScreen(drillYSmooth);
+      ctx.strokeStyle = "rgba(212, 212, 216, 0.5)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(cssW / 2, Math.min(dScreen, 0));
+      ctx.lineTo(cssW / 2, dScreen - 8);
+      ctx.stroke();
+      const bob = reduced || st2 !== "confirming" ? 0 : Math.sin(t * 9) * 2.5;
+      ctx.fillStyle = "#facc15";
+      ctx.beginPath();
+      ctx.moveTo(cssW / 2 - 7, dScreen - 8 + bob);
+      ctx.lineTo(cssW / 2 + 7, dScreen - 8 + bob);
+      ctx.lineTo(cssW / 2, dScreen + 6 + bob);
+      ctx.closePath();
+      ctx.fill();
+      if (!reduced) {
+        for (const p2 of particles) {
+          p2.x += p2.vx;
+          p2.y += p2.vy;
+          p2.vy += 0.05;
+          p2.life -= dt * 1.4;
+        }
+        particles = particles.filter((p2) => p2.life > 0);
+        for (const p2 of particles) {
+          ctx.fillStyle = p2.gold ? `rgba(253, 224, 71, ${p2.life})` : `rgba(168, 162, 158, ${p2.life * 0.8})`;
+          ctx.fillRect(p2.x, toScreen(p2.y), 2, 2);
+        }
+      }
+    };
+    let raf = 0;
+    let last = performance.now();
+    const loop = (now2) => {
+      const dt = Math.min(0.05, (now2 - last) / 1e3);
+      last = now2;
+      t += dt;
+      drawFrame(dt);
+      raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      cancelAnimationFrame(raf);
+      if (reduced) {
+        drawFrame(1);
+      } else {
+        last = performance.now();
+        raf = requestAnimationFrame(loop);
+      }
+    };
+    start();
+    redrawRef.current = () => {
+      if (reduced) drawFrame(1);
+    };
+    const onRmChange = (e) => {
+      reduced = e.matches;
+      start();
+    };
+    (_b3 = rmQuery == null ? void 0 : rmQuery.addEventListener) == null ? void 0 : _b3.call(rmQuery, "change", onRmChange);
+    try {
+      (_c2 = navigator.getBattery) == null ? void 0 : _c2.call(navigator).then(
+        (b2) => {
+          if (b2.level < 0.15 && !b2.charging) {
+            reduced = true;
+            start();
+          }
+        }
+      );
+    } catch {
+    }
+    const onVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(raf);
+      } else {
+        start();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      var _a4;
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      window.removeEventListener("resize", onWinResize);
+      document.removeEventListener("visibilitychange", onVisibility);
+      (_a4 = rmQuery == null ? void 0 : rmQuery.removeEventListener) == null ? void 0 : _a4.call(rmQuery, "change", onRmChange);
+      redrawRef.current = null;
+    };
+  }, [height]);
+  reactExports.useEffect(() => {
+    var _a3;
+    (_a3 = redrawRef.current) == null ? void 0 : _a3.call(redrawRef);
+  }, [confirmations, stage]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { ref: wrapRef, className: "w-full", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "canvas",
+    {
+      ref: canvasRef,
+      role: "img",
+      "aria-label": `Mine shaft progress: ${Math.min(confirmations, targetConfirmations)} of ${targetConfirmations} Ethereum blocks confirmed${stage === "sealing" ? "; at the chain-key seam, waiting for ckUNI to mint" : ""}`,
+      className: "block w-full rounded-2xl"
+    }
+  ) });
+}
 function WorkflowStepper({ currentStep, complete, errored }) {
   const steps = [
     { id: "wallet", label: "Sign in Wallet", icon: Wallet, status: resolveStatus(1, currentStep, complete, errored) },
@@ -45209,7 +45493,465 @@ function Connector({ fromStatus, toStatus }) {
     transitioning && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "absolute inset-0 bg-gradient-to-r from-transparent via-yellow-300/60 to-transparent animate-shimmer" })
   ] });
 }
-function PhaseSuccess({ sgldtReleased, currentTxHash, onStartNew }) {
+const canVibrate = () => {
+  var _a3, _b3;
+  try {
+    return typeof navigator !== "undefined" && "vibrate" in navigator && !((_b3 = (_a3 = window.matchMedia) == null ? void 0 : _a3.call(window, "(prefers-reduced-motion: reduce)")) == null ? void 0 : _b3.matches);
+  } catch {
+    return false;
+  }
+};
+let ticksSuppressedWhileHidden = false;
+try {
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && ticksSuppressedWhileHidden) {
+      ticksSuppressedWhileHidden = false;
+      if (canVibrate()) navigator.vibrate([30, 40, 30]);
+    }
+  });
+} catch {
+}
+const hapticTick = () => {
+  if (typeof document !== "undefined" && document.hidden) {
+    ticksSuppressedWhileHidden = true;
+    return;
+  }
+  if (canVibrate()) navigator.vibrate(18);
+};
+const hapticMilestone = () => {
+  if (canVibrate()) navigator.vibrate([30, 40, 30]);
+};
+const hapticSuccess = () => {
+  if (canVibrate()) navigator.vibrate([25, 50, 25, 50, 80]);
+};
+const hapticFailure = () => {
+  if (canVibrate()) navigator.vibrate(200);
+};
+function useEthConfirmations(txHash, targetConfirmations = 12) {
+  const [state, setState] = reactExports.useState({
+    minedInBlock: null,
+    head: null,
+    confirmations: 0,
+    receiptStatus: "unknown",
+    etaSec: targetConfirmations * 12
+  });
+  const lastBuzzedRef = reactExports.useRef(0);
+  reactExports.useEffect(() => {
+    const c2 = Math.min(state.confirmations, targetConfirmations);
+    if (c2 > lastBuzzedRef.current) {
+      lastBuzzedRef.current = c2;
+      hapticTick();
+    }
+  }, [state.confirmations, targetConfirmations]);
+  reactExports.useEffect(() => {
+    if (!txHash) {
+      setState({
+        minedInBlock: null,
+        head: null,
+        confirmations: 0,
+        receiptStatus: "unknown",
+        etaSec: targetConfirmations * 12
+      });
+      lastBuzzedRef.current = 0;
+      return;
+    }
+    let cancelled = false;
+    let minedInBlock = null;
+    const poll2 = async () => {
+      try {
+        const head = Number(await publicClient.getBlockNumber());
+        if (minedInBlock === null) {
+          try {
+            const receipt = await publicClient.getTransactionReceipt({
+              hash: txHash
+            });
+            minedInBlock = Number(receipt.blockNumber);
+            if (cancelled) return;
+            const confs2 = Math.max(0, head - minedInBlock + 1);
+            setState({
+              minedInBlock,
+              head,
+              confirmations: confs2,
+              receiptStatus: receipt.status === "success" ? "mined" : "reverted",
+              etaSec: Math.max(0, (targetConfirmations - confs2) * 12)
+            });
+            return;
+          } catch {
+            if (cancelled) return;
+            setState((s) => ({ ...s, head, receiptStatus: "pending" }));
+            return;
+          }
+        }
+        if (cancelled) return;
+        const confs = Math.max(0, head - minedInBlock + 1);
+        setState((s) => ({
+          ...s,
+          head,
+          confirmations: confs,
+          receiptStatus: s.receiptStatus === "reverted" ? "reverted" : "mined",
+          etaSec: Math.max(0, (targetConfirmations - confs) * 12)
+        }));
+      } catch (err) {
+        console.warn("[eth-confirmations] poll failed:", err);
+      }
+    };
+    void poll2();
+    const id = setInterval(() => void poll2(), 5e3);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [txHash, targetConfirmations]);
+  return state;
+}
+const TARGET = 12;
+function PhaseEthMonitoring({
+  uniAmount,
+  bridgeProgress,
+  pollAttempt,
+  currentTxHash,
+  statusMsg,
+  minterFlow,
+  checkDisabled,
+  onCheckNow,
+  onCancel
+}) {
+  const chain2 = useEthConfirmations(currentTxHash, TARGET);
+  const confs = chain2.confirmations;
+  const stage = chain2.receiptStatus === "mined" || chain2.receiptStatus === "reverted" ? confs >= TARGET ? "sealing" : "confirming" : "surface";
+  const headline = chain2.receiptStatus === "reverted" ? "Deposit transaction reverted on Ethereum" : stage === "sealing" ? minterFlow ? "At the chain-key seam — minting your ckUNI" : "Confirmed — verifying and releasing sGLDT" : stage === "confirming" ? `Breaking through block ${Math.min(confs + 1, TARGET)} of ${TARGET}` : currentTxHash ? "Waiting for your deposit to be mined" : "Watching your account for the ckUNI credit";
+  const sub = chain2.receiptStatus === "reverted" ? "The deposit tx failed on-chain — your UNI did not move. Check the transaction on Etherscan and try again." : stage === "sealing" ? minterFlow ? "All 12 blocks confirmed. DFINITY's chain-key minter is crediting ckUNI to your own ICP account; the refinery swaps it the moment it lands." : "All 12 blocks confirmed. The canister is verifying the deposit and releasing your sGLDT." : stage === "confirming" ? `~${Math.max(1, Math.ceil(chain2.etaSec / 60))} min remaining at current block pace.` : currentTxHash ? "Broadcast to Ethereum — the first confirmation starts the descent." : "The deposit tx hash wasn't captured (some mobile wallets do this), but it doesn't matter: the ckUNI is minted to your own account and we're polling for it directly.";
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "div",
+    {
+      "data-ocid": "refinery.eth_monitoring.loading_state",
+      className: "space-y-4",
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(WorkflowStepper, { currentStep: 2 }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            MineShaft,
+            {
+              confirmations: confs,
+              targetConfirmations: TARGET,
+              stage
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute top-0 inset-x-0 bg-gradient-to-b from-black/80 to-transparent px-4 pt-3 pb-8 pointer-events-none", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-baseline justify-between gap-3", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-black text-white text-sm sm:text-base leading-snug", children: headline }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "p",
+                {
+                  className: "text-[11px] font-mono font-bold text-yellow-400 tabular-nums shrink-0",
+                  "data-ocid": "refinery.shaft.depth",
+                  "aria-live": "polite",
+                  children: [
+                    Math.min(confs, TARGET),
+                    "/",
+                    TARGET
+                  ]
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-zinc-400 leading-relaxed mt-0.5", children: sub })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 space-y-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3 text-[11px]", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500 font-bold uppercase tracking-widest", children: "Depositing" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-zinc-200 font-mono font-bold", children: [
+              uniAmount,
+              " UNI"
+            ] })
+          ] }),
+          currentTxHash && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3 text-[11px]", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("code", { className: "text-blue-300 font-mono truncate", children: [
+              currentTxHash.slice(0, 14),
+              "…",
+              currentTxHash.slice(-8)
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "a",
+              {
+                href: `https://etherscan.io/tx/${currentTxHash}`,
+                target: "_blank",
+                rel: "noopener noreferrer",
+                className: "shrink-0 inline-flex items-center gap-1.5 text-[11px] font-bold text-blue-300 hover:text-blue-200 bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-xl transition-colors",
+                "data-ocid": "refinery.etherscan.link",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { size: 11 }),
+                  "Etherscan ↗"
+                ]
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 leading-relaxed pt-1", children: minterFlow ? "Safe to close this tab — the ckUNI is minted to your own account, so it is yours whether or not this page is open. Return any time to refine it." : "Safe to close this tab — your deposit is recorded and the canister will finalize on its own." }),
+          statusMsg && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-500 font-mono", children: [
+            statusMsg,
+            pollAttempt > 0 && !minterFlow ? ` · check ${pollAttempt}` : ""
+          ] }),
+          !minterFlow && bridgeProgress >= 0.8 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-emerald-400/90 font-mono", children: "backend: deposit verified — payout imminent" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            GoldCTA,
+            {
+              "data-ocid": "refinery.check_now.button",
+              tone: "info",
+              size: "md",
+              trailingIcon: null,
+              disabled: checkDisabled,
+              onClick: onCheckNow,
+              children: "Check now"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            GoldCTA,
+            {
+              "data-ocid": "refinery.cancel.button",
+              tone: "neutral",
+              size: "md",
+              trailingIcon: null,
+              onClick: onCancel,
+              children: "Cancel monitoring"
+            }
+          )
+        ] })
+      ]
+    }
+  );
+}
+function PhaseIdle({
+  startDisabled,
+  showRateHint,
+  showConnecting,
+  actorTimedOut,
+  gasShortfall,
+  unlimitedApproval,
+  onUnlimitedApprovalChange,
+  onStartMining
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      GoldCTA,
+      {
+        "data-ocid": "refinery.start.primary_button",
+        onClick: onStartMining,
+        disabled: startDisabled,
+        "aria-label": "Mine sGLDT by depositing UNI",
+        size: "lg",
+        className: "shadow-2xl",
+        children: "⛏ Mine sGLDT"
+      }
+    ),
+    showRateHint && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-center text-xs text-amber-400", children: "Waiting for the on-chain exchange rate before enabling swap…" }),
+    gasShortfall && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "p",
+      {
+        className: "mt-2 text-center text-xs text-amber-400",
+        "data-ocid": "refinery.gas_shortfall.hint",
+        children: gasShortfall
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 rounded-xl border border-zinc-800 bg-zinc-900/40 px-3.5 py-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-start gap-2.5 cursor-pointer select-none", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "input",
+          {
+            type: "checkbox",
+            "data-ocid": "refinery.unlimited_approval.checkbox",
+            checked: unlimitedApproval,
+            onChange: (e) => onUnlimitedApprovalChange(e.target.checked),
+            className: "mt-0.5 h-4 w-4 shrink-0 accent-yellow-500"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[11px] leading-relaxed text-zinc-400", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-bold text-zinc-300", children: "Approve unlimited UNI spending" }),
+          " ",
+          "(skips one wallet signature on every future swap). Off by default — each swap then approves exactly its own amount."
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-1.5 pl-[26px] text-[11px] leading-relaxed text-zinc-500", children: [
+        "The spender is always DFINITY's ckERC-20 helper contract; revoke any time at",
+        " ",
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "a",
+          {
+            href: "https://revoke.cash",
+            target: "_blank",
+            rel: "noopener noreferrer",
+            className: "inline-flex min-h-[44px] items-center text-blue-400 hover:text-blue-300 underline underline-offset-2",
+            children: "revoke.cash"
+          }
+        ),
+        "."
+      ] })
+    ] }),
+    showConnecting && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-center text-xs text-zinc-500 animate-pulse", children: "Connecting to canister..." }),
+    actorTimedOut && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 text-center space-y-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-red-400", children: "Unable to reach the refinery. Please refresh the page." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          onClick: () => window.location.reload(),
+          className: "text-xs text-zinc-400 underline underline-offset-2 hover:text-white transition-colors",
+          children: "Retry"
+        }
+      )
+    ] })
+  ] });
+}
+function PhaseReleasing({
+  releasing,
+  phaseStep,
+  phaseLabels,
+  statusMsg
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-ocid": "refinery.mining.loading_state", className: "space-y-5", children: [
+    releasing && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-yellow-500/10 border border-yellow-500/30 p-4 flex items-center gap-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 20, className: "text-yellow-400 animate-spin shrink-0" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-yellow-400 text-sm", children: "Settling the swap on ICP" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-400 mt-1", children: "The refinery is pulling the ckUNI you approved and paying sGLDT to your account in one atomic step — if it can't complete, your ckUNI is refunded automatically." })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { className: "space-y-2", children: phaseLabels.map((label, i) => {
+      const step = i + 1;
+      const state = step < phaseStep ? "done" : step === phaseStep ? "current" : "next";
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex items-center gap-2.5 text-xs", children: [
+        state === "done" ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 16, className: "text-emerald-400 shrink-0" }) : state === "current" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+          LoaderCircle,
+          {
+            size: 16,
+            className: "text-yellow-400 animate-spin shrink-0"
+          }
+        ) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-4 h-4 rounded-full border border-zinc-700 shrink-0" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "span",
+          {
+            className: state === "done" ? "text-zinc-500 line-through decoration-zinc-700" : state === "current" ? "text-zinc-100 font-bold" : "text-zinc-600",
+            children: label
+          }
+        )
+      ] }, label);
+    }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center text-xs text-zinc-500 font-medium", children: statusMsg })
+  ] });
+}
+function CrossChainFlow({ phase, amount }) {
+  const flowing = phase !== "done";
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative rounded-2xl border border-zinc-800 bg-black/30 p-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      ChainCard,
+      {
+        title: "Ethereum",
+        subtitle: amount ? `${amount} UNI` : "UNI",
+        accent: "#627EEA",
+        glyph: /* @__PURE__ */ jsxRuntimeExports.jsx(EthGlyph, {}),
+        active: phase === "eth",
+        done: phase !== "eth"
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative flex-1 mx-2 self-center", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-px bg-gradient-to-r from-[#627EEA]/40 via-zinc-700 to-[#F15A24]/40 relative overflow-hidden rounded-full", children: flowing && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "span",
+          {
+            className: "absolute inset-y-0 w-6 rounded-full bg-gradient-to-r from-transparent via-yellow-300/80 to-transparent",
+            style: { animation: "xchain-flow 2.4s linear infinite" }
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "span",
+          {
+            className: "absolute inset-y-0 w-3 rounded-full bg-gradient-to-r from-transparent via-emerald-300/60 to-transparent",
+            style: { animation: "xchain-flow 2.4s linear infinite", animationDelay: "1.2s" }
+          }
+        )
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "div",
+        {
+          className: `w-7 h-7 rounded-full flex items-center justify-center border-2 shadow-lg transition-all ${phase === "bridge" ? "bg-yellow-500/20 border-yellow-400 animate-pulse" : phase === "done" ? "bg-emerald-500/20 border-emerald-400" : "bg-zinc-900 border-zinc-700"}`,
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Infinity$1,
+            {
+              size: 14,
+              className: phase === "bridge" ? "text-yellow-300" : phase === "done" ? "text-emerald-400" : "text-zinc-500"
+            }
+          )
+        }
+      ) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute left-1/2 -translate-x-1/2 top-full mt-3 text-[9px] font-black uppercase tracking-widest text-zinc-600 whitespace-nowrap", children: "ckERC-20" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      ChainCard,
+      {
+        title: "ICP",
+        subtitle: phase === "done" ? "sGLDT minted" : "ckUNI → sGLDT",
+        accent: "#F15A24",
+        glyph: /* @__PURE__ */ jsxRuntimeExports.jsx(IcpGlyph, {}),
+        active: phase === "icp" || phase === "done",
+        done: phase === "done"
+      }
+    )
+  ] }) });
+}
+function ChainCard({
+  title,
+  subtitle,
+  accent,
+  glyph,
+  active,
+  done
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      className: `rounded-xl border p-3 min-w-[100px] transition-all ${active ? "border-yellow-400/50 bg-yellow-500/5" : done ? "border-emerald-500/30 bg-emerald-500/5" : "border-zinc-800 bg-zinc-900/40"}`,
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            className: "w-7 h-7 rounded-full flex items-center justify-center shrink-0",
+            style: { background: accent },
+            children: glyph
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] font-black text-white leading-tight", children: title }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[9px] text-zinc-400 font-mono truncate", children: subtitle })
+        ] })
+      ] })
+    }
+  );
+}
+function EthGlyph() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "14", height: "14", viewBox: "0 0 16 16", "aria-hidden": true, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M8 1.5 L3.5 8.5 L8 11 L12.5 8.5 Z", fill: "#ffffff", opacity: "0.95" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M8 1.5 L3.5 8.5 L8 6 Z", fill: "#ffffff", opacity: "0.6" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M8 12 L3.5 9 L8 14.5 Z", fill: "#ffffff", opacity: "0.8" })
+  ] });
+}
+function IcpGlyph() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { width: "14", height: "14", viewBox: "0 0 24 24", "aria-hidden": true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "path",
+    {
+      d: "M3 12c0-3 2.5-5.5 5.5-5.5 1.7 0 3.3.8 4.3 2l3.4 3.8c1 1.1 2.4 1.7 3.8 1.7 1.4 0 2.5-1.1 2.5-2.5S21.4 9 20 9c-1.4 0-2.8.6-3.8 1.7l-3.4 3.8c-1 1.2-2.6 2-4.3 2C5.5 16.5 3 14 3 12Z",
+      fill: "#ffffff",
+      opacity: "0.95"
+    }
+  ) });
+}
+function PhaseSuccess({
+  sgldtReleased,
+  currentTxHash,
+  settledRate,
+  payBlock,
+  onStartNew
+}) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-ocid": "refinery.success_state", className: "space-y-4", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(WorkflowStepper, { currentStep: 3, complete: true }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(CrossChainFlow, { phase: "done", amount: sgldtReleased ?? void 0 }),
@@ -45230,11 +45972,38 @@ function PhaseSuccess({ sgldtReleased, currentTxHash, onStartNew }) {
           /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "font-black text-xl sm:text-2xl tracking-tight bg-gradient-to-r from-emerald-300 via-yellow-300 to-yellow-400 bg-clip-text text-transparent", children: "Refinery Complete" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { size: 16, className: "text-yellow-400" })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-300 mb-1", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-yellow-400 font-black text-lg", children: [
-          sgldtReleased ?? "—",
-          " sGLDT"
-        ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500", children: "released to your ICP account" }),
+        sgldtReleased != null ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-300 mb-1", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-yellow-400 font-black text-lg", children: [
+            sgldtReleased,
+            " sGLDT"
+          ] }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500", children: "released to your ICP account" })
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-300 mb-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400 font-black text-lg animate-pulse", children: "Amount confirming…" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500", children: "your sGLDT was released — fetching the exact amount" })
+        ] }),
+        (settledRate || payBlock) && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-2 text-[10px] text-zinc-500 font-mono", children: [
+          settledRate && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            "settled @ ",
+            settledRate,
+            " sGLDT/UNI"
+          ] }),
+          settledRate && payBlock && " · ",
+          payBlock && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "a",
+            {
+              href: "https://dashboard.internetcomputer.org/canister/i2s4q-syaaa-aaaan-qz4sq-cai",
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "text-blue-400 hover:text-blue-300 underline underline-offset-2",
+              title: "sGLDT ledger canister on the ICP dashboard",
+              children: [
+                "sGLDT ledger block #",
+                payBlock
+              ]
+            }
+          )
+        ] }),
         currentTxHash && /* @__PURE__ */ jsxRuntimeExports.jsxs(
           "a",
           {
@@ -45266,11 +46035,9 @@ function PhaseSuccess({ sgldtReleased, currentTxHash, onStartNew }) {
 function PhaseWalletConfirming({
   uniAmount,
   depositAddress,
-  manualTxHash,
-  manualRecoveryBusy,
-  onManualTxHashChange,
-  onResumeFromTxHash,
-  onFinalizeFromChain,
+  beneficiaryPrincipal,
+  unlimitedApproval,
+  onBeginWatch,
   onCancel
 }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -45306,85 +46073,67 @@ function PhaseWalletConfirming({
               depositAddress.slice(-4)
             ] })
           ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mt-1.5 gap-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600 font-sans shrink-0", children: "Contract check" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "span",
+              {
+                className: "inline-flex items-center gap-1 text-emerald-300 text-[10px]",
+                title: "Verified before signing: the deposit contract matches DFINITY's published ckERC-20 helper address. If it didn't, this app would have refused to open your wallet.",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 10 }),
+                  "verified DFINITY ckERC-20 helper"
+                ]
+              }
+            )
+          ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mt-1.5", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600 font-sans", children: "Amount" }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-white", children: [
               uniAmount,
               " UNI (ERC-20)"
             ] })
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-emerald-500/10 border border-emerald-500/40 p-4 space-y-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14, className: "text-emerald-400 shrink-0 mt-0.5" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[11px] text-emerald-300 leading-relaxed", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "block text-emerald-200 mb-0.5", children: "Done signing in your wallet?" }),
-              "Tap below — we'll find your deposit on Ethereum and finalize it automatically. No hash copying needed."
-            ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "button",
-            {
-              type: "button",
-              disabled: manualRecoveryBusy,
-              onClick: onFinalizeFromChain,
-              className: "w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 rounded-xl disabled:opacity-50 text-sm flex items-center justify-center gap-2",
-              "data-ocid": "refinery.finalize_from_chain.button",
-              children: manualRecoveryBusy ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 animate-spin" }),
-                "Searching Ethereum…"
-              ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 16 }),
-                "I signed — finalize my deposit"
-              ] })
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("details", { className: "rounded-2xl bg-zinc-900/60 border border-zinc-800 p-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("summary", { className: "cursor-pointer text-xs font-bold text-yellow-400 select-none", children: "⛏ Already signed? Continue with tx hash →" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 space-y-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-zinc-400 leading-relaxed", children: [
-              "If the flow hangs on mobile after you signed, open your wallet's activity tab and paste the ",
-              /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "text-yellow-300", children: "deposit" }),
-              " ",
-              "hash below. Mining will resume."
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-lg bg-amber-500/10 border border-amber-500/30 p-2.5 text-[10px] text-amber-300 leading-relaxed", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "block text-amber-200 mb-1", children: "⚠ Paste the DEPOSIT tx, not Approve" }),
-              "A UNI swap signs two transactions in order:",
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "block mt-1 font-mono text-[10px]", children: [
-                "1. ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-400", children: "Approve UNI" }),
-                " ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600", children: "← skip this one" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-                "2. ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-emerald-400", children: "Deposit to Bridge" }),
-                " ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-emerald-300", children: "← paste THIS hash" })
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "input",
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mt-1.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600 font-sans", children: "Approval" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: unlimitedApproval ? "text-amber-300" : "text-emerald-300", children: unlimitedApproval ? "unlimited (you opted in)" : `exactly ${uniAmount} UNI` })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mt-1.5 gap-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600 font-sans shrink-0", children: "Credited to" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "span",
               {
-                type: "text",
-                value: manualTxHash,
-                onChange: (e) => onManualTxHashChange(e.target.value),
-                placeholder: "0x… (deposit tx, 2nd signed)",
-                className: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-xs text-yellow-300 font-mono placeholder:text-zinc-600"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                type: "button",
-                disabled: manualRecoveryBusy || !manualTxHash,
-                onClick: () => onResumeFromTxHash(manualTxHash),
-                className: "w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2 rounded-lg disabled:opacity-50 text-sm",
-                children: manualRecoveryBusy ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mx-auto animate-spin" }) : "Resume monitoring"
+                className: "text-emerald-300 text-[10px] truncate",
+                title: `Your own ICP principal — DFINITY's minter credits the ckUNI here, not to this app: ${beneficiaryPrincipal}`,
+                children: [
+                  "your ICP account · ",
+                  beneficiaryPrincipal.slice(0, 11),
+                  "…",
+                  beneficiaryPrincipal.slice(-4)
+                ]
               }
             )
           ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-zinc-900/60 border border-zinc-800 p-4 space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14, className: "text-yellow-400 shrink-0 mt-0.5" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[11px] text-zinc-400 leading-relaxed", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "block text-zinc-200 mb-0.5", children: "Signed in your wallet but this screen didn't move on?" }),
+              "Tap below — your ckUNI is minted to your own account after 12 Ethereum blocks, so we just need to watch for it to arrive."
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            GoldCTA,
+            {
+              "data-ocid": "refinery.begin_watch.button",
+              tone: "info",
+              size: "md",
+              trailingIcon: null,
+              onClick: onBeginWatch,
+              children: "I signed — watch for my ckUNI"
+            }
+          )
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
@@ -45396,746 +46145,6 @@ function PhaseWalletConfirming({
             children: "Cancel"
           }
         )
-      ]
-    }
-  );
-}
-const STORAGE_KEY = "banking_brave_theme";
-function applyThemeClass(theme) {
-  if (typeof document === "undefined") return;
-  const html = document.documentElement;
-  html.classList.remove("theme-light", "theme-dark");
-  html.classList.add(`theme-${theme}`);
-  if (theme === "dark") {
-    html.classList.add("dark");
-  } else {
-    html.classList.remove("dark");
-  }
-  html.style.colorScheme = theme;
-}
-function readStoredTheme() {
-  if (typeof window === "undefined") return "dark";
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "light" || stored === "dark") return stored;
-  } catch {
-  }
-  return "dark";
-}
-if (typeof window !== "undefined") {
-  applyThemeClass(readStoredTheme());
-}
-function useTheme() {
-  const [theme, setThemeState] = reactExports.useState(() => readStoredTheme());
-  reactExports.useEffect(() => {
-    applyThemeClass(theme);
-    try {
-      localStorage.setItem(STORAGE_KEY, theme);
-    } catch {
-    }
-  }, [theme]);
-  const setTheme = reactExports.useCallback((next) => setThemeState(next), []);
-  const toggle = reactExports.useCallback(
-    () => setThemeState((t) => t === "dark" ? "light" : "dark"),
-    []
-  );
-  return { theme, setTheme, toggle };
-}
-const PALETTES = {
-  dark: {
-    oreHighlight: "#FFE55C",
-    oreMid: "#FFD700",
-    oreShade: "#F5C542",
-    oreDeep: "#DAA520",
-    oreRock1: "#747474",
-    oreRock2: "#6E6E6E",
-    oreRock3: "#767676",
-    baseRow1: "#5C4A28",
-    baseRow2: "#6B5A30",
-    spark1: "#FFD700",
-    spark2: "#FFE55C",
-    spark3: "#F5C542",
-    spark4: "#FFF8B0",
-    spark5: "#DAA520",
-    stoneChip1: "#909090",
-    stoneChip2: "#808080",
-    stoneChip3: "#707070",
-    stoneChip4: "#888888",
-    stoneChip5: "#969696",
-    mote: "#FFD700",
-    glowFrom: "rgba(255,215,0,0.45)",
-    glowVia: "rgba(255,215,0,0.12)",
-    xpColor: "#FFD700",
-    xpRareColor: "#FF7F50",
-    xpShadowFrom: "rgba(255,215,0,0.8)",
-    xpShadowBlack: "#000",
-    groundColors: ["#4A3010", "#3A2410", "#2A1A08"],
-    handleLight: "#8B4513",
-    handleDark: "#6B3410",
-    handleAccent: "#7B3F10"
-  },
-  light: {
-    /* Refined gold on light: deeper, less fluorescent, more "polished
-     *  metal" than "highlighter." DarkGoldenrod family reads as gold on
-     *  white where neon-yellow would look plastic. */
-    oreHighlight: "#E8C669",
-    oreMid: "#D4A94A",
-    oreShade: "#B8860B",
-    oreDeep: "#8B6508",
-    oreRock1: "#C8CDD6",
-    oreRock2: "#BCC2CC",
-    oreRock3: "#D2D7DF",
-    baseRow1: "#8B6A2B",
-    baseRow2: "#6F5421",
-    spark1: "#B8860B",
-    spark2: "#D4A94A",
-    spark3: "#E8C669",
-    spark4: "#F4D98A",
-    spark5: "#8B6508",
-    stoneChip1: "#64748B",
-    stoneChip2: "#94A3B8",
-    stoneChip3: "#475569",
-    stoneChip4: "#CBD5E1",
-    stoneChip5: "#A1AAB8",
-    mote: "#B8860B",
-    glowFrom: "rgba(184,134,11,0.28)",
-    glowVia: "rgba(184,134,11,0.08)",
-    xpColor: "#8B6508",
-    xpRareColor: "#C2410C",
-    xpShadowFrom: "rgba(184,134,11,0.3)",
-    xpShadowBlack: "rgba(11, 30, 59, 0.35)",
-    groundColors: ["#CBD5E1", "#E2E8F0", "#F1F5F9"],
-    handleLight: "#78350F",
-    handleDark: "#5C2A07",
-    handleAccent: "#6B3510"
-  }
-};
-function PixelAxeAnimation({
-  label = "Mining sGLDT from treasury...",
-  pollPing,
-  success = false,
-  compact = false
-}) {
-  const { theme } = useTheme();
-  const palette = PALETTES[theme];
-  const [swing, setSwing] = reactExports.useState(0);
-  const [spark, setSpark] = reactExports.useState(false);
-  const [blockShake, setBlockShake] = reactExports.useState(false);
-  const [hitCount, setHitCount] = reactExports.useState(0);
-  const [xpDrops, setXpDrops] = reactExports.useState([]);
-  const [victoryCoins, setVictoryCoins] = reactExports.useState(false);
-  const xpIdRef = reactExports.useRef(0);
-  const xpFadeTimerRef = reactExports.useRef(null);
-  const prevPollRef = reactExports.useRef(pollPing);
-  const hasPollProp = pollPing !== void 0;
-  const spawnXpDrop = (rare, amount) => {
-    if (xpFadeTimerRef.current) {
-      clearTimeout(xpFadeTimerRef.current);
-      xpFadeTimerRef.current = null;
-    }
-    const id = xpIdRef.current++;
-    const x2 = Math.floor(Math.random() * 64) - 32;
-    setXpDrops([{ id, amount, rare, x: x2 }]);
-    xpFadeTimerRef.current = setTimeout(() => {
-      setXpDrops((prev) => prev.filter((d2) => d2.id !== id));
-      xpFadeTimerRef.current = null;
-    }, 900);
-  };
-  reactExports.useEffect(() => {
-    if (hasPollProp || success) return;
-    const sequence = [
-      { delay: 0, fn: () => setSwing(0) },
-      { delay: 280, fn: () => setSwing(1) },
-      {
-        delay: 490,
-        fn: () => {
-          setSwing(2);
-          setSpark(true);
-          setBlockShake(true);
-          setHitCount((n) => n + 1);
-          const rare = Math.random() < 0.125;
-          const amount = rare ? 55 + Math.floor(Math.random() * 45) : 5 + Math.floor(Math.random() * 15);
-          spawnXpDrop(rare, amount);
-        }
-      },
-      { delay: 700, fn: () => {
-        setSpark(false);
-        setBlockShake(false);
-        setSwing(3);
-      } }
-    ];
-    let timers = [];
-    const loop = () => {
-      timers = sequence.map(({ delay, fn }) => setTimeout(fn, delay));
-      timers.push(setTimeout(loop, 1100));
-    };
-    loop();
-    return () => timers.forEach(clearTimeout);
-  }, [hasPollProp, success]);
-  reactExports.useEffect(() => {
-    if (!hasPollProp || success) return;
-    if (prevPollRef.current === pollPing) return;
-    prevPollRef.current = pollPing;
-    setSwing(1);
-    const t1 = setTimeout(() => {
-      setSwing(2);
-      setSpark(true);
-      setBlockShake(true);
-      setHitCount((n) => n + 1);
-      const rare = Math.random() < 0.2;
-      const amount = rare ? 60 + Math.floor(Math.random() * 40) : 8 + Math.floor(Math.random() * 12);
-      spawnXpDrop(rare, amount);
-    }, 150);
-    const t2 = setTimeout(() => {
-      setSpark(false);
-      setBlockShake(false);
-      setSwing(3);
-    }, 380);
-    const t3 = setTimeout(() => setSwing(0), 700);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
-  }, [pollPing, hasPollProp, success]);
-  reactExports.useEffect(() => {
-    if (!success) return;
-    if (xpFadeTimerRef.current) {
-      clearTimeout(xpFadeTimerRef.current);
-      xpFadeTimerRef.current = null;
-    }
-    setXpDrops([]);
-    setSwing(2);
-    setSpark(true);
-    setVictoryCoins(true);
-    const id = xpIdRef.current++;
-    setXpDrops([{ id, amount: 9999, rare: true, x: 0 }]);
-    const t1 = setTimeout(() => setSpark(false), 800);
-    const t2 = setTimeout(() => setVictoryCoins(false), 2e3);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
-  }, [success]);
-  reactExports.useEffect(() => {
-    return () => {
-      if (xpFadeTimerRef.current) clearTimeout(xpFadeTimerRef.current);
-    };
-  }, []);
-  const rotationDeg = [-58, -18, 14, -48][swing] ?? -58;
-  const crackStage = success ? 0 : hitCount % 4;
-  const motes = reactExports.useMemo(
-    () => Array.from({ length: 7 }, (_2, i) => ({
-      id: i,
-      left: 8 + Math.random() * 84,
-      delay: Math.random() * 2.5,
-      duration: 1.8 + Math.random() * 1.8,
-      size: Math.random() > 0.5 ? 2 : 3
-    })),
-    []
-  );
-  const goldSparks = [
-    { x: -16, y: -22, c: palette.spark1, s: 5 },
-    { x: 16, y: -22, c: palette.spark2, s: 4 },
-    { x: -24, y: -10, c: palette.spark3, s: 3 },
-    { x: 24, y: -10, c: palette.spark1, s: 4 },
-    { x: -10, y: -30, c: palette.spark4, s: 3 },
-    { x: 10, y: -30, c: palette.spark1, s: 3 },
-    { x: 0, y: -36, c: palette.spark2, s: 5 },
-    { x: -30, y: -16, c: palette.spark5, s: 3 },
-    { x: 30, y: -16, c: palette.spark5, s: 3 },
-    { x: -5, y: -38, c: palette.spark2, s: 4 },
-    { x: 5, y: -38, c: palette.spark1, s: 3 },
-    { x: 20, y: -28, c: palette.spark3, s: 3 }
-  ];
-  const stoneChips = [
-    { x: -22, y: -14, c: palette.stoneChip1 },
-    { x: 20, y: -18, c: palette.stoneChip2 },
-    { x: -8, y: -20, c: palette.stoneChip3 },
-    { x: 14, y: -12, c: palette.stoneChip4 },
-    { x: -18, y: -8, c: palette.stoneChip5 }
-  ];
-  const victoryBurst = [
-    { x: -28, y: -40, c: palette.spark1, s: 6 },
-    { x: 28, y: -40, c: palette.spark2, s: 5 },
-    { x: -40, y: -20, c: palette.spark3, s: 5 },
-    { x: 40, y: -20, c: palette.spark1, s: 6 },
-    { x: 0, y: -50, c: palette.spark4, s: 7 },
-    { x: -18, y: -46, c: palette.spark1, s: 4 },
-    { x: 18, y: -46, c: palette.spark2, s: 4 },
-    { x: -44, y: -8, c: palette.spark5, s: 4 },
-    { x: 44, y: -8, c: palette.spark5, s: 4 },
-    { x: -22, y: -52, c: palette.spark1, s: 5 },
-    { x: 22, y: -52, c: palette.spark4, s: 5 },
-    { x: 0, y: -58, c: palette.spark2, s: 6 },
-    // Emerald flecks — same on both themes (emerald-500/600 reads well on
-    // both dark and light backgrounds)
-    { x: -34, y: -34, c: "#2ecc71", s: 4 },
-    { x: 34, y: -34, c: "#27ae60", s: 4 },
-    { x: -10, y: -56, c: "#a8e6cf", s: 3 },
-    { x: 10, y: -56, c: "#2ecc71", s: 3 }
-  ];
-  const oreRows = success ? [
-    ["#2ecc71", "#27ae60", "#2ecc71", "#1abc9c", "#2ecc71", "#27ae60", "#1abc9c", "#2ecc71", "#27ae60"],
-    ["#27ae60", "#a8e6cf", "#2ecc71", "#27ae60", "#1abc9c", "#2ecc71", "#27ae60", "#a8e6cf", "#2ecc71"],
-    ["#1abc9c", "#2ecc71", "#a8e6cf", "#2ecc71", "#27ae60", "#1abc9c", "#2ecc71", "#27ae60", "#1abc9c"],
-    ["#2ecc71", "#1abc9c", "#27ae60", "#2ecc71", "#a8e6cf", "#2ecc71", "#1abc9c", "#2ecc71", "#27ae60"],
-    ["#27ae60", "#2ecc71", "#1abc9c", "#27ae60", "#2ecc71", "#27ae60", "#2ecc71", "#1abc9c", "#27ae60"],
-    ["#1abc9c", "#27ae60", "#2ecc71", "#1abc9c", "#27ae60", "#2ecc71", "#1abc9c", "#27ae60", "#1abc9c"],
-    ["#145a32", "#1e8449", "#145a32", "#1e8449", "#145a32", "#1e8449", "#145a32", "#1e8449", "#145a32"]
-  ] : [
-    [palette.oreRock1, palette.oreMid, palette.oreShade, palette.oreMid, palette.oreRock2, palette.oreHighlight, palette.oreMid, palette.oreShade, palette.oreRock3],
-    [palette.oreMid, palette.oreHighlight, palette.oreRock2, palette.oreMid, palette.oreShade, palette.oreRock2, palette.oreShade, palette.oreMid, palette.oreMid],
-    [palette.oreShade, palette.oreRock3, palette.oreHighlight, palette.oreShade, palette.oreRock1, palette.oreMid, palette.oreRock2, palette.oreShade, palette.oreDeep],
-    [palette.oreRock2, palette.oreDeep, palette.oreMid, palette.oreRock2, palette.oreHighlight, palette.oreShade, palette.oreMid, palette.oreRock2, palette.oreShade],
-    [palette.oreMid, palette.oreShade, palette.oreRock2, palette.oreMid, palette.oreShade, palette.oreRock1, palette.oreDeep, palette.oreMid, palette.oreRock2],
-    [palette.oreDeep, palette.oreRock1, palette.oreShade, palette.oreDeep, palette.oreRock2, palette.oreMid, palette.oreShade, palette.oreRock1, palette.oreDeep],
-    [palette.baseRow1, palette.baseRow2, palette.baseRow1, palette.baseRow2, palette.baseRow1, palette.baseRow2, palette.baseRow1, palette.baseRow2, palette.baseRow1]
-  ];
-  const ariaLabel = success ? "Gold mined. sGLDT has been released to your account." : hasPollProp ? "Mining in progress. Your UNI deposit is being bridged to ICP." : "Mining animation playing while your deposit is processed.";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    "div",
-    {
-      className: "flex flex-col items-center gap-2 py-2 select-none",
-      role: "img",
-      "aria-label": ariaLabel,
-      children: [
-        !compact && (success ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.18em] text-emerald-400 animate-pulse", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-emerald-400", "aria-hidden": true }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-black", children: "Gold Mined!" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-emerald-400/50", children: "·" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "sGLDT Released" })
-        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 text-[9px] font-mono uppercase tracking-[0.2em] text-yellow-500", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "span",
-            {
-              className: "w-1.5 h-1.5 rounded-full animate-pulse",
-              style: { background: palette.oreMid },
-              "aria-hidden": true
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-            "Strikes: ",
-            hitCount.toString().padStart(3, "0")
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-50", children: "·" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-80", children: hasPollProp ? "Synced to chain" : "Lv.99 Mining" })
-        ] })),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "div",
-          {
-            "data-pixel-scene": true,
-            className: `relative w-[170px] h-[150px] flex items-end justify-center overflow-visible transition-transform duration-75 rounded-2xl ${blockShake ? "translate-x-[2px]" : ""}`,
-            style: {
-              background: theme === "light" ? "radial-gradient(ellipse at 50% 70%, rgba(139, 101, 8, 0.10) 0%, rgba(71, 85, 105, 0.08) 60%, transparent 100%)" : "radial-gradient(ellipse at 50% 70%, rgba(0, 0, 0, 0.35) 0%, transparent 75%)"
-            },
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "absolute pointer-events-none",
-                  style: {
-                    bottom: 6,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    width: 110,
-                    height: 100,
-                    background: success ? "radial-gradient(ellipse, rgba(46,204,113,0.6) 0%, rgba(39,174,96,0.18) 45%, transparent 72%)" : `radial-gradient(ellipse, ${palette.glowFrom} 0%, ${palette.glowVia} 45%, transparent 72%)`,
-                    transition: "background 600ms, opacity 100ms, filter 100ms",
-                    opacity: success ? 1 : spark ? 1 : 0.45,
-                    filter: success ? "brightness(1.4)" : spark ? "brightness(1.7)" : "brightness(1)"
-                  }
-                }
-              ),
-              motes.map((m2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "absolute pointer-events-none",
-                  style: {
-                    bottom: 14,
-                    left: `${m2.left}%`,
-                    width: m2.size,
-                    height: m2.size,
-                    background: success ? "#2ecc71" : palette.mote,
-                    imageRendering: "pixelated",
-                    animation: `moteFloat ${m2.duration}s ease-in-out ${m2.delay}s infinite`,
-                    boxShadow: success ? "0 0 4px rgba(46,204,113,0.9)" : `0 0 4px ${palette.glowFrom}`
-                  }
-                },
-                m2.id
-              )),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "absolute",
-                  style: {
-                    bottom: 36,
-                    left: 12,
-                    transformOrigin: "100% 100%",
-                    transform: `rotate(${rotationDeg}deg)`,
-                    transition: swing === 2 ? "transform 120ms cubic-bezier(0.25,0.46,0.45,0.94)" : "transform 200ms ease-out"
-                  },
-                  children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center gap-0", children: [
-                    [...Array(9)].map((_2, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "div",
-                      {
-                        style: {
-                          width: 5,
-                          height: 5,
-                          background: i % 2 === 0 ? i < 3 ? palette.handleAccent : palette.handleLight : palette.handleDark,
-                          imageRendering: "pixelated"
-                        }
-                      },
-                      `h${i}`
-                    )),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                      "svg",
-                      {
-                        width: "46",
-                        height: "28",
-                        viewBox: "0 0 46 28",
-                        style: { marginTop: -2, imageRendering: "pixelated", overflow: "visible" },
-                        children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "18", y: "16", width: "10", height: "10", fill: "#999999" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "19", y: "17", width: "8", height: "8", fill: "#B0B0B0" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "2", y: "12", width: "42", height: "8", fill: "#C0C0C0" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "2", y: "12", width: "42", height: "2", fill: "#D8D8D8" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "2", y: "18", width: "42", height: "2", fill: "#A0A0A0" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "0", y: "13", width: "6", height: "6", fill: "#B8B8B8" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "0", y: "14", width: "3", height: "4", fill: "#C8C8C8" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "0", y: "15", width: "1", height: "2", fill: "#E0E0E0" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "40", y: "13", width: "6", height: "6", fill: "#ABABAB" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "43", y: "14", width: "3", height: "4", fill: "#989898" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "45", y: "15", width: "1", height: "2", fill: "#909090" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "6", y: "10", width: "30", height: "2", fill: "#C8C8C8" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "10", y: "8", width: "20", height: "2", fill: "#B8B8B8" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "6", y: "20", width: "30", height: "2", fill: "#A8A8A8" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "10", y: "22", width: "18", height: "2", fill: "#989898" }),
-                          (spark || success) && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "0", y: "14", width: "3", height: "4", fill: success ? "#2ecc71" : palette.oreMid, opacity: "0.9" }),
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "0", y: "15", width: "2", height: "2", fill: "#FFFFFF", opacity: "0.7" })
-                          ] }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "14", y: "12", width: "2", height: "2", fill: "#ECECEC", opacity: "0.8" })
-                        ]
-                      }
-                    )
-                  ] })
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute bottom-0 left-0 right-0 flex justify-center", style: { height: 10 }, children: [...Array(17)].map((_2, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  style: {
-                    width: 10,
-                    height: i % 3 === 0 ? 8 : 6,
-                    background: i % 2 === 0 ? i % 5 === 0 ? palette.groundColors[0] : palette.groundColors[1] : palette.groundColors[2],
-                    imageRendering: "pixelated",
-                    alignSelf: "flex-end"
-                  }
-                },
-                `g${i}`
-              )) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                "div",
-                {
-                  className: `absolute left-1/2 transition-all duration-500 ${blockShake ? "translate-x-[3px] -translate-y-[2px]" : "-translate-x-1/2"}`,
-                  style: {
-                    bottom: 8,
-                    filter: success ? "drop-shadow(0 0 8px rgba(46,204,113,0.8))" : void 0
-                  },
-                  children: [
-                    oreRows.map((row, rIdx) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex flex-row gap-0", children: row.map((c2, cIdx) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "div",
-                      {
-                        style: {
-                          width: 6,
-                          height: 6,
-                          background: c2,
-                          imageRendering: "pixelated",
-                          transition: "background 500ms",
-                          boxShadow: success && rIdx < 3 ? "0 0 2px rgba(46,204,113,0.5)" : spark && rIdx < 2 && cIdx > 3 && cIdx < 7 ? "0 0 2px rgba(255,255,255,0.6)" : void 0
-                        }
-                      },
-                      `p${rIdx}${cIdx}`
-                    )) }, `row${rIdx}`)),
-                    !success && crackStage >= 1 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-0 left-0 pointer-events-none", style: {
-                      width: 54,
-                      height: 42,
-                      opacity: 0.85,
-                      backgroundImage: `
-                linear-gradient(52deg, transparent 42%, #1a0a00 43%, #1a0a00 45%, transparent 46%),
-                linear-gradient(-35deg, transparent 58%, #1a0a00 59%, #1a0a00 61%, transparent 62%)
-              `,
-                      mixBlendMode: "multiply"
-                    } }),
-                    !success && crackStage >= 2 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-2 left-4 pointer-events-none", style: {
-                      width: 34,
-                      height: 22,
-                      opacity: 0.75,
-                      backgroundImage: `linear-gradient(115deg, transparent 38%, #1a0a00 39%, #1a0a00 42%, transparent 43%)`,
-                      mixBlendMode: "multiply"
-                    } }),
-                    !success && crackStage >= 3 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute top-1 left-6 pointer-events-none", style: {
-                      width: 24,
-                      height: 36,
-                      opacity: 0.65,
-                      backgroundImage: `linear-gradient(80deg, transparent 45%, #1a0a00 46%, #1a0a00 49%, transparent 50%)`,
-                      mixBlendMode: "multiply"
-                    } })
-                  ]
-                }
-              ),
-              spark && !success && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                goldSparks.map((s, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute pointer-events-none", style: {
-                  bottom: 34,
-                  left: "50%",
-                  width: s.s,
-                  height: s.s,
-                  background: s.c,
-                  imageRendering: "pixelated",
-                  boxShadow: `0 0 5px ${s.c}`,
-                  animation: "sparkFly 0.55s ease-out forwards",
-                  "--sx": `${s.x}px`,
-                  "--sy": `${s.y}px`
-                } }, `sp${i}`)),
-                stoneChips.map((c2, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute pointer-events-none", style: {
-                  bottom: 34,
-                  left: "50%",
-                  width: 3,
-                  height: 3,
-                  background: c2.c,
-                  imageRendering: "pixelated",
-                  animation: "sparkFly 0.45s ease-out forwards",
-                  "--sx": `${c2.x}px`,
-                  "--sy": `${c2.y}px`
-                } }, `chip${i}`))
-              ] }),
-              victoryCoins && /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: victoryBurst.map((s, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute pointer-events-none", style: {
-                bottom: 34,
-                left: "50%",
-                width: s.s,
-                height: s.s,
-                background: s.c,
-                imageRendering: "pixelated",
-                borderRadius: "50%",
-                boxShadow: `0 0 8px ${s.c}`,
-                animation: "victoryCoin 1.2s ease-out forwards",
-                "--sx": `${s.x}px`,
-                "--sy": `${s.y}px`
-              } }, `vc${i}`)) }),
-              xpDrops.map((drop) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "absolute pointer-events-none font-mono font-black select-none",
-                  style: {
-                    bottom: drop.amount > 100 ? 55 : 48,
-                    left: `calc(50% + ${drop.x - 22}px)`,
-                    color: success ? "#2ecc71" : drop.rare ? palette.xpRareColor : palette.xpColor,
-                    fontSize: success ? 14 : drop.rare ? 13 : 10,
-                    textShadow: success ? `0 0 8px #2ecc71, 0 1px 0 ${palette.xpShadowBlack}` : drop.rare ? `0 0 6px ${palette.xpRareColor}, 0 1px 0 ${palette.xpShadowBlack}` : `0 1px 0 ${palette.xpShadowBlack}, 0 0 4px ${palette.xpShadowFrom}`,
-                    animation: success ? "xpRise 1.9s cubic-bezier(0.22,1,0.36,1) forwards" : "xpRise 0.9s cubic-bezier(0.22,1,0.36,1) forwards",
-                    whiteSpace: "nowrap",
-                    letterSpacing: "0.5px",
-                    willChange: "transform, opacity"
-                  },
-                  children: success ? "⛏ GOLD MINED!" : drop.rare ? `★ ${drop.amount} XP` : `+${drop.amount} XP`
-                },
-                drop.id
-              ))
-            ]
-          }
-        ),
-        !compact && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "p",
-          {
-            className: `text-[11px] font-mono tracking-[0.15em] text-center px-2 uppercase transition-colors duration-500 ${success ? "text-emerald-400 font-black animate-pulse" : "text-yellow-400/90"}`,
-            children: success ? "sGLDT Released to Your Account" : label || "⛏ Mining in progress"
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
-        @keyframes sparkFly {
-          0%   { opacity: 1; transform: translate(-50%, 0) scale(1); }
-          60%  { opacity: 0.8; }
-          100% { opacity: 0; transform: translate(calc(-50% + var(--sx, 10px)), var(--sy, -16px)) scale(0.15); }
-        }
-        @keyframes victoryCoin {
-          0%   { opacity: 1; transform: translate(-50%, 0) scale(1.2); }
-          40%  { opacity: 1; }
-          100% { opacity: 0; transform: translate(calc(-50% + var(--sx, 10px)), var(--sy, -20px)) scale(0.3); }
-        }
-        @keyframes xpRise {
-          0%   { opacity: 0; transform: translateY(6px) scale(0.7); }
-          15%  { opacity: 1; transform: translateY(0) scale(1.2); }
-          30%  { transform: translateY(-4px) scale(1); }
-          100% { opacity: 0; transform: translateY(-40px) scale(0.9); }
-        }
-        @keyframes moteFloat {
-          0%, 100% { opacity: 0.25; transform: translateY(0); }
-          50%       { opacity: 0.95; transform: translateY(-18px); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          /* Respect vestibular sensitivity: show the same scene but stop
-             moving. The success "Gold Mined" banner still appears because
-             it's an element swap, not an animation. */
-          [data-pixel-scene] *,
-          [data-pixel-scene] *::before,
-          [data-pixel-scene] *::after {
-            animation-duration: 0.001ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.001ms !important;
-          }
-        }
-      ` })
-      ]
-    }
-  );
-}
-function BlockConfirmationMeter({
-  txHash,
-  targetConfirmations = 12
-}) {
-  const [state, setState] = reactExports.useState({
-    submittedAt: null,
-    head: null,
-    confirmations: 0,
-    receiptStatus: "unknown",
-    lastPoll: 0
-  });
-  const [now2, setNow] = reactExports.useState(() => Date.now());
-  reactExports.useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1e3);
-    return () => clearInterval(id);
-  }, []);
-  reactExports.useEffect(() => {
-    if (!txHash) return;
-    let cancelled = false;
-    const poll2 = async () => {
-      try {
-        const head = await publicClient.getBlockNumber();
-        const headNum = Number(head);
-        if (state.submittedAt !== null) {
-          const confs = Math.max(0, headNum - state.submittedAt + 1);
-          if (cancelled) return;
-          setState((s) => ({
-            ...s,
-            head: headNum,
-            confirmations: confs,
-            receiptStatus: "mined",
-            lastPoll: Date.now()
-          }));
-          return;
-        }
-        try {
-          const receipt = await publicClient.getTransactionReceipt({
-            hash: txHash
-          });
-          if (cancelled) return;
-          const block = Number(receipt.blockNumber);
-          const confs = Math.max(0, headNum - block + 1);
-          const receiptStatus = receipt.status === "success" ? "mined" : "reverted";
-          setState({
-            submittedAt: block,
-            head: headNum,
-            confirmations: confs,
-            receiptStatus,
-            lastPoll: Date.now()
-          });
-        } catch {
-          if (cancelled) return;
-          setState((s) => ({
-            ...s,
-            head: headNum,
-            receiptStatus: "pending",
-            lastPoll: Date.now()
-          }));
-        }
-      } catch (err) {
-        console.warn("[block-meter] poll failed:", err);
-      }
-    };
-    poll2();
-    const interval = state.submittedAt === null ? 4e3 : 5e3;
-    const id = setInterval(poll2, interval);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
-  }, [txHash, state.submittedAt]);
-  if (!txHash) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 flex items-center gap-3", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { size: 14, className: "text-zinc-500 animate-pulse shrink-0" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-zinc-400", children: "Waiting for your deposit tx to broadcast…" })
-    ] });
-  }
-  const progress = Math.min(1, state.confirmations / targetConfirmations);
-  const elapsed = state.lastPoll > 0 ? Math.floor((now2 - state.lastPoll) / 1e3) : 0;
-  const pending = state.receiptStatus === "pending";
-  const reverted = state.receiptStatus === "reverted";
-  const etaSec = Math.max(0, (targetConfirmations - state.confirmations) * 12);
-  const etaLabel = pending ? "waiting for mempool inclusion" : reverted ? "tx reverted on-chain" : state.confirmations >= targetConfirmations ? "ready for release" : `~${Math.floor(etaSec / 60)}m ${etaSec % 60}s remaining`;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    "div",
-    {
-      className: `rounded-xl border p-4 ${reverted ? "border-red-500/40 bg-red-500/5" : state.confirmations >= targetConfirmations ? "border-emerald-500/40 bg-emerald-500/5" : "border-blue-500/30 bg-blue-500/5"}`,
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              Activity,
-              {
-                size: 12,
-                className: `${reverted ? "text-red-400" : state.confirmations >= targetConfirmations ? "text-emerald-400" : "text-blue-300 animate-pulse"}`
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "span",
-              {
-                className: `text-[10px] font-black uppercase tracking-widest ${reverted ? "text-red-300" : state.confirmations >= targetConfirmations ? "text-emerald-300" : "text-blue-300"}`,
-                children: pending ? "Pending in mempool" : reverted ? "Tx reverted" : "Ethereum confirmations"
-              }
-            )
-          ] }),
-          state.head !== null && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[9px] font-mono text-zinc-500", children: [
-            "head #",
-            state.head.toLocaleString()
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-baseline gap-2 mb-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "span",
-            {
-              className: `text-3xl font-black tabular-nums ${reverted ? "text-red-400" : state.confirmations >= targetConfirmations ? "text-emerald-400" : "text-blue-400"}`,
-              children: state.confirmations
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-sm font-bold text-zinc-500", children: [
-            "/ ",
-            targetConfirmations
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-zinc-500 ml-auto", children: "confirmations" })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative h-1.5 bg-zinc-800 rounded-full overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "span",
-          {
-            className: `absolute inset-y-0 left-0 transition-all duration-500 ${reverted ? "bg-red-500" : "bg-gradient-to-r from-blue-500 via-blue-400 to-emerald-400"}`,
-            style: { width: `${progress * 100}%` }
-          }
-        ) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 flex items-center justify-between text-[10px] font-mono", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: state.submittedAt !== null ? `mined in block #${state.submittedAt.toLocaleString()}` : "not yet mined" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "span",
-            {
-              className: `${reverted ? "text-red-400" : state.confirmations >= targetConfirmations ? "text-emerald-400" : "text-zinc-500"}`,
-              children: etaLabel
-            }
-          )
-        ] }),
-        state.lastPoll > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-1 text-[9px] text-zinc-600 font-mono", children: [
-          "last chain poll ",
-          elapsed,
-          "s ago"
-        ] })
       ]
     }
   );
@@ -46268,7 +46277,7 @@ function ConnectWalletModal({
       children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "div",
         {
-          className: "relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden",
+          className: "relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain",
           onClick: (e) => e.stopPropagation(),
           onKeyDown: (e) => e.stopPropagation(),
           role: "dialog",
@@ -46416,126 +46425,265 @@ function CoinbaseIcon() {
     /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "8", y: "8", width: "8", height: "8", rx: "1.5", fill: "#ffffff" })
   ] });
 }
-function timeAgo(ms, now2) {
-  const delta = Math.max(0, now2 - ms);
-  const sec = Math.floor(delta / 1e3);
-  if (sec < 60) return `${sec}s ago`;
-  const min = Math.floor(sec / 60);
-  if (min < 60) return `${min}m ago`;
-  const hr = Math.floor(min / 60);
-  return `${hr}h ago`;
-}
-function duration(step) {
-  const delta = Math.max(0, step.updatedAt - step.startedAt);
-  if (delta < 1e3) return "<1s";
-  const sec = Math.floor(delta / 1e3);
-  if (sec < 60) return `${sec}s`;
-  const min = Math.floor(sec / 60);
-  const s = sec % 60;
-  return s === 0 ? `${min}m` : `${min}m${s}s`;
-}
-function TransactionTimeline({ steps, defaultOpen = false, onClear }) {
-  const [open, setOpen] = reactExports.useState(defaultOpen);
-  const [now2, setNow] = reactExports.useState(() => Date.now());
-  reactExports.useEffect(() => {
-    if (!open) return;
-    const id = setInterval(() => setNow(Date.now()), 1e4);
-    return () => clearInterval(id);
-  }, [open]);
-  if (steps.length === 0) return null;
-  const activeIdx = steps.findIndex((s) => s.status === "active");
-  const errorIdx = steps.findIndex((s) => s.status === "error");
-  const summary = errorIdx >= 0 ? `Stuck at: ${steps[errorIdx].label}` : activeIdx >= 0 ? `Current: ${steps[activeIdx].label}` : steps.every((s) => s.status === "done") ? "Completed" : "In progress";
-  const doneCount = steps.filter((s) => s.status === "done").length;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-zinc-900/40 overflow-hidden", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      "button",
-      {
-        type: "button",
-        onClick: () => setOpen((v2) => !v2),
-        className: "w-full flex items-center justify-between gap-3 px-4 py-3 text-left hover:bg-zinc-800/30 transition-colors",
-        "aria-expanded": open,
-        "data-ocid": "timeline.toggle",
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 min-w-0", children: [
-            open ? /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { size: 14, className: "text-zinc-400 shrink-0" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14, className: "text-zinc-400 shrink-0" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-bold uppercase tracking-widest text-zinc-300", children: "Transaction timeline" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[11px] text-zinc-500 truncate", children: [
-                summary,
-                " · ",
-                doneCount,
-                "/",
-                steps.length,
-                " complete"
-              ] })
-            ] })
-          ] }),
-          onClear && (steps.every((s) => s.status === "done") || errorIdx >= 0) && /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "button",
-            {
-              type: "button",
-              onClick: (e) => {
-                e.stopPropagation();
-                onClear();
-              },
-              className: "shrink-0 text-[10px] uppercase tracking-wider text-zinc-500 hover:text-zinc-300 px-2 py-1 rounded",
-              "data-ocid": "timeline.clear",
-              children: "Clear"
-            }
-          )
-        ]
-      }
-    ),
-    open && /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { className: "relative border-t border-zinc-800 px-4 py-3 space-y-3", children: steps.map((s, i) => {
-      const Icon2 = s.status === "done" ? CircleCheck : s.status === "error" ? CircleX : s.status === "active" ? LoaderCircle : Clock;
-      const iconColor = s.status === "done" ? "text-emerald-400" : s.status === "error" ? "text-red-400" : s.status === "active" ? "text-yellow-400" : "text-zinc-500";
-      const isLast = i === steps.length - 1;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex gap-3 relative", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "shrink-0 flex flex-col items-center", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Icon2,
-            {
-              size: 16,
-              className: `${iconColor} ${s.status === "active" ? "animate-spin" : ""}`
-            }
-          ),
-          !isLast && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-px flex-1 bg-zinc-800 mt-1" })
+function LoginOverlay({ isLoggingIn, onLogin }) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      "data-ocid": "login.modal",
+      className: "fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-8 text-center shadow-2xl", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-20 h-20 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-3xl mx-auto flex items-center justify-center mb-6 shadow-lg shadow-yellow-500/30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "40", height: "40", viewBox: "0 0 40 40", fill: "none", xmlns: "http://www.w3.org/2000/svg", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M6 34 L30 8", stroke: "#3B1F00", strokeWidth: "5", strokeLinecap: "square" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M6 34 L30 8", stroke: "#7B4513", strokeWidth: "3", strokeLinecap: "square" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "24", y: "4", width: "14", height: "6", rx: "1", fill: "#FFFFF0" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "24", y: "4", width: "14", height: "2", rx: "1", fill: "white" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M36 2 L40 6 L36 10 L32 6 Z", fill: "#F0F0F0" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M24 10 L20 14 L24 14 Z", fill: "#D8D8D8" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "8", cy: "32", r: "3", fill: "#FFD700", opacity: "0.9" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "13", cy: "30", r: "2", fill: "#FFD700", opacity: "0.6" })
+        ] }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "text-3xl font-black text-white mb-1", children: [
+          "minegold",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400", children: ".defi" })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0 pb-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-semibold text-zinc-200 break-words", children: s.label }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-500 font-mono shrink-0 pt-0.5", children: timeAgo(s.updatedAt, now2) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-yellow-500/60 font-mono uppercase tracking-widest mb-3", children: "Cross-Chain Gold Refinery" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-400 text-sm mb-6 px-4", children: "Swap UNI (Ethereum) for sGLDT — a 1:1 wrapper of Gold DAO’s physically backed GLDT — on the Internet Computer. Your keys, your account." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-3 gap-2 mb-6 text-left", children: [
+          { n: "1", title: "Connect", sub: "ICP + ETH wallets" },
+          { n: "2", title: "Deposit", sub: "UNI via ckERC-20" },
+          { n: "3", title: "Receive", sub: "sGLDT on ICP" }
+        ].map((step) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-800/60 border border-zinc-700/50 rounded-2xl p-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[10px] font-black text-yellow-500/60 mb-1", children: [
+            "STEP ",
+            step.n
           ] }),
-          s.detail && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-zinc-400 font-mono break-all mt-0.5", children: s.detail }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-600 mt-0.5", children: [
-            "took ",
-            duration(s)
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-bold text-white", children: step.title }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[9px] text-zinc-500 mt-0.5", children: step.sub })
+        ] }, step.n)) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          GoldCTA,
+          {
+            "data-ocid": "login.primary_button",
+            onClick: onLogin,
+            loading: isLoggingIn,
+            size: "lg",
+            leadingIcon: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "svg",
+              {
+                width: "24",
+                height: "24",
+                viewBox: "0 0 24 24",
+                fill: "none",
+                "aria-label": "ICP",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "12", cy: "12", r: "12", fill: "url(#icpGrad)" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("defs", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("radialGradient", { id: "icpGrad", cx: "30%", cy: "30%", r: "80%", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0%", stopColor: "#f15a24" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "50%", stopColor: "#9b2bff" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "100%", stopColor: "#29abe2" })
+                  ] }) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "text",
+                    {
+                      x: "12",
+                      y: "16",
+                      textAnchor: "middle",
+                      fontSize: "9",
+                      fontWeight: "bold",
+                      fill: "white",
+                      fontFamily: "monospace",
+                      children: "ICP"
+                    }
+                  )
+                ]
+              }
+            ),
+            trailingIcon: null,
+            children: isLoggingIn ? "Signing in…" : "Sign in with Internet Identity"
+          }
+        )
+      ] })
+    }
+  );
+}
+const CK_MINTER_CANISTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai";
+const BAT_ERC20_ADDRESS = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF";
+const minterIDL = ({ IDL: IDL2 }) => {
+  const CkErc20 = IDL2.Record({
+    ckerc20_token_symbol: IDL2.Text,
+    erc20_contract_address: IDL2.Text,
+    ledger_canister_id: IDL2.Principal
+  });
+  const MinterInfo = IDL2.Record({
+    supported_ckerc20_tokens: IDL2.Opt(IDL2.Vec(CkErc20))
+  });
+  return IDL2.Service({
+    get_minter_info: IDL2.Func([], [MinterInfo], ["query"])
+  });
+};
+async function fetchCkBatStatus() {
+  const empty = {
+    supported: false,
+    token: null,
+    allTokens: [],
+    error: null
+  };
+  try {
+    const agent = await HttpAgent.create({ host: "https://icp-api.io" });
+    const actor = Actor.createActor(minterIDL, {
+      agent,
+      canisterId: CK_MINTER_CANISTER_ID
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    });
+    const info = await actor.get_minter_info();
+    const raw = (info == null ? void 0 : info.supported_ckerc20_tokens) ?? [];
+    const list = Array.isArray(raw) && raw.length > 0 ? raw[0] : [];
+    const allTokens = (list ?? []).map(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (t) => {
+        var _a3, _b3;
+        return {
+          symbol: String(t.ckerc20_token_symbol ?? ""),
+          erc20Address: String(t.erc20_contract_address ?? ""),
+          ledgerCanisterId: ((_b3 = (_a3 = t.ledger_canister_id) == null ? void 0 : _a3.toString) == null ? void 0 : _b3.call(_a3)) ?? ""
+        };
+      }
+    );
+    const wanted = BAT_ERC20_ADDRESS.toLowerCase();
+    const token = allTokens.find(
+      (t) => t.erc20Address.toLowerCase() === wanted || t.symbol.toLowerCase() === "ckbat"
+    ) ?? null;
+    return { supported: token !== null, token, allTokens, error: null };
+  } catch (e) {
+    return {
+      ...empty,
+      error: e instanceof Error ? e.message : "Could not reach the ckERC-20 minter"
+    };
+  }
+}
+const DISMISS_KEY = "minegold_story_dismissed";
+function BraveStoryStrip({ onOpenBraveSoon }) {
+  const [dismissed, setDismissed] = reactExports.useState(() => {
+    try {
+      return localStorage.getItem(DISMISS_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
+  const [bat, setBat] = reactExports.useState(null);
+  reactExports.useEffect(() => {
+    if (dismissed) return;
+    let cancelled = false;
+    fetchCkBatStatus().then((s) => {
+      if (!cancelled) setBat(s);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [dismissed]);
+  if (dismissed) return null;
+  const batChip = bat === null ? "checking DFINITY's minter…" : bat.supported ? "BAT is live on the chain-key minter — the BAT refinery is opening" : bat.error ? "minter status check unavailable" : "not yet listed by DFINITY's minter — checked live just now";
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "section",
+    {
+      "data-ocid": "story.strip",
+      className: "relative mb-6 rounded-[2rem] border border-yellow-500/20 bg-gradient-to-br from-yellow-500/[0.06] via-zinc-900/60 to-zinc-900/60 p-5 sm:p-6",
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            "aria-label": "Dismiss",
+            "data-ocid": "story.dismiss",
+            onClick: () => {
+              setDismissed(true);
+              try {
+                localStorage.setItem(DISMISS_KEY, "1");
+              } catch {
+              }
+            },
+            className: "absolute top-3 right-3 p-1.5 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 14 })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-xl bg-yellow-500/15 border border-yellow-500/30 flex items-center justify-center shrink-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pickaxe, { size: 18, className: "text-yellow-400" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-black text-white text-base sm:text-lg leading-snug", children: "Your browser is the mine." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-1 text-[12px] sm:text-[13px] text-zinc-400 leading-relaxed", children: [
+              "Brave pays you ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-orange-300 font-semibold", children: "BAT" }),
+              " for the ads you already see. MineGold turns that payout into",
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400 font-semibold", children: "gold" }),
+              " — sGLDT, a 1:1 wrapper of",
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "a",
+                {
+                  href: "https://gldt.org",
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  className: "text-yellow-300 underline underline-offset-2 hover:text-yellow-200",
+                  children: "Gold DAO's GLDT"
+                }
+              ),
+              ", each backed by 0.01 g of vaulted physical gold — and the whole refinery runs as a canister on the Internet Computer: no server, no company holding your funds."
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px]", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "story.bat_status",
+                  onClick: onOpenBraveSoon,
+                  className: "inline-flex items-center gap-1.5 rounded-lg border border-orange-500/25 bg-orange-500/10 px-2.5 py-1 font-semibold text-orange-300 hover:bg-orange-500/20 transition-colors",
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "span",
+                      {
+                        className: `w-1.5 h-1.5 rounded-full ${(bat == null ? void 0 : bat.supported) ? "bg-emerald-400" : "bg-zinc-500"}`
+                      }
+                    ),
+                    "BAT refinery: ",
+                    batChip
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 font-semibold text-emerald-300", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-400" }),
+                "UNI refinery: live on mainnet — the same machine, running today"
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: "Intake: ERC-20 on Ethereum" })
+            ] })
           ] })
         ] })
-      ] }, s.id);
-    }) })
-  ] });
+      ]
+    }
+  );
 }
-const TxStatus$2 = Variant({
+const TxStatus$1 = Variant({
   "Failed": Null,
   "Confirmed": Null,
   "Completed": Null,
-  "Pending": Null
+  "Pending": Null,
+  "Held": Null
 });
-const TxType$2 = Variant({
+const TxType$1 = Variant({
   "Mint": Null,
   "Refine": Null,
   "Bridge": Null,
-  "Transfer": Null
+  "Transfer": Null,
+  "Redeem": Null,
+  "Refund": Null
 });
 const TxRecord = Record({
   "id": Text,
-  "status": TxStatus$2,
+  "status": TxStatus$1,
   "description": Text,
   "tokenSymbol": Text,
   "timestamp": Int,
-  "txType": TxType$2,
+  "txType": TxType$1,
   "amount": Nat,
   "errorMsg": Opt(Text),
   "ethTxHash": Opt(Text),
@@ -46842,13 +46990,16 @@ const idlFactory = ({ IDL: IDL2 }) => {
     "Failed": IDL2.Null,
     "Confirmed": IDL2.Null,
     "Completed": IDL2.Null,
-    "Pending": IDL2.Null
+    "Pending": IDL2.Null,
+    "Held": IDL2.Null
   });
   const TxType2 = IDL2.Variant({
     "Mint": IDL2.Null,
     "Refine": IDL2.Null,
     "Bridge": IDL2.Null,
-    "Transfer": IDL2.Null
+    "Transfer": IDL2.Null,
+    "Redeem": IDL2.Null,
+    "Refund": IDL2.Null
   });
   const TxRecord2 = IDL2.Record({
     "id": IDL2.Text,
@@ -47215,20 +47366,23 @@ var BridgeStatus = /* @__PURE__ */ ((BridgeStatus2) => {
   BridgeStatus2["rejected"] = "rejected";
   return BridgeStatus2;
 })(BridgeStatus || {});
-var TxStatus$1 = /* @__PURE__ */ ((TxStatus2) => {
+var TxStatus = /* @__PURE__ */ ((TxStatus2) => {
   TxStatus2["Failed"] = "Failed";
   TxStatus2["Confirmed"] = "Confirmed";
   TxStatus2["Completed"] = "Completed";
   TxStatus2["Pending"] = "Pending";
+  TxStatus2["Held"] = "Held";
   return TxStatus2;
-})(TxStatus$1 || {});
-var TxType$1 = /* @__PURE__ */ ((TxType2) => {
+})(TxStatus || {});
+var TxType = /* @__PURE__ */ ((TxType2) => {
   TxType2["Mint"] = "Mint";
   TxType2["Refine"] = "Refine";
   TxType2["Bridge"] = "Bridge";
   TxType2["Transfer"] = "Transfer";
+  TxType2["Redeem"] = "Redeem";
+  TxType2["Refund"] = "Refund";
   return TxType2;
-})(TxType$1 || {});
+})(TxType || {});
 var UNIDepositStatus = /* @__PURE__ */ ((UNIDepositStatus2) => {
   UNIDepositStatus2["pending"] = "pending";
   UNIDepositStatus2["paid"] = "paid";
@@ -48377,10 +48531,10 @@ function from_candid_sGLDTRequest_n25(_uploadFile, _downloadFile, value) {
   return from_candid_record_n26(_uploadFile, _downloadFile, value);
 }
 function from_candid_variant_n12(_uploadFile, _downloadFile, value) {
-  return "Failed" in value ? "Failed" : "Confirmed" in value ? "Confirmed" : "Completed" in value ? "Completed" : "Pending" in value ? "Pending" : value;
+  return "Failed" in value ? "Failed" : "Confirmed" in value ? "Confirmed" : "Completed" in value ? "Completed" : "Pending" in value ? "Pending" : "Held" in value ? "Held" : value;
 }
 function from_candid_variant_n14(_uploadFile, _downloadFile, value) {
-  return "Mint" in value ? "Mint" : "Refine" in value ? "Refine" : "Bridge" in value ? "Bridge" : "Transfer" in value ? "Transfer" : value;
+  return "Mint" in value ? "Mint" : "Refine" in value ? "Refine" : "Bridge" in value ? "Bridge" : "Transfer" in value ? "Transfer" : "Redeem" in value ? "Redeem" : "Refund" in value ? "Refund" : value;
 }
 function from_candid_variant_n23(_uploadFile, _downloadFile, value) {
   return "pending" in value ? "pending" : "approved" in value ? "approved" : "rejected" in value ? "rejected" : value;
@@ -48468,6 +48622,8 @@ function to_candid_variant_n4(_uploadFile, _downloadFile, value) {
     Completed: null
   } : value == "Pending" ? {
     Pending: null
+  } : value == "Held" ? {
+    Held: null
   } : value;
 }
 function to_candid_variant_n6(_uploadFile, _downloadFile, value) {
@@ -48479,6 +48635,10 @@ function to_candid_variant_n6(_uploadFile, _downloadFile, value) {
     Bridge: null
   } : value == "Transfer" ? {
     Transfer: null
+  } : value == "Redeem" ? {
+    Redeem: null
+  } : value == "Refund" ? {
+    Refund: null
   } : value;
 }
 function createActor(canisterId, _uploadFile, _downloadFile, options = {}) {
@@ -48500,14 +48660,14 @@ const backend = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   Backend,
   BridgeStatus,
   ExternalBlob,
-  TxStatus: TxStatus$1,
-  TxType: TxType$1,
+  TxStatus,
+  TxType,
   UNIDepositStatus,
   UserRole,
   createActor
 }, Symbol.toStringTag, { value: "Module" }));
 const BACKEND_HOST = "https://icp-api.io";
-const BACKEND_CANISTER_ID = "c626g-iyaaa-aaaau-agpoa-cai";
+const BACKEND_CANISTER_ID$1 = "c626g-iyaaa-aaaau-agpoa-cai";
 const ACTOR_QUERY_KEY = "actor";
 const noopUpload = async () => new Uint8Array();
 const noopDownload = async () => {
@@ -48525,7 +48685,7 @@ function useBackendActor() {
         host: BACKEND_HOST
       });
       return createActor(
-        BACKEND_CANISTER_ID,
+        BACKEND_CANISTER_ID$1,
         noopUpload,
         noopDownload,
         { agent }
@@ -48551,6 +48711,11 @@ function useBackendActor() {
     isFetching: actorQuery.isFetching
   };
 }
+const BACKEND_CANISTER_ID = "c626g-iyaaa-aaaau-agpoa-cai";
+const TREASURY_PRINCIPAL = BACKEND_CANISTER_ID;
+const SGLDT_CANISTER_ID = "i2s4q-syaaa-aaaan-qz4sq-cai";
+const CKUNI_CANISTER_ID = "ilzky-ayaaa-aaaar-qahha-cai";
+const IC_HOST = "https://icp-api.io";
 const icrc1BalanceIDL = ({ IDL: IDL2 }) => {
   const Account = IDL2.Record({
     owner: IDL2.Principal,
@@ -48593,82 +48758,489 @@ const icrc1LedgerIDL = ({ IDL: IDL2 }) => {
     icrc1_transfer: IDL2.Func([TransferArg], [TransferResult], [])
   });
 };
-const directDepositIDL = ({ IDL: IDL2 }) => {
-  const AutoFinalizeResult = IDL2.Variant({
-    ok: IDL2.Record({ requestId: IDL2.Nat, txHash: IDL2.Text }),
-    alreadyExists: IDL2.Record({ requestId: IDL2.Nat, txHash: IDL2.Text, status: IDL2.Text }),
-    noDepositFound: IDL2.Text,
-    apiError: IDL2.Text
+const icrc2ApproveIDL = ({ IDL: IDL2 }) => {
+  const Account = IDL2.Record({
+    owner: IDL2.Principal,
+    subaccount: IDL2.Opt(IDL2.Vec(IDL2.Nat8))
+  });
+  const ApproveArgs = IDL2.Record({
+    from_subaccount: IDL2.Opt(IDL2.Vec(IDL2.Nat8)),
+    spender: Account,
+    amount: IDL2.Nat,
+    expected_allowance: IDL2.Opt(IDL2.Nat),
+    expires_at: IDL2.Opt(IDL2.Nat64),
+    fee: IDL2.Opt(IDL2.Nat),
+    memo: IDL2.Opt(IDL2.Vec(IDL2.Nat8)),
+    created_at_time: IDL2.Opt(IDL2.Nat64)
+  });
+  const ApproveError = IDL2.Variant({
+    BadFee: IDL2.Record({ expected_fee: IDL2.Nat }),
+    InsufficientFunds: IDL2.Record({ balance: IDL2.Nat }),
+    AllowanceChanged: IDL2.Record({ current_allowance: IDL2.Nat }),
+    Expired: IDL2.Record({ ledger_time: IDL2.Nat64 }),
+    TooOld: IDL2.Null,
+    CreatedInFuture: IDL2.Record({ ledger_time: IDL2.Nat64 }),
+    Duplicate: IDL2.Record({ duplicate_of: IDL2.Nat }),
+    TemporarilyUnavailable: IDL2.Null,
+    GenericError: IDL2.Record({ error_code: IDL2.Nat, message: IDL2.Text })
   });
   return IDL2.Service({
-    submitUNIDeposit: IDL2.Func(
-      [IDL2.Text, IDL2.Nat, IDL2.Text, IDL2.Opt(IDL2.Nat)],
-      [IDL2.Nat],
-      []
-    ),
-    verifyEthTransaction: IDL2.Func([IDL2.Nat], [IDL2.Text], []),
-    getEthBalanceOnchain: IDL2.Func([IDL2.Text], [IDL2.Nat], []),
-    getUniBalanceOnchain: IDL2.Func([IDL2.Text], [IDL2.Nat], []),
-    getWalletBalances: IDL2.Func(
-      [IDL2.Text],
-      [IDL2.Record({ ethWei: IDL2.Nat, uniWei: IDL2.Nat })],
-      []
-    ),
-    autoFinalizeUNIDeposit: IDL2.Func(
-      [IDL2.Text, IDL2.Nat, IDL2.Opt(IDL2.Nat)],
-      [AutoFinalizeResult],
+    icrc2_approve: IDL2.Func(
+      [ApproveArgs],
+      [IDL2.Variant({ Ok: IDL2.Nat, Err: ApproveError })],
       []
     )
   });
 };
-async function directSubmitUNIDeposit(opts) {
-  const BACKEND_CANISTER_ID2 = "c626g-iyaaa-aaaau-agpoa-cai";
-  const agent = await HttpAgent.create({
-    identity: opts.identity,
-    host: "https://icp-api.io"
+const refineIDL = ({ IDL: IDL2 }) => {
+  const RefineOk = IDL2.Record({
+    refineId: IDL2.Nat,
+    sgldtPaid: IDL2.Nat,
+    rate: IDL2.Nat,
+    blockIndex: IDL2.Nat
   });
-  const actor = Actor.createActor(directDepositIDL, {
-    agent,
-    canisterId: BACKEND_CANISTER_ID2
+  return IDL2.Service({
+    getMyCkUNIPosition: IDL2.Func(
+      [],
+      [
+        IDL2.Record({
+          balance: IDL2.Nat,
+          allowance: IDL2.Nat,
+          minRefine: IDL2.Nat,
+          rate: IDL2.Nat
+        })
+      ],
+      []
+    ),
+    refineCkUNI: IDL2.Func(
+      [IDL2.Nat, IDL2.Opt(IDL2.Nat)],
+      [IDL2.Variant({ ok: RefineOk, err: IDL2.Text })],
+      []
+    )
   });
-  const cleanEth = String(opts.ethAddress).trim();
-  const cleanHash = String(opts.txHash).trim();
-  const rateOpt = opts.rateHint == null ? [] : [opts.rateHint];
-  return await actor.submitUNIDeposit(
-    cleanEth,
-    opts.uniAmountE8s,
-    cleanHash,
-    rateOpt
-  );
+};
+const rateAndActivityIDL = ({ IDL: IDL2 }) => {
+  const RefineStatus = IDL2.Variant({
+    paid: IDL2.Null,
+    pulled: IDL2.Null,
+    refunded: IDL2.Null,
+    stranded: IDL2.Null
+  });
+  const RefineRecord = IDL2.Record({
+    id: IDL2.Nat,
+    user: IDL2.Principal,
+    ckuniAmount: IDL2.Nat,
+    sgldtPaid: IDL2.Nat,
+    rate: IDL2.Nat,
+    status: RefineStatus,
+    timestamp: IDL2.Int,
+    pullBlock: IDL2.Opt(IDL2.Nat),
+    payBlock: IDL2.Opt(IDL2.Nat),
+    errorMsg: IDL2.Opt(IDL2.Text)
+  });
+  const RedeemRecord = IDL2.Record({
+    id: IDL2.Nat,
+    user: IDL2.Principal,
+    sgldtAmount: IDL2.Nat,
+    ckuniPaid: IDL2.Nat,
+    rate: IDL2.Nat,
+    status: RefineStatus,
+    timestamp: IDL2.Int,
+    pullBlock: IDL2.Opt(IDL2.Nat),
+    payBlock: IDL2.Opt(IDL2.Nat),
+    errorMsg: IDL2.Opt(IDL2.Text)
+  });
+  return IDL2.Service({
+    getRateStatus: IDL2.Func(
+      [],
+      [
+        IDL2.Record({
+          rate: IDL2.Nat,
+          uniUsdE8: IDL2.Nat,
+          sgldtUsdE8: IDL2.Nat,
+          lastSyncNs: IDL2.Int,
+          lastError: IDL2.Text,
+          autoSyncSeconds: IDL2.Nat
+        })
+      ],
+      ["query"]
+    ),
+    getMyRefines: IDL2.Func([], [IDL2.Vec(RefineRecord)], ["query"]),
+    getMyRedeems: IDL2.Func([], [IDL2.Vec(RedeemRecord)], ["query"])
+  });
+};
+const statusKey = (v2) => Object.keys(v2)[0] ?? "pulled";
+const optNat = (v2) => v2.length ? v2[0] : null;
+const optText = (v2) => v2.length ? v2[0] : null;
+function useRateStatus() {
+  return useQuery({
+    queryKey: ["rateStatus"],
+    queryFn: async () => {
+      const actor = Actor.createActor(rateAndActivityIDL, {
+        agent: getAnonymousAgent(),
+        canisterId: BACKEND_CANISTER_ID
+      });
+      return await actor.getRateStatus();
+    },
+    refetchInterval: 6e4,
+    staleTime: 55e3,
+    retry: 2
+  });
 }
-async function autoFinalizeUNIDeposit(opts) {
-  const BACKEND_CANISTER_ID2 = "c626g-iyaaa-aaaau-agpoa-cai";
-  const agent = await HttpAgent.create({
-    identity: opts.identity,
-    host: "https://icp-api.io"
+function useMyRefines(identity) {
+  return useQuery({
+    queryKey: ["myRefines"],
+    enabled: identity != null,
+    queryFn: async () => {
+      const actor = await directActor(rateAndActivityIDL, { identity });
+      const raw = await actor.getMyRefines();
+      return raw.map((r2) => ({
+        id: r2.id,
+        ckuniAmount: r2.ckuniAmount,
+        sgldtPaid: r2.sgldtPaid,
+        rate: r2.rate,
+        status: statusKey(r2.status),
+        timestamp: r2.timestamp,
+        pullBlock: optNat(r2.pullBlock),
+        payBlock: optNat(r2.payBlock),
+        errorMsg: optText(r2.errorMsg)
+      }));
+    },
+    refetchInterval: 12e4
   });
-  const actor = Actor.createActor(directDepositIDL, { agent, canisterId: BACKEND_CANISTER_ID2 });
-  const rateOpt = opts.rateHint == null ? [] : [opts.rateHint];
-  const result = await actor.autoFinalizeUNIDeposit(
-    String(opts.ethAddress).trim(),
-    opts.uniAmountE8s,
-    rateOpt
-  );
-  if ("ok" in result) {
-    return { kind: "ok", requestId: result.ok.requestId, txHash: result.ok.txHash };
+}
+function useMyRedeems(identity) {
+  return useQuery({
+    queryKey: ["myRedeems"],
+    enabled: identity != null,
+    queryFn: async () => {
+      const actor = await directActor(rateAndActivityIDL, { identity });
+      const raw = await actor.getMyRedeems();
+      return raw.map((r2) => ({
+        id: r2.id,
+        sgldtAmount: r2.sgldtAmount,
+        ckuniPaid: r2.ckuniPaid,
+        rate: r2.rate,
+        status: statusKey(r2.status),
+        timestamp: r2.timestamp,
+        pullBlock: optNat(r2.pullBlock),
+        payBlock: optNat(r2.payBlock),
+        errorMsg: optText(r2.errorMsg)
+      }));
+    },
+    refetchInterval: 12e4
+  });
+}
+const proofIDL = ({ IDL: IDL2 }) => IDL2.Service({
+  getTreasuryICRC1Balances: IDL2.Func(
+    [],
+    [
+      IDL2.Record({
+        sgldtBalance: IDL2.Nat,
+        ckUNIBalance: IDL2.Nat,
+        cachedAtNs: IDL2.Int
+      })
+    ],
+    ["query"]
+  ),
+  refreshTreasuryBalances: IDL2.Func([], [], []),
+  getPayoutReadiness: IDL2.Func(
+    [],
+    [
+      IDL2.Record({
+        treasurySGLDTBalance: IDL2.Nat,
+        pendingDeposits: IDL2.Nat,
+        estimatedSGLDTNeeded: IDL2.Nat,
+        treasuryPrincipal: IDL2.Text
+      })
+    ],
+    []
+  ),
+  getStrandedCounts: IDL2.Func(
+    [],
+    [IDL2.Record({ strandedRefines: IDL2.Nat, strandedRedeems: IDL2.Nat })],
+    ["query"]
+  )
+});
+function useProofSnapshot(open) {
+  return useQuery({
+    queryKey: ["proofSnapshot"],
+    enabled: open,
+    queryFn: async () => {
+      const actor = Actor.createActor(proofIDL, {
+        agent: getAnonymousAgent(),
+        canisterId: BACKEND_CANISTER_ID
+      });
+      const [balances, readiness, strandedCounts] = await Promise.all([
+        actor.getTreasuryICRC1Balances(),
+        actor.getPayoutReadiness(),
+        actor.getStrandedCounts()
+      ]);
+      return {
+        sgldtBalance: balances.sgldtBalance,
+        ckUNIBalance: balances.ckUNIBalance,
+        cachedAtNs: balances.cachedAtNs,
+        treasurySGLDTLive: readiness.treasurySGLDTBalance,
+        pendingDeposits: readiness.pendingDeposits,
+        estimatedSGLDTNeeded: readiness.estimatedSGLDTNeeded,
+        strandedRefines: strandedCounts.strandedRefines,
+        strandedRedeems: strandedCounts.strandedRedeems
+      };
+    },
+    staleTime: 3e4,
+    retry: 1
+  });
+}
+async function refreshProofBalances() {
+  const actor = Actor.createActor(proofIDL, {
+    agent: getAnonymousAgent(),
+    canisterId: BACKEND_CANISTER_ID
+  });
+  await actor.refreshTreasuryBalances();
+}
+const strandedAdminIDL = ({ IDL: IDL2 }) => {
+  const Status = IDL2.Variant({
+    paid: IDL2.Null,
+    pulled: IDL2.Null,
+    refunded: IDL2.Null,
+    stranded: IDL2.Null
+  });
+  const RefineRecord = IDL2.Record({
+    id: IDL2.Nat,
+    user: IDL2.Principal,
+    ckuniAmount: IDL2.Nat,
+    sgldtPaid: IDL2.Nat,
+    rate: IDL2.Nat,
+    status: Status,
+    timestamp: IDL2.Int,
+    pullBlock: IDL2.Opt(IDL2.Nat),
+    payBlock: IDL2.Opt(IDL2.Nat),
+    errorMsg: IDL2.Opt(IDL2.Text)
+  });
+  const RedeemRecord = IDL2.Record({
+    id: IDL2.Nat,
+    user: IDL2.Principal,
+    sgldtAmount: IDL2.Nat,
+    ckuniPaid: IDL2.Nat,
+    rate: IDL2.Nat,
+    status: Status,
+    timestamp: IDL2.Int,
+    pullBlock: IDL2.Opt(IDL2.Nat),
+    payBlock: IDL2.Opt(IDL2.Nat),
+    errorMsg: IDL2.Opt(IDL2.Text)
+  });
+  return IDL2.Service({
+    getStrandedRefines: IDL2.Func([], [IDL2.Vec(RefineRecord)], ["query"]),
+    getStrandedRedeems: IDL2.Func([], [IDL2.Vec(RedeemRecord)], ["query"])
+  });
+};
+function useStrandedQueue(identity, enabled) {
+  return useQuery({
+    queryKey: ["strandedQueue"],
+    enabled: identity != null,
+    queryFn: async () => {
+      const actor = await directActor(strandedAdminIDL, { identity });
+      const [refines, redeems] = await Promise.all([
+        actor.getStrandedRefines(),
+        actor.getStrandedRedeems()
+      ]);
+      const rows = [
+        ...refines.map((r2) => ({
+          kind: "refine",
+          id: r2.id,
+          user: r2.user.toText(),
+          pulled: `${(Number(r2.ckuniAmount) / 1e18).toFixed(6)} ckUNI`,
+          owed: `${(Number(r2.ckuniAmount) / 1e18 * (Number(r2.rate) / 1e8)).toFixed(4)} sGLDT`,
+          timestampNs: r2.timestamp,
+          pullBlock: optNat(r2.pullBlock),
+          errorMsg: optText(r2.errorMsg)
+        })),
+        ...redeems.map((r2) => ({
+          kind: "redeem",
+          id: r2.id,
+          user: r2.user.toText(),
+          pulled: `${(Number(r2.sgldtAmount) / 1e8).toFixed(4)} sGLDT`,
+          owed: `${(Number(r2.sgldtAmount) / 1e8 / Math.max(1e-9, Number(r2.rate) / 1e8)).toFixed(6)} ckUNI`,
+          timestampNs: r2.timestamp,
+          pullBlock: optNat(r2.pullBlock),
+          errorMsg: optText(r2.errorMsg)
+        }))
+      ];
+      return rows.sort((a2, b2) => a2.timestampNs < b2.timestampNs ? 1 : -1);
+    },
+    refetchInterval: 12e4
+  });
+}
+async function fetchMyCkUNIPosition(identity) {
+  try {
+    const actor = await directActor(refineIDL, { identity });
+    return await actor.getMyCkUNIPosition();
+  } catch (err) {
+    console.warn("[refine] ckUNI position fetch failed:", err);
+    return null;
   }
-  if ("alreadyExists" in result) {
+}
+const CKUNI_FEE_FALLBACK = 1000000000000000n;
+let _ckuniFeeCache = null;
+async function fetchCkUNIFee() {
+  if (_ckuniFeeCache !== null) return _ckuniFeeCache;
+  try {
+    const actor = Actor.createActor(icrc1LedgerIDL, {
+      agent: getAnonymousAgent(),
+      canisterId: CKUNI_CANISTER_ID
+    });
+    _ckuniFeeCache = await actor.icrc1_fee();
+    return _ckuniFeeCache;
+  } catch {
+    return CKUNI_FEE_FALLBACK;
+  }
+}
+async function approveCkUNIForRefinery(opts) {
+  const actor = await directActor(icrc2ApproveIDL, {
+    identity: opts.identity,
+    canisterId: CKUNI_CANISTER_ID
+  });
+  const result = await actor.icrc2_approve({
+    from_subaccount: [],
+    spender: {
+      owner: Principal$1.fromText(BACKEND_CANISTER_ID),
+      subaccount: []
+    },
+    amount: opts.amount,
+    expected_allowance: [],
+    expires_at: [],
+    fee: [],
+    memo: [],
+    created_at_time: []
+  });
+  if ("Ok" in result) return { ok: true, blockIndex: result.Ok };
+  const err = result.Err;
+  if ("InsufficientFunds" in err) {
     return {
-      kind: "alreadyExists",
-      requestId: result.alreadyExists.requestId,
-      txHash: result.alreadyExists.txHash,
-      status: result.alreadyExists.status
+      ok: false,
+      error: `Not enough ckUNI to cover the approval fee (balance ${err.InsufficientFunds.balance}).`
     };
   }
-  if ("noDepositFound" in result) {
-    return { kind: "noDepositFound", detail: result.noDepositFound };
+  if ("AllowanceChanged" in err) {
+    return {
+      ok: false,
+      error: "Your ckUNI allowance changed mid-flight. Try again."
+    };
   }
-  return { kind: "apiError", detail: result.apiError };
+  if ("TemporarilyUnavailable" in err) {
+    return { ok: false, error: "ckUNI ledger temporarily unavailable. Try again." };
+  }
+  if ("GenericError" in err) {
+    return {
+      ok: false,
+      error: `Approve failed (${err.GenericError.error_code}): ${err.GenericError.message}`
+    };
+  }
+  return { ok: false, error: `Approve failed: ${JSON.stringify(err)}` };
+}
+async function refineCkUNI(opts) {
+  const actor = await directActor(refineIDL, { identity: opts.identity });
+  const rateOpt = opts.rateHint == null ? [] : [opts.rateHint];
+  const result = await actor.refineCkUNI(opts.amount, rateOpt);
+  if ("ok" in result) {
+    return {
+      ok: true,
+      refineId: result.ok.refineId,
+      sgldtPaid: result.ok.sgldtPaid,
+      rate: result.ok.rate,
+      blockIndex: result.ok.blockIndex
+    };
+  }
+  return { ok: false, error: result.err };
+}
+const redeemIDL = ({ IDL: IDL2 }) => {
+  const RedeemOk = IDL2.Record({
+    redeemId: IDL2.Nat,
+    ckuniPaid: IDL2.Nat,
+    rate: IDL2.Nat,
+    blockIndex: IDL2.Nat
+  });
+  return IDL2.Service({
+    getMySGLDTPosition: IDL2.Func(
+      [],
+      [
+        IDL2.Record({
+          balance: IDL2.Nat,
+          allowance: IDL2.Nat,
+          minRedeem: IDL2.Nat,
+          rate: IDL2.Nat,
+          treasuryCkUNI: IDL2.Nat
+        })
+      ],
+      []
+    ),
+    redeemSGLDT: IDL2.Func(
+      [IDL2.Nat, IDL2.Opt(IDL2.Nat)],
+      [IDL2.Variant({ ok: RedeemOk, err: IDL2.Text })],
+      []
+    )
+  });
+};
+async function fetchMySGLDTPosition(identity) {
+  try {
+    const actor = await directActor(redeemIDL, { identity });
+    return await actor.getMySGLDTPosition();
+  } catch (err) {
+    console.warn("[redeem] sGLDT position fetch failed:", err);
+    return null;
+  }
+}
+async function approveSGLDTForRedeem(opts) {
+  const actor = await directActor(icrc2ApproveIDL, {
+    identity: opts.identity,
+    canisterId: SGLDT_CANISTER_ID
+  });
+  const result = await actor.icrc2_approve({
+    from_subaccount: [],
+    spender: {
+      owner: Principal$1.fromText(BACKEND_CANISTER_ID),
+      subaccount: []
+    },
+    amount: opts.amount,
+    expected_allowance: [],
+    expires_at: [],
+    fee: [],
+    memo: [],
+    created_at_time: []
+  });
+  if ("Ok" in result) return { ok: true, blockIndex: result.Ok };
+  const err = result.Err;
+  if ("InsufficientFunds" in err) {
+    return {
+      ok: false,
+      error: `Not enough sGLDT to cover the approval fee (balance ${err.InsufficientFunds.balance}).`
+    };
+  }
+  if ("TemporarilyUnavailable" in err) {
+    return { ok: false, error: "sGLDT ledger temporarily unavailable. Try again." };
+  }
+  if ("GenericError" in err) {
+    return {
+      ok: false,
+      error: `Approve failed (${err.GenericError.error_code}): ${err.GenericError.message}`
+    };
+  }
+  return { ok: false, error: `Approve failed: ${JSON.stringify(err)}` };
+}
+async function redeemSGLDT(opts) {
+  const actor = await directActor(redeemIDL, { identity: opts.identity });
+  const rateOpt = opts.rateHint == null ? [] : [opts.rateHint];
+  const result = await actor.redeemSGLDT(opts.amount, rateOpt);
+  if ("ok" in result) {
+    return {
+      ok: true,
+      redeemId: result.ok.redeemId,
+      ckuniPaid: result.ok.ckuniPaid,
+      rate: result.ok.rate,
+      blockIndex: result.ok.blockIndex
+    };
+  }
+  return { ok: false, error: result.err };
 }
 const directAdminIDL = ({ IDL: IDL2 }) => {
   const WhoAmI = IDL2.Record({
@@ -48684,41 +49256,45 @@ const directAdminIDL = ({ IDL: IDL2 }) => {
     adminGrantAdmin: IDL2.Func([IDL2.Principal], [IDL2.Text], [])
   });
 };
-async function directWhoAmI(identity) {
-  const BACKEND_CANISTER_ID2 = "c626g-iyaaa-aaaau-agpoa-cai";
+async function directActor(idl, opts = {}) {
   const agent = await HttpAgent.create({
-    identity,
-    host: "https://icp-api.io"
+    ...opts.identity != null ? { identity: opts.identity } : {},
+    host: IC_HOST
   });
-  const actor = Actor.createActor(directAdminIDL, {
+  return Actor.createActor(idl, {
     agent,
-    canisterId: BACKEND_CANISTER_ID2
+    canisterId: opts.canisterId ?? BACKEND_CANISTER_ID
   });
+}
+let _anonymousAgent = null;
+function getAnonymousAgent() {
+  if (!_anonymousAgent) {
+    _anonymousAgent = new HttpAgent({ host: IC_HOST });
+  }
+  return _anonymousAgent;
+}
+async function queryIcrc1Balance(canisterId) {
+  const actor = Actor.createActor(icrc1BalanceIDL, {
+    agent: getAnonymousAgent(),
+    canisterId
+  });
+  const result = await actor.icrc1_balance_of({
+    owner: Principal$1.fromText(TREASURY_PRINCIPAL),
+    subaccount: []
+  });
+  return result;
+}
+async function directWhoAmI(identity) {
+  const actor = await directActor(directAdminIDL, { identity });
   return await actor.whoAmI();
 }
 async function directAdminGrantAdmin(identity, newAdminText) {
-  const BACKEND_CANISTER_ID2 = "c626g-iyaaa-aaaau-agpoa-cai";
-  const agent = await HttpAgent.create({
-    identity,
-    host: "https://icp-api.io"
-  });
-  const actor = Actor.createActor(directAdminIDL, {
-    agent,
-    canisterId: BACKEND_CANISTER_ID2
-  });
+  const actor = await directActor(directAdminIDL, { identity });
   const newAdminPrincipal = Principal$1.fromText(newAdminText.trim());
   return await actor.adminGrantAdmin(newAdminPrincipal);
 }
 async function directAdminTransfer(opts) {
-  const BACKEND_CANISTER_ID2 = "c626g-iyaaa-aaaau-agpoa-cai";
-  const agent = await HttpAgent.create({
-    identity: opts.identity,
-    host: "https://icp-api.io"
-  });
-  const actor = Actor.createActor(directAdminIDL, {
-    agent,
-    canisterId: BACKEND_CANISTER_ID2
-  });
+  const actor = await directActor(directAdminIDL, { identity: opts.identity });
   const toPrincipal = Principal$1.fromText(opts.to.trim());
   if (opts.token === "ckUNI") {
     return await actor.adminTransferCkUNI(toPrincipal, opts.amount);
@@ -48726,12 +49302,8 @@ async function directAdminTransfer(opts) {
   return await actor.adminTransferSGLDT(toPrincipal, opts.amount);
 }
 async function icrc1TransferFromCaller(opts) {
-  const agent = await HttpAgent.create({
+  const actor = await directActor(icrc1LedgerIDL, {
     identity: opts.identity,
-    host: "https://icp-api.io"
-  });
-  const actor = Actor.createActor(icrc1LedgerIDL, {
-    agent,
     canisterId: opts.canisterId
   });
   let toPrincipal;
@@ -48763,31 +49335,6 @@ async function icrc1TransferFromCaller(opts) {
     return { ok: false, error: `GenericError ${err.GenericError.error_code}: ${err.GenericError.message}` };
   }
   return { ok: false, error: `Transfer error: ${JSON.stringify(err)}` };
-}
-let _anonymousAgent = null;
-function getAnonymousAgent() {
-  if (!_anonymousAgent) {
-    _anonymousAgent = new HttpAgent({ host: "https://icp-api.io" });
-  }
-  return _anonymousAgent;
-}
-const TREASURY_PRINCIPAL$1 = "c626g-iyaaa-aaaau-agpoa-cai";
-const SGLDT_CANISTER_ID = "i2s4q-syaaa-aaaan-qz4sq-cai";
-const CKUNI_CANISTER_ID = "ilzky-ayaaa-aaaar-qahha-cai";
-async function queryIcrc1Balance(canisterId) {
-  const agent = getAnonymousAgent();
-  const actor = Actor.createActor(icrc1BalanceIDL, {
-    agent,
-    canisterId
-  });
-  const result = await actor.icrc1_balance_of({
-    owner: Principal$1.fromText(TREASURY_PRINCIPAL$1),
-    subaccount: []
-  });
-  return result;
-}
-async function fetchTreasuryCkUNIBalance() {
-  return queryIcrc1Balance(CKUNI_CANISTER_ID);
 }
 function formatTokenAmount(value, decimals = 8) {
   const divisor = BigInt(10 ** decimals);
@@ -48856,6 +49403,29 @@ function useRetryUNIDepositPayout() {
     }
   });
 }
+function useAllUNIDeposits() {
+  const { actor: actorRaw, isFetching } = useBackendActor();
+  const actor = actorRaw;
+  const { identity } = useInternetIdentity();
+  return useQuery({
+    queryKey: ["allUNIDeposits", identity == null ? void 0 : identity.getPrincipal().toString()],
+    queryFn: async () => {
+      if (!actor || !identity) return [];
+      try {
+        return await actor.getAllUNIDeposits();
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        if (msg.includes("Unauthorized") || msg.includes("not authorized") || msg.includes("admin")) {
+          throw new Error("Admin authentication required to view deposits.");
+        }
+        throw err;
+      }
+    },
+    enabled: !!actor && !isFetching && !!identity && !identity.getPrincipal().isAnonymous(),
+    refetchInterval: 3e4,
+    retry: 2
+  });
+}
 function useTreasuryICRC1Balances() {
   const { actor: actorRaw, isFetching } = useBackendActor();
   const actor = actorRaw;
@@ -48879,7 +49449,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-CgErIgsA.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DsxkddcT.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -48910,7 +49480,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-CgErIgsA.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DsxkddcT.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -48934,7 +49504,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-CgErIgsA.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DsxkddcT.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49011,29 +49581,6 @@ function useSetUNIExchangeRate() {
     }
   });
 }
-function useAllUNIDeposits() {
-  const { actor: actorRaw, isFetching } = useBackendActor();
-  const actor = actorRaw;
-  const { identity } = useInternetIdentity();
-  return useQuery({
-    queryKey: ["allUNIDeposits", identity == null ? void 0 : identity.getPrincipal().toString()],
-    queryFn: async () => {
-      if (!actor || !identity) return [];
-      try {
-        return await actor.getAllUNIDeposits();
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        if (msg.includes("Unauthorized") || msg.includes("not authorized") || msg.includes("admin")) {
-          throw new Error("Admin authentication required to view deposits.");
-        }
-        throw err;
-      }
-    },
-    enabled: !!actor && !isFetching && !!identity && !identity.getPrincipal().isAnonymous(),
-    refetchInterval: 3e4,
-    retry: 2
-  });
-}
 function useMyTransactions() {
   const { actor: actorRaw, isFetching } = useBackendActor();
   const actor = actorRaw;
@@ -49053,21 +49600,6 @@ function useMyTransactions() {
     },
     enabled: !!actor && !isFetching && !!identity && !identity.getPrincipal().isAnonymous(),
     refetchInterval: 3e4
-  });
-}
-function useAdminInitializeMinterAddress() {
-  const { actor: actorRaw } = useBackendActor();
-  const actor = actorRaw;
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async () => {
-      if (!actor) throw new Error("Not connected");
-      const result = await actor.adminInitializeMinterAddress();
-      return result ?? "";
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["ckuniMinterAddress"] });
-    }
   });
 }
 function useUserSGLDTBalance(principalText) {
@@ -49120,6 +49652,21 @@ function useGetTreasuryWalletInfo() {
     }
   });
 }
+function useAdminInitializeMinterAddress() {
+  const { actor: actorRaw } = useBackendActor();
+  const actor = actorRaw;
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      if (!actor) throw new Error("Not connected");
+      const result = await actor.adminInitializeMinterAddress();
+      return result ?? "";
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["ckuniMinterAddress"] });
+    }
+  });
+}
 function useAdminMintCkUNI() {
   const { actor: actorRaw } = useBackendActor();
   const actor = actorRaw;
@@ -49161,6 +49708,511 @@ function useAdminDissolveCkUNI() {
     }
   });
 }
+const STATUS_LABEL = {
+  paid: { text: "settled", cls: "text-emerald-400" },
+  pulled: { text: "in flight", cls: "text-amber-400" },
+  refunded: { text: "refunded", cls: "text-blue-300" },
+  stranded: { text: "held — being resolved", cls: "text-amber-400" }
+};
+const fmtTime = (ns) => {
+  const d2 = new Date(Number(ns / 1000000n));
+  return d2.toLocaleString(void 0, {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+};
+function HoldingsCard({
+  identity,
+  sgldtBalance,
+  sgldtUsd,
+  ckuniBalance,
+  ckuniRefinable,
+  rateDisplay,
+  rateProvenance,
+  onRedeem
+}) {
+  const { data: refines } = useMyRefines(identity);
+  const { data: redeems } = useMyRedeems(identity);
+  const rows = [
+    ...(refines ?? []).map((r2) => ({
+      key: `rf-${r2.id.toString()}`,
+      kind: "refine",
+      ref: `refine #${r2.id.toString()}`,
+      title: `Refined ${(Number(r2.ckuniAmount) / 1e18).toFixed(4)} ckUNI`,
+      detail: `→ ${(Number(r2.sgldtPaid) / 1e8).toFixed(4)} sGLDT`,
+      rate: (Number(r2.rate) / 1e8).toFixed(4),
+      status: r2.status,
+      timestampNs: r2.timestamp,
+      payBlock: r2.payBlock
+    })),
+    ...(redeems ?? []).map((r2) => ({
+      key: `rd-${r2.id.toString()}`,
+      kind: "redeem",
+      ref: `redeem #${r2.id.toString()}`,
+      title: `Redeemed ${(Number(r2.sgldtAmount) / 1e8).toFixed(4)} sGLDT`,
+      detail: `→ ${(Number(r2.ckuniPaid) / 1e18).toFixed(4)} ckUNI`,
+      rate: (Number(r2.rate) / 1e8).toFixed(4),
+      status: r2.status,
+      timestampNs: r2.timestamp,
+      payBlock: r2.payBlock
+    }))
+  ].sort((a2, b2) => a2.timestampNs < b2.timestampNs ? 1 : -1);
+  const stranded = rows.filter((r2) => r2.status === "stranded");
+  const visibleRows = rows.slice(0, 6);
+  const hasAnything = sgldtBalance != null && Number.parseFloat(sgldtBalance) > 0 || ckuniBalance != null && ckuniBalance > 0n || rows.length > 0;
+  if (!hasAnything) return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "section",
+    {
+      "data-ocid": "holdings.card",
+      className: "mb-8 rounded-[2rem] border border-zinc-800 bg-zinc-900/60 p-5 sm:p-6",
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-wrap items-start justify-between gap-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-xl bg-yellow-500/15 border border-yellow-500/30 flex items-center justify-center shrink-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { size: 18, className: "text-yellow-400" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest", children: "Your Gold" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-2xl font-black text-yellow-400 tabular-nums leading-tight", children: [
+                sgldtBalance ?? "—",
+                " ",
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-bold text-yellow-600", children: "sGLDT" })
+              ] }),
+              sgldtUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-zinc-500", children: [
+                "≈ $",
+                sgldtUsd
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-right", children: [
+            rateDisplay && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-semibold text-zinc-300", children: rateDisplay }),
+            rateProvenance && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500", children: rateProvenance }),
+            ckuniBalance != null && ckuniBalance > 0n && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-1 text-[11px] text-blue-300", children: [
+              (Number(ckuniBalance) / 1e18).toFixed(4),
+              " ckUNI in your account",
+              ckuniRefinable ? " · ready to refine" : ""
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                type: "button",
+                "data-ocid": "holdings.redeem.button",
+                onClick: onRedeem,
+                className: "mt-2 inline-flex items-center gap-1.5 text-[11px] font-bold text-pink-300 hover:text-pink-200 bg-pink-500/10 border border-pink-500/20 px-3 py-1.5 rounded-xl transition-colors",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowUpFromLine, { size: 11 }),
+                  "Redeem sGLDT → ckUNI"
+                ]
+              }
+            )
+          ] })
+        ] }),
+        stranded.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 rounded-2xl border border-amber-500/25 bg-amber-500/5 p-4 text-[11px] leading-relaxed text-zinc-300", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-amber-300 mb-1", children: "A swap of yours is held for manual resolution" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-zinc-400", children: [
+            "Its refund couldn't be sent automatically, so the record is held on-chain with your funds noted — nothing is dropped. Email",
+            " ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "a",
+              {
+                href: `mailto:anthony@cafreso.com?subject=${encodeURIComponent(
+                  `minegold.defi held swap: ${stranded.map((r2) => r2.ref).join(", ")}`
+                )}`,
+                className: "text-amber-300 underline underline-offset-2 hover:text-amber-200",
+                children: "anthony@cafreso.com"
+              }
+            ),
+            " ",
+            "quoting",
+            " ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono text-zinc-200", children: stranded.map((r2) => r2.ref).join(", ") }),
+            " ",
+            "and it will be released or refunded by hand."
+          ] })
+        ] }),
+        visibleRows.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 border-t border-zinc-800 pt-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2", children: "Activity" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "space-y-1.5", children: visibleRows.map((row) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "li",
+            {
+              className: "flex flex-wrap items-baseline gap-x-3 gap-y-0.5 text-[11px]",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "shrink-0 text-zinc-600", children: row.kind === "refine" ? /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowDownToLine, { size: 11, className: "inline text-yellow-500/80" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowUpFromLine, { size: 11, className: "inline text-pink-400/80" }) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: row.title }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-400", children: row.detail }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-zinc-600 font-mono", children: [
+                  "@",
+                  row.rate
+                ] }),
+                row.payBlock != null && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-zinc-600 font-mono", children: [
+                  "block #",
+                  row.payBlock.toString()
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `${STATUS_LABEL[row.status].cls} font-semibold`, children: STATUS_LABEL[row.status].text }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-auto text-zinc-600", children: fmtTime(row.timestampNs) })
+              ]
+            },
+            row.key
+          )) })
+        ] })
+      ]
+    }
+  );
+}
+const DASHBOARD = "https://dashboard.internetcomputer.org/canister";
+const PARTY_STYLE = {
+  operator: "bg-amber-500/10 border-amber-500/25 text-amber-300",
+  DFINITY: "bg-blue-500/10 border-blue-500/25 text-blue-300",
+  "Gold DAO / sVault": "bg-emerald-500/10 border-emerald-500/25 text-emerald-300"
+};
+const OPERATOR_CONTROLLER = "xip3r-mhzcr-csb7y-ilqf5-4tpge-dka64-jv2ow-zon7z-key3x-77kf3-mae";
+const CANISTERS = [
+  {
+    label: "Refinery backend (the treasury)",
+    id: "c626g-iyaaa-aaaau-agpoa-cai",
+    party: "operator",
+    note: "holds treasury funds; executes atomic swaps with auto-refund"
+  },
+  {
+    label: "sGLDT ledger (the GLDT wrapper)",
+    id: "i2s4q-syaaa-aaaan-qz4sq-cai",
+    party: "Gold DAO / sVault",
+    note: "every payout is a block here — sVault's 1:1 GLDT wrapper"
+  },
+  {
+    label: "ckUNI ledger",
+    id: "ilzky-ayaaa-aaaar-qahha-cai",
+    party: "DFINITY",
+    note: "your bridged UNI lives here, in YOUR account"
+  },
+  {
+    label: "ckERC-20 minter",
+    id: "sv3dd-oaaaa-aaaar-qacoa-cai",
+    party: "DFINITY",
+    note: "mints ckUNI after 12 Ethereum blocks — not our code"
+  },
+  {
+    label: "Exchange Rate Canister (XRC)",
+    id: "uf6dk-hyaaa-aaaaq-qaaaq-cai",
+    party: "DFINITY",
+    note: "the UNI/USD oracle — DFINITY infrastructure"
+  }
+];
+const ageLabel = (ns) => {
+  if (ns <= 0n) return "never refreshed";
+  const mins = Math.max(
+    0,
+    Math.round((Date.now() - Number(ns / 1000000n)) / 6e4)
+  );
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  return `${Math.floor(mins / 60)}h ${mins % 60}m ago`;
+};
+function ProofPanel({ onClose }) {
+  const { data: rate } = useRateStatus();
+  const { data: snap, isLoading, refetch, isFetching } = useProofSnapshot(true);
+  const qc = useQueryClient();
+  const [refreshing, setRefreshing] = reactExports.useState(false);
+  const syncAgeMin = rate && rate.lastSyncNs > 0n ? Math.max(0, Math.round((Date.now() - Number(rate.lastSyncNs / 1000000n)) / 6e4)) : null;
+  const doRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refreshProofBalances();
+      await qc.invalidateQueries({ queryKey: ["proofSnapshot"] });
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+  const coverage = snap && snap.estimatedSGLDTNeeded > 0n ? Number(snap.treasurySGLDTLive) / Number(snap.estimatedSGLDTNeeded) : null;
+  const strandedTotal = snap ? snap.strandedRefines + snap.strandedRedeems : null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      "data-ocid": "proof.panel",
+      className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-2xl relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            "data-ocid": "proof.close",
+            onClick: onClose,
+            className: "absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 18 })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ShieldCheck, { size: 20, className: "text-emerald-400" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "font-black text-white text-lg leading-tight", children: "Proof & transparency" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-zinc-500", children: "Every number below is on-chain — verify it, don't trust it." })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest", children: "Treasury liquidity" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-500", children: snap ? `ledger read ${ageLabel(snap.cachedAtNs)}` : "…" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                type: "button",
+                "data-ocid": "proof.refresh",
+                onClick: () => void doRefresh(),
+                disabled: refreshing || isFetching,
+                className: "inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-zinc-700 bg-zinc-900 text-[10px] font-bold text-zinc-300 hover:bg-zinc-800 disabled:opacity-50",
+                title: "Re-read both ledgers now",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    RefreshCw,
+                    {
+                      size: 10,
+                      className: refreshing || isFetching ? "animate-spin" : ""
+                    }
+                  ),
+                  "Refresh"
+                ]
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-3 mb-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1", children: "sGLDT (pays refines)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl font-black text-yellow-400 tabular-nums", children: snap ? formatTokenAmount(snap.sgldtBalance) : "…" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1", children: "ckUNI (pays redeems)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl font-black text-blue-300 tabular-nums", children: snap ? formatTokenAmount(snap.ckUNIBalance, 18) : "…" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-3 mb-5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1", children: "Refine coverage" }),
+            isLoading || !snap ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-500", children: "…" }) : snap.pendingDeposits === 0n ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-bold text-emerald-400", children: "No pending payouts owed" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "p",
+                {
+                  className: `text-sm font-bold ${(coverage ?? 0) >= 1 ? "text-emerald-400" : "text-amber-400"}`,
+                  children: coverage != null ? `${Math.min(999, Math.round(coverage * 100))}% of owed payouts covered` : "—"
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-500 mt-0.5", children: [
+                formatTokenAmount(snap.treasurySGLDTLive),
+                " live vs",
+                " ",
+                formatTokenAmount(snap.estimatedSGLDTNeeded),
+                " owed across",
+                " ",
+                snap.pendingDeposits.toString(),
+                " pending"
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1", children: "Held (stranded) swaps" }),
+            strandedTotal == null ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-500", children: "…" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "p",
+                {
+                  className: `text-sm font-bold ${strandedTotal === 0n ? "text-emerald-400" : "text-amber-400"}`,
+                  children: [
+                    strandedTotal.toString(),
+                    " right now"
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 mt-0.5", children: "swaps whose auto-refund also failed, held for manual resolution — published even at 0" })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5", children: "How the rate is made" }),
+          rate ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-zinc-200 font-semibold", children: [
+                "1 UNI = ",
+                (Number(rate.rate) / 1e8).toFixed(4),
+                " sGLDT"
+              ] }),
+              " ",
+              "= UNI/USD from the XRC oracle (",
+              rate.uniUsdE8 > 0n ? `$${(Number(rate.uniUsdE8) / 1e8).toFixed(2)}` : "—",
+              ", synced ",
+              syncAgeMin != null ? `${syncAgeMin}m ago` : "—",
+              ", hourly cadence) ÷ an operator-set sGLDT/USD reference (",
+              rate.sgldtUsdE8 > 0n ? `$${(Number(rate.sgldtUsdE8) / 1e8).toFixed(3)}` : "not set — manual rate in effect",
+              ")."
+            ] }),
+            rate.lastError && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-1 text-amber-400/90", children: [
+              "Last oracle note: ",
+              rate.lastError
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1.5 text-[11px] text-zinc-500", children: "Guardrails, with numbers: oracle readings that jump ±30% from the current rate are rejected (a genuine larger move needs a one-time operator re-anchor); rate hints sent by this UI are clamped to ±2% of the canister's own rate; admin transfers are capped at 500,000 sGLDT / 50 ckUNI per transaction." })
+          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Loading rate status…" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1.5", children: "What backs sGLDT" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            "sGLDT is a 1:1 wrapper of",
+            " ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-200 font-semibold", children: "GLDT" }),
+            " — Gold DAO's token backed by 0.01 g of physical gold per token, LBMA-sourced, in audited Swiss vaults. The wrapper exists for fees (0.00001 vs 0.10 per transfer — 10,000× cheaper). Unwrap at sVault any time; redeem GLDT for metal via Gold DAO. New to GLDT?",
+            " ",
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "a",
+              {
+                href: "https://gldt.org",
+                target: "_blank",
+                rel: "noopener noreferrer",
+                className: "inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 underline underline-offset-2",
+                children: [
+                  "gldt.org ",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { size: 10 })
+                ]
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2", children: "Every canister in the money path — and who controls it" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "space-y-1.5 mb-3", children: CANISTERS.map((c2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[11px]", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "a",
+            {
+              href: `${DASHBOARD}/${c2.id}`,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "inline-flex items-center gap-1 font-mono text-blue-400 hover:text-blue-300 underline underline-offset-2",
+              children: [
+                c2.id.slice(0, 14),
+                "… ",
+                /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { size: 10 })
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: c2.label }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "span",
+            {
+              className: `rounded-md border px-1.5 py-px text-[9px] font-bold uppercase tracking-wider ${PARTY_STYLE[c2.party]}`,
+              children: c2.party
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-zinc-500", children: [
+            "— ",
+            c2.note
+          ] })
+        ] }, c2.id)) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mb-5 text-[10px] text-zinc-500 leading-relaxed", children: [
+          '"Operator" canisters have exactly one controller:',
+          " ",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono text-zinc-400 break-all", children: OPERATOR_CONTROLLER }),
+          " ",
+          "— verify with",
+          " ",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono text-zinc-400", children: "dfx canister info" }),
+          " or the dashboard links above."
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 text-[11px] leading-relaxed text-zinc-400", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-300 uppercase tracking-widest mb-1.5", children: "What we can't promise (stated on purpose)" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc pl-4 space-y-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Unaudited." }),
+              " ",
+              "No third party has audited this code."
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Single operator." }),
+              " ",
+              "One person controls the backend and sets the sGLDT/USD reference leg of the rate — sGLDT trades on one ICPSwap pool the XRC can't see."
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Refine payouts depend on treasury sGLDT liquidity (shown live above); if it runs short, your ckUNI is auto-refunded — never taken." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Swaps that fail even the refund are held as "stranded" records for manual resolution — the live count is published above; nothing is silently dropped.' }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "sGLDT's peg is sVault's contract and GLDT's gold backing is Gold DAO's — we link them, we don't control them." })
+          ] })
+        ] })
+      ] })
+    }
+  );
+}
+const STEPS = [
+  { icon: "🔗", step: "1", title: "Sign In", desc: "Authenticate with Internet Identity — no seed phrase, no custodian." },
+  { icon: "💼", step: "2", title: "Connect Wallet", desc: "Link MetaMask or Brave Wallet on Ethereum mainnet." },
+  { icon: "⛏", step: "3", title: "Approve & Deposit", desc: "Approve UNI spend, then the ckERC-20 helper pulls funds on-chain." },
+  { icon: "🪙", step: "4", title: "Receive sGLDT", desc: "sGLDT — a 1:1 wrapper of Gold DAO's physically backed GLDT — lands in your ICP account." }
+];
+function HowItWorksStrip() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-12 rounded-3xl border border-zinc-800/60 bg-zinc-900/40 p-6 sm:p-8", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-5 text-center", children: "How the Refinery Works" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 sm:grid-cols-4 gap-4", children: STEPS.map((s) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center text-center gap-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-lg", children: s.icon }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[9px] font-black text-yellow-500/60 uppercase tracking-widest", children: [
+        "Step ",
+        s.step
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-bold text-white", children: s.title }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] text-zinc-500 leading-relaxed", children: s.desc })
+    ] }, s.step)) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-5 text-center text-[11px] text-zinc-500 leading-relaxed", children: [
+      "Each GLDT is backed by 0.01 g of vaulted physical gold; sGLDT wraps it 1:1 for 10,000× lower fees. New to GLDT?",
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "a",
+        {
+          href: "https://gldt.org",
+          target: "_blank",
+          rel: "noopener noreferrer",
+          className: "text-blue-400 hover:text-blue-300 underline underline-offset-2",
+          children: "gldt.org"
+        }
+      ),
+      " ",
+      "explains the gold behind it."
+    ] })
+  ] });
+}
+const STORAGE_KEY = "banking_brave_theme";
+function applyThemeClass(theme) {
+  if (typeof document === "undefined") return;
+  const html = document.documentElement;
+  html.classList.remove("theme-light", "theme-dark");
+  html.classList.add(`theme-${theme}`);
+  if (theme === "dark") {
+    html.classList.add("dark");
+  } else {
+    html.classList.remove("dark");
+  }
+  html.style.colorScheme = theme;
+}
+function readStoredTheme() {
+  if (typeof window === "undefined") return "dark";
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "light" || stored === "dark") return stored;
+  } catch {
+  }
+  return "dark";
+}
+if (typeof window !== "undefined") {
+  applyThemeClass(readStoredTheme());
+}
+function useTheme() {
+  const [theme, setThemeState] = reactExports.useState(() => readStoredTheme());
+  reactExports.useEffect(() => {
+    applyThemeClass(theme);
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+    } catch {
+    }
+  }, [theme]);
+  const setTheme = reactExports.useCallback((next) => setThemeState(next), []);
+  const toggle = reactExports.useCallback(
+    () => setThemeState((t) => t === "dark" ? "light" : "dark"),
+    []
+  );
+  return { theme, setTheme, toggle };
+}
 function ThemeToggle({ className = "" }) {
   const { theme, toggle } = useTheme();
   const isLight = theme === "light";
@@ -49181,2917 +50233,590 @@ function ThemeToggle({ className = "" }) {
     }
   );
 }
-function setRef(ref, value) {
-  if (typeof ref === "function") {
-    return ref(value);
-  } else if (ref !== null && ref !== void 0) {
-    ref.current = value;
-  }
-}
-function composeRefs(...refs) {
-  return (node) => {
-    let hasCleanup = false;
-    const cleanups = refs.map((ref) => {
-      const cleanup = setRef(ref, node);
-      if (!hasCleanup && typeof cleanup == "function") {
-        hasCleanup = true;
-      }
-      return cleanup;
-    });
-    if (hasCleanup) {
-      return () => {
-        for (let i = 0; i < cleanups.length; i++) {
-          const cleanup = cleanups[i];
-          if (typeof cleanup == "function") {
-            cleanup();
-          } else {
-            setRef(refs[i], null);
-          }
-        }
-      };
-    }
-  };
-}
-function useComposedRefs(...refs) {
-  return reactExports.useCallback(composeRefs(...refs), refs);
-}
-var REACT_LAZY_TYPE = Symbol.for("react.lazy");
-var use = React$2[" use ".trim().toString()];
-function isPromiseLike(value) {
-  return typeof value === "object" && value !== null && "then" in value;
-}
-function isLazyComponent(element) {
-  return element != null && typeof element === "object" && "$$typeof" in element && element.$$typeof === REACT_LAZY_TYPE && "_payload" in element && isPromiseLike(element._payload);
-}
-// @__NO_SIDE_EFFECTS__
-function createSlot$3(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$3(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    let { children, ...slotProps } = props;
-    if (isLazyComponent(children) && typeof use === "function") {
-      children = use(children._payload);
-    }
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$3);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-var Slot = /* @__PURE__ */ createSlot$3("Slot");
-// @__NO_SIDE_EFFECTS__
-function createSlotClone$3(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    let { children, ...slotProps } = props;
-    if (isLazyComponent(children) && typeof use === "function") {
-      children = use(children._payload);
-    }
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$4(children);
-      const props2 = mergeProps$3(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER$3 = Symbol("radix.slottable");
-function isSlottable$3(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$3;
-}
-function mergeProps$3(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef$4(element) {
-  var _a3, _b3;
-  let getter = (_a3 = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a3.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = (_b3 = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b3.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
-        destructive: "bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-        outline: "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
-        secondary: "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline"
-      },
-      size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9"
-      }
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default"
-    }
-  }
-);
-function Button({
-  className,
-  variant,
-  size: size2,
-  asChild = false,
-  ...props
+function NavBar({
+  user,
+  isAdmin,
+  showAdmin,
+  showHistory,
+  showTreasury,
+  treasuryPanelRef,
+  displaySGLDTBalance,
+  displaySGLDTLoading,
+  displayCkUNIBalance,
+  displayCkUNILoading,
+  treasuryEthUniBalance,
+  treasuryEthUniLoading,
+  treasuryEthUniUnavailable,
+  ethPrice,
+  uniPrice,
+  sgldtPrice,
+  onBackToBankingBrave,
+  onHome,
+  onToggleTreasury,
+  onToggleAdmin,
+  onToggleHistory,
+  onOpenProfile,
+  onLogout
 }) {
-  const Comp = asChild ? Slot : "button";
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Comp,
-    {
-      "data-slot": "button",
-      className: cn(buttonVariants({ variant, size: size2, className })),
-      ...props
-    }
-  );
-}
-function Input({ className, type, ...props }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    "input",
-    {
-      type,
-      "data-slot": "input",
-      className: cn(
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-        className
-      ),
-      ...props
-    }
-  );
-}
-var NODES$2 = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive$2 = NODES$2.reduce((primitive, node) => {
-  const Slot2 = /* @__PURE__ */ createSlot$3(`Primitive.${node}`);
-  const Node = reactExports.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot2 : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
-  });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
-}, {});
-var NAME = "Label";
-var Label$1 = reactExports.forwardRef((props, forwardedRef) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Primitive$2.label,
-    {
-      ...props,
-      ref: forwardedRef,
-      onMouseDown: (event) => {
-        var _a3;
-        const target = event.target;
-        if (target.closest("button, input, select, textarea")) return;
-        (_a3 = props.onMouseDown) == null ? void 0 : _a3.call(props, event);
-        if (!event.defaultPrevented && event.detail > 1) event.preventDefault();
-      }
-    }
-  );
-});
-Label$1.displayName = NAME;
-var Root$1 = Label$1;
-function Label({
-  className,
-  ...props
-}) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Root$1,
-    {
-      "data-slot": "label",
-      className: cn(
-        "flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
-        className
-      ),
-      ...props
-    }
-  );
-}
-function composeEventHandlers(originalEventHandler, ourEventHandler, { checkForDefaultPrevented = true } = {}) {
-  return function handleEvent(event) {
-    originalEventHandler == null ? void 0 : originalEventHandler(event);
-    if (checkForDefaultPrevented === false || !event.defaultPrevented) {
-      return ourEventHandler == null ? void 0 : ourEventHandler(event);
-    }
-  };
-}
-function createContextScope(scopeName, createContextScopeDeps = []) {
-  let defaultContexts = [];
-  function createContext3(rootComponentName, defaultContext) {
-    const BaseContext = reactExports.createContext(defaultContext);
-    const index2 = defaultContexts.length;
-    defaultContexts = [...defaultContexts, defaultContext];
-    const Provider = (props) => {
-      var _a3;
-      const { scope, children, ...context } = props;
-      const Context = ((_a3 = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a3[index2]) || BaseContext;
-      const value = reactExports.useMemo(() => context, Object.values(context));
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-    };
-    Provider.displayName = rootComponentName + "Provider";
-    function useContext2(consumerName, scope) {
-      var _a3;
-      const Context = ((_a3 = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a3[index2]) || BaseContext;
-      const context = reactExports.useContext(Context);
-      if (context) return context;
-      if (defaultContext !== void 0) return defaultContext;
-      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
-    }
-    return [Provider, useContext2];
-  }
-  const createScope = () => {
-    const scopeContexts = defaultContexts.map((defaultContext) => {
-      return reactExports.createContext(defaultContext);
-    });
-    return function useScope(scope) {
-      const contexts = (scope == null ? void 0 : scope[scopeName]) || scopeContexts;
-      return reactExports.useMemo(
-        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
-        [scope, contexts]
-      );
-    };
-  };
-  createScope.scopeName = scopeName;
-  return [createContext3, composeContextScopes(createScope, ...createContextScopeDeps)];
-}
-function composeContextScopes(...scopes) {
-  const baseScope = scopes[0];
-  if (scopes.length === 1) return baseScope;
-  const createScope = () => {
-    const scopeHooks = scopes.map((createScope2) => ({
-      useScope: createScope2(),
-      scopeName: createScope2.scopeName
-    }));
-    return function useComposedScopes(overrideScopes) {
-      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
-        const scopeProps = useScope(overrideScopes);
-        const currentScope = scopeProps[`__scope${scopeName}`];
-        return { ...nextScopes2, ...currentScope };
-      }, {});
-      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
-    };
-  };
-  createScope.scopeName = baseScope.scopeName;
-  return createScope;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlot$2(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$2(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$2);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlotClone$2(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$3(children);
-      const props2 = mergeProps$2(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER$2 = Symbol("radix.slottable");
-function isSlottable$2(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$2;
-}
-function mergeProps$2(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef$3(element) {
-  var _a3, _b3;
-  let getter = (_a3 = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a3.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = (_b3 = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b3.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-function createCollection(name) {
-  const PROVIDER_NAME = name + "CollectionProvider";
-  const [createCollectionContext, createCollectionScope2] = createContextScope(PROVIDER_NAME);
-  const [CollectionProviderImpl, useCollectionContext] = createCollectionContext(
-    PROVIDER_NAME,
-    { collectionRef: { current: null }, itemMap: /* @__PURE__ */ new Map() }
-  );
-  const CollectionProvider = (props) => {
-    const { scope, children } = props;
-    const ref = React2.useRef(null);
-    const itemMap = React2.useRef(/* @__PURE__ */ new Map()).current;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionProviderImpl, { scope, itemMap, collectionRef: ref, children });
-  };
-  CollectionProvider.displayName = PROVIDER_NAME;
-  const COLLECTION_SLOT_NAME = name + "CollectionSlot";
-  const CollectionSlotImpl = /* @__PURE__ */ createSlot$2(COLLECTION_SLOT_NAME);
-  const CollectionSlot = React2.forwardRef(
-    (props, forwardedRef) => {
-      const { scope, children } = props;
-      const context = useCollectionContext(COLLECTION_SLOT_NAME, scope);
-      const composedRefs = useComposedRefs(forwardedRef, context.collectionRef);
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionSlotImpl, { ref: composedRefs, children });
-    }
-  );
-  CollectionSlot.displayName = COLLECTION_SLOT_NAME;
-  const ITEM_SLOT_NAME = name + "CollectionItemSlot";
-  const ITEM_DATA_ATTR = "data-radix-collection-item";
-  const CollectionItemSlotImpl = /* @__PURE__ */ createSlot$2(ITEM_SLOT_NAME);
-  const CollectionItemSlot = React2.forwardRef(
-    (props, forwardedRef) => {
-      const { scope, children, ...itemData } = props;
-      const ref = React2.useRef(null);
-      const composedRefs = useComposedRefs(forwardedRef, ref);
-      const context = useCollectionContext(ITEM_SLOT_NAME, scope);
-      React2.useEffect(() => {
-        context.itemMap.set(ref, { ref, ...itemData });
-        return () => void context.itemMap.delete(ref);
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionItemSlotImpl, { ...{ [ITEM_DATA_ATTR]: "" }, ref: composedRefs, children });
-    }
-  );
-  CollectionItemSlot.displayName = ITEM_SLOT_NAME;
-  function useCollection2(scope) {
-    const context = useCollectionContext(name + "CollectionConsumer", scope);
-    const getItems = React2.useCallback(() => {
-      const collectionNode = context.collectionRef.current;
-      if (!collectionNode) return [];
-      const orderedNodes = Array.from(collectionNode.querySelectorAll(`[${ITEM_DATA_ATTR}]`));
-      const items = Array.from(context.itemMap.values());
-      const orderedItems = items.sort(
-        (a2, b2) => orderedNodes.indexOf(a2.ref.current) - orderedNodes.indexOf(b2.ref.current)
-      );
-      return orderedItems;
-    }, [context.collectionRef, context.itemMap]);
-    return getItems;
-  }
-  return [
-    { Provider: CollectionProvider, Slot: CollectionSlot, ItemSlot: CollectionItemSlot },
-    useCollection2,
-    createCollectionScope2
-  ];
-}
-var useLayoutEffect2 = (globalThis == null ? void 0 : globalThis.document) ? reactExports.useLayoutEffect : () => {
-};
-var useReactId = React$2[" useId ".trim().toString()] || (() => void 0);
-var count = 0;
-function useId(deterministicId) {
-  const [id, setId] = reactExports.useState(useReactId());
-  useLayoutEffect2(() => {
-    setId((reactId) => reactId ?? String(count++));
-  }, [deterministicId]);
-  return deterministicId || (id ? `radix-${id}` : "");
-}
-// @__NO_SIDE_EFFECTS__
-function createSlot$1(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$1(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$1);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlotClone$1(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$2(children);
-      const props2 = mergeProps$1(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER$1 = Symbol("radix.slottable");
-function isSlottable$1(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$1;
-}
-function mergeProps$1(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef$2(element) {
-  var _a3, _b3;
-  let getter = (_a3 = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a3.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = (_b3 = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b3.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-var NODES$1 = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive$1 = NODES$1.reduce((primitive, node) => {
-  const Slot2 = /* @__PURE__ */ createSlot$1(`Primitive.${node}`);
-  const Node = reactExports.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot2 : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
-  });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
-}, {});
-function useCallbackRef(callback) {
-  const callbackRef = reactExports.useRef(callback);
-  reactExports.useEffect(() => {
-    callbackRef.current = callback;
-  });
-  return reactExports.useMemo(() => (...args) => {
-    var _a3;
-    return (_a3 = callbackRef.current) == null ? void 0 : _a3.call(callbackRef, ...args);
-  }, []);
-}
-var useInsertionEffect = React$2[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
-function useControllableState({
-  prop,
-  defaultProp,
-  onChange = () => {
-  },
-  caller
-}) {
-  const [uncontrolledProp, setUncontrolledProp, onChangeRef] = useUncontrolledState({
-    defaultProp,
-    onChange
-  });
-  const isControlled = prop !== void 0;
-  const value = isControlled ? prop : uncontrolledProp;
-  {
-    const isControlledRef = reactExports.useRef(prop !== void 0);
-    reactExports.useEffect(() => {
-      const wasControlled = isControlledRef.current;
-      if (wasControlled !== isControlled) {
-        const from2 = wasControlled ? "controlled" : "uncontrolled";
-        const to = isControlled ? "controlled" : "uncontrolled";
-        console.warn(
-          `${caller} is changing from ${from2} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
-        );
-      }
-      isControlledRef.current = isControlled;
-    }, [isControlled, caller]);
-  }
-  const setValue = reactExports.useCallback(
-    (nextValue) => {
-      var _a3;
-      if (isControlled) {
-        const value2 = isFunction(nextValue) ? nextValue(prop) : nextValue;
-        if (value2 !== prop) {
-          (_a3 = onChangeRef.current) == null ? void 0 : _a3.call(onChangeRef, value2);
-        }
-      } else {
-        setUncontrolledProp(nextValue);
-      }
-    },
-    [isControlled, prop, setUncontrolledProp, onChangeRef]
-  );
-  return [value, setValue];
-}
-function useUncontrolledState({
-  defaultProp,
-  onChange
-}) {
-  const [value, setValue] = reactExports.useState(defaultProp);
-  const prevValueRef = reactExports.useRef(value);
-  const onChangeRef = reactExports.useRef(onChange);
-  useInsertionEffect(() => {
-    onChangeRef.current = onChange;
-  }, [onChange]);
-  reactExports.useEffect(() => {
-    var _a3;
-    if (prevValueRef.current !== value) {
-      (_a3 = onChangeRef.current) == null ? void 0 : _a3.call(onChangeRef, value);
-      prevValueRef.current = value;
-    }
-  }, [value, prevValueRef]);
-  return [value, setValue, onChangeRef];
-}
-function isFunction(value) {
-  return typeof value === "function";
-}
-var DirectionContext = reactExports.createContext(void 0);
-function useDirection(localDir) {
-  const globalDir = reactExports.useContext(DirectionContext);
-  return localDir || globalDir || "ltr";
-}
-var ENTRY_FOCUS = "rovingFocusGroup.onEntryFocus";
-var EVENT_OPTIONS = { bubbles: false, cancelable: true };
-var GROUP_NAME = "RovingFocusGroup";
-var [Collection, useCollection, createCollectionScope] = createCollection(GROUP_NAME);
-var [createRovingFocusGroupContext, createRovingFocusGroupScope] = createContextScope(
-  GROUP_NAME,
-  [createCollectionScope]
-);
-var [RovingFocusProvider, useRovingFocusContext] = createRovingFocusGroupContext(GROUP_NAME);
-var RovingFocusGroup = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Provider, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Slot, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ jsxRuntimeExports.jsx(RovingFocusGroupImpl, { ...props, ref: forwardedRef }) }) });
-  }
-);
-RovingFocusGroup.displayName = GROUP_NAME;
-var RovingFocusGroupImpl = reactExports.forwardRef((props, forwardedRef) => {
-  const {
-    __scopeRovingFocusGroup,
-    orientation,
-    loop = false,
-    dir,
-    currentTabStopId: currentTabStopIdProp,
-    defaultCurrentTabStopId,
-    onCurrentTabStopIdChange,
-    onEntryFocus,
-    preventScrollOnEntryFocus = false,
-    ...groupProps
-  } = props;
-  const ref = reactExports.useRef(null);
-  const composedRefs = useComposedRefs(forwardedRef, ref);
-  const direction = useDirection(dir);
-  const [currentTabStopId, setCurrentTabStopId] = useControllableState({
-    prop: currentTabStopIdProp,
-    defaultProp: defaultCurrentTabStopId ?? null,
-    onChange: onCurrentTabStopIdChange,
-    caller: GROUP_NAME
-  });
-  const [isTabbingBackOut, setIsTabbingBackOut] = reactExports.useState(false);
-  const handleEntryFocus = useCallbackRef(onEntryFocus);
-  const getItems = useCollection(__scopeRovingFocusGroup);
-  const isClickFocusRef = reactExports.useRef(false);
-  const [focusableItemsCount, setFocusableItemsCount] = reactExports.useState(0);
-  reactExports.useEffect(() => {
-    const node = ref.current;
-    if (node) {
-      node.addEventListener(ENTRY_FOCUS, handleEntryFocus);
-      return () => node.removeEventListener(ENTRY_FOCUS, handleEntryFocus);
-    }
-  }, [handleEntryFocus]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    RovingFocusProvider,
-    {
-      scope: __scopeRovingFocusGroup,
-      orientation,
-      dir: direction,
-      loop,
-      currentTabStopId,
-      onItemFocus: reactExports.useCallback(
-        (tabStopId) => setCurrentTabStopId(tabStopId),
-        [setCurrentTabStopId]
-      ),
-      onItemShiftTab: reactExports.useCallback(() => setIsTabbingBackOut(true), []),
-      onFocusableItemAdd: reactExports.useCallback(
-        () => setFocusableItemsCount((prevCount) => prevCount + 1),
-        []
-      ),
-      onFocusableItemRemove: reactExports.useCallback(
-        () => setFocusableItemsCount((prevCount) => prevCount - 1),
-        []
-      ),
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Primitive$1.div,
-        {
-          tabIndex: isTabbingBackOut || focusableItemsCount === 0 ? -1 : 0,
-          "data-orientation": orientation,
-          ...groupProps,
-          ref: composedRefs,
-          style: { outline: "none", ...props.style },
-          onMouseDown: composeEventHandlers(props.onMouseDown, () => {
-            isClickFocusRef.current = true;
-          }),
-          onFocus: composeEventHandlers(props.onFocus, (event) => {
-            const isKeyboardFocus = !isClickFocusRef.current;
-            if (event.target === event.currentTarget && isKeyboardFocus && !isTabbingBackOut) {
-              const entryFocusEvent = new CustomEvent(ENTRY_FOCUS, EVENT_OPTIONS);
-              event.currentTarget.dispatchEvent(entryFocusEvent);
-              if (!entryFocusEvent.defaultPrevented) {
-                const items = getItems().filter((item) => item.focusable);
-                const activeItem = items.find((item) => item.active);
-                const currentItem = items.find((item) => item.id === currentTabStopId);
-                const candidateItems = [activeItem, currentItem, ...items].filter(
-                  Boolean
-                );
-                const candidateNodes = candidateItems.map((item) => item.ref.current);
-                focusFirst(candidateNodes, preventScrollOnEntryFocus);
-              }
-            }
-            isClickFocusRef.current = false;
-          }),
-          onBlur: composeEventHandlers(props.onBlur, () => setIsTabbingBackOut(false))
-        }
-      )
-    }
-  );
-});
-var ITEM_NAME = "RovingFocusGroupItem";
-var RovingFocusGroupItem = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const {
-      __scopeRovingFocusGroup,
-      focusable = true,
-      active = false,
-      tabStopId,
-      children,
-      ...itemProps
-    } = props;
-    const autoId = useId();
-    const id = tabStopId || autoId;
-    const context = useRovingFocusContext(ITEM_NAME, __scopeRovingFocusGroup);
-    const isCurrentTabStop = context.currentTabStopId === id;
-    const getItems = useCollection(__scopeRovingFocusGroup);
-    const { onFocusableItemAdd, onFocusableItemRemove, currentTabStopId } = context;
-    reactExports.useEffect(() => {
-      if (focusable) {
-        onFocusableItemAdd();
-        return () => onFocusableItemRemove();
-      }
-    }, [focusable, onFocusableItemAdd, onFocusableItemRemove]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Collection.ItemSlot,
-      {
-        scope: __scopeRovingFocusGroup,
-        id,
-        focusable,
-        active,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive$1.span,
-          {
-            tabIndex: isCurrentTabStop ? 0 : -1,
-            "data-orientation": context.orientation,
-            ...itemProps,
-            ref: forwardedRef,
-            onMouseDown: composeEventHandlers(props.onMouseDown, (event) => {
-              if (!focusable) event.preventDefault();
-              else context.onItemFocus(id);
-            }),
-            onFocus: composeEventHandlers(props.onFocus, () => context.onItemFocus(id)),
-            onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
-              if (event.key === "Tab" && event.shiftKey) {
-                context.onItemShiftTab();
-                return;
-              }
-              if (event.target !== event.currentTarget) return;
-              const focusIntent = getFocusIntent(event, context.orientation, context.dir);
-              if (focusIntent !== void 0) {
-                if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
-                event.preventDefault();
-                const items = getItems().filter((item) => item.focusable);
-                let candidateNodes = items.map((item) => item.ref.current);
-                if (focusIntent === "last") candidateNodes.reverse();
-                else if (focusIntent === "prev" || focusIntent === "next") {
-                  if (focusIntent === "prev") candidateNodes.reverse();
-                  const currentIndex = candidateNodes.indexOf(event.currentTarget);
-                  candidateNodes = context.loop ? wrapArray(candidateNodes, currentIndex + 1) : candidateNodes.slice(currentIndex + 1);
-                }
-                setTimeout(() => focusFirst(candidateNodes));
-              }
-            }),
-            children: typeof children === "function" ? children({ isCurrentTabStop, hasTabStop: currentTabStopId != null }) : children
-          }
-        )
-      }
-    );
-  }
-);
-RovingFocusGroupItem.displayName = ITEM_NAME;
-var MAP_KEY_TO_FOCUS_INTENT = {
-  ArrowLeft: "prev",
-  ArrowUp: "prev",
-  ArrowRight: "next",
-  ArrowDown: "next",
-  PageUp: "first",
-  Home: "first",
-  PageDown: "last",
-  End: "last"
-};
-function getDirectionAwareKey(key, dir) {
-  if (dir !== "rtl") return key;
-  return key === "ArrowLeft" ? "ArrowRight" : key === "ArrowRight" ? "ArrowLeft" : key;
-}
-function getFocusIntent(event, orientation, dir) {
-  const key = getDirectionAwareKey(event.key, dir);
-  if (orientation === "vertical" && ["ArrowLeft", "ArrowRight"].includes(key)) return void 0;
-  if (orientation === "horizontal" && ["ArrowUp", "ArrowDown"].includes(key)) return void 0;
-  return MAP_KEY_TO_FOCUS_INTENT[key];
-}
-function focusFirst(candidates, preventScroll = false) {
-  const PREVIOUSLY_FOCUSED_ELEMENT = document.activeElement;
-  for (const candidate of candidates) {
-    if (candidate === PREVIOUSLY_FOCUSED_ELEMENT) return;
-    candidate.focus({ preventScroll });
-    if (document.activeElement !== PREVIOUSLY_FOCUSED_ELEMENT) return;
-  }
-}
-function wrapArray(array, startIndex) {
-  return array.map((_2, index2) => array[(startIndex + index2) % array.length]);
-}
-var Root = RovingFocusGroup;
-var Item = RovingFocusGroupItem;
-function useStateMachine(initialState, machine) {
-  return reactExports.useReducer((state, event) => {
-    const nextState = machine[state][event];
-    return nextState ?? state;
-  }, initialState);
-}
-var Presence = (props) => {
-  const { present, children } = props;
-  const presence = usePresence(present);
-  const child = typeof children === "function" ? children({ present: presence.isPresent }) : reactExports.Children.only(children);
-  const ref = useComposedRefs(presence.ref, getElementRef$1(child));
-  const forceMount = typeof children === "function";
-  return forceMount || presence.isPresent ? reactExports.cloneElement(child, { ref }) : null;
-};
-Presence.displayName = "Presence";
-function usePresence(present) {
-  const [node, setNode] = reactExports.useState();
-  const stylesRef = reactExports.useRef(null);
-  const prevPresentRef = reactExports.useRef(present);
-  const prevAnimationNameRef = reactExports.useRef("none");
-  const initialState = present ? "mounted" : "unmounted";
-  const [state, send] = useStateMachine(initialState, {
-    mounted: {
-      UNMOUNT: "unmounted",
-      ANIMATION_OUT: "unmountSuspended"
-    },
-    unmountSuspended: {
-      MOUNT: "mounted",
-      ANIMATION_END: "unmounted"
-    },
-    unmounted: {
-      MOUNT: "mounted"
-    }
-  });
-  reactExports.useEffect(() => {
-    const currentAnimationName = getAnimationName(stylesRef.current);
-    prevAnimationNameRef.current = state === "mounted" ? currentAnimationName : "none";
-  }, [state]);
-  useLayoutEffect2(() => {
-    const styles = stylesRef.current;
-    const wasPresent = prevPresentRef.current;
-    const hasPresentChanged = wasPresent !== present;
-    if (hasPresentChanged) {
-      const prevAnimationName = prevAnimationNameRef.current;
-      const currentAnimationName = getAnimationName(styles);
-      if (present) {
-        send("MOUNT");
-      } else if (currentAnimationName === "none" || (styles == null ? void 0 : styles.display) === "none") {
-        send("UNMOUNT");
-      } else {
-        const isAnimating = prevAnimationName !== currentAnimationName;
-        if (wasPresent && isAnimating) {
-          send("ANIMATION_OUT");
-        } else {
-          send("UNMOUNT");
-        }
-      }
-      prevPresentRef.current = present;
-    }
-  }, [present, send]);
-  useLayoutEffect2(() => {
-    if (node) {
-      let timeoutId;
-      const ownerWindow = node.ownerDocument.defaultView ?? window;
-      const handleAnimationEnd = (event) => {
-        const currentAnimationName = getAnimationName(stylesRef.current);
-        const isCurrentAnimation = currentAnimationName.includes(CSS.escape(event.animationName));
-        if (event.target === node && isCurrentAnimation) {
-          send("ANIMATION_END");
-          if (!prevPresentRef.current) {
-            const currentFillMode = node.style.animationFillMode;
-            node.style.animationFillMode = "forwards";
-            timeoutId = ownerWindow.setTimeout(() => {
-              if (node.style.animationFillMode === "forwards") {
-                node.style.animationFillMode = currentFillMode;
-              }
-            });
-          }
-        }
-      };
-      const handleAnimationStart = (event) => {
-        if (event.target === node) {
-          prevAnimationNameRef.current = getAnimationName(stylesRef.current);
-        }
-      };
-      node.addEventListener("animationstart", handleAnimationStart);
-      node.addEventListener("animationcancel", handleAnimationEnd);
-      node.addEventListener("animationend", handleAnimationEnd);
-      return () => {
-        ownerWindow.clearTimeout(timeoutId);
-        node.removeEventListener("animationstart", handleAnimationStart);
-        node.removeEventListener("animationcancel", handleAnimationEnd);
-        node.removeEventListener("animationend", handleAnimationEnd);
-      };
-    } else {
-      send("ANIMATION_END");
-    }
-  }, [node, send]);
-  return {
-    isPresent: ["mounted", "unmountSuspended"].includes(state),
-    ref: reactExports.useCallback((node2) => {
-      stylesRef.current = node2 ? getComputedStyle(node2) : null;
-      setNode(node2);
-    }, [])
-  };
-}
-function getAnimationName(styles) {
-  return (styles == null ? void 0 : styles.animationName) || "none";
-}
-function getElementRef$1(element) {
-  var _a3, _b3;
-  let getter = (_a3 = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a3.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = (_b3 = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b3.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlot(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlotClone(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef(children);
-      const props2 = mergeProps(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER = Symbol("radix.slottable");
-function isSlottable(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER;
-}
-function mergeProps(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef(element) {
-  var _a3, _b3;
-  let getter = (_a3 = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a3.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = (_b3 = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b3.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-var NODES = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive = NODES.reduce((primitive, node) => {
-  const Slot2 = /* @__PURE__ */ createSlot(`Primitive.${node}`);
-  const Node = reactExports.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot2 : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
-  });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
-}, {});
-var TABS_NAME = "Tabs";
-var [createTabsContext] = createContextScope(TABS_NAME, [
-  createRovingFocusGroupScope
-]);
-var useRovingFocusGroupScope = createRovingFocusGroupScope();
-var [TabsProvider, useTabsContext] = createTabsContext(TABS_NAME);
-var Tabs$1 = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const {
-      __scopeTabs,
-      value: valueProp,
-      onValueChange,
-      defaultValue,
-      orientation = "horizontal",
-      dir,
-      activationMode = "automatic",
-      ...tabsProps
-    } = props;
-    const direction = useDirection(dir);
-    const [value, setValue] = useControllableState({
-      prop: valueProp,
-      onChange: onValueChange,
-      defaultProp: defaultValue ?? "",
-      caller: TABS_NAME
-    });
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      TabsProvider,
-      {
-        scope: __scopeTabs,
-        baseId: useId(),
-        value,
-        onValueChange: setValue,
-        orientation,
-        dir: direction,
-        activationMode,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive.div,
-          {
-            dir: direction,
-            "data-orientation": orientation,
-            ...tabsProps,
-            ref: forwardedRef
-          }
-        )
-      }
-    );
-  }
-);
-Tabs$1.displayName = TABS_NAME;
-var TAB_LIST_NAME = "TabsList";
-var TabsList$1 = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const { __scopeTabs, loop = true, ...listProps } = props;
-    const context = useTabsContext(TAB_LIST_NAME, __scopeTabs);
-    const rovingFocusGroupScope = useRovingFocusGroupScope(__scopeTabs);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Root,
-      {
-        asChild: true,
-        ...rovingFocusGroupScope,
-        orientation: context.orientation,
-        dir: context.dir,
-        loop,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive.div,
-          {
-            role: "tablist",
-            "aria-orientation": context.orientation,
-            ...listProps,
-            ref: forwardedRef
-          }
-        )
-      }
-    );
-  }
-);
-TabsList$1.displayName = TAB_LIST_NAME;
-var TRIGGER_NAME = "TabsTrigger";
-var TabsTrigger$1 = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const { __scopeTabs, value, disabled = false, ...triggerProps } = props;
-    const context = useTabsContext(TRIGGER_NAME, __scopeTabs);
-    const rovingFocusGroupScope = useRovingFocusGroupScope(__scopeTabs);
-    const triggerId = makeTriggerId(context.baseId, value);
-    const contentId = makeContentId(context.baseId, value);
-    const isSelected = value === context.value;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Item,
-      {
-        asChild: true,
-        ...rovingFocusGroupScope,
-        focusable: !disabled,
-        active: isSelected,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive.button,
-          {
-            type: "button",
-            role: "tab",
-            "aria-selected": isSelected,
-            "aria-controls": contentId,
-            "data-state": isSelected ? "active" : "inactive",
-            "data-disabled": disabled ? "" : void 0,
-            disabled,
-            id: triggerId,
-            ...triggerProps,
-            ref: forwardedRef,
-            onMouseDown: composeEventHandlers(props.onMouseDown, (event) => {
-              if (!disabled && event.button === 0 && event.ctrlKey === false) {
-                context.onValueChange(value);
-              } else {
-                event.preventDefault();
-              }
-            }),
-            onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
-              if ([" ", "Enter"].includes(event.key)) context.onValueChange(value);
-            }),
-            onFocus: composeEventHandlers(props.onFocus, () => {
-              const isAutomaticActivation = context.activationMode !== "manual";
-              if (!isSelected && !disabled && isAutomaticActivation) {
-                context.onValueChange(value);
-              }
-            })
-          }
-        )
-      }
-    );
-  }
-);
-TabsTrigger$1.displayName = TRIGGER_NAME;
-var CONTENT_NAME = "TabsContent";
-var TabsContent$1 = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const { __scopeTabs, value, forceMount, children, ...contentProps } = props;
-    const context = useTabsContext(CONTENT_NAME, __scopeTabs);
-    const triggerId = makeTriggerId(context.baseId, value);
-    const contentId = makeContentId(context.baseId, value);
-    const isSelected = value === context.value;
-    const isMountAnimationPreventedRef = reactExports.useRef(isSelected);
-    reactExports.useEffect(() => {
-      const rAF = requestAnimationFrame(() => isMountAnimationPreventedRef.current = false);
-      return () => cancelAnimationFrame(rAF);
-    }, []);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || isSelected, children: ({ present }) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive.div,
-      {
-        "data-state": isSelected ? "active" : "inactive",
-        "data-orientation": context.orientation,
-        role: "tabpanel",
-        "aria-labelledby": triggerId,
-        hidden: !present,
-        id: contentId,
-        tabIndex: 0,
-        ...contentProps,
-        ref: forwardedRef,
-        style: {
-          ...props.style,
-          animationDuration: isMountAnimationPreventedRef.current ? "0s" : void 0
-        },
-        children: present && children
-      }
-    ) });
-  }
-);
-TabsContent$1.displayName = CONTENT_NAME;
-function makeTriggerId(baseId, value) {
-  return `${baseId}-trigger-${value}`;
-}
-function makeContentId(baseId, value) {
-  return `${baseId}-content-${value}`;
-}
-var Root2 = Tabs$1;
-var List = TabsList$1;
-var Trigger = TabsTrigger$1;
-var Content = TabsContent$1;
-function Tabs({
-  className,
-  ...props
-}) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Root2,
-    {
-      "data-slot": "tabs",
-      className: cn("flex flex-col gap-2", className),
-      ...props
-    }
-  );
-}
-function TabsList({
-  className,
-  ...props
-}) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    List,
-    {
-      "data-slot": "tabs-list",
-      className: cn(
-        "bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]",
-        className
-      ),
-      ...props
-    }
-  );
-}
-function TabsTrigger({
-  className,
-  ...props
-}) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Trigger,
-    {
-      "data-slot": "tabs-trigger",
-      className: cn(
-        "data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className
-      ),
-      ...props
-    }
-  );
-}
-function TabsContent({
-  className,
-  ...props
-}) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Content,
-    {
-      "data-slot": "tabs-content",
-      className: cn("flex-1 outline-none", className),
-      ...props
-    }
-  );
-}
-const ADMIN_PRINCIPAL = "rc62u-qypnw-bbkkp-d56wk-tnzaq-vwhi2-cqqay-q56hw-gsqbp-6wegl-jae";
-function StatusLine({ status }) {
-  if (!status) return null;
-  const color = status.busy ? "bg-zinc-800 border-zinc-700 text-zinc-300" : status.ok ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300" : "bg-red-500/10 border-red-500/30 text-red-300";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `mt-3 text-xs rounded-lg px-3 py-2 border font-mono break-all ${color}`, children: [
-    status.busy && /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-3 h-3 mr-1.5 animate-spin inline" }),
-    status.message
-  ] });
-}
-function Section({ title, children }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-zinc-900 p-6", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-base font-bold text-white mb-4", children: title }),
-    children
-  ] });
-}
-function AdminPage() {
-  const { identity, login, isLoggingIn } = useInternetIdentity();
-  const { data: isAdminData, isLoading: isAdminLoading } = useIsAdmin();
-  const callerPrincipal = identity && !identity.getPrincipal().isAnonymous() ? identity.getPrincipal().toText() : null;
-  const isLocalAdmin = callerPrincipal === ADMIN_PRINCIPAL;
-  const hasAdminAccess = isLocalAdmin || !!isAdminData;
-  if (!identity || !callerPrincipal) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-[60vh] flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center max-w-sm", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Shield, { className: "w-16 h-16 text-zinc-600 mx-auto mb-4 opacity-40" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold text-white mb-3", children: "Admin Access" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-400 text-sm mb-6", children: "Connect your Internet Identity to continue." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: login, disabled: isLoggingIn, className: "bg-yellow-500 hover:bg-yellow-400 text-black font-bold", children: [
-        isLoggingIn ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Wallet, { className: "w-4 h-4 mr-2" }),
-        "Connect Identity"
-      ] })
-    ] }) });
-  }
-  if (!hasAdminAccess && isAdminLoading) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-[60vh] flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-10 h-10 text-yellow-500 mx-auto mb-3 animate-spin opacity-60" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-400 text-sm", children: "Verifying admin access…" })
-    ] }) });
-  }
-  if (!hasAdminAccess) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-[60vh] flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center max-w-sm", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { className: "w-16 h-16 text-red-500 mx-auto mb-4 opacity-60" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold text-white mb-3", children: "Access Denied" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-400 text-sm mb-2", children: "Not an admin principal." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500 font-mono mb-6 break-all bg-zinc-900 border border-zinc-800 rounded-xl p-3", children: callerPrincipal })
-    ] }) });
-  }
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(AdminContent, { callerPrincipal });
-}
-function AdminContent({ callerPrincipal }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen bg-[#080808]", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "container mx-auto max-w-6xl px-4 sm:px-6 py-8", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Shield, { className: "w-5 h-5 text-yellow-500" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-black text-yellow-500 uppercase tracking-widest", children: "Admin Panel" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-3xl font-black text-white", children: "Treasury Management" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-zinc-500 text-xs mt-1 font-mono break-all", children: [
-        "Signed in as: ",
-        callerPrincipal
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(DiagnosticsBar, {}),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Tabs, { defaultValue: "treasury", className: "mt-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsList, { className: "bg-zinc-900 border border-zinc-800 rounded-xl p-1 mb-6 flex flex-wrap gap-1 h-auto", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsTrigger, { value: "treasury", className: "data-[state=active]:bg-yellow-500 data-[state=active]:text-black text-zinc-400 font-semibold rounded-lg px-4 py-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { className: "w-3.5 h-3.5 mr-1.5" }),
-          "Treasury"
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsTrigger, { value: "deposits", className: "data-[state=active]:bg-yellow-500 data-[state=active]:text-black text-zinc-400 font-semibold rounded-lg px-4 py-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Bitcoin, { className: "w-3.5 h-3.5 mr-1.5" }),
-          "Deposits"
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsTrigger, { value: "minter", className: "data-[state=active]:bg-yellow-500 data-[state=active]:text-black text-zinc-400 font-semibold rounded-lg px-4 py-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowLeftRight, { className: "w-3.5 h-3.5 mr-1.5" }),
-          "Mint & Dissolve"
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TabsContent, { value: "treasury", children: /* @__PURE__ */ jsxRuntimeExports.jsx(TreasuryTab, {}) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TabsContent, { value: "deposits", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DepositsTab, {}) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TabsContent, { value: "minter", children: /* @__PURE__ */ jsxRuntimeExports.jsx(MinterTab, {}) })
-    ] })
-  ] }) });
-}
-function DiagnosticsBar() {
-  const { identity } = useInternetIdentity();
-  const { data: balances, refetch: refetchBalances } = useTreasuryICRC1Balances();
-  const [diagStatus, setDiagStatus] = reactExports.useState(null);
-  const [who, setWho] = reactExports.useState(null);
-  const runDiagnose = async () => {
-    var _a3, _b3;
-    if (!identity) {
-      setDiagStatus({ busy: false, ok: false, message: "Not logged in" });
-      return;
-    }
-    setDiagStatus({ busy: true, message: "Querying backend whoAmI…" });
-    try {
-      const result = await directWhoAmI(identity);
-      setWho(result);
-      const bal = await refetchBalances();
-      const msg = `caller=${result.caller} · isAdmin=${result.isAdmin} (hardcoded=${result.isHardcodedAdmin}, role=${result.hasAdminRole}) · sGLDT=${(_a3 = bal.data) == null ? void 0 : _a3.sgldtBalance} · ckUNI=${(_b3 = bal.data) == null ? void 0 : _b3.ckUNIBalance}`;
-      setDiagStatus({ busy: false, ok: !!result.isAdmin, message: msg });
-    } catch (err) {
-      console.error("[whoAmI] threw:", err);
-      setDiagStatus({
-        busy: false,
-        ok: false,
-        message: err instanceof Error ? err.message : "Diagnose failed"
-      });
-    }
-  };
-  const grantSelfAdmin = async () => {
-    if (!identity || !who) return;
-    setDiagStatus({ busy: true, message: `Attempting to grant admin to ${who.caller.slice(0, 12)}…` });
-    try {
-      const result = await directAdminGrantAdmin(identity, who.caller);
-      if (result.startsWith("error:")) {
-        setDiagStatus({ busy: false, ok: false, message: result.replace(/^error:\s*/, "") });
-        return;
-      }
-      setDiagStatus({ busy: false, ok: true, message: `${result} — click Diagnose again to verify` });
-      setWho(null);
-    } catch (err) {
-      setDiagStatus({
-        busy: false,
-        ok: false,
-        message: err instanceof Error ? err.message : "Grant failed"
-      });
-    }
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-zinc-900 p-4 flex flex-col sm:flex-row sm:items-center gap-3", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-black text-zinc-500 uppercase tracking-widest mb-1", children: "Treasury Balances (cached)" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm text-white font-mono", children: [
-        "sGLDT ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400", children: balances ? (Number(balances.sgldtBalance) / 1e8).toFixed(4) : "…" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600 mx-2", children: "·" }),
-        "ckUNI ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-blue-400", children: balances ? (Number(balances.ckUNIBalance) / 1e18).toFixed(6) : "…" })
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { size: "sm", variant: "outline", onClick: runDiagnose, disabled: diagStatus == null ? void 0 : diagStatus.busy, className: "shrink-0", children: [
-      (diagStatus == null ? void 0 : diagStatus.busy) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-3.5 h-3.5 mr-1.5 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { className: "w-3.5 h-3.5 mr-1.5" }),
-      "Diagnose"
-    ] }),
-    who && !who.isAdmin && /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", onClick: grantSelfAdmin, disabled: diagStatus == null ? void 0 : diagStatus.busy, className: "shrink-0 bg-red-500 hover:bg-red-400 text-white font-bold", children: "Grant me admin" }),
-    diagStatus && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLine, { status: diagStatus }) })
-  ] });
-}
-function TreasuryTab() {
-  const { identity } = useInternetIdentity();
-  const { data: balances, refetch: refetchBalances } = useTreasuryICRC1Balances();
-  const { refetch: refetchWalletInfo } = useGetTreasuryWalletInfo();
-  const { data: exchangeRate } = useUNIExchangeRate();
-  const setRateMutation = useSetUNIExchangeRate();
-  const [rateInput, setRateInput] = reactExports.useState("");
-  const [rateStatus, setRateStatus] = reactExports.useState(null);
-  const [sgldtTo, setSgldtTo] = reactExports.useState("");
-  const [sgldtAmount, setSgldtAmount] = reactExports.useState("");
-  const [sgldtStatus, setSgldtStatus] = reactExports.useState(null);
-  const [ckuniTo, setCkuniTo] = reactExports.useState("");
-  const [ckuniAmount, setCkuniAmount] = reactExports.useState("");
-  const [ckuniStatus, setCkuniStatus] = reactExports.useState(null);
-  const sgldtAvailable = balances ? Number(balances.sgldtBalance) / 1e8 : 0;
-  const ckuniAvailable = balances ? Number(balances.ckUNIBalance) / 1e18 : 0;
-  const humanRate = exchangeRate ? (Number(exchangeRate) / 1e8).toFixed(8) : "—";
-  const handleSaveRate = async () => {
-    const parsed = Number.parseFloat(rateInput);
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      setRateStatus({ busy: false, ok: false, message: "Enter a positive number" });
-      return;
-    }
-    setRateStatus({ busy: true, message: `Setting rate to ${parsed} sGLDT/UNI…` });
-    try {
-      await setRateMutation.mutateAsync(BigInt(Math.round(parsed * 1e8)));
-      setRateStatus({ busy: false, ok: true, message: `Exchange rate set to ${parsed} sGLDT per UNI` });
-      setRateInput("");
-    } catch (err) {
-      setRateStatus({ busy: false, ok: false, message: err instanceof Error ? err.message : "Failed" });
-    }
-  };
-  const runAdminTransfer = async (token, toRaw, amountRaw, setStatus, clearForm) => {
-    let principal;
-    try {
-      principal = Principal$1.fromText(toRaw.trim());
-    } catch {
-      setStatus({ busy: false, ok: false, message: "Invalid recipient principal" });
-      return;
-    }
-    const parsed = Number.parseFloat(amountRaw);
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      setStatus({ busy: false, ok: false, message: "Enter a positive amount" });
-      return;
-    }
-    if (!identity) {
-      setStatus({ busy: false, ok: false, message: "Not logged in — reconnect Internet Identity" });
-      return;
-    }
-    const decimals = token === "sGLDT" ? 1e8 : 1e18;
-    const amount = BigInt(Math.round(parsed * decimals));
-    setStatus({ busy: true, message: `Sending ${parsed} ${token} → ${principal.toString().slice(0, 12)}…` });
-    console.log(`[${token} transfer]`, { to: principal.toString(), amount: amount.toString() });
-    try {
-      const result = await directAdminTransfer({
-        identity,
-        token,
-        to: principal.toString(),
-        amount
-      });
-      console.log(`[${token} transfer] result:`, result);
-      if (result.startsWith("error:")) {
-        setStatus({ busy: false, ok: false, message: result.replace(/^error:\s*/, "") });
-        return;
-      }
-      setStatus({ busy: false, ok: true, message: result });
-      clearForm();
-      refetchBalances();
-      refetchWalletInfo();
-    } catch (err) {
-      console.error(`[${token} transfer] threw:`, err);
-      setStatus({
-        busy: false,
-        ok: false,
-        message: err instanceof Error ? err.message : `${token} transfer failed`
-      });
-    }
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Section, { title: "UNI → sGLDT Exchange Rate", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-zinc-500 mb-3", children: [
-        "Current rate: ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400 font-mono", children: humanRate }),
-        " sGLDT per UNI"
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Input,
-          {
-            type: "number",
-            min: "0",
-            step: "0.00000001",
-            value: rateInput,
-            onChange: (e) => setRateInput(e.target.value),
-            placeholder: humanRate,
-            className: "flex-1 bg-zinc-800 border-zinc-700 text-white font-mono"
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleSaveRate, disabled: !!(rateStatus == null ? void 0 : rateStatus.busy), className: "bg-yellow-500 hover:bg-yellow-400 text-black font-bold", children: (rateStatus == null ? void 0 : rateStatus.busy) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 animate-spin" }) : "Set Rate" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLine, { status: rateStatus })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Section, { title: `Transfer sGLDT from Treasury (balance ${sgldtAvailable.toFixed(4)})`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid sm:grid-cols-2 gap-3 mb-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-xs text-zinc-400", children: "Recipient Principal" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: sgldtTo, onChange: (e) => setSgldtTo(e.target.value), placeholder: "aaaaa-bbbbb-…", className: "bg-zinc-800 border-zinc-700 text-white font-mono text-sm" })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-xs text-zinc-400", children: "Amount (sGLDT)" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "number", min: "0", step: "0.00000001", value: sgldtAmount, onChange: (e) => setSgldtAmount(e.target.value), placeholder: "0.00000000", className: "bg-zinc-800 border-zinc-700 text-white font-mono text-sm" })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Button,
-        {
-          onClick: () => runAdminTransfer("sGLDT", sgldtTo, sgldtAmount, setSgldtStatus, () => {
-            setSgldtTo("");
-            setSgldtAmount("");
-          }),
-          disabled: !!(sgldtStatus == null ? void 0 : sgldtStatus.busy) || !sgldtTo || !sgldtAmount,
-          className: "bg-yellow-500 hover:bg-yellow-400 text-black font-bold",
-          children: (sgldtStatus == null ? void 0 : sgldtStatus.busy) ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }),
-            "Transferring"
-          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { className: "w-4 h-4 mr-2" }),
-            "Transfer sGLDT"
-          ] })
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLine, { status: sgldtStatus })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Section, { title: `Transfer ckUNI from Treasury (balance ${ckuniAvailable.toFixed(6)})`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid sm:grid-cols-2 gap-3 mb-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-xs text-zinc-400", children: "Recipient Principal" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: ckuniTo, onChange: (e) => setCkuniTo(e.target.value), placeholder: "aaaaa-bbbbb-…", className: "bg-zinc-800 border-zinc-700 text-white font-mono text-sm" })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-xs text-zinc-400", children: "Amount (ckUNI)" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "number", min: "0", step: "0.000000000000000001", value: ckuniAmount, onChange: (e) => setCkuniAmount(e.target.value), placeholder: "0.000000", className: "bg-zinc-800 border-zinc-700 text-white font-mono text-sm" })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Button,
-        {
-          onClick: () => runAdminTransfer("ckUNI", ckuniTo, ckuniAmount, setCkuniStatus, () => {
-            setCkuniTo("");
-            setCkuniAmount("");
-          }),
-          disabled: !!(ckuniStatus == null ? void 0 : ckuniStatus.busy) || !ckuniTo || !ckuniAmount,
-          className: "bg-blue-500 hover:bg-blue-400 text-white font-bold",
-          children: (ckuniStatus == null ? void 0 : ckuniStatus.busy) ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }),
-            "Transferring"
-          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { className: "w-4 h-4 mr-2" }),
-            "Transfer ckUNI"
-          ] })
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLine, { status: ckuniStatus })
-    ] })
-  ] });
-}
-function DepositsTab() {
-  const { data: deposits, isLoading, refetch, isFetching } = useAllUNIDeposits();
-  const { actor } = useBackendActor();
-  const actorAny = actor;
-  const [payStatus, setPayStatus] = reactExports.useState({});
-  const pay = async (id) => {
-    if (!actorAny) {
-      setPayStatus((s) => ({ ...s, [String(id)]: { busy: false, ok: false, message: "Actor not ready" } }));
-      return;
-    }
-    setPayStatus((s) => ({ ...s, [String(id)]: { busy: true, message: `Paying deposit #${id}…` } }));
-    try {
-      const result = await actorAny.verifyAndPayUNIDeposit(id);
-      const lower = result.toLowerCase();
-      const isError = lower.startsWith("error") || lower.startsWith("failed") || lower.startsWith("confirmed_payout_failed");
-      setPayStatus((s) => ({
-        ...s,
-        [String(id)]: { busy: false, ok: !isError, message: result }
-      }));
-      refetch();
-    } catch (err) {
-      setPayStatus((s) => ({
-        ...s,
-        [String(id)]: { busy: false, ok: false, message: err instanceof Error ? err.message : "Payout failed" }
-      }));
-    }
-  };
-  if (isLoading) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-zinc-500 text-sm", children: "Loading deposits…" });
-  }
-  const sorted = (deposits ?? []).slice().sort((a2, b2) => {
-    return Number(b2.timestamp - a2.timestamp);
-  });
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-zinc-400", children: [
-        sorted.length,
-        " deposits total"
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { size: "sm", variant: "outline", onClick: () => refetch(), disabled: isFetching, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { className: `w-3.5 h-3.5 mr-1.5 ${isFetching ? "animate-spin" : ""}` }),
-        "Refresh"
-      ] })
-    ] }),
-    sorted.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-500 text-sm", children: "No deposits yet." }),
-    sorted.map((dep) => {
-      const d2 = dep;
-      const statusKey = Object.keys(d2.status)[0];
-      const statusColor = statusKey === "paid" ? "text-emerald-400" : statusKey === "failed" ? "text-red-400" : statusKey === "confirmed" ? "text-yellow-400" : statusKey === "processing" ? "text-blue-400" : "text-zinc-400";
-      const uniDisplay = (Number(d2.uniAmount) / 1e8).toFixed(6);
-      const sgldtDisplay = (Number(d2.sgldtPaid) / 1e8).toFixed(6);
-      const needsPay = statusKey === "confirmed" || statusKey === "failed";
-      const entry = payStatus[String(d2.id)];
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-zinc-900 p-4", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-wrap items-center gap-3 mb-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "font-mono text-sm font-bold text-white", children: [
-            "#",
-            String(d2.id)
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-xs font-bold uppercase tracking-widest ${statusColor}`, children: statusKey }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-zinc-500 font-mono", children: [
-            uniDisplay,
-            " UNI"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600 text-xs", children: "→" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-zinc-500 font-mono", children: [
-            sgldtDisplay,
-            " sGLDT"
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-zinc-600 font-mono break-all mb-2", children: [
-          "tx: ",
-          d2.txHash
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-zinc-600 font-mono break-all mb-3", children: [
-          "submitter: ",
-          d2.submitter.toString()
-        ] }),
-        needsPay && /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", onClick: () => pay(d2.id), disabled: !!(entry == null ? void 0 : entry.busy), className: "bg-yellow-500 hover:bg-yellow-400 text-black font-bold", children: (entry == null ? void 0 : entry.busy) ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-3.5 h-3.5 mr-1.5 animate-spin" }),
-          "Paying"
-        ] }) : "Verify & Pay" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLine, { status: entry })
-      ] }, String(d2.id));
-    })
-  ] });
-}
-function MinterTab() {
-  const { data: walletInfo, refetch: refetchWalletInfo } = useGetTreasuryWalletInfo();
-  const mintMutation = useAdminMintCkUNI();
-  const dissolveMutation = useAdminDissolveCkUNI();
-  const initMinterMutation = useAdminInitializeMinterAddress();
-  const [mintTxHash, setMintTxHash] = reactExports.useState("");
-  const [mintAmount, setMintAmount] = reactExports.useState("");
-  const [mintStatus, setMintStatus] = reactExports.useState(null);
-  const [dissolveAmount, setDissolveAmount] = reactExports.useState("");
-  const [dissolveEth, setDissolveEth] = reactExports.useState("");
-  const [dissolveStatus, setDissolveStatus] = reactExports.useState(null);
-  const [minterStatus, setMinterStatus] = reactExports.useState(null);
-  const depositAddress = (walletInfo == null ? void 0 : walletInfo.depositAddress) || "(not initialized)";
-  const handleMint = async () => {
-    if (!mintTxHash.trim().startsWith("0x")) {
-      setMintStatus({ busy: false, ok: false, message: "Tx hash must start with 0x" });
-      return;
-    }
-    const parsed = Number.parseFloat(mintAmount);
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      setMintStatus({ busy: false, ok: false, message: "Enter a positive UNI amount" });
-      return;
-    }
-    const amount = BigInt(Math.round(parsed * 1e18));
-    setMintStatus({ busy: true, message: `Minting ${parsed} ckUNI…` });
-    try {
-      const r2 = await mintMutation.mutateAsync({ ethTxHash: mintTxHash.trim(), uniAmount: amount });
-      setMintStatus({ busy: false, ok: true, message: typeof r2 === "string" ? r2 : "Mint requested" });
-      setMintTxHash("");
-      setMintAmount("");
-      refetchWalletInfo();
-    } catch (err) {
-      setMintStatus({ busy: false, ok: false, message: err instanceof Error ? err.message : "Mint failed" });
-    }
-  };
-  const handleDissolve = async () => {
-    const parsed = Number.parseFloat(dissolveAmount);
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      setDissolveStatus({ busy: false, ok: false, message: "Enter a positive ckUNI amount" });
-      return;
-    }
-    if (!dissolveEth.trim().startsWith("0x")) {
-      setDissolveStatus({ busy: false, ok: false, message: "Ethereum address must start with 0x" });
-      return;
-    }
-    const amount = BigInt(Math.round(parsed * 1e18));
-    setDissolveStatus({ busy: true, message: `Dissolving ${parsed} ckUNI → ${dissolveEth.trim().slice(0, 10)}…` });
-    try {
-      const r2 = await dissolveMutation.mutateAsync({ ckUNIAmount: amount, destinationEthAddress: dissolveEth.trim() });
-      setDissolveStatus({ busy: false, ok: true, message: typeof r2 === "string" ? r2 : "Dissolve submitted" });
-      setDissolveAmount("");
-      setDissolveEth("");
-      refetchWalletInfo();
-    } catch (err) {
-      setDissolveStatus({ busy: false, ok: false, message: err instanceof Error ? err.message : "Dissolve failed" });
-    }
-  };
-  const handleInitMinter = async () => {
-    setMinterStatus({ busy: true, message: "Fetching deposit address…" });
-    try {
-      const r2 = await initMinterMutation.mutateAsync();
-      if (typeof r2 === "string" && r2.toLowerCase().startsWith("err")) {
-        setMinterStatus({ busy: false, ok: false, message: r2.replace(/^err:\s*/i, "") });
-      } else {
-        setMinterStatus({ busy: false, ok: true, message: `Deposit address: ${r2}` });
-        refetchWalletInfo();
-      }
-    } catch (err) {
-      setMinterStatus({ busy: false, ok: false, message: err instanceof Error ? err.message : "Failed" });
-    }
-  };
-  const copyToClipboard = async (text) => {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-    }
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Section, { title: "Ethereum Deposit Address", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500 mb-2", children: "Send UNI to this address on Ethereum; ckUNI is minted to the treasury automatically." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "flex-1 text-xs text-blue-300 font-mono break-all bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2", children: depositAddress }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", variant: "outline", onClick: () => copyToClipboard(depositAddress), children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { className: "w-3.5 h-3.5" }) })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { size: "sm", variant: "outline", onClick: handleInitMinter, disabled: !!(minterStatus == null ? void 0 : minterStatus.busy), children: [
-        (minterStatus == null ? void 0 : minterStatus.busy) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-3.5 h-3.5 mr-1.5 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { className: "w-3.5 h-3.5 mr-1.5" }),
-        "Refresh Address"
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLine, { status: minterStatus })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Section, { title: "Mint ckUNI (record an Ethereum UNI deposit)", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid sm:grid-cols-2 gap-3 mb-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-xs text-zinc-400", children: "Ethereum Tx Hash" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: mintTxHash, onChange: (e) => setMintTxHash(e.target.value), placeholder: "0x…", className: "bg-zinc-800 border-zinc-700 text-white font-mono text-sm" })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-xs text-zinc-400", children: "UNI Amount (18 decimals)" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "number", min: "0", step: "0.000000000000000001", value: mintAmount, onChange: (e) => setMintAmount(e.target.value), placeholder: "0.000000", className: "bg-zinc-800 border-zinc-700 text-white font-mono text-sm" })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleMint, disabled: !!(mintStatus == null ? void 0 : mintStatus.busy) || !mintTxHash || !mintAmount, className: "bg-emerald-500 hover:bg-emerald-400 text-black font-bold", children: (mintStatus == null ? void 0 : mintStatus.busy) ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }),
-        "Minting"
-      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { className: "w-4 h-4 mr-2" }),
-        "Mint ckUNI"
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLine, { status: mintStatus })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Section, { title: "Dissolve ckUNI → UNI on Ethereum", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid sm:grid-cols-2 gap-3 mb-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-xs text-zinc-400", children: "ckUNI Amount" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "number", min: "0", step: "0.000000000000000001", value: dissolveAmount, onChange: (e) => setDissolveAmount(e.target.value), placeholder: "0.000000", className: "bg-zinc-800 border-zinc-700 text-white font-mono text-sm" })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-xs text-zinc-400", children: "Destination Ethereum Address" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: dissolveEth, onChange: (e) => setDissolveEth(e.target.value), placeholder: "0x…", className: "bg-zinc-800 border-zinc-700 text-white font-mono text-sm" })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleDissolve, disabled: !!(dissolveStatus == null ? void 0 : dissolveStatus.busy) || !dissolveAmount || !dissolveEth, className: "bg-red-500 hover:bg-red-400 text-white font-bold", children: (dissolveStatus == null ? void 0 : dissolveStatus.busy) ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }),
-        "Dissolving"
-      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Flame, { className: "w-4 h-4 mr-2" }),
-        "Dissolve"
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLine, { status: dissolveStatus })
-    ] })
-  ] });
-}
-function BankingBraveHome({
-  onOpenMinegoldUni,
-  onOpenMinegoldBrave
-}) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    "div",
-    {
-      className: "min-h-screen",
-      style: { background: "var(--bb-bg)", color: "var(--bb-text)" },
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-end mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, {}) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "flex flex-col items-center text-center mb-16", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "div",
-            {
-              className: "w-32 h-32 sm:w-40 sm:h-40 mb-6 rounded-full overflow-hidden flex items-center justify-center",
-              style: {
-                boxShadow: "0 0 30px rgba(29, 78, 216, 0.35)",
-                background: "#1D4ED8"
-              },
-              children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "img",
-                {
-                  src: "/bankingbrave.png",
-                  alt: "Banking.Brave",
-                  className: "w-[115%] h-[115%] object-cover object-center"
-                }
-              )
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "text-4xl sm:text-5xl font-black tracking-tight mb-3", children: [
-            "Banking",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
-            "Brave"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm sm:text-base max-w-xl", style: { color: "var(--bb-text-muted)" }, children: "On-chain financial primitives on the Internet Computer. We govern open, auditable cross-chain protocols under the Minegold.Defi family." })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mb-12", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-end justify-between flex-wrap gap-2 mb-5", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "div",
-              {
-                className: "text-[10px] font-black uppercase tracking-widest mb-1",
-                style: { color: "var(--bb-text-dim)" },
-                children: "Protocols we govern"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-xl sm:text-2xl font-black tracking-tight", children: [
-              "Minegold",
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
-              "Defi"
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs mt-1 max-w-lg", style: { color: "var(--bb-text-muted)" }, children: "A family of cross-chain refinery workflows. Each workflow bridges a specific ERC-20 source asset onto ICP and refines it into sGLDT (synthetic gold) on the Internet Computer." })
-          ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                type: "button",
-                onClick: onOpenMinegoldUni,
-                className: "group relative text-left rounded-3xl border transition-all p-6 overflow-hidden hover:-translate-y-0.5",
-                style: {
-                  background: "linear-gradient(135deg, rgba(234, 179, 8, 0.08), var(--bb-surface))",
-                  borderColor: "var(--bb-border)",
-                  color: "var(--bb-text)"
-                },
-                children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-4", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-400 flex items-center justify-center shrink-0 shadow-lg shadow-yellow-500/20", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "24", height: "24", viewBox: "0 0 40 40", fill: "none", "aria-hidden": true, children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M6 34 L30 8", stroke: "#3B1F00", strokeWidth: "5", strokeLinecap: "square" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M6 34 L30 8", stroke: "#7B4513", strokeWidth: "3", strokeLinecap: "square" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "24", y: "4", width: "14", height: "6", rx: "1", fill: "#FFFFF0" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M36 2 L40 6 L36 10 L32 6 Z", fill: "#F0F0F0" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "8", cy: "32", r: "3", fill: "#FFD700", opacity: "0.9" })
-                  ] }) }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-1", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-lg font-black", children: [
-                        "Minegold",
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
-                        "Uni"
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-black uppercase tracking-widest bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-full px-2 py-0.5", children: "Live" })
-                    ] }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-mono mb-2", style: { color: "var(--bb-text-dim)" }, children: "UNI (ERC-20) → ckUNI → sGLDT" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs leading-relaxed", style: { color: "var(--bb-text-muted)" }, children: "Onboard UNI into ckUNI on ICP via the chain-key bridge, then refine into sGLDT synthetic gold at the locked-in live rate." }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 flex items-center gap-1.5 text-xs font-bold text-yellow-500 group-hover:text-yellow-400 transition-colors", children: [
-                      "Open workflow",
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14, className: "group-hover:translate-x-1 transition-transform" })
-                    ] })
-                  ] })
-                ] })
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                type: "button",
-                onClick: onOpenMinegoldBrave,
-                className: "group relative text-left rounded-3xl border transition-all p-6 overflow-hidden hover:-translate-y-0.5",
-                style: {
-                  background: "linear-gradient(135deg, rgba(249, 115, 22, 0.08), var(--bb-surface))",
-                  borderColor: "var(--bb-border)",
-                  color: "var(--bb-text)"
-                },
-                children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-4", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "div",
-                    {
-                      className: "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-orange-500/20",
-                      style: { background: "linear-gradient(135deg, #f97316, #ea580c)" },
-                      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 3L3 8l9 5 9-5-9-5z", fill: "#FFFFFF" }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M3 8v8l9 5 9-5V8", stroke: "#FFFFFF", strokeWidth: "1.5", fill: "none" })
-                      ] })
-                    }
-                  ),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-1", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-lg font-black", children: [
-                        "Minegold",
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
-                        "Brave"
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest bg-amber-500/15 text-amber-500 border border-amber-500/30 rounded-full px-2 py-0.5", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { size: 9 }),
-                        " Soon"
-                      ] })
-                    ] }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-mono mb-2", style: { color: "var(--bb-text-dim)" }, children: "BAT (ERC-20) → ckBAT → sGLDT" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs leading-relaxed", style: { color: "var(--bb-text-muted)" }, children: "Onboard the Brave browser's native BAT token as ckBAT on ICP. Unlocks once DFINITY's chain-key ERC-20 minter adds ckBAT support." }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 flex items-center gap-1.5 text-xs font-bold text-orange-500 group-hover:text-orange-400 transition-colors", children: [
-                      "Preview details",
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14, className: "group-hover:translate-x-1 transition-transform" })
-                    ] })
-                  ] })
-                ] })
-              }
-            )
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "mb-16 grid sm:grid-cols-3 gap-4 text-xs", children: [
-          { icon: ShieldCheck, color: "var(--bb-brand)", title: "100% on-chain", desc: "All logic lives in ICP canisters — no backend servers." },
-          { icon: TrendingUp, color: "#10b981", title: "Cross-chain native", desc: "DFINITY chain-key ckERC-20 bridges each source asset automatically." },
-          { icon: Lock, color: "#eab308", title: "Self-custody", desc: "You sign with your own Brave Wallet and Internet Identity." }
-        ].map((item) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "div",
-          {
-            className: "flex items-start gap-2 rounded-2xl border p-4",
-            style: { borderColor: "var(--bb-border)", background: "var(--bb-surface)" },
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(item.icon, { className: "w-4 h-4 shrink-0 mt-0.5", style: { color: item.color } }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold mb-0.5", children: item.title }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { color: "var(--bb-text-muted)" }, children: item.desc })
-              ] })
-            ]
-          },
-          item.title
-        )) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "footer",
-          {
-            className: "pt-6 border-t text-center text-[11px]",
-            style: { borderColor: "var(--bb-border)", color: "var(--bb-text-dim)" },
-            children: [
-              "Built on",
-              " ",
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "a",
-                {
-                  href: "https://internetcomputer.org",
-                  target: "_blank",
-                  rel: "noopener noreferrer",
-                  className: "transition-colors",
-                  style: { color: "var(--bb-brand)" },
-                  children: "Internet Computer Protocol"
-                }
-              )
-            ]
-          }
-        )
-      ] })
-    }
-  );
-}
-const CK_MINTER_CANISTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai";
-const BAT_ERC20_ADDRESS = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF";
-const minterIDL = ({ IDL: IDL2 }) => {
-  const CkErc20 = IDL2.Record({
-    ckerc20_token_symbol: IDL2.Text,
-    erc20_contract_address: IDL2.Text,
-    ledger_canister_id: IDL2.Principal
-  });
-  const MinterInfo = IDL2.Record({
-    supported_ckerc20_tokens: IDL2.Opt(IDL2.Vec(CkErc20))
-  });
-  return IDL2.Service({
-    get_minter_info: IDL2.Func([], [MinterInfo], ["query"])
-  });
-};
-async function fetchCkBatStatus() {
-  const empty = {
-    supported: false,
-    token: null,
-    allTokens: [],
-    error: null
-  };
-  try {
-    const agent = await HttpAgent.create({ host: "https://icp-api.io" });
-    const actor = Actor.createActor(minterIDL, {
-      agent,
-      canisterId: CK_MINTER_CANISTER_ID
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    });
-    const info = await actor.get_minter_info();
-    const raw = (info == null ? void 0 : info.supported_ckerc20_tokens) ?? [];
-    const list = Array.isArray(raw) && raw.length > 0 ? raw[0] : [];
-    const allTokens = (list ?? []).map(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (t) => {
-        var _a3, _b3;
-        return {
-          symbol: String(t.ckerc20_token_symbol ?? ""),
-          erc20Address: String(t.erc20_contract_address ?? ""),
-          ledgerCanisterId: ((_b3 = (_a3 = t.ledger_canister_id) == null ? void 0 : _a3.toString) == null ? void 0 : _b3.call(_a3)) ?? ""
-        };
-      }
-    );
-    const wanted = BAT_ERC20_ADDRESS.toLowerCase();
-    const token = allTokens.find(
-      (t) => t.erc20Address.toLowerCase() === wanted || t.symbol.toLowerCase() === "ckbat"
-    ) ?? null;
-    return { supported: token !== null, token, allTokens, error: null };
-  } catch (e) {
-    return {
-      ...empty,
-      error: e instanceof Error ? e.message : "Could not reach the ckERC-20 minter"
-    };
-  }
-}
-const NOTIFY_EMAIL = "hello@cafreso.com";
-function MinegoldBraveSoon({ onBack, onOpenUni }) {
-  var _a3, _b3;
-  const [status, setStatus] = reactExports.useState(null);
-  const [checkedAt, setCheckedAt] = reactExports.useState(null);
-  reactExports.useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      const s = await fetchCkBatStatus();
-      if (cancelled) return;
-      setStatus(s);
-      setCheckedAt(/* @__PURE__ */ new Date());
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-  const loading = status === null;
-  const live = (status == null ? void 0 : status.supported) === true;
-  const tokenCount = (status == null ? void 0 : status.allTokens.length) ?? 0;
-  const notifyHref = `mailto:${NOTIFY_EMAIL}?subject=${encodeURIComponent("Notify me when Minegold.Brave goes live")}&body=${encodeURIComponent(
-    "Add me to the Minegold.Brave waitlist — I'd like an email when BAT → ckBAT → sGLDT opens."
-  )}`;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    "div",
-    {
-      className: "min-h-screen",
-      style: { background: "var(--bb-bg)", color: "var(--bb-text)" },
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-6", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "button",
-            {
-              type: "button",
-              onClick: onBack,
-              className: "inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest transition-colors",
-              style: { color: "var(--bb-text-muted)" },
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowLeft, { size: 14 }),
-                "Banking.Brave"
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, {})
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            className: "text-[10px] font-black uppercase tracking-widest mb-2",
-            style: { color: "var(--bb-text-dim)" },
-            children: "Banking.Brave · Minegold.Defi"
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "mb-10", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "div",
-              {
-                className: "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0",
-                style: { background: "linear-gradient(135deg, #f97316, #ea580c)" },
-                children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "none", "aria-hidden": true, children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 3L3 8l9 5 9-5-9-5z", fill: "#FFFFFF" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M3 8v8l9 5 9-5V8", stroke: "#FFFFFF", strokeWidth: "1.5", fill: "none" })
-                ] })
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "text-3xl sm:text-4xl font-black tracking-tight leading-tight", children: [
-                "Minegold",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
-                "Brave"
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "inline-flex items-center gap-1.5 mt-1", children: [
-                loading ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "span",
-                  {
-                    className: "inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest rounded-full px-2 py-0.5 border",
-                    style: {
-                      background: "var(--bb-surface)",
-                      color: "var(--bb-text-muted)",
-                      borderColor: "var(--bb-border)"
-                    },
-                    children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 10, className: "animate-spin" }),
-                      "Checking bridge…"
-                    ]
-                  }
-                ) : live ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "span",
-                  {
-                    className: "inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest rounded-full px-2 py-0.5 border",
-                    style: {
-                      background: "rgba(16, 185, 129, 0.12)",
-                      color: "#059669",
-                      borderColor: "rgba(16, 185, 129, 0.35)"
-                    },
-                    children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { size: 10 }),
-                      "ckBAT is live"
-                    ]
-                  }
-                ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "span",
-                  {
-                    className: "text-[10px] font-black uppercase tracking-widest rounded-full px-2 py-0.5 border",
-                    style: {
-                      background: "rgba(234, 179, 8, 0.12)",
-                      color: "#ca8a04",
-                      borderColor: "rgba(234, 179, 8, 0.35)"
-                    },
-                    children: "Awaiting ckBAT"
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { size: 11, style: { color: "var(--bb-text-dim)" } })
-              ] })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "p",
-            {
-              className: "text-sm sm:text-base max-w-2xl mt-3",
-              style: { color: "var(--bb-text-muted)" },
-              children: [
-                "Onboard ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "BAT (Basic Attention Token)" }),
-                " to the Internet Computer as ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "ckBAT" }),
-                ", then refine it into sGLDT — the same proven workflow as Minegold.Uni, with a different source asset."
-              ]
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mb-12", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "span",
-              {
-                className: "text-[11px] font-black uppercase tracking-widest",
-                style: { color: "var(--bb-brand)" },
-                children: "Bridge status · checked live"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-1 border-t", style: { borderColor: "var(--bb-border)" } })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "div",
-            {
-              className: "rounded-2xl border p-5 sm:p-6",
-              style: {
-                background: live ? "linear-gradient(135deg, rgba(16, 185, 129, 0.08), var(--bb-surface))" : "var(--bb-surface)",
-                borderColor: live ? "rgba(16, 185, 129, 0.35)" : "var(--bb-border)"
-              },
-              children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-3", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-0.5 shrink-0", children: loading ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 18, className: "animate-spin", style: { color: "var(--bb-text-dim)" } }) : live ? /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { size: 18, style: { color: "#059669" } }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CircleDashed, { size: 18, style: { color: "#ca8a04" } }) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0 flex-1", children: [
-                  loading && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", style: { color: "var(--bb-text-muted)" }, children: "Asking DFINITY's ckERC-20 minter which assets it bridges…" }),
-                  !loading && (status == null ? void 0 : status.error) && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold text-sm mb-1", children: "Status check unavailable" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs leading-relaxed", style: { color: "var(--bb-text-muted)" }, children: "We couldn't reach the minter just now, so this page can't confirm ckBAT's status. Minegold.Brave opens as soon as BAT is listed — please check back shortly." })
-                  ] }),
-                  !loading && !(status == null ? void 0 : status.error) && live && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold text-sm mb-1", children: "BAT is now bridgeable — Minegold.Brave can open." }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs leading-relaxed", style: { color: "var(--bb-text-muted)" }, children: [
-                      "The minter lists ",
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: (_a3 = status == null ? void 0 : status.token) == null ? void 0 : _a3.symbol }),
-                      " with ledger",
-                      " ",
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "font-mono", children: (_b3 = status == null ? void 0 : status.token) == null ? void 0 : _b3.ledgerCanisterId }),
-                      ". The refinery flow is being switched on — check back within a day."
-                    ] })
-                  ] }),
-                  !loading && !(status == null ? void 0 : status.error) && !live && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold text-sm mb-1", children: "BAT is not yet listed on the ckERC-20 bridge." }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs leading-relaxed", style: { color: "var(--bb-text-muted)" }, children: "Adding a token is an NNS governance decision, not something we control. This page re-checks the minter every time it loads and will switch itself on the day BAT appears — nothing here is hand-updated." })
-                  ] }),
-                  !loading && !(status == null ? void 0 : status.error) && tokenCount > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                      "div",
-                      {
-                        className: "text-[10px] font-black uppercase tracking-widest mb-2",
-                        style: { color: "var(--bb-text-dim)" },
-                        children: [
-                          "Bridged today · ",
-                          tokenCount,
-                          " assets"
-                        ]
-                      }
-                    ),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-wrap gap-1.5", children: [
-                      status == null ? void 0 : status.allTokens.map((t) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "span",
-                        {
-                          className: "text-[10px] font-bold rounded-lg px-2 py-1 border",
-                          style: {
-                            borderColor: "var(--bb-border)",
-                            color: t.symbol.toLowerCase() === "ckuni" ? "var(--bb-brand)" : "var(--bb-text-muted)",
-                            background: "var(--bb-bg)"
-                          },
-                          children: t.symbol
-                        },
-                        t.ledgerCanisterId || t.symbol
-                      )),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "span",
-                        {
-                          className: "text-[10px] font-bold rounded-lg px-2 py-1 border border-dashed",
-                          style: { borderColor: "rgba(234, 179, 8, 0.5)", color: "#ca8a04" },
-                          children: "ckBAT — pending"
-                        }
-                      )
-                    ] })
-                  ] }),
-                  checkedAt && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                    "div",
-                    {
-                      className: "mt-4 text-[10px] font-mono",
-                      style: { color: "var(--bb-text-dim)" },
-                      children: [
-                        "minter ",
-                        CK_MINTER_CANISTER_ID,
-                        " · checked",
-                        " ",
-                        checkedAt.toLocaleTimeString()
-                      ]
-                    }
-                  )
-                ] })
-              ] })
-            }
-          )
-        ] }),
-        !live && /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "mb-12", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "div",
-          {
-            className: "rounded-2xl border p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between",
-            style: {
-              background: "linear-gradient(135deg, rgba(249, 115, 22, 0.06), var(--bb-surface))",
-              borderColor: "var(--bb-border)"
-            },
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "div",
-                  {
-                    className: "text-[10px] font-black uppercase tracking-widest mb-1",
-                    style: { color: "var(--bb-brand)" },
-                    children: "Get notified"
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", style: { color: "var(--bb-text)" }, children: "Want an email the day BAT refining opens?" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs mt-0.5", style: { color: "var(--bb-text-muted)" }, children: "One message, at launch. No newsletter." })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                "a",
-                {
-                  href: notifyHref,
-                  className: "inline-flex items-center gap-1.5 text-sm font-bold rounded-xl px-4 py-2 transition-all shrink-0",
-                  style: { background: "var(--bb-brand)", color: "#ffffff" },
-                  children: [
-                    "Notify me",
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowUpRight, { size: 14 })
-                  ]
-                }
-              )
-            ]
-          }
-        ) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mb-12", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "span",
-              {
-                className: "text-[11px] font-black uppercase tracking-widest",
-                style: { color: "var(--bb-brand)" },
-                children: live ? "How it works" : "Planned workflow"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-1 border-t", style: { borderColor: "var(--bb-border)" } })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { className: "grid sm:grid-cols-3 gap-4", children: [
-            {
-              n: "01",
-              title: "Bridge BAT → ckBAT",
-              body: "You sign a deposit() call on the ckERC-20 helper contract on Ethereum. DFINITY's minter credits the treasury on ICP."
-            },
-            {
-              n: "02",
-              title: "Verify on ICP",
-              body: "The backend canister reads the Ethereum transaction via HTTPS outcalls and cryptographically verifies amount and recipient."
-            },
-            {
-              n: "03",
-              title: "Release sGLDT",
-              body: "Locked-rate sGLDT transfers from treasury to your ICP account over ICRC-1 — no custodian in the middle."
-            }
-          ].map((step) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "li",
-            {
-              className: "rounded-2xl border p-5",
-              style: { background: "var(--bb-surface)", borderColor: "var(--bb-border)" },
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "div",
-                  {
-                    className: "text-[10px] font-black tracking-widest mb-2",
-                    style: { color: "var(--bb-brand)" },
-                    children: [
-                      "STEP ",
-                      step.n
-                    ]
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold text-sm mb-1", children: step.title }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs leading-relaxed", style: { color: "var(--bb-text-muted)" }, children: step.body })
-              ]
-            },
-            step.n
-          )) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] mt-3", style: { color: "var(--bb-text-dim)" }, children: [
-            "BAT contract ",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "font-mono", children: BAT_ERC20_ADDRESS })
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "mb-16 grid sm:grid-cols-3 gap-4 text-xs", children: [
-          {
-            icon: ShieldCheck,
-            color: "var(--bb-brand)",
-            title: "Brave-native",
-            desc: "BAT is the Brave browser's own token — a natural pairing with Brave Wallet."
-          },
-          {
-            icon: Zap,
-            color: "#10b981",
-            title: "Same bridge",
-            desc: "Reuses the chain-key ckERC-20 path already running for UNI. No new contracts to audit."
-          },
-          {
-            icon: Clock,
-            color: "#eab308",
-            title: "Self-updating",
-            desc: "This page reads the minter directly, so it goes live the day ckBAT does."
-          }
-        ].map((item) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "div",
-          {
-            className: "flex items-start gap-2 rounded-2xl border p-4",
-            style: { borderColor: "var(--bb-border)", background: "var(--bb-surface)" },
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(item.icon, { className: "w-4 h-4 shrink-0 mt-0.5", style: { color: item.color } }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold mb-0.5", children: item.title }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { color: "var(--bb-text-muted)" }, children: item.desc })
-              ] })
-            ]
-          },
-          item.title
-        )) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "div",
-          {
-            className: "rounded-2xl border p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3",
-            style: {
-              background: "linear-gradient(135deg, rgba(234, 179, 8, 0.06), var(--bb-surface))",
-              borderColor: "var(--bb-border)"
-            },
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "div",
-                  {
-                    className: "text-[10px] font-black uppercase tracking-widest mb-1",
-                    style: { color: "var(--bb-brand)" },
-                    children: "In the meantime"
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm", style: { color: "var(--bb-text)" }, children: [
-                  "The live ",
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Minegold.Uni" }),
-                  " workflow refines UNI into sGLDT today."
-                ] })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                "button",
-                {
-                  type: "button",
-                  onClick: onOpenUni,
-                  className: "inline-flex items-center gap-1.5 text-sm font-bold rounded-xl px-4 py-2 transition-all",
-                  style: { background: "var(--bb-brand)", color: "#ffffff" },
-                  children: [
-                    "Open Minegold.Uni",
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14 })
-                  ]
-                }
-              )
-            ]
-          }
-        )
-      ] })
-    }
-  );
-}
-const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
-  {
-    variants: {
-      variant: {
-        default: "border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
-        secondary: "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
-        destructive: "border-transparent bg-destructive text-destructive-foreground [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-        outline: "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground"
-      }
-    },
-    defaultVariants: {
-      variant: "default"
-    }
-  }
-);
-function Badge({
-  className,
-  variant,
-  asChild = false,
-  ...props
-}) {
-  const Comp = asChild ? Slot : "span";
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Comp,
-    {
-      "data-slot": "badge",
-      className: cn(badgeVariants({ variant }), className),
-      ...props
-    }
-  );
-}
-function Skeleton({ className, ...props }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    "div",
-    {
-      "data-slot": "skeleton",
-      className: cn("bg-accent animate-pulse rounded-md", className),
-      ...props
-    }
-  );
-}
-var TxStatus = /* @__PURE__ */ ((TxStatus2) => {
-  TxStatus2["Failed"] = "Failed";
-  TxStatus2["Confirmed"] = "Confirmed";
-  TxStatus2["Completed"] = "Completed";
-  TxStatus2["Pending"] = "Pending";
-  return TxStatus2;
-})(TxStatus || {});
-var TxType = /* @__PURE__ */ ((TxType2) => {
-  TxType2["Mint"] = "Mint";
-  TxType2["Refine"] = "Refine";
-  TxType2["Bridge"] = "Bridge";
-  TxType2["Transfer"] = "Transfer";
-  return TxType2;
-})(TxType || {});
-const TX_TYPE_CONFIG = {
-  [TxType.Bridge]: {
-    label: "Bridge",
-    className: "bg-blue-500/15 text-blue-400 border border-blue-500/30 hover:bg-blue-500/15",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRightLeft, { size: 11 })
-  },
-  [TxType.Mint]: {
-    label: "Mint",
-    className: "bg-purple-500/15 text-purple-400 border border-purple-500/30 hover:bg-purple-500/15",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { size: 11 })
-  },
-  [TxType.Refine]: {
-    label: "Refine",
-    className: "bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/15",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Flame, { size: 11 })
-  },
-  [TxType.Transfer]: {
-    label: "Transfer",
-    className: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/15",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { size: 11 })
-  }
-};
-const TX_STATUS_CONFIG = {
-  [TxStatus.Pending]: {
-    label: "Pending",
-    className: "bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/15"
-  },
-  [TxStatus.Confirmed]: {
-    label: "Confirmed",
-    className: "bg-blue-500/15 text-blue-400 border border-blue-500/30 hover:bg-blue-500/15"
-  },
-  [TxStatus.Completed]: {
-    label: "Completed",
-    className: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/15"
-  },
-  [TxStatus.Failed]: {
-    label: "Failed",
-    className: "bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/15"
-  }
-};
-function TxTypeBadge({ txType }) {
-  const cfg = TX_TYPE_CONFIG[txType] ?? TX_TYPE_CONFIG[TxType.Transfer];
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { className: `gap-1 text-[10px] font-bold uppercase ${cfg.className}`, children: [
-    cfg.icon,
-    cfg.label
-  ] });
-}
-function TxStatusBadge({ status }) {
-  const cfg = TX_STATUS_CONFIG[status] ?? TX_STATUS_CONFIG[TxStatus.Pending];
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { className: `text-[10px] font-bold uppercase ${cfg.className}`, children: cfg.label });
-}
-function TxRow({ tx }) {
-  const [expanded, setExpanded] = reactExports.useState(false);
-  const hasFailed = tx.status === TxStatus.Failed && tx.errorMsg;
-  const decimals = tx.tokenSymbol === "ckUNI" ? 1e18 : 1e8;
-  const amountFormatted = `${(Number(tx.amount) / decimals).toFixed(8)} ${tx.tokenSymbol}`;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    "div",
-    {
-      "data-ocid": `tx.row.${tx.id}`,
-      className: "border border-zinc-800 rounded-xl bg-zinc-900/60 hover:border-zinc-700 transition-colors overflow-hidden",
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 flex flex-col sm:flex-row sm:items-center gap-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2 sm:w-28 shrink-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(TxTypeBadge, { txType: tx.txType }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-bold text-white font-mono truncate", children: amountFormatted }),
-            tx.description && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500 truncate mt-0.5", children: tx.description })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2 sm:w-28 shrink-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(TxStatusBadge, { status: tx.status }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-zinc-500 shrink-0 flex items-center gap-1 sm:w-40", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { size: 11 }),
-            formatTimestamp(tx.timestamp)
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 shrink-0", children: [
-            tx.ethTxHash && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "a",
-              {
-                href: `https://etherscan.io/tx/${tx.ethTxHash}`,
-                target: "_blank",
-                rel: "noopener noreferrer",
-                "data-ocid": `tx.etherscan_link.${tx.id}`,
-                className: "flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 transition-colors",
-                children: [
-                  "Etherscan ",
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { size: 10 })
-                ]
-              }
-            ),
-            tx.icpBlockIndex !== void 0 && tx.icpBlockIndex !== null && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "a",
-              {
-                href: "https://dashboard.internetcomputer.org/",
-                target: "_blank",
-                rel: "noopener noreferrer",
-                "data-ocid": `tx.icp_link.${tx.id}`,
-                className: "flex items-center gap-1 text-[11px] text-yellow-500 hover:text-yellow-400 transition-colors",
-                children: [
-                  "ICP ",
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { size: 10 })
-                ]
-              }
-            ),
-            hasFailed && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "button",
-              {
-                type: "button",
-                onClick: () => setExpanded((v2) => !v2),
-                "data-ocid": `tx.expand_error.${tx.id}`,
-                className: "flex items-center gap-1 text-[11px] text-red-400 hover:text-red-300 transition-colors",
-                children: [
-                  "Error",
-                  " ",
-                  expanded ? /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronUp, { size: 10 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { size: 10 })
-                ]
-              }
-            )
-          ] })
-        ] }),
-        hasFailed && expanded && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            "data-ocid": `tx.error_detail.${tx.id}`,
-            className: "px-4 pb-4 border-t border-zinc-800/60",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 rounded-lg bg-red-500/10 border border-red-500/20 p-3 flex items-start gap-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { size: 14, className: "text-red-400 shrink-0 mt-0.5" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-red-400 font-mono break-all", children: tx.errorMsg })
-            ] })
-          }
-        )
-      ]
-    }
-  );
-}
-const TYPE_FILTERS = [
-  { value: "all", label: "All Types" },
-  { value: TxType.Bridge, label: "Bridge" },
-  { value: TxType.Mint, label: "Mint" },
-  { value: TxType.Refine, label: "Refine" },
-  { value: TxType.Transfer, label: "Transfer" }
-];
-const STATUS_FILTERS = [
-  { value: "all", label: "All Statuses" },
-  { value: TxStatus.Pending, label: "Pending" },
-  { value: TxStatus.Confirmed, label: "Confirmed" },
-  { value: TxStatus.Completed, label: "Completed" },
-  { value: TxStatus.Failed, label: "Failed" }
-];
-function TransactionHistoryPage() {
-  const { identity, login, isLoggingIn } = useInternetIdentity();
-  const isLoggedIn = !!identity && !identity.getPrincipal().isAnonymous();
-  const {
-    data: txs,
-    isLoading,
-    error,
-    refetch,
-    isFetching
-  } = useMyTransactions();
-  const [typeFilter, setTypeFilter] = reactExports.useState("all");
-  const [statusFilter, setStatusFilter] = reactExports.useState("all");
-  if (!isLoggedIn) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen bg-[#080808] flex items-center justify-center p-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      "div",
-      {
-        "data-ocid": "tx_history.login_prompt",
-        className: "text-center max-w-sm w-full bg-zinc-900 border border-zinc-800 rounded-[2rem] p-10",
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            ShieldCheck,
-            {
-              size: 48,
-              className: "text-yellow-500 mx-auto mb-4 opacity-80"
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-black text-white mb-2", children: "Transaction History" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-400 text-sm mb-6", children: "Sign in with Internet Identity to view your transaction history." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "button",
-            {
-              type: "button",
-              onClick: login,
-              disabled: isLoggingIn,
-              "data-ocid": "tx_history.login_button",
-              className: "w-full bg-white text-black hover:bg-zinc-200 h-14 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50",
-              children: isLoggingIn ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "animate-spin", size: 18 }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "img",
-                  {
-                    src: "https://cryptologos.cc/logos/internet-computer-icp-logo.png",
-                    className: "w-5 h-5",
-                    alt: "ICP"
-                  }
-                ),
-                "Sign in with Internet Identity"
-              ] })
-            }
-          )
-        ]
-      }
-    ) });
-  }
-  const filteredTxs = (txs ?? []).filter((tx) => {
-    const matchType = typeFilter === "all" || tx.txType === typeFilter;
-    const matchStatus = statusFilter === "all" || tx.status === statusFilter;
-    return matchType && matchStatus;
-  });
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen bg-[#080808] text-zinc-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-4xl mx-auto px-4 sm:px-6 py-10", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-8", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "text-3xl font-black text-white", children: [
-          "Transaction ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-500", children: "History" })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-500 text-sm mt-1", children: "Your complete cross-chain activity log" })
-      ] }),
+  const [moreOpen, setMoreOpen] = reactExports.useState(false);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "sticky top-0 z-50 bg-[#080808]/80 backdrop-blur-md border-b border-zinc-800/50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        Button,
+        "button",
         {
-          variant: "outline",
-          size: "sm",
-          onClick: () => refetch(),
-          disabled: isFetching,
-          "data-ocid": "tx_history.refresh_button",
-          className: "border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-800 gap-1.5",
+          type: "button",
+          onClick: onBackToBankingBrave,
+          "aria-label": "Back to Banking.Brave",
+          title: "Back to Banking.Brave",
+          className: "flex items-center gap-2 cursor-pointer bg-transparent border-none p-0 group",
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
-              RefreshCw,
+              "div",
               {
-                className: `w-3.5 h-3.5 ${isFetching ? "animate-spin" : ""}`
+                className: "w-9 h-9 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform",
+                style: { background: "#1D4ED8" },
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "img",
+                  {
+                    src: "/bankingbrave.png",
+                    alt: "Banking.Brave",
+                    className: "w-[115%] h-[115%] object-cover"
+                  }
+                )
               }
             ),
-            "Refresh"
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "hidden sm:block text-sm font-black tracking-tight", style: { color: "var(--bb-brand)" }, children: [
+              "Banking",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-text)" }, children: ".Brave" })
+            ] })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-700", children: "/" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "button",
+        {
+          type: "button",
+          className: "flex items-center gap-3 cursor-pointer bg-transparent border-none p-0",
+          onClick: onHome,
+          "aria-label": "minegold.defi home",
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-9 h-9 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-900/30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "18", height: "18", viewBox: "0 0 20 20", fill: "none", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M3 17 L15 4", stroke: "#3B1F00", strokeWidth: "2.5", strokeLinecap: "square" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "12", y: "2", width: "7", height: "3", rx: "0.5", fill: "white", opacity: "0.95" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M18 1 L20 3 L18 5 L16 3 Z", fill: "white", opacity: "0.85" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 5 L10 7 L12 7 Z", fill: "white", opacity: "0.7" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "4", cy: "16", r: "1.5", fill: "#FFD700", opacity: "0.9" })
+            ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-base sm:text-lg font-bold tracking-tight", children: [
+              "minegold",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400", children: ".defi" })
+            ] })
           ]
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      "div",
-      {
-        "data-ocid": "tx_history.filter_bar",
-        className: "mb-6 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex flex-wrap gap-4 items-center",
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 text-xs text-zinc-500 font-bold", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Funnel, { size: 12 }),
-            " Filters"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex flex-wrap gap-2", children: TYPE_FILTERS.map((f2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "button",
-            {
-              type: "button",
-              "data-ocid": `tx_history.type_filter.${f2.value}`,
-              onClick: () => setTypeFilter(f2.value),
-              className: `px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${typeFilter === f2.value ? "bg-yellow-500 text-black" : "bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700"}`,
-              children: f2.label
-            },
-            f2.value
-          )) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-px h-5 bg-zinc-800 hidden sm:block" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex flex-wrap gap-2", children: STATUS_FILTERS.map((f2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "button",
-            {
-              type: "button",
-              "data-ocid": `tx_history.status_filter.${f2.value}`,
-              onClick: () => setStatusFilter(f2.value),
-              className: `px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${statusFilter === f2.value ? "bg-yellow-500 text-black" : "bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700"}`,
-              children: f2.label
-            },
-            f2.value
-          )) })
-        ]
-      }
-    ),
-    isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { "data-ocid": "tx_history.loading_state", className: "space-y-3", children: [1, 2, 3, 4, 5].map((i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Skeleton,
-      {
-        className: "h-[72px] w-full rounded-xl bg-zinc-800/60"
-      },
-      i
-    )) }) : error ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      "div",
-      {
-        "data-ocid": "tx_history.error_state",
-        className: "rounded-2xl border border-red-500/30 bg-red-500/10 p-12 text-center",
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            CircleAlert,
-            {
-              size: 40,
-              className: "text-red-400 mx-auto mb-3 opacity-60"
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-400 text-sm font-medium mb-4", children: "Failed to load transaction history." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            Button,
-            {
-              variant: "outline",
-              size: "sm",
-              onClick: () => refetch(),
-              className: "border-red-500/30 text-red-400 hover:bg-red-500/10",
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 14, className: "mr-1.5" }),
-                " Try again"
-              ]
-            }
-          )
-        ]
-      }
-    ) : filteredTxs.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      "div",
-      {
-        "data-ocid": "tx_history.empty_state",
-        className: "rounded-2xl border border-zinc-800 bg-zinc-900 p-16 text-center",
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRightLeft, { size: 48, className: "text-zinc-700 mx-auto mb-4" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-bold text-zinc-300 mb-2", children: txs && txs.length > 0 ? "No matching transactions" : "No transactions yet" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-500 text-sm", children: txs && txs.length > 0 ? "Try adjusting your filters." : "Start by bridging some UNI to the refinery." })
-        ]
-      }
-    ) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-ocid": "tx_history.list", className: "space-y-3", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between mb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-zinc-500 font-semibold uppercase tracking-wider", children: [
-        filteredTxs.length,
-        " transaction",
-        filteredTxs.length !== 1 ? "s" : ""
-      ] }) }),
-      filteredTxs.map((tx) => /* @__PURE__ */ jsxRuntimeExports.jsx(TxRow, { tx }, tx.id))
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
+      user && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "button",
+        {
+          type: "button",
+          "data-ocid": "nav.profile.link",
+          onClick: onOpenProfile,
+          className: "hidden md:flex flex-col items-end mr-2 text-[10px] text-zinc-500 uppercase tracking-tighter hover:text-pink-400 transition-colors cursor-pointer",
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-bold text-pink-500", children: user.identityType }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+              user.principal.slice(0, 12),
+              "..."
+            ] })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative hidden sm:block", ref: treasuryPanelRef, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "button",
+          {
+            type: "button",
+            "data-ocid": "nav.treasury.button",
+            onClick: onToggleTreasury,
+            className: `flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${showTreasury ? "bg-yellow-500/10 border-yellow-500/40 text-yellow-300" : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"}`,
+            title: "Treasury Balances",
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { size: 12 }),
+              "Treasury"
+            ]
+          }
+        ),
+        showTreasury && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "div",
+          {
+            "data-ocid": "nav.treasury.panel",
+            className: "absolute right-0 top-full mt-2 w-64 bg-zinc-950 border border-zinc-700 rounded-2xl shadow-2xl z-50 p-4",
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-3", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-black text-zinc-500 uppercase tracking-widest", children: "Treasury Holdings" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-emerald-400 animate-pulse" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between bg-yellow-500/5 border border-yellow-500/20 rounded-xl p-3", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-6 h-6 rounded-full bg-yellow-500/20 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-black text-yellow-400", children: "S" }) }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-bold text-zinc-300", children: "sGLDT" })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "span",
+                    {
+                      "data-ocid": "treasury.panel.sgldt_balance",
+                      className: "text-[12px] font-black text-yellow-300 font-mono",
+                      children: displaySGLDTLoading ? "..." : (Number(displaySGLDTBalance) / 1e8).toLocaleString(
+                        void 0,
+                        {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2
+                        }
+                      )
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between bg-blue-500/5 border border-blue-500/20 rounded-xl p-3", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-black text-blue-400", children: "U" }) }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-bold text-zinc-300", children: "ckUNI" })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "span",
+                    {
+                      "data-ocid": "treasury.panel.ckuni_balance",
+                      className: "text-[12px] font-black text-blue-300 font-mono",
+                      children: displayCkUNILoading ? "..." : (Number(displayCkUNIBalance) / 1e18).toLocaleString(
+                        void 0,
+                        {
+                          minimumFractionDigits: 4,
+                          maximumFractionDigits: 4
+                        }
+                      )
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between bg-pink-500/5 border border-pink-500/20 rounded-xl p-3", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-6 h-6 rounded-full bg-pink-500/20 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-black text-pink-400", children: "U" }) }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-bold text-zinc-300", children: "UNI (ETH)" }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[8px] text-zinc-600 font-mono leading-none mt-0.5", children: "0x2258...B91FF" })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "span",
+                    {
+                      "data-ocid": "treasury.panel.eth_uni_balance",
+                      className: "text-[12px] font-black text-pink-300 font-mono",
+                      title: treasuryEthUniUnavailable ? "Balance temporarily unavailable" : void 0,
+                      children: treasuryEthUniLoading ? "..." : treasuryEthUniUnavailable ? "—" : treasuryEthUniBalance ?? "0.0000"
+                    }
+                  )
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[9px] text-zinc-600 mt-3 text-center", children: "Principal: c626g-iyaaa-aaaau-agpoa-cai" })
+            ]
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "hidden sm:flex items-center gap-4 text-[10px] font-bold text-zinc-500 mr-2", children: [
+        ethPrice && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+          "ETH",
+          " ",
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-blue-400", children: [
+            "$",
+            ethPrice.toLocaleString(void 0, {
+              maximumFractionDigits: 0
+            })
+          ] })
+        ] }),
+        uniPrice && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+          "UNI ",
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-white", children: [
+            "$",
+            uniPrice.toFixed(2)
+          ] })
+        ] }),
+        sgldtPrice && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+          "sGLDT",
+          " ",
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-yellow-400", children: [
+            "$",
+            sgldtPrice.toFixed(4)
+          ] })
+        ] })
+      ] }),
+      user && isAdmin && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          "data-ocid": "nav.admin.button",
+          onClick: onToggleAdmin,
+          className: "hidden sm:inline-flex w-11 h-11 items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400",
+          title: showAdmin ? "Back to Refinery" : "Admin Panel",
+          "aria-label": showAdmin ? "Back to Refinery" : "Open admin panel",
+          "aria-pressed": showAdmin,
+          children: showAdmin ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 18 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { size: 18 })
+        }
+      ),
+      user && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          "data-ocid": "nav.history.button",
+          onClick: onToggleHistory,
+          className: `hidden sm:inline-flex w-11 h-11 items-center justify-center border rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400 ${showHistory ? "bg-yellow-500/15 border-yellow-500/30 text-yellow-400" : "bg-zinc-900 hover:bg-zinc-800 border-zinc-800 text-zinc-400"}`,
+          title: "Transaction History",
+          "aria-label": "Transaction history",
+          "aria-pressed": showHistory,
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { size: 18 })
+        }
+      ),
+      user && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          "data-ocid": "nav.profile.button",
+          onClick: onOpenProfile,
+          className: "hidden sm:inline-flex w-11 h-11 items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 md:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400",
+          title: "Your Profile",
+          "aria-label": "Open your profile",
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleUserRound, { size: 18 })
+        }
+      ),
+      user && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          "data-ocid": "nav.logout.button",
+          onClick: onLogout,
+          className: "hidden sm:inline-flex w-11 h-11 items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400",
+          title: "Sign out",
+          "aria-label": "Sign out",
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(LogOut, { size: 18 })
+        }
+      ),
+      user && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative sm:hidden", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            "data-ocid": "nav.more.button",
+            onClick: () => setMoreOpen((v2) => !v2),
+            className: "w-11 h-11 inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400",
+            title: "Menu",
+            "aria-label": "More options",
+            "aria-expanded": moreOpen,
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(Ellipsis, { size: 18 })
+          }
+        ),
+        moreOpen && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "div",
+          {
+            "data-ocid": "nav.more.menu",
+            className: "absolute right-0 top-full mt-2 w-48 bg-zinc-950 border border-zinc-700 rounded-2xl shadow-2xl z-50 p-1.5",
+            children: [
+              isAdmin && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "nav.more.admin",
+                  onClick: () => {
+                    setMoreOpen(false);
+                    onToggleAdmin();
+                  },
+                  className: "w-full flex items-center gap-2.5 min-h-[44px] px-3 rounded-xl text-left text-xs font-semibold text-zinc-300 hover:bg-zinc-800",
+                  children: [
+                    showAdmin ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 15 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { size: 15 }),
+                    showAdmin ? "Back to Refinery" : "Admin panel"
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "nav.more.history",
+                  onClick: () => {
+                    setMoreOpen(false);
+                    onToggleHistory();
+                  },
+                  className: "w-full flex items-center gap-2.5 min-h-[44px] px-3 rounded-xl text-left text-xs font-semibold text-zinc-300 hover:bg-zinc-800",
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { size: 15 }),
+                    "Transaction history"
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "nav.more.profile",
+                  onClick: () => {
+                    setMoreOpen(false);
+                    onOpenProfile();
+                  },
+                  className: "w-full flex items-center gap-2.5 min-h-[44px] px-3 rounded-xl text-left text-xs font-semibold text-zinc-300 hover:bg-zinc-800",
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(CircleUserRound, { size: 15 }),
+                    "Your profile"
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "nav.more.logout",
+                  onClick: () => {
+                    setMoreOpen(false);
+                    onLogout();
+                  },
+                  className: "w-full flex items-center gap-2.5 min-h-[44px] px-3 rounded-xl text-left text-xs font-semibold text-red-400 hover:bg-zinc-800",
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(LogOut, { size: 15 }),
+                    "Sign out"
+                  ]
+                }
+              )
+            ]
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, {})
     ] })
   ] }) });
+}
+function RefineryShell({
+  dimmed,
+  displaySGLDTBalance,
+  displaySGLDTLoading,
+  displayCkUNIBalance,
+  displayCkUNILoading,
+  treasuryEthUniBalance,
+  treasuryEthUniLoading,
+  treasuryEthUniUnavailable,
+  uniAmount,
+  uniBalance,
+  inputDisabled,
+  outputDisplay,
+  onUniAmountChange,
+  ckuniLedgerCanisterId,
+  gasEstimate,
+  rateLine,
+  minReceivedDisplay,
+  children
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      className: `transition-all duration-700 ${dimmed ? "opacity-30 pointer-events-none scale-95 grayscale" : ""}`,
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "refinery-panel bg-zinc-900 border border-zinc-800 rounded-[2.5rem] overflow-hidden shadow-2xl", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 sm:p-10", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-3xl font-black bg-gradient-to-r from-white to-zinc-600 bg-clip-text text-transparent italic", children: "THE REFINERY" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-wrap items-center gap-3 mt-1.5", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" }),
+                  displaySGLDTLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-600 font-mono", children: "Loading treasury…" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "span",
+                    {
+                      className: "text-[11px] font-semibold font-mono text-emerald-400/90",
+                      "data-ocid": "refinery.treasury_balance",
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-emerald-300", children: formatTokenAmount(displaySGLDTBalance) }),
+                        " ",
+                        "sGLDT available"
+                      ]
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" }),
+                  displayCkUNILoading ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-600 font-mono", children: "Loading…" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "span",
+                    {
+                      className: "text-[11px] font-semibold font-mono text-blue-400/90",
+                      "data-ocid": "refinery.ckuni_balance",
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-blue-300", children: formatTokenAmount(displayCkUNIBalance, 18) }),
+                        " ",
+                        "ckUNI minted"
+                      ]
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-pink-400 shrink-0" }),
+                  treasuryEthUniLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-600 font-mono", children: "Loading…" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                    "span",
+                    {
+                      className: "text-[11px] font-semibold font-mono text-pink-400/90",
+                      "data-ocid": "refinery.eth_uni_balance",
+                      title: treasuryEthUniUnavailable ? "Balance temporarily unavailable" : void 0,
+                      children: [
+                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-pink-300", children: treasuryEthUniUnavailable ? "—" : treasuryEthUniBalance ?? "0.0000" }),
+                        " ",
+                        "UNI on ETH"
+                      ]
+                    }
+                  )
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mt-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-emerald-500 animate-pulse" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-500 text-xs font-bold uppercase tracking-widest", children: "UNI → sGLDT" })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-end gap-1", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "div",
+                {
+                  className: "bg-black border border-zinc-800 px-4 py-2 rounded-xl text-[10px] font-bold text-zinc-400",
+                  "data-ocid": "refinery.gas.estimate",
+                  title: "Live estimate for the two Ethereum transactions (approve + deposit) at the current gas price. Unused gas is refunded.",
+                  children: [
+                    "GAS: ",
+                    gasEstimate ?? "estimating…"
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[9px] text-blue-500/60 font-mono", children: "via ICP ERC-20 Minter" })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-5 gap-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "lg:col-span-2 group", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-black/50 p-6 sm:p-8 rounded-3xl border border-zinc-800 group-focus-within:border-pink-500/40 transition-all", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-4", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-black text-zinc-500 tracking-widest uppercase", children: "From (Ethereum)" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-pink-500 font-bold", children: "UNI" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "input",
+                {
+                  "data-ocid": "refinery.uni.input",
+                  type: "text",
+                  inputMode: "decimal",
+                  placeholder: "0.00",
+                  autoComplete: "off",
+                  autoCorrect: "off",
+                  autoCapitalize: "off",
+                  spellCheck: false,
+                  "aria-label": "UNI amount to swap",
+                  className: "bg-transparent text-3xl sm:text-4xl font-bold w-full outline-none text-white placeholder:text-zinc-600 focus-visible:placeholder:text-zinc-500 tabular-nums min-w-0",
+                  value: uniAmount,
+                  onChange: (e) => {
+                    let val = e.target.value.trim();
+                    if (!/^\d*\.?\d*$/.test(val)) return;
+                    if (val.startsWith(".")) val = `0${val}`;
+                    if (val === "" || val === "0" || val.endsWith(".")) {
+                      onUniAmountChange(val);
+                      return;
+                    }
+                    const raw = Number.parseFloat(val);
+                    if (Number.isNaN(raw) || raw < 0) {
+                      onUniAmountChange("");
+                      return;
+                    }
+                    const max = Number.parseFloat(uniBalance ?? "");
+                    if (Number.isFinite(max) && raw > max) {
+                      onUniAmountChange(uniBalance ?? "");
+                      return;
+                    }
+                    onUniAmountChange(val);
+                  },
+                  disabled: inputDisabled
+                }
+              ),
+              uniBalance && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => onUniAmountChange(uniBalance),
+                  className: "mt-2 px-3 py-2 text-xs text-pink-500 font-bold hover:underline hover:bg-pink-500/5 rounded-md -ml-1",
+                  children: [
+                    "MAX: ",
+                    uniBalance,
+                    " UNI"
+                  ]
+                }
+              ),
+              uniBalance && Number.parseFloat(uniAmount) > Number.parseFloat(uniBalance) && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1.5 text-xs text-red-400 font-semibold", children: "Exceeds your UNI balance" })
+            ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center lg:col-span-1 py-4 lg:py-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-14 h-14 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-yellow-500 shadow-xl", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRightLeft, { size: 24 }) }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "lg:col-span-2 group", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-yellow-500/[0.03] p-6 sm:p-8 rounded-3xl border border-yellow-500/10 transition-all", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-4", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-black text-yellow-600 tracking-widest uppercase", children: "To (ICP Network)" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-yellow-500 font-bold", children: "sGLDT" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-4xl font-bold text-yellow-500 truncate", children: outputDisplay }),
+              minReceivedDisplay && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "p",
+                {
+                  className: "mt-2 text-[11px] text-zinc-400",
+                  "data-ocid": "refinery.min_received",
+                  title: "The canister settles at its own on-chain rate, clamped within ±2% of this quote — this is the floor.",
+                  children: [
+                    "Minimum received:",
+                    " ",
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-500/90 font-semibold", children: minReceivedDisplay })
+                  ]
+                }
+              )
+            ] }) })
+          ] }),
+          rateLine && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "div",
+            {
+              className: "mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px]",
+              "data-ocid": "refinery.rate.provenance",
+              "aria-live": "polite",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold text-zinc-300", children: rateLine.rateDisplay }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600", children: "·" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: rateLine.provenance }),
+                rateLine.warning && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "basis-full text-center text-amber-400/90", children: rateLine.warning })
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-4 rounded-2xl border border-zinc-800 bg-black/30 px-4 py-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-2.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(ShieldCheck, { size: 14, className: "text-emerald-400 shrink-0 mt-0.5" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] leading-relaxed text-zinc-400", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-bold text-zinc-300", children: "Who holds your funds: " }),
+              "DFINITY's chain-key minter mints ckUNI",
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-200 font-semibold", children: "to your own ICP account" }),
+              " ",
+              "— never to us. The refinery takes custody only for the seconds of the atomic ckUNI→sGLDT swap, and a failed swap",
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-200 font-semibold", children: "refunds your ckUNI automatically" }),
+              ". No servers, no custodian — the whole app is a canister on the Internet Computer."
+            ] })
+          ] }) }),
+          children
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-black/40 border-t border-zinc-800 p-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-[10px] font-bold text-zinc-600 uppercase tracking-tighter", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Lock, { size: 10 }),
+            " ckUNI Ledger:",
+            " ",
+            ckuniLedgerCanisterId.slice(0, 20),
+            "..."
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "hidden sm:block text-zinc-800", children: "|" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { size: 10 }),
+            " ICP ERC-20 Minter: sv3dd-oaaaa..."
+          ] })
+        ] })
+      ] })
+    }
+  );
 }
 function safeBalance(val) {
   if (val === null || val === void 0 || val === "" || val === "NaN")
@@ -52099,10 +50824,555 @@ function safeBalance(val) {
   const n = typeof val === "number" ? val : Number.parseFloat(String(val));
   return Number.isNaN(n) || !Number.isFinite(n) ? "0.0000" : String(val);
 }
-const UNI_CONTRACT_ADDRESS = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984";
-const CKUNI_LEDGER_CANISTER_ID = "ilzky-ayaaa-aaaar-qahha-cai";
-const CKERC20_HELPER_CONTRACT = "0x6abDA0438307733FC299e9C229FD3cc074bD8cC0";
-const TREASURY_PRINCIPAL = "c626g-iyaaa-aaaau-agpoa-cai";
+function ProfileModal({
+  user,
+  ethAddress: ethAddress2,
+  ethBalance,
+  uniBalance,
+  sgldtBalance,
+  ethUsd,
+  uniUsd,
+  sgldtUsd,
+  onClose,
+  onTransferSgldt
+}) {
+  const [copiedPrincipal, setCopiedPrincipal] = reactExports.useState(false);
+  const [copiedEthAddress, setCopiedEthAddress] = reactExports.useState(false);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4",
+      "data-ocid": "profile.modal",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-md relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            "data-ocid": "profile.close_button",
+            onClick: onClose,
+            className: "absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 18 })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-br from-pink-600 to-pink-400 rounded-xl flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleUserRound, { size: 22, className: "text-white" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-bold", children: "Your Identity" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500 uppercase tracking-wider", children: user.identityType })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-900 border border-zinc-800 rounded-xl p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-wider mb-1", children: "Principal ID" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-mono text-zinc-300 break-all flex-1", children: user.principal }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "profile.copy.button",
+                  onClick: () => {
+                    navigator.clipboard.writeText(user.principal);
+                    setCopiedPrincipal(true);
+                    setTimeout(() => setCopiedPrincipal(false), 2e3);
+                  },
+                  className: "p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-400 transition-colors shrink-0",
+                  title: "Copy to clipboard",
+                  children: copiedPrincipal ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14, className: "text-green-400" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 14 })
+                }
+              )
+            ] })
+          ] }),
+          ethAddress2 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-900 border border-zinc-800 rounded-xl p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-wider mb-1", children: "ETH Wallet" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-mono text-zinc-300 break-all flex-1", children: ethAddress2 }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "profile.copy_eth.button",
+                  onClick: async () => {
+                    try {
+                      await navigator.clipboard.writeText(ethAddress2);
+                      setCopiedEthAddress(true);
+                      setTimeout(() => setCopiedEthAddress(false), 2e3);
+                    } catch {
+                      try {
+                        const ta = document.createElement("textarea");
+                        ta.value = ethAddress2;
+                        ta.style.position = "fixed";
+                        ta.style.opacity = "0";
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand("copy");
+                        document.body.removeChild(ta);
+                        setCopiedEthAddress(true);
+                        setTimeout(() => setCopiedEthAddress(false), 2e3);
+                      } catch {
+                        ue.error(
+                          "Could not copy — please copy manually"
+                        );
+                      }
+                    }
+                  },
+                  className: "p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-400 transition-colors shrink-0",
+                  title: "Copy ETH address",
+                  children: copiedEthAddress ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14, className: "text-green-400" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 14 })
+                }
+              )
+            ] })
+          ] }),
+          ethBalance !== null && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-900 border border-zinc-800 rounded-xl p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-wider mb-1", children: "ETH Balance" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-bold text-white", children: [
+              safeBalance(ethBalance),
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-blue-400", children: "ETH" }),
+              ethUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-zinc-500 ml-2", children: [
+                "(~$",
+                ethUsd,
+                ")"
+              ] })
+            ] })
+          ] }),
+          uniBalance !== null && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-900 border border-zinc-800 rounded-xl p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-wider mb-1", children: "UNI Balance" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-bold text-white", children: [
+              safeBalance(uniBalance),
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-pink-400", children: "UNI" }),
+              uniUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-zinc-500 ml-2", children: [
+                "(~$",
+                uniUsd,
+                ")"
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-900 border border-zinc-800 rounded-xl p-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-wider mb-1", children: "sGLDT Balance" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-bold text-white", children: [
+              sgldtBalance ?? "0.0000",
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-500", children: "sGLDT" }),
+              sgldtUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-zinc-500 ml-2", children: [
+                "(~$",
+                sgldtUsd,
+                ")"
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                type: "button",
+                "data-ocid": "profile.transfer_sgldt.button",
+                onClick: onTransferSgldt,
+                className: "mt-2 flex items-center gap-1 text-[10px] font-bold text-yellow-500 hover:text-yellow-400 transition-colors",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { size: 10 }),
+                  " Transfer sGLDT"
+                ]
+              }
+            )
+          ] })
+        ] })
+      ] })
+    }
+  );
+}
+const SGLDT_FEE_HEADROOM = 100000n;
+function RedeemModal({ identity, onClose, onRedeemed }) {
+  const [phase, setPhase] = reactExports.useState({ kind: "loading" });
+  const [amountStr, setAmountStr] = reactExports.useState("");
+  const loadPosition = reactExports.useCallback(async () => {
+    setPhase({ kind: "loading" });
+    const pos = await fetchMySGLDTPosition(identity);
+    if (!pos) {
+      setPhase({
+        kind: "error",
+        message: "Could not load your sGLDT position. Check your connection and try again.",
+        position: null
+      });
+      return;
+    }
+    setPhase({ kind: "input", position: pos });
+  }, [identity]);
+  reactExports.useEffect(() => {
+    void loadPosition();
+  }, [loadPosition]);
+  const position = phase.kind === "input" || phase.kind === "approving" || phase.kind === "redeeming" ? phase.position : phase.kind === "error" ? phase.position : null;
+  const amountE8s = parseDecimalToBigInt(amountStr, 8);
+  const rateNum = position ? Number(position.rate) / 1e8 : 0;
+  const estCkUNI = rateNum > 0 ? Number(amountE8s) / 1e8 / rateNum : 0;
+  const balanceNum = position ? Number(position.balance) / 1e8 : 0;
+  const treasuryCkUNINum = position ? Number(position.treasuryCkUNI) / 1e18 : 0;
+  const tooSmall = position != null && amountE8s > 0n && amountE8s < position.minRedeem;
+  const overBalance = position != null && amountE8s > position.balance;
+  const overLiquidity = position != null && rateNum > 0 && estCkUNI > treasuryCkUNINum;
+  const canSubmit = position != null && amountE8s > 0n && !tooSmall && !overBalance && !overLiquidity;
+  const submit = async () => {
+    if (!position || !canSubmit) return;
+    const rateHint = position.rate > 0n ? position.rate : null;
+    try {
+      if (position.allowance < amountE8s + SGLDT_FEE_HEADROOM) {
+        setPhase({ kind: "approving", position });
+        const approval = await approveSGLDTForRedeem({
+          identity,
+          amount: amountE8s + SGLDT_FEE_HEADROOM
+        });
+        if (!approval.ok) {
+          setPhase({ kind: "error", message: approval.error, position });
+          return;
+        }
+      }
+      setPhase({ kind: "redeeming", position });
+      const result = await redeemSGLDT({ identity, amount: amountE8s, rateHint });
+      if (!result.ok) {
+        setPhase({ kind: "error", message: result.error, position });
+        return;
+      }
+      setPhase({
+        kind: "done",
+        ckuni: result.ckuniPaid,
+        sgldt: amountE8s,
+        payBlock: result.blockIndex,
+        rate: result.rate
+      });
+      onRedeemed();
+    } catch (err) {
+      setPhase({
+        kind: "error",
+        message: err instanceof Error ? err.message : String(err),
+        position
+      });
+    }
+  };
+  const busy = phase.kind === "approving" || phase.kind === "redeeming";
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      "data-ocid": "wallet.redeem.modal",
+      className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-md relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            "data-ocid": "wallet.redeem.close_button",
+            onClick: onClose,
+            disabled: busy,
+            className: "absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 disabled:opacity-40",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 18 })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 rounded-xl flex items-center justify-center bg-pink-500/20", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRightLeft, { size: 20, className: "text-pink-400" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-bold text-white", children: "Redeem sGLDT" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500", children: "Swap back to ckUNI at the live oracle rate" })
+          ] })
+        ] }),
+        phase.kind === "loading" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center gap-2 py-10 text-zinc-400 text-sm", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 16, className: "animate-spin" }),
+          " Loading your position…"
+        ] }),
+        phase.kind === "done" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4 text-center py-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 40, className: "text-emerald-400 mx-auto" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-white font-bold", children: [
+              (Number(phase.ckuni) / 1e18).toFixed(6),
+              " ckUNI received"
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-zinc-400 mt-1", children: [
+              "for ",
+              (Number(phase.sgldt) / 1e8).toFixed(4),
+              " sGLDT — the ckUNI is in your own ICP account. Bridge it back to native UNI on Ethereum any time via the chain-key minter."
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-500 font-mono mt-2", children: [
+              "settled @ ",
+              (Number(phase.rate) / 1e8).toFixed(4),
+              " sGLDT/UNI ·",
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "a",
+                {
+                  href: "https://dashboard.internetcomputer.org/canister/ilzky-ayaaa-aaaar-qahha-cai",
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  className: "text-blue-400 hover:text-blue-300 underline underline-offset-2",
+                  title: "ckUNI ledger canister on the ICP dashboard",
+                  children: [
+                    "ckUNI ledger block #",
+                    phase.payBlock.toString()
+                  ]
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            GoldCTA,
+            {
+              "data-ocid": "wallet.redeem.done_button",
+              tone: "info",
+              size: "md",
+              trailingIcon: null,
+              onClick: onClose,
+              children: "Done"
+            }
+          )
+        ] }),
+        (phase.kind === "input" || phase.kind === "approving" || phase.kind === "redeeming" || phase.kind === "error") && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+          position && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 grid grid-cols-2 gap-3 text-xs", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-0.5", children: "Your sGLDT" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-yellow-500 font-bold", children: balanceNum.toFixed(4) })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-0.5", children: "Rate" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-zinc-200 font-bold", children: rateNum > 0 ? `${rateNum.toFixed(4)} sGLDT/UNI` : "—" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "col-span-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-0.5", children: "Treasury liquidity" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-zinc-300 font-bold", children: [
+                treasuryCkUNINum.toFixed(6),
+                " ckUNI available"
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "label",
+              {
+                htmlFor: "redeem-amount",
+                className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest block mb-1.5",
+                children: "Amount (sGLDT)"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "input",
+                {
+                  id: "redeem-amount",
+                  "data-ocid": "wallet.redeem.amount_input",
+                  type: "text",
+                  inputMode: "decimal",
+                  value: amountStr,
+                  disabled: busy,
+                  onChange: (e) => setAmountStr(e.target.value),
+                  placeholder: "0.0",
+                  className: "flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white font-mono text-sm focus:border-yellow-500/50 focus:outline-none disabled:opacity-50"
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "wallet.redeem.max_button",
+                  disabled: busy || !position,
+                  onClick: () => setAmountStr(balanceNum > 0 ? String(balanceNum) : ""),
+                  className: "px-3 rounded-xl border border-zinc-800 bg-zinc-900 text-[10px] font-black text-yellow-500 uppercase tracking-widest hover:bg-zinc-800 disabled:opacity-40",
+                  children: "Max"
+                }
+              )
+            ] }),
+            amountE8s > 0n && rateNum > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-zinc-400 mt-1.5", children: [
+              "≈ ",
+              estCkUNI.toFixed(6),
+              " ckUNI"
+            ] }),
+            tooSmall && position && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-amber-400 mt-1.5", children: [
+              "Minimum redeem is ",
+              (Number(position.minRedeem) / 1e8).toFixed(1),
+              " sGLDT."
+            ] }),
+            overBalance && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-red-400 mt-1.5", children: "That's more sGLDT than you hold." }),
+            overLiquidity && !overBalance && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-amber-400 mt-1.5", children: "The treasury doesn't hold that much ckUNI right now — try a smaller amount." })
+          ] }),
+          phase.kind === "error" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-[11px] text-red-300 leading-relaxed", children: phase.message }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            GoldCTA,
+            {
+              "data-ocid": "wallet.redeem.submit_button",
+              tone: "info",
+              size: "md",
+              trailingIcon: null,
+              disabled: busy || !canSubmit,
+              onClick: () => void submit(),
+              children: phase.kind === "approving" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "inline-flex items-center gap-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 14, className: "animate-spin" }),
+                " Approving sGLDT…"
+              ] }) : phase.kind === "redeeming" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "inline-flex items-center gap-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 14, className: "animate-spin" }),
+                " Redeeming…"
+              ] }) : "Redeem to ckUNI"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 leading-relaxed", children: "Two Internet Identity signatures: one approval letting the refinery pull your sGLDT, then the atomic swap. If the payout fails for any reason, your sGLDT is refunded automatically." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-500 leading-relaxed", children: [
+            "Prefer the gold itself? sGLDT unwraps 1:1 to GLDT at sVault, and GLDT is redeemable for physical gold via Gold DAO —",
+            " ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "a",
+              {
+                href: "https://gldt.org",
+                target: "_blank",
+                rel: "noopener noreferrer",
+                className: "text-blue-400 hover:text-blue-300 underline underline-offset-2",
+                children: "gldt.org"
+              }
+            ),
+            "."
+          ] })
+        ] })
+      ] })
+    }
+  );
+}
+const TOKEN_LABEL = {
+  eth: "ETH",
+  uni: "UNI",
+  sgldt: "sGLDT"
+};
+function TransferModal({
+  token,
+  to,
+  amount,
+  loading,
+  onToChange,
+  onAmountChange,
+  onClose,
+  onSubmit
+}) {
+  const label = TOKEN_LABEL[token];
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      "data-ocid": "wallet.transfer.modal",
+      className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-md relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            "data-ocid": "wallet.transfer.close_button",
+            onClick: onClose,
+            className: "absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 18 })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              className: `w-12 h-12 rounded-xl flex items-center justify-center ${token === "eth" ? "bg-blue-500/20" : token === "uni" ? "bg-pink-500/20" : "bg-yellow-500/20"}`,
+              children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Send,
+                {
+                  size: 20,
+                  className: token === "eth" ? "text-blue-400" : token === "uni" ? "text-pink-400" : "text-yellow-500"
+                }
+              )
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-xl font-bold text-white", children: [
+              "Transfer ",
+              label
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500", children: token === "sgldt" ? "ICP Principal required" : "Ethereum address required" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "label",
+              {
+                htmlFor: "transfer-address",
+                className: "text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block",
+                children: token === "sgldt" ? "Recipient ICP Principal" : "Recipient ETH Address"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                id: "transfer-address",
+                type: "text",
+                "data-ocid": "wallet.transfer.address_input",
+                value: to,
+                onChange: (e) => onToChange(e.target.value),
+                placeholder: token === "sgldt" ? "aaaaa-bbbbb-ccccc..." : "0x...",
+                className: "w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500/60 text-white placeholder:text-zinc-600 rounded-xl px-4 py-3 text-sm font-mono outline-none transition-colors"
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "label",
+              {
+                htmlFor: "transfer-amount",
+                className: "text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block",
+                children: [
+                  "Amount (",
+                  label,
+                  ")"
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                id: "transfer-amount",
+                type: "number",
+                "data-ocid": "wallet.transfer.amount_input",
+                value: amount,
+                min: "0",
+                step: "0.0001",
+                onChange: (e) => onAmountChange(e.target.value),
+                placeholder: "0.0000",
+                className: "w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500/60 text-white placeholder:text-zinc-600 rounded-xl px-4 py-3 text-sm font-mono outline-none transition-colors"
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            GoldCTA,
+            {
+              "data-ocid": "wallet.transfer.submit_button",
+              onClick: onSubmit,
+              disabled: !to || !amount || Number.parseFloat(amount) <= 0,
+              loading,
+              size: "md",
+              leadingIcon: /* @__PURE__ */ jsxRuntimeExports.jsx(Send, {}),
+              trailingIcon: null,
+              children: loading ? "Submitting…" : "Confirm Transfer"
+            }
+          )
+        ] })
+      ] })
+    }
+  );
+}
+function UnclaimedDepositsBanner({ count, claiming, onClaim }) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6 rounded-3xl border border-yellow-500/40 bg-yellow-500/10 backdrop-blur p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-500", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "shrink-0 w-12 h-12 rounded-2xl bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { className: "w-6 h-6 text-yellow-400" }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-black text-yellow-300 mb-1", children: count === 1 ? "1 unclaimed deposit ready to mint sGLDT" : `${count} unclaimed deposits ready to mint sGLDT` }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-yellow-200/70", children: "Your UNI deposit is confirmed on Ethereum. Claim your sGLDT now — this takes ~5 seconds." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      GoldCTA,
+      {
+        "data-ocid": "deposits.claim.button",
+        loading: claiming,
+        onClick: onClaim,
+        size: "md",
+        fullWidth: false,
+        trailingIcon: null,
+        className: "w-full sm:w-auto",
+        children: claiming ? "Claiming…" : "Claim sGLDT"
+      }
+    )
+  ] });
+}
 const StatCard = ({
   title,
   value,
@@ -52123,6 +51393,635 @@ const StatCard = ({
     ]
   }
 );
+function WalletSection({
+  ethAddress: ethAddress2,
+  walletConnectLog,
+  walletConnectionError,
+  balanceRefreshing,
+  ethBalanceDiag,
+  uniBalanceDiag,
+  ethBalance,
+  uniBalance,
+  sgldtBalance,
+  ethUsd,
+  uniUsd,
+  sgldtUsd,
+  liveRate,
+  uniPrice,
+  sgldtPrice,
+  onOpenConnect,
+  onRefreshBalances,
+  onOpenTransfer,
+  onOpenRedeem
+}) {
+  if (!ethAddress2) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-12 bg-gradient-to-br from-zinc-900 to-black border border-zinc-800 p-8 rounded-[2rem]", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col md:flex-row items-center justify-between gap-8", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-md text-center md:text-left", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-2 justify-center md:justify-start", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-yellow-400 animate-pulse" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-black text-yellow-500 uppercase tracking-widest", children: "Step 1 of 2" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold mb-2", children: "Connect Ethereum Wallet" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-500 text-sm", children: "Link MetaMask or Brave Wallet to authorize your UNI deposit into the gold refinery." })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          GoldCTA,
+          {
+            "data-ocid": "wallet.connect.primary_button",
+            onClick: onOpenConnect,
+            size: "md",
+            fullWidth: false,
+            leadingIcon: /* @__PURE__ */ jsxRuntimeExports.jsx(Wallet, {}),
+            trailingIcon: null,
+            className: "w-full md:w-auto md:px-10",
+            children: "Connect Wallet"
+          }
+        )
+      ] }),
+      walletConnectLog.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "details",
+        {
+          className: "mt-4 rounded-2xl border border-zinc-800 bg-black/40 overflow-hidden group",
+          open: !!walletConnectionError,
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("summary", { className: "cursor-pointer select-none list-none flex items-center justify-between gap-2 px-4 py-2.5 text-[10px] font-black text-zinc-500 uppercase tracking-widest hover:text-zinc-300 transition-colors", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Connection diagnostics" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[9px] font-normal text-zinc-600 normal-case tracking-normal", children: [
+                walletConnectLog.length,
+                " ",
+                walletConnectLog.length === 1 ? "entry" : "entries",
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 inline-block transition-transform group-open:rotate-90", children: "›" })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border-t border-zinc-800 px-4 py-3 space-y-1 max-h-40 overflow-y-auto font-mono text-[11px]", children: walletConnectLog.map((line, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "div",
+              {
+                className: "text-zinc-400 break-all",
+                children: line
+              },
+              `${i}-${line.slice(0, 20)}`
+            )) })
+          ]
+        }
+      )
+    ] });
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    walletConnectionError && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "div",
+      {
+        "data-ocid": "wallet.connection_error",
+        className: "mb-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl px-4 py-3 flex items-start gap-3 text-xs text-amber-400 font-medium",
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { size: 14, className: "shrink-0 mt-0.5" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: walletConnectionError }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                type: "button",
+                disabled: balanceRefreshing,
+                onClick: onRefreshBalances,
+                className: "mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-[11px] font-bold disabled:opacity-50",
+                children: [
+                  balanceRefreshing ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 10, className: "animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRightLeft, { size: 10 }),
+                  "Retry balance fetch"
+                ]
+              }
+            )
+          ] })
+        ]
+      }
+    ),
+    (ethBalanceDiag || uniBalanceDiag) && /* @__PURE__ */ jsxRuntimeExports.jsxs("details", { className: "mb-3 text-[10px] font-mono", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("summary", { className: "cursor-pointer text-zinc-500 hover:text-zinc-400 select-none", children: [
+        "▸ Balance path diagnostics",
+        (ethBalanceDiag == null ? void 0 : ethBalanceDiag.source) ? ` · ETH=${ethBalanceDiag.source}` : "",
+        (uniBalanceDiag == null ? void 0 : uniBalanceDiag.source) ? ` · UNI=${uniBalanceDiag.source}` : ""
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 bg-zinc-900/60 border border-zinc-800 rounded-lg p-3 text-zinc-400 space-y-1", children: [
+        ethBalanceDiag && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: "ETH · " }),
+          ["wallet", "rpc", "canister"].map((k2) => {
+            const o = ethBalanceDiag.outcomes[k2];
+            const color = o === "ok" ? "text-emerald-400" : o === "null" ? "text-zinc-500" : o === "err" ? "text-red-400" : "text-zinc-700";
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: `mr-2 ${color}`, children: [
+              k2,
+              "=",
+              o ?? "…"
+            ] }, k2);
+          })
+        ] }),
+        uniBalanceDiag && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: "UNI · " }),
+          ["wallet", "rpc", "canister"].map((k2) => {
+            const o = uniBalanceDiag.outcomes[k2];
+            const color = o === "ok" ? "text-emerald-400" : o === "null" ? "text-zinc-500" : o === "err" ? "text-red-400" : "text-zinc-700";
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: `mr-2 ${color}`, children: [
+              k2,
+              "=",
+              o ?? "…"
+            ] }, k2);
+          })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            disabled: balanceRefreshing,
+            onClick: onRefreshBalances,
+            className: "mt-2 w-full py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-bold disabled:opacity-50",
+            children: balanceRefreshing ? "Refreshing…" : "Refresh now"
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "div",
+      {
+        "data-ocid": "wallet.stats.card",
+        className: "mb-6 bg-gradient-to-br from-zinc-900 via-zinc-900 to-black border border-yellow-500/20 rounded-[2rem] overflow-hidden shadow-xl shadow-yellow-500/5",
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-6 pt-5 pb-3 border-b border-zinc-800/70 flex items-center gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Wallet, { size: 14, className: "text-yellow-500" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-black text-yellow-500 uppercase tracking-widest", children: "Connected Wallet" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "ml-auto text-[10px] font-mono text-zinc-600", children: [
+              ethAddress2.slice(0, 6),
+              "...",
+              ethAddress2.slice(-4)
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 sm:grid-cols-4 divide-x divide-zinc-800/70", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-5", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2", children: "ETH Balance" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xl font-black text-blue-400", children: ethBalance !== null ? safeBalance(ethBalance) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600", children: "—" }) }),
+              ethUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-zinc-400 mt-1", children: [
+                "$",
+                ethUsd,
+                " USD"
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "wallet.eth.transfer_button",
+                  onClick: () => onOpenTransfer("eth"),
+                  className: "mt-1 -mx-2 flex items-center gap-1 min-h-[44px] px-2 text-[11px] font-bold text-blue-400 hover:text-blue-300 transition-colors",
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { size: 11 }),
+                    " Transfer ETH"
+                  ]
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-5", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2", children: "UNI Balance" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xl font-black text-pink-400", children: uniBalance !== null ? safeBalance(uniBalance) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600", children: "—" }) }),
+              uniUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-zinc-400 mt-1", children: [
+                "$",
+                uniUsd,
+                " USD"
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "wallet.uni.transfer_button",
+                  onClick: () => onOpenTransfer("uni"),
+                  className: "mt-1 -mx-2 flex items-center gap-1 min-h-[44px] px-2 text-[11px] font-bold text-pink-400 hover:text-pink-300 transition-colors",
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { size: 11 }),
+                    " Transfer UNI"
+                  ]
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-5", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2", children: "sGLDT Balance" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xl font-black text-yellow-500", children: sgldtBalance ?? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600", children: "—" }) }),
+              sgldtUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-zinc-400 mt-1", children: [
+                "$",
+                sgldtUsd,
+                " USD"
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-1 -mx-2 flex flex-wrap items-center gap-x-2 gap-y-0", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  "button",
+                  {
+                    type: "button",
+                    "data-ocid": "wallet.sgldt.transfer_button",
+                    onClick: () => onOpenTransfer("sgldt"),
+                    className: "flex items-center gap-1 min-h-[44px] px-2 text-[11px] font-bold text-yellow-500 hover:text-yellow-400 transition-colors",
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { size: 11 }),
+                      " Transfer"
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  "button",
+                  {
+                    type: "button",
+                    "data-ocid": "wallet.sgldt.redeem_button",
+                    onClick: onOpenRedeem,
+                    className: "flex items-center gap-1 min-h-[44px] px-2 text-[11px] font-bold text-pink-400 hover:text-pink-300 transition-colors",
+                    children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRightLeft, { size: 11 }),
+                      " Redeem to ckUNI"
+                    ]
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-5", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2", children: "Exchange Rate" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xl font-black text-yellow-400", children: liveRate > 0 ? liveRate.toFixed(4) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600", children: "—" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-zinc-400 mt-1", children: "sGLDT per UNI" })
+            ] })
+          ] })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        StatCard,
+        {
+          title: "Linked Address",
+          value: `${ethAddress2.slice(0, 6)}...${ethAddress2.slice(-4)}`,
+          sub: "Ethereum Mainnet",
+          icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { className: "text-pink-500" })
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        StatCard,
+        {
+          title: "UNI Balance",
+          value: uniBalance !== null ? safeBalance(uniBalance) : "...",
+          sub: uniUsd ? `≈ $${uniUsd} USD` : "Uniswap ERC-20",
+          icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { className: "text-pink-400" })
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        StatCard,
+        {
+          title: "Exchange Rate",
+          value: liveRate.toFixed(4),
+          sub: `UNI $${(uniPrice == null ? void 0 : uniPrice.toFixed(2)) ?? "—"} / sGLDT $${(sgldtPrice == null ? void 0 : sgldtPrice.toFixed(4)) ?? "—"}`,
+          icon: /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRightLeft, { className: "text-zinc-500" })
+        }
+      )
+    ] })
+  ] });
+}
+function timeAgo(ms, now2) {
+  const delta = Math.max(0, now2 - ms);
+  const sec = Math.floor(delta / 1e3);
+  if (sec < 60) return `${sec}s ago`;
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min}m ago`;
+  const hr = Math.floor(min / 60);
+  return `${hr}h ago`;
+}
+function duration(step) {
+  const delta = Math.max(0, step.updatedAt - step.startedAt);
+  if (delta < 1e3) return "<1s";
+  const sec = Math.floor(delta / 1e3);
+  if (sec < 60) return `${sec}s`;
+  const min = Math.floor(sec / 60);
+  const s = sec % 60;
+  return s === 0 ? `${min}m` : `${min}m${s}s`;
+}
+function TransactionTimeline({ steps, defaultOpen = false, onClear }) {
+  const [open, setOpen] = reactExports.useState(defaultOpen);
+  const [now2, setNow] = reactExports.useState(() => Date.now());
+  reactExports.useEffect(() => {
+    if (!open) return;
+    const id = setInterval(() => setNow(Date.now()), 1e4);
+    return () => clearInterval(id);
+  }, [open]);
+  if (steps.length === 0) return null;
+  const activeIdx = steps.findIndex((s) => s.status === "active");
+  const errorIdx = steps.findIndex((s) => s.status === "error");
+  const summary = errorIdx >= 0 ? `Stuck at: ${steps[errorIdx].label}` : activeIdx >= 0 ? `Current: ${steps[activeIdx].label}` : steps.every((s) => s.status === "done") ? "Completed" : "In progress";
+  const doneCount = steps.filter((s) => s.status === "done").length;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-zinc-900/40 overflow-hidden", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "button",
+      {
+        type: "button",
+        onClick: () => setOpen((v2) => !v2),
+        className: "w-full flex items-center justify-between gap-3 px-4 py-3 text-left hover:bg-zinc-800/30 transition-colors",
+        "aria-expanded": open,
+        "data-ocid": "timeline.toggle",
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 min-w-0", children: [
+            open ? /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { size: 14, className: "text-zinc-400 shrink-0" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14, className: "text-zinc-400 shrink-0" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-bold uppercase tracking-widest text-zinc-300", children: "Transaction timeline" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[11px] text-zinc-500 truncate", children: [
+                summary,
+                " · ",
+                doneCount,
+                "/",
+                steps.length,
+                " complete"
+              ] })
+            ] })
+          ] }),
+          onClear && (steps.every((s) => s.status === "done") || errorIdx >= 0) && /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              onClick: (e) => {
+                e.stopPropagation();
+                onClear();
+              },
+              className: "shrink-0 text-[10px] uppercase tracking-wider text-zinc-500 hover:text-zinc-300 px-2 py-1 rounded",
+              "data-ocid": "timeline.clear",
+              children: "Clear"
+            }
+          )
+        ]
+      }
+    ),
+    open && /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { className: "relative border-t border-zinc-800 px-4 py-3 space-y-3", children: steps.map((s, i) => {
+      const Icon2 = s.status === "done" ? CircleCheck : s.status === "error" ? CircleX : s.status === "active" ? LoaderCircle : Clock;
+      const iconColor = s.status === "done" ? "text-emerald-400" : s.status === "error" ? "text-red-400" : s.status === "active" ? "text-yellow-400" : "text-zinc-500";
+      const isLast = i === steps.length - 1;
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex gap-3 relative", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "shrink-0 flex flex-col items-center", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Icon2,
+            {
+              size: 16,
+              className: `${iconColor} ${s.status === "active" ? "animate-spin" : ""}`
+            }
+          ),
+          !isLast && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-px flex-1 bg-zinc-800 mt-1" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0 pb-1", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-semibold text-zinc-200 break-words", children: s.label }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-500 font-mono shrink-0 pt-0.5", children: timeAgo(s.updatedAt, now2) })
+          ] }),
+          s.detail && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-zinc-400 font-mono break-all mt-0.5", children: s.detail }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-600 mt-0.5", children: [
+            "took ",
+            duration(s)
+          ] })
+        ] })
+      ] }, s.id);
+    }) })
+  ] });
+}
+function computeRefineAmounts(balance, requested, fee) {
+  const spendable = balance > 2n * fee ? balance - 2n * fee : 0n;
+  const refineAmount = requested < spendable ? requested : spendable;
+  return { refineAmount, approveAmount: refineAmount + fee };
+}
+const POLL_MS = 6e3;
+const WATCH_TIMEOUT_MS = 40 * 6e4;
+function useRefineFlow(identity) {
+  const [state, setState] = reactExports.useState({ kind: "idle" });
+  const [position, setPosition] = reactExports.useState(null);
+  const stateRef = reactExports.useRef(state);
+  stateRef.current = state;
+  const timerRef = reactExports.useRef(null);
+  const startedAtRef = reactExports.useRef(0);
+  const busyRef = reactExports.useRef(false);
+  const stopPolling = reactExports.useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+  reactExports.useEffect(() => stopPolling, [stopPolling]);
+  const refineNow = reactExports.useCallback(
+    async (requested, rateHint) => {
+      if (busyRef.current) return;
+      busyRef.current = true;
+      stopPolling();
+      try {
+        const fee = await fetchCkUNIFee();
+        const pos = await fetchMyCkUNIPosition(identity);
+        if (!pos) {
+          setState({
+            kind: "failed",
+            error: "Could not read your ckUNI position. Check your connection and try again.",
+            recoverable: true
+          });
+          return;
+        }
+        setPosition(pos);
+        const { refineAmount: amount, approveAmount } = computeRefineAmounts(
+          pos.balance,
+          requested,
+          fee
+        );
+        if (amount < pos.minRefine) {
+          setState({
+            kind: "failed",
+            error: `Not enough ckUNI to refine after ledger fees. You need at least ${(Number(pos.minRefine + 2n * fee) / 1e18).toFixed(4)} ckUNI; your balance is ${(Number(pos.balance) / 1e18).toFixed(4)}.`,
+            recoverable: true
+          });
+          return;
+        }
+        if (pos.allowance < approveAmount) {
+          setState({ kind: "approving", target: amount });
+          const approval = await approveCkUNIForRefinery({
+            identity,
+            amount: approveAmount
+          });
+          if (!approval.ok) {
+            setState({ kind: "failed", error: approval.error, recoverable: true });
+            return;
+          }
+        }
+        setState({ kind: "refining", target: amount });
+        const result = await refineCkUNI({ identity, amount, rateHint });
+        if (!result.ok) {
+          setState({ kind: "failed", error: result.error, recoverable: true });
+          return;
+        }
+        setState({
+          kind: "done",
+          sgldt: result.sgldtPaid,
+          refineId: result.refineId,
+          payBlock: result.blockIndex,
+          settledRate: result.rate
+        });
+      } catch (err) {
+        setState({
+          kind: "failed",
+          error: err instanceof Error ? err.message : String(err),
+          recoverable: true
+        });
+      } finally {
+        busyRef.current = false;
+      }
+    },
+    [identity, stopPolling]
+  );
+  const beginWatch = reactExports.useCallback(
+    (target, rateHint, startedAtMs) => {
+      stopPolling();
+      startedAtRef.current = startedAtMs ?? Date.now();
+      setState({ kind: "waiting_mint", target, observed: 0n, elapsedMs: 0 });
+      const tick = async () => {
+        const current = stateRef.current;
+        if (current.kind !== "waiting_mint") return;
+        const pos = await fetchMyCkUNIPosition(identity);
+        if (pos) setPosition(pos);
+        const elapsedMs = Date.now() - startedAtRef.current;
+        const observed = (pos == null ? void 0 : pos.balance) ?? 0n;
+        if (observed >= target && target > 0n) {
+          void refineNow(target, rateHint);
+          return;
+        }
+        if (elapsedMs > WATCH_TIMEOUT_MS) {
+          stopPolling();
+          setState({
+            kind: "failed",
+            error: "The chain-key minter hasn't credited your ckUNI yet. Your deposit is safe on Ethereum and the ckUNI will arrive in your account — come back and refine it any time.",
+            recoverable: true
+          });
+          return;
+        }
+        setState({ kind: "waiting_mint", target, observed, elapsedMs });
+      };
+      void tick();
+      timerRef.current = setInterval(() => void tick(), POLL_MS);
+    },
+    [identity, refineNow, stopPolling]
+  );
+  const refreshPosition = reactExports.useCallback(async () => {
+    const pos = await fetchMyCkUNIPosition(identity);
+    if (pos) setPosition(pos);
+    return pos;
+  }, [identity]);
+  const reset = reactExports.useCallback(() => {
+    stopPolling();
+    busyRef.current = false;
+    setState({ kind: "idle" });
+  }, [stopPolling]);
+  const progress = (() => {
+    switch (state.kind) {
+      case "waiting_mint": {
+        const t = Math.min(1, state.elapsedMs / (3 * 6e4));
+        return 0.08 + t * 0.72;
+      }
+      case "approving":
+        return 0.86;
+      case "refining":
+        return 0.94;
+      case "done":
+        return 1;
+      default:
+        return 0;
+    }
+  })();
+  return { state, position, progress, beginWatch, refineNow, refreshPosition, reset };
+}
+const TTL_MS = 60 * 6e4;
+const key = (principalSlug) => `minegold_refine_watch_${principalSlug}`;
+function writeRefineWatch(principalSlug, record) {
+  try {
+    localStorage.setItem(key(principalSlug), JSON.stringify(record));
+  } catch {
+  }
+}
+function clearRefineWatch(principalSlug) {
+  try {
+    localStorage.removeItem(key(principalSlug));
+  } catch {
+  }
+}
+function readRefineWatch(principalSlug) {
+  try {
+    const raw = localStorage.getItem(key(principalSlug));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (typeof parsed.amountWei !== "string" || typeof parsed.startedAt !== "number" || Date.now() - parsed.startedAt > TTL_MS) {
+      clearRefineWatch(principalSlug);
+      return null;
+    }
+    BigInt(parsed.amountWei);
+    if (parsed.rateHint != null) BigInt(parsed.rateHint);
+    return {
+      txHash: typeof parsed.txHash === "string" ? parsed.txHash : null,
+      amountWei: parsed.amountWei,
+      rateHint: typeof parsed.rateHint === "string" ? parsed.rateHint : null,
+      startedAt: parsed.startedAt
+    };
+  } catch {
+    clearRefineWatch(principalSlug);
+    return null;
+  }
+}
+const parse = (pathname) => {
+  const segs = pathname.replace(/^\/+|\/+$/g, "").split("/");
+  switch (segs[0]) {
+    case "portfolio":
+      return { route: "portfolio", params: {} };
+    case "brave":
+      return { route: "brave", params: {} };
+    case "history":
+      return { route: "history", params: {} };
+    case "admin":
+      return { route: "admin", params: {} };
+    case "proof":
+      return { route: "proof", params: {} };
+    case "receipt":
+      return { route: "receipt", params: { id: segs[1] || void 0 } };
+    default:
+      return { route: "refinery", params: {} };
+  }
+};
+const toPath = (r2, params) => {
+  if (r2 === "refinery") return "/";
+  if (r2 === "receipt" && (params == null ? void 0 : params.id)) return `/receipt/${params.id}`;
+  return `/${r2}`;
+};
+const ROUTE_EVENT = "minegold:navigate";
+function usePathRoute() {
+  const [match, setMatch] = reactExports.useState(() => parse(window.location.pathname));
+  reactExports.useEffect(() => {
+    const onChange = () => setMatch(parse(window.location.pathname));
+    window.addEventListener("popstate", onChange);
+    window.addEventListener(ROUTE_EVENT, onChange);
+    return () => {
+      window.removeEventListener("popstate", onChange);
+      window.removeEventListener(ROUTE_EVENT, onChange);
+    };
+  }, []);
+  const navigate = reactExports.useCallback((r2, params) => {
+    const href = toPath(r2, params);
+    if (href === window.location.pathname) return;
+    window.history.pushState(null, "", href + window.location.search);
+    window.scrollTo(0, 0);
+    window.dispatchEvent(new Event(ROUTE_EVENT));
+  }, []);
+  return [match.route, navigate, match.params];
+}
+const AdminPage = reactExports.lazy(
+  () => __vitePreload(() => import("./AdminPage-Q5joaJem.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+);
+const BankingBraveHome = reactExports.lazy(
+  () => __vitePreload(() => import("./BankingBraveHome-BdEy7juG.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+);
+const MinegoldBraveSoon = reactExports.lazy(
+  () => __vitePreload(() => import("./MinegoldBraveSoon-Z-PLOyH7.js"), true ? [] : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+);
+const TransactionHistoryPage = reactExports.lazy(
+  () => __vitePreload(() => import("./TransactionHistoryPage-6qeRQ3gP.js"), true ? __vite__mapDeps([2,1]) : void 0).then((m2) => ({
+    default: m2.TransactionHistoryPage
+  }))
+);
+const PageFallback = () => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-[40vh] flex items-center justify-center text-xs text-zinc-500 animate-pulse", children: "Loading…" });
+const UNI_CONTRACT_ADDRESS = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984";
+const CKUNI_LEDGER_CANISTER_ID = "ilzky-ayaaa-aaaar-qahha-cai";
+const CKERC20_HELPER_CONTRACT = "0x6abDA0438307733FC299e9C229FD3cc074bD8cC0";
 function isValidHex(val) {
   return typeof val === "string" && /^0x[0-9a-fA-F]+$/i.test(val);
 }
@@ -52305,6 +52204,7 @@ async function fetchUniBalanceRaw(address) {
   );
 }
 function App() {
+  var _a3;
   const { actor: actorRaw } = useBackendActor();
   const actor = actorRaw;
   const {
@@ -52320,6 +52220,7 @@ function App() {
     identity
   } : null;
   const isLoggingIn = iiIsLoggingIn;
+  const refineFlow = useRefineFlow(identity);
   const [ethAddress2, setEthAddress] = reactExports.useState(null);
   const [uniAmount, setUniAmount] = reactExports.useState("");
   const [phase, setPhase] = reactExports.useState("idle");
@@ -52330,27 +52231,15 @@ function App() {
   const [walletConnectionError, setWalletConnectionError] = reactExports.useState(null);
   const [connectModalOpen, setConnectModalOpen] = reactExports.useState(false);
   const [liveRate, setLiveRate] = reactExports.useState(0);
-  const [showAdmin, setShowAdmin] = reactExports.useState(false);
-  const [showHistory, setShowHistory] = reactExports.useState(false);
-  const [topView, setTopView] = reactExports.useState(() => {
-    try {
-      const v2 = localStorage.getItem("banking_brave_view");
-      if (v2 === "uni" || v2 === "brave-soon" || v2 === "home") return v2;
-      return localStorage.getItem("banking_brave_entered_minegold") === "1" ? "uni" : "home";
-    } catch {
-      return "home";
-    }
-  });
-  const setTopViewPersisted = (v2) => {
-    setTopView(v2);
-    try {
-      localStorage.setItem("banking_brave_view", v2);
-    } catch {
-    }
-  };
-  const enterMinegoldUni = () => setTopViewPersisted("uni");
-  const enterMinegoldBrave = () => setTopViewPersisted("brave-soon");
-  const backToBankingBrave = () => setTopViewPersisted("home");
+  const [route, navigate] = usePathRoute();
+  const topView = route === "portfolio" ? "home" : route === "brave" ? "brave-soon" : "uni";
+  const showAdmin = route === "admin";
+  const showHistory = route === "history";
+  const setShowAdmin = (v2) => navigate(v2 ? "admin" : "refinery");
+  const setShowHistory = (v2) => navigate(v2 ? "history" : "refinery");
+  const enterMinegoldUni = () => navigate("refinery");
+  const enterMinegoldBrave = () => navigate("brave");
+  const backToBankingBrave = () => navigate("portfolio");
   const [showProfile, setShowProfile] = reactExports.useState(false);
   const [showTreasury, setShowTreasury] = reactExports.useState(false);
   const [actorTimedOut, setActorTimedOut] = reactExports.useState(false);
@@ -52359,50 +52248,29 @@ function App() {
   const [uniPrice, setUniPrice] = reactExports.useState(null);
   const [sgldtPrice, setSgldtPrice] = reactExports.useState(null);
   const [ethPrice, setEthPrice] = reactExports.useState(null);
-  const abortRef = reactExports.useRef(false);
+  const pollEpochRef = reactExports.useRef(0);
   const treasuryPanelRef = reactExports.useRef(null);
   const _principalSlug = (user == null ? void 0 : user.principal.slice(0, 16)) ?? "";
   const DEPOSIT_ID_KEY = `minegold_deposit_id_${_principalSlug}`;
-  const [depositRequestId, setDepositRequestIdState] = reactExports.useState(
-    () => {
+  const [depositRequestId, setDepositRequestIdState] = reactExports.useState(null);
+  const setDepositRequestId = reactExports.useCallback(
+    (id) => {
+      setDepositRequestIdState(id);
       try {
-        const stored = localStorage.getItem(DEPOSIT_ID_KEY);
-        return stored ? BigInt(stored) : null;
+        if (id !== null) {
+          localStorage.setItem(DEPOSIT_ID_KEY, id.toString());
+        } else {
+          localStorage.removeItem(DEPOSIT_ID_KEY);
+        }
       } catch {
-        return null;
       }
-    }
+    },
+    [DEPOSIT_ID_KEY]
   );
-  const setDepositRequestId = (id) => {
-    setDepositRequestIdState(id);
-    try {
-      if (id !== null) {
-        localStorage.setItem(DEPOSIT_ID_KEY, id.toString());
-      } else {
-        localStorage.removeItem(DEPOSIT_ID_KEY);
-      }
-    } catch {
-    }
-  };
   const [pollAttempt, setPollAttempt] = reactExports.useState(0);
   const MINING_STEPS_KEY = `minegold_steps_${_principalSlug}`;
   const MINING_STEPS_TTL_MS = 24 * 60 * 6e4;
-  const [miningSteps, setMiningSteps] = reactExports.useState(() => {
-    try {
-      const raw = localStorage.getItem(MINING_STEPS_KEY);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return [];
-      const newest = parsed.reduce((n, s) => Math.max(n, s.updatedAt ?? 0), 0);
-      if (newest && Date.now() - newest > MINING_STEPS_TTL_MS) {
-        localStorage.removeItem(MINING_STEPS_KEY);
-        return [];
-      }
-      return parsed;
-    } catch {
-      return [];
-    }
-  });
+  const [miningSteps, setMiningSteps] = reactExports.useState([]);
   const persistMiningSteps = reactExports.useCallback((next) => {
     try {
       if (next.length === 0) localStorage.removeItem(MINING_STEPS_KEY);
@@ -52449,8 +52317,6 @@ function App() {
       visibilityCleanupRef.current = null;
     }
     pollingCompletedRef.current = false;
-    ckUNISnapshotRef.current = 0n;
-    depositAmountWeiRef.current = 0n;
     setBridgeProgress(0);
   }, []);
   const POLL_DEADLINE_MS = 10 * 6e4;
@@ -52459,9 +52325,8 @@ function App() {
   const POLL_SWITCH_AFTER_MS = 6e4;
   const estimatedGoldRef = reactExports.useRef(0);
   const pollStartedAtRef = reactExports.useRef(0);
-  const ckUNISnapshotRef = reactExports.useRef(0n);
-  const depositAmountWeiRef = reactExports.useRef(0n);
   const [bridgeProgress, setBridgeProgress] = reactExports.useState(0);
+  const [successReceipt, setSuccessReceipt] = reactExports.useState(null);
   const stopWithError = reactExports.useCallback((message) => {
     if (pollingCompletedRef.current) return;
     pollingCompletedRef.current = true;
@@ -52476,7 +52341,7 @@ function App() {
     setPhase("error");
     setStatusMsg(message);
   }, []);
-  const stopWithSuccess = reactExports.useCallback(async (sgldtAmount) => {
+  const stopWithSuccess = reactExports.useCallback(async (sgldtAmount, requestId) => {
     if (pollingCompletedRef.current) return;
     pollingCompletedRef.current = true;
     if (pollingIntervalRef.current !== null) {
@@ -52490,14 +52355,31 @@ function App() {
     setPhase("releasing_sgldt");
     setStatusMsg("sGLDT is being released to your ICP account...");
     await new Promise((r2) => setTimeout(r2, 1500));
-    const released = sgldtAmount ?? estimatedGoldRef.current.toFixed(5);
-    setSgldtReleased(released);
+    setSgldtReleased(sgldtAmount);
     setPhase("success");
     setStatusMsg("Transaction confirmed — sGLDT released!");
-    ue.success(`⛏ Gold Mined! ${released} sGLDT released to your ICP account`);
+    ue.success(
+      sgldtAmount != null ? `⛏ Gold Mined! ${sgldtAmount} sGLDT released to your ICP account` : "⛏ Gold Mined! sGLDT released — confirming the exact amount…"
+    );
     setDepositRequestId(null);
     setUniAmount("");
-  }, []);
+    if (sgldtAmount == null && requestId !== void 0 && actor) {
+      const epoch = pollEpochRef.current;
+      for (let i = 0; i < 10; i++) {
+        await new Promise((r2) => setTimeout(r2, 5e3));
+        if (pollEpochRef.current !== epoch) return;
+        try {
+          const st2 = await actor.getDepositStatus(requestId);
+          const paid = Number(st2.sgldtPaid) / 1e8;
+          if (paid > 0) {
+            setSgldtReleased(paid.toFixed(5));
+            return;
+          }
+        } catch {
+        }
+      }
+    }
+  }, [setDepositRequestId, actor]);
   const startAutoPolling = reactExports.useCallback(
     (requestId) => {
       if (pollingIntervalRef.current !== null) {
@@ -52505,12 +52387,14 @@ function App() {
         pollingIntervalRef.current = null;
       }
       pollingCompletedRef.current = false;
+      pollEpochRef.current += 1;
+      const epoch = pollEpochRef.current;
       setPollAttempt(0);
       pollStartedAtRef.current = Date.now();
       let attempt = 0;
       let currentInterval = POLL_FAST_INTERVAL_MS;
       const tick = async () => {
-        if (abortRef.current) {
+        if (pollEpochRef.current !== epoch) {
           if (pollingIntervalRef.current !== null) {
             clearInterval(pollingIntervalRef.current);
             pollingIntervalRef.current = null;
@@ -52535,48 +52419,34 @@ function App() {
         }
         if (!actor) return;
         try {
-          const currentBalance = await fetchTreasuryCkUNIBalance();
-          const snapshot = ckUNISnapshotRef.current;
-          const target = depositAmountWeiRef.current;
-          const delta = currentBalance > snapshot ? currentBalance - snapshot : 0n;
-          if (target > 0n) {
-            const progress = Number(delta * 10000n / target) / 1e4;
-            setBridgeProgress(Math.min(1, Math.max(0, progress)));
-          }
-          if (target > 0n && delta >= target) {
-            try {
-              const payoutResult = await actor.retryUNIDepositPayout(requestId);
-              const raw = typeof payoutResult === "string" ? payoutResult : String(payoutResult ?? "");
-              const status = raw.toLowerCase();
-              if (status.includes("paid") || status.includes("success")) {
-                const amountMatch = raw.match(/[:\s](\d+\.?\d*)\s*sgldt/i) ?? raw.match(/paid[:\s]+(\d+\.?\d*)/i);
-                setBridgeProgress(1);
-                await stopWithSuccess(amountMatch ? amountMatch[1] : null);
-                return;
-              }
-              if (status.includes("payout_failed:")) {
-                const reason = raw.replace(/^.*payout_failed:\s*/i, "").trim();
-                const isFunds = reason.toLowerCase().includes("insufficientfunds") || reason.toLowerCase().includes("insufficient");
-                stopWithError(
-                  isFunds ? "Refinery is out of sGLDT right now. Your ckUNI is in the treasury — contact support for a manual payout." : `Release failed: ${reason || "Unknown error"}`
-                );
-                return;
-              }
-              if (raw.trim().length > 0) {
-                setRetryErrorMsg(`Payout still pending: ${raw.trim()}`);
-              }
-              if (Date.now() - pollStartedAtRef.current > POLL_DEADLINE_MS) {
-                stopWithError(
-                  `ckUNI reached the treasury but sGLDT release is taking longer than expected. Deposit ID ${requestId.toString()} is safe — tap "Check now" to retry.`
-                );
-              }
-            } catch (err) {
-              console.warn("[mining] retryUNIDepositPayout threw:", err);
+          const st2 = await actor.getDepositStatus(requestId);
+          switch (st2.status) {
+            case "paid": {
+              setBridgeProgress(1);
+              const paid = Number(st2.sgldtPaid) / 1e8;
+              await stopWithSuccess(paid > 0 ? paid.toFixed(5) : null, requestId);
+              return;
             }
-            return;
+            case "failed": {
+              stopWithError(
+                `sGLDT release hit an error. Deposit ID ${requestId.toString()} is recorded — tap "Check now" to retry the payout, or contact support if it persists.`
+              );
+              return;
+            }
+            case "not_found": {
+              stopWithError(
+                "This deposit is no longer recorded on the backend. If you signed a deposit, use “Finalize my deposit” to re-register it."
+              );
+              return;
+            }
+            default: {
+              const el = Date.now() - pollStartedAtRef.current;
+              const target = st2.status === "processing" ? 0.92 : st2.status === "confirmed" ? 0.8 : 0.08 + Math.min(0.47, el / 18e4 * 0.47);
+              setBridgeProgress((prev) => Math.max(prev, Math.min(1, target)));
+            }
           }
         } catch (err) {
-          console.warn("[mining] ckUNI balance query failed:", err);
+          console.warn("[mining] getDepositStatus poll failed:", err);
         }
       };
       tick();
@@ -52620,6 +52490,9 @@ function App() {
   const [transferTo, setTransferTo] = reactExports.useState("");
   const [transferAmt, setTransferAmt] = reactExports.useState("");
   const [transferLoading, setTransferLoading] = reactExports.useState(false);
+  const [redeemOpen, setRedeemOpen] = reactExports.useState(false);
+  const showProof = route === "proof";
+  const setShowProof = (v2) => navigate(v2 ? "proof" : "refinery");
   const { data: treasuryBalanceRaw, isLoading: treasuryBalanceLoading } = usePublicTreasuryBalance();
   const { data: ckUNITreasuryRaw, isLoading: ckUNITreasuryLoading } = usePublicCkUNITreasuryBalance();
   const { data: directSGLDTBalance, isLoading: directSGLDTLoading } = useDirectSGLDTTreasuryBalance();
@@ -52702,31 +52575,52 @@ function App() {
   const { data: sgldtBalanceRaw } = useUserSGLDTBalance(user == null ? void 0 : user.principal);
   const sgldtBalance = sgldtBalanceRaw !== void 0 ? (Number(sgldtBalanceRaw) / 1e8).toFixed(4) : null;
   const sgldtUsd = sgldtBalance && sgldtPrice ? (Number.parseFloat(sgldtBalance) * sgldtPrice).toFixed(2) : null;
-  const ADMIN_PRINCIPAL2 = "rc62u-qypnw-bbkkp-d56wk-tnzaq-vwhi2-cqqay-q56hw-gsqbp-6wegl-jae";
+  const ADMIN_PRINCIPAL = "rc62u-qypnw-bbkkp-d56wk-tnzaq-vwhi2-cqqay-q56hw-gsqbp-6wegl-jae";
   const { data: isAdminData } = useIsAdmin();
-  const isLocalAdmin = (user == null ? void 0 : user.principal) === ADMIN_PRINCIPAL2;
+  const isLocalAdmin = (user == null ? void 0 : user.principal) === ADMIN_PRINCIPAL;
   const isAdmin = isLocalAdmin || !!isAdminData;
   const userPrincipalObj = identity == null ? void 0 : identity.getPrincipal();
   const { data: myDeposits } = useMyUNIDeposits(userPrincipalObj);
   const retryPayout = useRetryUNIDepositPayout();
   const unclaimedDeposits = (myDeposits ?? []).filter((d2) => {
-    const statusKey = (d2 == null ? void 0 : d2.status) && typeof d2.status === "object" ? Object.keys(d2.status)[0] : "";
-    return statusKey === "confirmed" || statusKey === "failed";
+    const statusKey2 = (d2 == null ? void 0 : d2.status) && typeof d2.status === "object" ? Object.keys(d2.status)[0] : "";
+    return statusKey2 === "confirmed" || statusKey2 === "failed";
   });
+  const refreshRefinePosition = refineFlow.refreshPosition;
+  reactExports.useEffect(() => {
+    if (!user) return;
+    void refreshRefinePosition();
+  }, [user, refreshRefinePosition]);
+  const leftoverCkUNI = phase === "idle" && (refineFlow.state.kind === "idle" || refineFlow.state.kind === "failed") && refineFlow.position ? refineFlow.position.balance : 0n;
+  const leftoverRefinable = refineFlow.position != null && leftoverCkUNI >= refineFlow.position.minRefine + 2n * CKUNI_FEE_FALLBACK;
   const FALLBACK_DEPOSIT_ADDRESS = CKERC20_HELPER_CONTRACT;
   const { data: treasuryWalletInfo } = useGetTreasuryWalletInfo();
   const depositAddress = (treasuryWalletInfo == null ? void 0 : treasuryWalletInfo.depositAddress) && treasuryWalletInfo.depositAddress.length > 0 ? treasuryWalletInfo.depositAddress : FALLBACK_DEPOSIT_ADDRESS;
-  const [copiedDepositAddress, setCopiedDepositAddress] = reactExports.useState(false);
-  const PENDING_DEPOSIT_KEY = `minegold_pending_deposit_${_principalSlug}`;
-  const PENDING_DEPOSIT_TTL_MS = 30 * 6e4;
-  const TX_HASH_KEY = `minegold_tx_hash_${_principalSlug}`;
-  const [currentTxHash, setCurrentTxHashState] = reactExports.useState(() => {
+  const [unlimitedApproval, setUnlimitedApproval] = reactExports.useState(() => {
     try {
-      return localStorage.getItem(TX_HASH_KEY) ?? null;
+      return localStorage.getItem("minegold_unlimited_approve") === "1";
     } catch {
-      return null;
+      return false;
     }
   });
+  const toggleUnlimitedApproval = (v2) => {
+    setUnlimitedApproval(v2);
+    try {
+      localStorage.setItem("minegold_unlimited_approve", v2 ? "1" : "0");
+    } catch {
+    }
+  };
+  const [copiedDepositAddress, setCopiedDepositAddress] = reactExports.useState(false);
+  const PENDING_DEPOSIT_KEY = `minegold_pending_deposit_${_principalSlug}`;
+  reactExports.useEffect(() => {
+    if (!_principalSlug) return;
+    try {
+      localStorage.removeItem(PENDING_DEPOSIT_KEY);
+    } catch {
+    }
+  }, [PENDING_DEPOSIT_KEY, _principalSlug]);
+  const TX_HASH_KEY = `minegold_tx_hash_${_principalSlug}`;
+  const [currentTxHash, setCurrentTxHashState] = reactExports.useState(null);
   const setCurrentTxHash = (hash2) => {
     setCurrentTxHashState(hash2);
     try {
@@ -52738,37 +52632,41 @@ function App() {
     } catch {
     }
   };
-  const writePendingDeposit = (intent) => {
+  const hydratedForRef = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    const slug = (user == null ? void 0 : user.principal.slice(0, 16)) ?? "";
+    if (!slug || hydratedForRef.current === slug) return;
+    hydratedForRef.current = slug;
     try {
-      localStorage.setItem(PENDING_DEPOSIT_KEY, JSON.stringify(intent));
+      const storedId = localStorage.getItem(`minegold_deposit_id_${slug}`);
+      if (storedId) setDepositRequestIdState(BigInt(storedId));
     } catch {
     }
-  };
-  const readPendingDeposit = () => {
     try {
-      const raw = localStorage.getItem(PENDING_DEPOSIT_KEY);
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      if (!(parsed == null ? void 0 : parsed.ethAddress) || !(parsed == null ? void 0 : parsed.depositAddress)) return null;
-      if (Date.now() - (parsed.startedAt ?? 0) > PENDING_DEPOSIT_TTL_MS) {
-        localStorage.removeItem(PENDING_DEPOSIT_KEY);
-        return null;
+      const storedHash = localStorage.getItem(`minegold_tx_hash_${slug}`);
+      if (storedHash) setCurrentTxHashState(storedHash);
+    } catch {
+    }
+    try {
+      const raw = localStorage.getItem(`minegold_steps_${slug}`);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          const newest = parsed.reduce((n, s) => Math.max(n, s.updatedAt ?? 0), 0);
+          if (newest && Date.now() - newest > MINING_STEPS_TTL_MS) {
+            localStorage.removeItem(`minegold_steps_${slug}`);
+          } else {
+            setMiningSteps(parsed);
+          }
+        }
       }
-      return parsed;
-    } catch {
-      return null;
-    }
-  };
-  const clearPendingDeposit = () => {
-    try {
-      localStorage.removeItem(PENDING_DEPOSIT_KEY);
     } catch {
     }
-  };
+  }, [user]);
   const copyDepositAddress = () => {
-    var _a3;
+    var _a4;
     const text = depositAddress;
-    if ((_a3 = navigator.clipboard) == null ? void 0 : _a3.writeText) {
+    if ((_a4 = navigator.clipboard) == null ? void 0 : _a4.writeText) {
       navigator.clipboard.writeText(text).then(() => {
         setCopiedDepositAddress(true);
         setTimeout(() => setCopiedDepositAddress(false), 2e3);
@@ -52793,9 +52691,96 @@ function App() {
       setTimeout(() => setCopiedDepositAddress(false), 2e3);
     }
   };
-  const estimatedGold = (Number.parseFloat(uniAmount) || 0) * liveRate;
+  const checkPayoutNow = async () => {
+    if (!actor || !depositRequestId) return;
+    try {
+      const result = await actor.retryUNIDepositPayout(depositRequestId);
+      const raw = typeof result === "string" ? result : String(result ?? "");
+      const s = raw.toLowerCase();
+      if (s.includes("paid") || s.includes("success")) {
+        const m2 = raw.match(/[:\s](\d+\.?\d*)\s*sgldt/i) ?? raw.match(/paid[:\s]+(\d+\.?\d*)/i);
+        await stopWithSuccess(m2 ? m2[1] : null);
+      } else if (s.includes("payout_failed:")) {
+        const reason = raw.replace(/^.*payout_failed:\s*/i, "").trim();
+        const isFunds = reason.toLowerCase().includes("insufficientfunds") || reason.toLowerCase().includes("insufficient");
+        stopWithError(
+          isFunds ? "Refinery is out of sGLDT right now. Your deposit is recorded — try again in a few minutes, or contact support." : `Release failed: ${reason || "Unknown error"}`
+        );
+      } else {
+        ue.info(
+          raw.trim().length > 0 ? `Still processing: ${raw.trim()}` : "Still processing. The backend sweeper runs every 30s — sGLDT will appear automatically."
+        );
+      }
+    } catch (err) {
+      ue.error(
+        `Check failed: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
+  };
+  const checkNow = async () => {
+    if (phase === "ckuni_minting") {
+      const pos = await refineFlow.refreshPosition();
+      if (pos && pos.balance > 0n) {
+        ue.success(
+          `ckUNI credited: ${(Number(pos.balance) / 1e18).toFixed(6)}. Refining now…`
+        );
+      } else {
+        ue.info(
+          "The chain-key minter hasn't credited your ckUNI yet — this takes about 12 Ethereum blocks (2–3 minutes)."
+        );
+      }
+      return;
+    }
+    await checkPayoutNow();
+  };
+  const { data: rateStatus } = useRateStatus();
+  const onchainRate = rateStatus && rateStatus.rate > 0n ? Number(rateStatus.rate) / 1e8 : 0;
+  const effectiveRate = onchainRate > 0 ? onchainRate : liveRate;
+  const effectiveRateHint = rateStatus && rateStatus.rate > 0n ? rateStatus.rate : liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
+  const rateSyncAgeMin = rateStatus && rateStatus.lastSyncNs > 0n ? Math.max(
+    0,
+    Math.round(
+      (Date.now() - Number(rateStatus.lastSyncNs / 1000000n)) / 6e4
+    )
+  ) : null;
+  const marketDivergencePct = onchainRate > 0 && liveRate > 0 ? Math.abs(liveRate - onchainRate) / onchainRate * 100 : null;
+  const rateLine = effectiveRate > 0 ? onchainRate > 0 ? {
+    rateDisplay: `1 UNI = ${effectiveRate.toFixed(4)} sGLDT`,
+    provenance: `on-chain rate · XRC oracle (UNI/USD) · synced ${rateSyncAgeMin != null ? `${rateSyncAgeMin}m ago` : "—"}`,
+    warning: (rateStatus == null ? void 0 : rateStatus.lastError) ? "Oracle note: the last sync reported an issue — quoting the last good on-chain rate." : marketDivergencePct != null && marketDivergencePct > 2 ? `Market feeds differ from the on-chain rate by ${marketDivergencePct.toFixed(1)}% — settlement uses the on-chain rate.` : null
+  } : {
+    rateDisplay: `1 UNI = ${effectiveRate.toFixed(4)} sGLDT`,
+    provenance: "market feed (CoinGecko) — on-chain oracle unreachable",
+    warning: "Quoting from market data; the canister settles at its own rate (clamped within ±2%)."
+  } : null;
+  const estimatedGold = (Number.parseFloat(uniAmount) || 0) * effectiveRate;
   estimatedGoldRef.current = estimatedGold;
-  const isActive = phase === "awaiting_deposit" || phase === "wallet_confirming" || phase === "eth_monitoring" || phase === "releasing_sgldt";
+  const minReceivedDisplay = estimatedGold > 0 ? `${(estimatedGold * 0.98).toFixed(5)} sGLDT` : null;
+  const [gasEstimateEth, setGasEstimateEth] = reactExports.useState(null);
+  reactExports.useEffect(() => {
+    if (!ethAddress2) {
+      setGasEstimateEth(null);
+      return;
+    }
+    let cancelled = false;
+    const refresh = async () => {
+      try {
+        const gasPrice = await publicClient.getGasPrice();
+        const totalGas = 260000n;
+        if (!cancelled) setGasEstimateEth(Number(totalGas * gasPrice) / 1e18);
+      } catch {
+      }
+    };
+    void refresh();
+    const t = setInterval(() => void refresh(), 9e4);
+    return () => {
+      cancelled = true;
+      clearInterval(t);
+    };
+  }, [ethAddress2]);
+  const gasEstimate = gasEstimateEth != null ? `~${gasEstimateEth.toFixed(4)} ETH${ethPrice ? ` ($${(gasEstimateEth * ethPrice).toFixed(2)})` : ""}` : null;
+  const gasShortfall = gasEstimateEth != null && ethBalance != null && Number.parseFloat(ethBalance) < gasEstimateEth ? `Needs ~${gasEstimateEth.toFixed(4)} ETH for gas — you have ${ethBalance} ETH.` : null;
+  const isActive = phase === "awaiting_deposit" || phase === "wallet_confirming" || phase === "eth_monitoring" || phase === "ckuni_minting" || phase === "releasing_sgldt";
   const [ethBalanceDiag, setEthBalanceDiag] = reactExports.useState(null);
   const [uniBalanceDiag, setUniBalanceDiag] = reactExports.useState(null);
   const [balanceRefreshing, setBalanceRefreshing] = reactExports.useState(false);
@@ -52818,7 +52803,7 @@ function App() {
   reactExports.useEffect(() => {
     let cancelled = false;
     const fetchPrices = async () => {
-      var _a3, _b3, _c2, _d2;
+      var _a4, _b3, _c2, _d2;
       try {
         const [cgRes, gtRes] = await Promise.all([
           fetch(
@@ -52834,7 +52819,7 @@ function App() {
         let fetchedEthPrice = null;
         if (cgRes.ok) {
           const d2 = await cgRes.json();
-          if ((_a3 = d2 == null ? void 0 : d2.uniswap) == null ? void 0 : _a3.usd) {
+          if ((_a4 = d2 == null ? void 0 : d2.uniswap) == null ? void 0 : _a4.usd) {
             fetchedUniPrice = Number(d2.uniswap.usd);
             setUniPrice(fetchedUniPrice);
           }
@@ -53020,7 +53005,7 @@ function App() {
     };
   }, [ethAddress2, probeExistingAccount, refreshBalances]);
   const connectEthereumWallet = async () => {
-    var _a3;
+    var _a4;
     setWalletConnectLog([]);
     appendWalletLog("Connect clicked");
     try {
@@ -53097,7 +53082,7 @@ function App() {
       })();
       const accounts = await Promise.race([requestPromise, pollPromise]);
       appendWalletLog(
-        `Got response: ${((_a3 = JSON.stringify(accounts)) == null ? void 0 : _a3.slice(0, 80)) ?? String(accounts)}`
+        `Got response: ${((_a4 = JSON.stringify(accounts)) == null ? void 0 : _a4.slice(0, 80)) ?? String(accounts)}`
       );
       let addr = null;
       const addrRe = /^0x[a-fA-F0-9]{40}$/;
@@ -53207,8 +53192,10 @@ function App() {
   };
   const handleLogout = () => {
     stopPolling();
+    pollEpochRef.current += 1;
+    refineFlow.reset();
+    clearRefineWatch(_principalSlug);
     iiClear();
-    clearPendingDeposit();
     setEthAddress(null);
     setEthBalance(null);
     setUniBalance(null);
@@ -53223,7 +53210,8 @@ function App() {
         if (!ethAddress2) throw new Error("Wallet not connected");
         const wallet = getWalletClient();
         if (!wallet) throw new Error("Wallet not connected");
-        const amtWei = BigInt(Math.round(Number.parseFloat(transferAmt) * 1e18));
+        const amtWei = parseDecimalToBigInt(transferAmt, 18);
+        if (amtWei === 0n) throw new Error("Enter a valid ETH amount");
         const ethGas = await estimateGasOrFallback(
           ethAddress2,
           transferTo,
@@ -53242,7 +53230,8 @@ function App() {
         if (!ethAddress2) throw new Error("Wallet not connected");
         const wallet = getWalletClient();
         if (!wallet) throw new Error("Wallet not connected");
-        const amtWei = BigInt(Math.round(Number.parseFloat(transferAmt) * 1e18));
+        const amtWei = parseDecimalToBigInt(transferAmt, 18);
+        if (amtWei === 0n) throw new Error("Enter a valid UNI amount");
         const transferData = encodeERC20Transfer(transferTo, amtWei);
         const uniGas = await estimateGasOrFallback(
           ethAddress2,
@@ -53260,7 +53249,8 @@ function App() {
         ue.success(`UNI transfer submitted: ${hash2.slice(0, 14)}…`);
       } else if (transferModal === "sgldt") {
         if (!user || !user.identity) throw new Error("Not authenticated");
-        const amtRaw = BigInt(Math.round(Number.parseFloat(transferAmt) * 1e8));
+        const amtRaw = parseDecimalToBigInt(transferAmt, 8);
+        if (amtRaw === 0n) throw new Error("Enter a valid sGLDT amount");
         const result = await icrc1TransferFromCaller({
           identity: user.identity,
           canisterId: "i2s4q-syaaa-aaaan-qz4sq-cai",
@@ -53280,123 +53270,6 @@ function App() {
       setTransferLoading(false);
     }
   };
-  const [manualTxHash, setManualTxHash] = reactExports.useState("");
-  const [manualRecoveryBusy, setManualRecoveryBusy] = reactExports.useState(false);
-  const [showRecoveryPanel, setShowRecoveryPanel] = reactExports.useState(false);
-  const finalizeFromChain = async () => {
-    if (!actor) {
-      ue.error("Backend not ready — wait a moment and retry.");
-      return;
-    }
-    if (!ethAddress2) {
-      ue.error("Connect your Ethereum wallet first.");
-      return;
-    }
-    if (!identity) {
-      ue.error("Not logged in.");
-      return;
-    }
-    const amountE8s = parseDecimalToBigInt(uniAmount || "0", 8);
-    if (amountE8s === 0n) {
-      ue.error("Enter the UNI amount you just deposited.");
-      return;
-    }
-    setManualRecoveryBusy(true);
-    setStatusMsg("Searching Ethereum for your deposit tx…");
-    const rateHint = liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
-    try {
-      const result = await autoFinalizeUNIDeposit({
-        identity,
-        ethAddress: ethAddress2,
-        uniAmountE8s: amountE8s,
-        rateHint
-      });
-      if (result.kind === "ok") {
-        setCurrentTxHash(result.txHash);
-        setDepositRequestId(result.requestId);
-        setPhase("eth_monitoring");
-        setStatusMsg("Deposit found on-chain — verifying and releasing sGLDT…");
-        startAutoPolling(result.requestId);
-        ue.success("Deposit discovered on Ethereum — releasing sGLDT");
-      } else if (result.kind === "alreadyExists") {
-        setCurrentTxHash(result.txHash);
-        setDepositRequestId(result.requestId);
-        setPhase("eth_monitoring");
-        setStatusMsg(`Deposit already registered (status: ${result.status}) — resuming monitoring`);
-        startAutoPolling(result.requestId);
-      } else if (result.kind === "noDepositFound") {
-        setStatusMsg("");
-        ue.error(result.detail, { duration: 1e4 });
-      } else {
-        setStatusMsg("");
-        ue.error(`Backend: ${result.detail}`, { duration: 1e4 });
-      }
-    } catch (err) {
-      setStatusMsg("");
-      ue.error(err instanceof Error ? err.message : String(err), { duration: 1e4 });
-    } finally {
-      setManualRecoveryBusy(false);
-    }
-  };
-  const resumeFromTxHash = async (rawHash) => {
-    const extracted = extractTxHash(rawHash) ?? rawHash.trim();
-    if (!/^0x[a-fA-F0-9]{64}$/.test(extracted)) {
-      ue.error("That doesn't look like an Ethereum tx hash (need 0x + 64 hex chars).");
-      return;
-    }
-    if (!actor) {
-      ue.error("Backend actor not ready — wait a moment and retry.");
-      return;
-    }
-    if (!ethAddress2) {
-      ue.error("Connect your Ethereum wallet first.");
-      return;
-    }
-    const amountE8s = parseDecimalToBigInt(uniAmount || "0", 8);
-    if (amountE8s === 0n) {
-      ue.error("Enter the UNI amount you deposited so the backend can record it.");
-      return;
-    }
-    setManualRecoveryBusy(true);
-    setStatusMsg("Verifying your tx on Ethereum…");
-    const check = await verifyHashIsDeposit(extracted, depositAddress);
-    if (!check.ok && check.code !== "rpc_error") {
-      setManualRecoveryBusy(false);
-      ue.error(check.detail, { duration: 1e4 });
-      setStatusMsg("");
-      return;
-    }
-    if (!check.ok) {
-      console.warn("[recovery] tx pre-check RPC error, submitting anyway:", check.detail);
-    }
-    setPhase("eth_monitoring");
-    setCurrentTxHash(extracted);
-    setStatusMsg("Registering your tx with the backend…");
-    const rateHint = liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
-    try {
-      if (!identity) throw new Error("Not logged in");
-      console.log("[recovery] directSubmitUNIDeposit", { ethAddress: ethAddress2, amountE8s: amountE8s.toString(), txHash: extracted });
-      const requestId = await directSubmitUNIDeposit({
-        identity,
-        ethAddress: ethAddress2,
-        uniAmountE8s: amountE8s,
-        txHash: extracted,
-        rateHint
-      });
-      console.log("[recovery] result:", requestId);
-      setDepositRequestId(requestId);
-      setManualTxHash("");
-      ue.success("Tx registered — monitoring started");
-      startAutoPolling(requestId);
-    } catch (err) {
-      const raw = err instanceof Error ? err.message : String(err);
-      const trapMatch = raw.match(/with message:\s*['"]?([^'"]+?)['"]?\s*$/i);
-      setPhase("error");
-      setStatusMsg(trapMatch ? `Backend rejected: ${trapMatch[1]}` : `Backend error: ${raw}`);
-    } finally {
-      setManualRecoveryBusy(false);
-    }
-  };
   const startMining = async () => {
     if (!uniAmount || !ethAddress2 || !user) return;
     if (!actor) {
@@ -53413,15 +53286,20 @@ function App() {
       );
       return;
     }
-    clearPendingDeposit();
     const amount = Number.parseFloat(uniAmount);
     if (Number.isNaN(amount) || amount <= 0) return;
-    if (amount < 1e-3) {
+    if (amount < 5e-3) {
       setPhase("error");
-      setStatusMsg("Minimum swap amount is 0.001 UNI. Please enter a larger amount.");
+      setStatusMsg("Minimum swap amount is 0.005 UNI (ledger fees make smaller deposits unrefinable).");
       return;
     }
-    abortRef.current = false;
+    if (depositAddress.toLowerCase() !== CKERC20_HELPER_CONTRACT.toLowerCase()) {
+      setPhase("error");
+      setStatusMsg(
+        `Deposit halted before signing: the backend returned an unexpected deposit contract (${depositAddress}); expected DFINITY's ckERC-20 helper ${CKERC20_HELPER_CONTRACT}. Nothing was signed and no funds moved.`
+      );
+      return;
+    }
     setSgldtReleased(null);
     setDepositRequestId(null);
     setCurrentTxHash(null);
@@ -53436,7 +53314,6 @@ function App() {
       setStatusMsg("No Ethereum wallet found. Please connect Brave Wallet and try again.");
       return;
     }
-    let txHash;
     try {
       const amountWei = parseDecimalToBigInt(uniAmount, 18);
       if (amountWei === 0n) {
@@ -53444,8 +53321,8 @@ function App() {
         setStatusMsg("Invalid UNI amount.");
         return;
       }
-      const treasuryPrincipal32 = principalToBytes32(
-        Principal$1.fromText(TREASURY_PRINCIPAL)
+      const beneficiaryPrincipal32 = principalToBytes32(
+        Principal$1.fromText(user.principal)
       );
       setStatusMsg("Checking UNI allowance…");
       updateStep("allowance", "Checking UNI allowance", "active");
@@ -53473,15 +53350,15 @@ function App() {
       if (needsApprove) {
         updateStep(
           "approve-sign",
-          "One-time: approve the bridge to spend your UNI",
+          unlimitedApproval ? "Approve the bridge to spend your UNI (unlimited — you opted in)" : `Approve the bridge to spend exactly ${uniAmount} UNI`,
           "active",
-          "Sign once — future swaps won't need this step"
+          unlimitedApproval ? "Sign once — future swaps skip this step" : "Exact-amount approval — each swap signs its own"
         );
         try {
           const MAX_UINT256 = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffn;
           const approveData = encodeERC20Approve(
             depositAddress,
-            MAX_UINT256
+            unlimitedApproval ? MAX_UINT256 : amountWei
           );
           const approveGas = await estimateGasOrFallback(
             ethAddress2,
@@ -53496,10 +53373,13 @@ function App() {
             gas: approveGas,
             chain: null
           });
-          console.log("[mining] approve signed (unlimited):", approveHash);
+          console.log(
+            `[mining] approve signed (${unlimitedApproval ? "unlimited" : "exact"}):`,
+            approveHash
+          );
           updateStep(
             "approve-sign",
-            "UNI approval signed — future swaps skip this step",
+            unlimitedApproval ? "UNI approval signed — future swaps skip this step" : `Approved exactly ${uniAmount} UNI`,
             "done",
             String(approveHash).slice(0, 14) + "…"
           );
@@ -53507,7 +53387,6 @@ function App() {
           const code = err == null ? void 0 : err.code;
           if (code === 4001) {
             updateStep("approve-sign", "Approve rejected in wallet", "error");
-            clearPendingDeposit();
             setPhase("idle");
             setStatusMsg("");
             ue.error("Transaction rejected in wallet — you can try again.");
@@ -53538,20 +53417,13 @@ function App() {
         "active",
         "Wallet prompt should appear now"
       );
-      try {
-        ckUNISnapshotRef.current = await fetchTreasuryCkUNIBalance();
-        console.log("[mining] snapshot ckUNI balance:", ckUNISnapshotRef.current.toString());
-      } catch (err) {
-        console.warn("[mining] ckUNI snapshot failed, using 0:", err);
-        ckUNISnapshotRef.current = 0n;
-      }
-      depositAmountWeiRef.current = amountWei;
+      let signedTxHash = null;
       setBridgeProgress(0);
       try {
         const depositData = encodeCkErc20Deposit(
           UNI_CONTRACT_ADDRESS,
           amountWei,
-          treasuryPrincipal32
+          beneficiaryPrincipal32
         );
         const depositGas = await estimateGasOrFallback(
           ethAddress2,
@@ -53570,6 +53442,7 @@ function App() {
         const cand = extractTxHash(depositHash) ?? String(depositHash ?? "").trim();
         if (/^0x[a-fA-F0-9]{64}$/.test(cand)) {
           setCurrentTxHash(cand);
+          signedTxHash = cand;
         }
         updateStep(
           "deposit-sign",
@@ -53581,7 +53454,6 @@ function App() {
         const code = err == null ? void 0 : err.code;
         if (code === 4001) {
           updateStep("deposit-sign", "Deposit rejected in wallet", "error");
-          clearPendingDeposit();
           setPhase("idle");
           setStatusMsg("");
           ue.error("Transaction rejected in wallet — you can try again.");
@@ -53594,6 +53466,7 @@ function App() {
             recoveredHash
           );
           setCurrentTxHash(recoveredHash);
+          signedTxHash = recoveredHash;
           updateStep(
             "deposit-sign",
             "Deposit broadcast (hash recovered from wallet bridge)",
@@ -53608,7 +53481,6 @@ function App() {
             `Deposit failed: ${reason.slice(0, 80)}`,
             "error"
           );
-          clearPendingDeposit();
           setPhase("error");
           setStatusMsg(
             `Couldn't broadcast the deposit: ${reason}. Check that your wallet is unlocked, on Ethereum mainnet, and has enough ETH for gas, then tap Mine again.`
@@ -53616,88 +53488,31 @@ function App() {
           return;
         }
       }
-      writePendingDeposit({
-        ethAddress: ethAddress2,
-        uniAmount,
+      const rateHintNat = effectiveRateHint;
+      writeRefineWatch(_principalSlug, {
+        txHash: signedTxHash,
         amountWei: amountWei.toString(),
-        depositAddress,
-        startedAt: Date.now(),
-        expectedNonce: null
+        rateHint: (rateHintNat == null ? void 0 : rateHintNat.toString()) ?? null,
+        startedAt: Date.now()
       });
-      setPhase("eth_monitoring");
-      setStatusMsg("Watching Ethereum for your deposit…");
-      updateStep("deposit-sign", "Deposit broadcast — canister is watching Ethereum", "active");
-      const POLL_INTERVAL_MS = 5e3;
-      const POLL_DEADLINE_MS2 = 6 * 6e4;
-      const pollStarted = Date.now();
-      const rateHintNat = liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
-      const amountE8s = parseDecimalToBigInt(uniAmount, 8);
-      let finalizedRequestId = null;
-      let finalizedHash = null;
-      while (Date.now() - pollStarted < POLL_DEADLINE_MS2) {
-        if (abortRef.current) {
-          clearPendingDeposit();
-          return;
-        }
-        try {
-          if (!identity) break;
-          const result = await autoFinalizeUNIDeposit({
-            identity,
-            ethAddress: ethAddress2,
-            uniAmountE8s: amountE8s,
-            rateHint: rateHintNat
-          });
-          if (result.kind === "ok" || result.kind === "alreadyExists") {
-            finalizedRequestId = result.requestId;
-            finalizedHash = result.txHash;
-            break;
-          }
-          console.log("[mining] canister poll:", result.kind, "detail" in result ? result.detail : "");
-        } catch (err) {
-          console.warn("[mining] autoFinalize poll threw:", err);
-        }
-        await new Promise((r2) => setTimeout(r2, POLL_INTERVAL_MS));
-      }
-      if (!finalizedRequestId) {
-        updateStep(
-          "deposit-sign",
-          "Canister couldn't find your deposit in 6 min — manually finalize below",
-          "error"
-        );
-        clearPendingDeposit();
-        setPhase("error");
-        setStatusMsg(
-          "The canister hasn't seen your deposit land on Ethereum within 6 minutes. Common causes: (1) wallet app backgrounded before broadcasting, (2) the block is still propagating, (3) ad blockers are throttling our RPC lookups. If you see the tx in your wallet's activity tab it IS on-chain — tap 'Finalize my deposit' below to resume. Otherwise try Mine again."
-        );
-        return;
-      }
-      console.log("[mining] autoFinalize found deposit:", { hash: finalizedHash, requestId: finalizedRequestId.toString() });
-      updateStep("deposit-sign", "Deposit confirmed on Ethereum", "done", (finalizedHash == null ? void 0 : finalizedHash.slice(0, 14)) + "…");
-      setCurrentTxHash(finalizedHash);
-      setDepositRequestId(finalizedRequestId);
-      clearPendingDeposit();
-      txHash = finalizedHash ?? "0x";
-      try {
-        startAutoPolling(finalizedRequestId);
-        setStatusMsg("Releasing sGLDT — this is the last step…");
-      } catch (pollErr) {
-        console.error("[mining] startAutoPolling threw:", pollErr);
-        setPhase("error");
-        setStatusMsg(
-          "Polling setup failed — your deposit is recorded (ID " + finalizedRequestId.toString() + "). Tap 'Finalize my deposit' below to resume."
-        );
-      }
+      updateStep(
+        "ck-mint",
+        "Chain-key minter confirming (12 Ethereum blocks)",
+        "active",
+        signedTxHash ? `${signedTxHash.slice(0, 14)}…` : "awaiting confirmations"
+      );
+      setPhase("ckuni_minting");
+      setStatusMsg("Chain-key minter is confirming your deposit…");
+      refineFlow.beginWatch(amountWei, rateHintNat);
       return;
     } catch (err) {
       const code = err == null ? void 0 : err.code;
       if (code === 4001) {
-        clearPendingDeposit();
         setPhase("idle");
         setStatusMsg("");
         ue.error("Transaction rejected in wallet — you can try again.");
         return;
       }
-      clearPendingDeposit();
       setPhase("error");
       setStatusMsg(
         err instanceof Error ? err.message : "Wallet transaction failed. Please try again."
@@ -53706,116 +53521,103 @@ function App() {
     }
     console.warn("[mining] startMining fell through without resolving — unexpected");
   };
+  const watchResumedRef = reactExports.useRef(false);
   reactExports.useEffect(() => {
-    if (!actor || !depositRequestId) return;
-    const checkOnMount = async () => {
+    if (!user || !identity || watchResumedRef.current) return;
+    if (phase !== "idle" || refineFlow.state.kind !== "idle") return;
+    const rec = readRefineWatch(_principalSlug);
+    if (!rec) return;
+    watchResumedRef.current = true;
+    if (rec.txHash) setCurrentTxHash(rec.txHash);
+    setPhase("ckuni_minting");
+    setStatusMsg("Chain-key minter is confirming your deposit…");
+    refineFlow.beginWatch(
+      BigInt(rec.amountWei),
+      rec.rateHint != null ? BigInt(rec.rateHint) : null,
+      rec.startedAt
+    );
+  }, [user, identity, phase, refineFlow.state.kind]);
+  const resumeCheckedRef = reactExports.useRef(false);
+  reactExports.useEffect(() => {
+    if (!actor || !depositRequestId || resumeCheckedRef.current) return;
+    if (phase !== "idle") return;
+    if (readRefineWatch(_principalSlug)) return;
+    resumeCheckedRef.current = true;
+    (async () => {
       try {
-        const verifyResult = await actor.verifyEthTransaction(depositRequestId);
-        const status = typeof verifyResult === "string" ? verifyResult.toLowerCase() : "";
-        if (status.includes("paid") || status.includes("success")) {
+        const st2 = await actor.getDepositStatus(depositRequestId);
+        if (st2.status === "paid") {
+          const paid = Number(st2.sgldtPaid) / 1e8;
           setPhase("success");
           setStatusMsg("Transaction confirmed — sGLDT released!");
-          setSgldtReleased((prev) => prev ?? "check your wallet");
+          setSgldtReleased((prev) => prev ?? (paid > 0 ? paid.toFixed(5) : null));
           setDepositRequestId(null);
           return;
         }
-        if (status.includes("failed") || status.includes("rejected")) {
+        if (st2.status === "failed" || st2.status === "not_found") {
           setDepositRequestId(null);
           return;
         }
-        if (status.includes("pending") || status.includes("confirmed") || status.includes("processing")) {
-          setPhase("eth_monitoring");
-          setStatusMsg("Waiting for Ethereum confirmation...");
-          startAutoPolling(depositRequestId);
-        }
+        if (st2.txHash) setCurrentTxHash(st2.txHash);
+        setPhase("eth_monitoring");
+        setStatusMsg("Waiting for Ethereum confirmation...");
+        startAutoPolling(depositRequestId);
       } catch {
-      }
-    };
-    if (phase === "idle") {
-      checkOnMount();
-    }
-  }, [actor]);
-  reactExports.useEffect(() => {
-    if (!actor || !identity) return;
-    if (depositRequestId) return;
-    if (currentTxHash) return;
-    const intent = readPendingDeposit();
-    if (!intent) return;
-    if (phase !== "idle") return;
-    let cancelled = false;
-    (async () => {
-      setPhase("wallet_confirming");
-      setStatusMsg(
-        "Resuming from your mobile wallet — looking for the broadcast tx on Ethereum…"
-      );
-      const etherscan = findLatestUserTxTo(intent.ethAddress, intent.depositAddress, {
-        timeoutMs: 24e4,
-        pollMs: 4e3
-      }).then((h2) => h2);
-      const rpc = intent.expectedNonce !== null && intent.expectedNonce !== void 0 ? findTxByNonce(intent.ethAddress, intent.expectedNonce, intent.depositAddress, {
-        timeoutMs: 24e4,
-        pollMs: 4e3,
-        scanBlocks: 30
-      }).then((h2) => h2) : Promise.resolve(null);
-      const found = await new Promise((resolve) => {
-        let remaining = 2;
-        let done = false;
-        const settle = (h2) => {
-          if (done) return;
-          if (h2) {
-            done = true;
-            resolve(h2);
-            return;
-          }
-          remaining -= 1;
-          if (remaining === 0 && !done) {
-            done = true;
-            resolve(null);
-          }
-        };
-        etherscan.then(settle).catch(() => settle(null));
-        rpc.then(settle).catch(() => settle(null));
-      });
-      if (cancelled) return;
-      if (!found) {
-        clearPendingDeposit();
-        setPhase("idle");
-        setStatusMsg("");
-        return;
-      }
-      console.log("[mount-resume] recovered pending deposit tx:", found);
-      clearPendingDeposit();
-      setCurrentTxHash(found);
-      setUniAmount(intent.uniAmount);
-      setPhase("eth_monitoring");
-      setStatusMsg("Waiting for Ethereum confirmation...");
-      try {
-        const uniAmountE8s = parseDecimalToBigInt(intent.uniAmount, 8);
-        const rateHint = liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
-        const requestId = await directSubmitUNIDeposit({
-          identity,
-          ethAddress: intent.ethAddress,
-          uniAmountE8s,
-          txHash: found,
-          rateHint
-        });
-        if (cancelled) return;
-        setDepositRequestId(requestId);
-        startAutoPolling(requestId);
-      } catch (err) {
-        console.error("[mount-resume] backend submit failed:", err);
-        if (cancelled) return;
-        setManualTxHash(found);
-        setPhase("error");
-        setStatusMsg(
-          `We found your broadcast tx (${found.slice(0, 14)}…) but the backend rejected the initial submit. Click "Resume monitoring" below to retry.`
-        );
+        resumeCheckedRef.current = false;
       }
     })();
-    return () => {
-      cancelled = true;
-    };
-  }, [actor, identity]);
+  }, [actor, depositRequestId]);
+  reactExports.useEffect(() => {
+    const st2 = refineFlow.state;
+    switch (st2.kind) {
+      case "waiting_mint": {
+        setPhase("ckuni_minting");
+        setBridgeProgress(refineFlow.progress);
+        const mins = Math.floor(st2.elapsedMs / 6e4);
+        const secs = Math.floor(st2.elapsedMs % 6e4 / 1e3);
+        setStatusMsg(
+          `Chain-key minter confirming — ${mins}m ${secs.toString().padStart(2, "0")}s elapsed`
+        );
+        break;
+      }
+      case "approving":
+        setPhase("releasing_sgldt");
+        setBridgeProgress(refineFlow.progress);
+        setStatusMsg("ckUNI received — authorizing the refinery…");
+        hapticMilestone();
+        updateStep("ck-mint", "ckUNI credited by the chain-key minter", "done");
+        updateStep("refine", "Authorizing the refinery to swap your ckUNI", "active");
+        break;
+      case "refining":
+        setPhase("releasing_sgldt");
+        setBridgeProgress(refineFlow.progress);
+        setStatusMsg("Swapping ckUNI for sGLDT…");
+        updateStep("refine", "Swapping ckUNI for sGLDT", "active");
+        break;
+      case "done": {
+        clearRefineWatch(_principalSlug);
+        hapticSuccess();
+        setSuccessReceipt({
+          settledRate: (Number(st2.settledRate) / 1e8).toFixed(4),
+          payBlock: st2.payBlock.toString()
+        });
+        const amount = (Number(st2.sgldt) / 1e8).toFixed(5);
+        setSgldtReleased(amount);
+        setBridgeProgress(1);
+        setStatusMsg("");
+        updateStep("refine", `Refined — ${amount} sGLDT released`, "done");
+        setPhase("success");
+        break;
+      }
+      case "failed":
+        clearRefineWatch(_principalSlug);
+        hapticFailure();
+        setPhase("error");
+        setStatusMsg(st2.error);
+        updateStep("refine", "Refine did not complete", "error", st2.error.slice(0, 120));
+        break;
+    }
+  }, [refineFlow.state, refineFlow.progress]);
   const phaseStep = {
     idle: 0,
     awaiting_deposit: 1,
@@ -53833,354 +53635,63 @@ function App() {
   ];
   const uniUsd = uniBalance && uniPrice ? ((Number.parseFloat(uniBalance || "0") || 0) * uniPrice).toFixed(2) : null;
   const ethUsd = ethBalance && ethPrice ? ((Number.parseFloat(ethBalance || "0") || 0) * ethPrice).toFixed(2) : null;
+  if (new URLSearchParams(window.location.search).has("shaft_demo")) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(MineShaftDemo, {});
+  }
   if (topView === "home") {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(PageFallback, {}), children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       BankingBraveHome,
       {
         onOpenMinegoldUni: enterMinegoldUni,
         onOpenMinegoldBrave: enterMinegoldBrave
       }
-    );
+    ) });
   }
   if (topView === "brave-soon") {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(MinegoldBraveSoon, { onBack: backToBankingBrave, onOpenUni: enterMinegoldUni });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(PageFallback, {}), children: /* @__PURE__ */ jsxRuntimeExports.jsx(MinegoldBraveSoon, { onBack: backToBankingBrave, onOpenUni: enterMinegoldUni }) });
   }
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-[#080808] text-zinc-100 font-sans", children: [
-    !user && /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "div",
+    !user && /* @__PURE__ */ jsxRuntimeExports.jsx(LoginOverlay, { isLoggingIn, onLogin: handleLogin }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      NavBar,
       {
-        "data-ocid": "login.modal",
-        className: "fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4",
-        children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-8 text-center shadow-2xl", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-20 h-20 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-3xl mx-auto flex items-center justify-center mb-6 shadow-lg shadow-yellow-500/30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "40", height: "40", viewBox: "0 0 40 40", fill: "none", xmlns: "http://www.w3.org/2000/svg", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M6 34 L30 8", stroke: "#3B1F00", strokeWidth: "5", strokeLinecap: "square" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M6 34 L30 8", stroke: "#7B4513", strokeWidth: "3", strokeLinecap: "square" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "24", y: "4", width: "14", height: "6", rx: "1", fill: "#FFFFF0" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "24", y: "4", width: "14", height: "2", rx: "1", fill: "white" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M36 2 L40 6 L36 10 L32 6 Z", fill: "#F0F0F0" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M24 10 L20 14 L24 14 Z", fill: "#D8D8D8" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "8", cy: "32", r: "3", fill: "#FFD700", opacity: "0.9" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "13", cy: "30", r: "2", fill: "#FFD700", opacity: "0.6" })
-          ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "text-3xl font-black text-white mb-1", children: [
-            "minegold",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400", children: ".defi" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-yellow-500/60 font-mono uppercase tracking-widest mb-3", children: "Cross-Chain Gold Refinery" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-400 text-sm mb-6 px-4", children: "Swap UNI (Ethereum) for sGLDT (synthetic gold) via the Internet Computer Protocol. Trustless. On-chain." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-3 gap-2 mb-6 text-left", children: [
-            { n: "1", title: "Connect", sub: "ICP + ETH wallets" },
-            { n: "2", title: "Deposit", sub: "UNI via ckERC-20" },
-            { n: "3", title: "Receive", sub: "sGLDT on ICP" }
-          ].map((step) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-800/60 border border-zinc-700/50 rounded-2xl p-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[10px] font-black text-yellow-500/60 mb-1", children: [
-              "STEP ",
-              step.n
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-bold text-white", children: step.title }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[9px] text-zinc-500 mt-0.5", children: step.sub })
-          ] }, step.n)) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            GoldCTA,
-            {
-              "data-ocid": "login.primary_button",
-              onClick: handleLogin,
-              loading: isLoggingIn,
-              size: "lg",
-              leadingIcon: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                "svg",
-                {
-                  width: "24",
-                  height: "24",
-                  viewBox: "0 0 24 24",
-                  fill: "none",
-                  "aria-label": "ICP",
-                  children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "12", cy: "12", r: "12", fill: "url(#icpGrad)" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("defs", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("radialGradient", { id: "icpGrad", cx: "30%", cy: "30%", r: "80%", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0%", stopColor: "#f15a24" }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "50%", stopColor: "#9b2bff" }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "100%", stopColor: "#29abe2" })
-                    ] }) }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "text",
-                      {
-                        x: "12",
-                        y: "16",
-                        textAnchor: "middle",
-                        fontSize: "9",
-                        fontWeight: "bold",
-                        fill: "white",
-                        fontFamily: "monospace",
-                        children: "ICP"
-                      }
-                    )
-                  ]
-                }
-              ),
-              trailingIcon: null,
-              children: isLoggingIn ? "Signing in…" : "Sign in with Internet Identity"
-            }
-          )
-        ] })
+        user,
+        isAdmin: !!isAdmin,
+        showAdmin,
+        showHistory,
+        showTreasury,
+        treasuryPanelRef,
+        displaySGLDTBalance,
+        displaySGLDTLoading,
+        displayCkUNIBalance,
+        displayCkUNILoading,
+        treasuryEthUniBalance,
+        treasuryEthUniLoading,
+        treasuryEthUniUnavailable,
+        ethPrice,
+        uniPrice,
+        sgldtPrice,
+        onBackToBankingBrave: backToBankingBrave,
+        onHome: () => {
+          setShowAdmin(false);
+          setShowHistory(false);
+          setShowProfile(false);
+        },
+        onToggleTreasury: () => setShowTreasury(!showTreasury),
+        onToggleAdmin: () => {
+          setShowAdmin(!showAdmin);
+          setShowHistory(false);
+          setShowProfile(false);
+        },
+        onToggleHistory: () => {
+          setShowHistory(!showHistory);
+          setShowAdmin(false);
+          setShowProfile(false);
+        },
+        onOpenProfile: () => setShowProfile(true),
+        onLogout: handleLogout
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "sticky top-0 z-50 bg-[#080808]/80 backdrop-blur-md border-b border-zinc-800/50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "button",
-          {
-            type: "button",
-            onClick: backToBankingBrave,
-            "aria-label": "Back to Banking.Brave",
-            title: "Back to Banking.Brave",
-            className: "flex items-center gap-2 cursor-pointer bg-transparent border-none p-0 group",
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "w-9 h-9 rounded-full overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform",
-                  style: { background: "#1D4ED8" },
-                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "img",
-                    {
-                      src: "/bankingbrave.png",
-                      alt: "Banking.Brave",
-                      className: "w-[115%] h-[115%] object-cover"
-                    }
-                  )
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "hidden sm:block text-sm font-black tracking-tight", style: { color: "var(--bb-brand)" }, children: [
-                "Banking",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-text)" }, children: ".Brave" })
-              ] })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-700", children: "/" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "button",
-          {
-            type: "button",
-            className: "flex items-center gap-3 cursor-pointer bg-transparent border-none p-0",
-            onClick: () => {
-              setShowAdmin(false);
-              setShowHistory(false);
-              setShowProfile(false);
-            },
-            "aria-label": "minegold.defi home",
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-9 h-9 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-900/30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "18", height: "18", viewBox: "0 0 20 20", fill: "none", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M3 17 L15 4", stroke: "#3B1F00", strokeWidth: "2.5", strokeLinecap: "square" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "12", y: "2", width: "7", height: "3", rx: "0.5", fill: "white", opacity: "0.95" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M18 1 L20 3 L18 5 L16 3 Z", fill: "white", opacity: "0.85" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 5 L10 7 L12 7 Z", fill: "white", opacity: "0.7" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "4", cy: "16", r: "1.5", fill: "#FFD700", opacity: "0.9" })
-              ] }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-base sm:text-lg font-bold tracking-tight", children: [
-                "minegold",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400", children: ".defi" })
-              ] })
-            ]
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
-        user && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "button",
-          {
-            type: "button",
-            "data-ocid": "nav.profile.link",
-            onClick: () => setShowProfile(true),
-            className: "hidden md:flex flex-col items-end mr-2 text-[10px] text-zinc-500 uppercase tracking-tighter hover:text-pink-400 transition-colors cursor-pointer",
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-bold text-pink-500", children: user.identityType }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-                user.principal.slice(0, 12),
-                "..."
-              ] })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative hidden sm:block", ref: treasuryPanelRef, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "button",
-            {
-              type: "button",
-              "data-ocid": "nav.treasury.button",
-              onClick: () => setShowTreasury(!showTreasury),
-              className: `flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${showTreasury ? "bg-yellow-500/10 border-yellow-500/40 text-yellow-300" : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"}`,
-              title: "Treasury Balances",
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { size: 12 }),
-                "Treasury"
-              ]
-            }
-          ),
-          showTreasury && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "div",
-            {
-              "data-ocid": "nav.treasury.panel",
-              className: "absolute right-0 top-full mt-2 w-64 bg-zinc-950 border border-zinc-700 rounded-2xl shadow-2xl z-50 p-4",
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-3", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-black text-zinc-500 uppercase tracking-widest", children: "Treasury Holdings" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-emerald-400 animate-pulse" })
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between bg-yellow-500/5 border border-yellow-500/20 rounded-xl p-3", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-6 h-6 rounded-full bg-yellow-500/20 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-black text-yellow-400", children: "S" }) }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-bold text-zinc-300", children: "sGLDT" })
-                    ] }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "span",
-                      {
-                        "data-ocid": "treasury.panel.sgldt_balance",
-                        className: "text-[12px] font-black text-yellow-300 font-mono",
-                        children: displaySGLDTLoading ? "..." : (Number(displaySGLDTBalance) / 1e8).toLocaleString(
-                          void 0,
-                          {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                          }
-                        )
-                      }
-                    )
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between bg-blue-500/5 border border-blue-500/20 rounded-xl p-3", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-black text-blue-400", children: "U" }) }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-bold text-zinc-300", children: "ckUNI" })
-                    ] }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "span",
-                      {
-                        "data-ocid": "treasury.panel.ckuni_balance",
-                        className: "text-[12px] font-black text-blue-300 font-mono",
-                        children: displayCkUNILoading ? "..." : (Number(displayCkUNIBalance) / 1e18).toLocaleString(
-                          void 0,
-                          {
-                            minimumFractionDigits: 4,
-                            maximumFractionDigits: 4
-                          }
-                        )
-                      }
-                    )
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between bg-pink-500/5 border border-pink-500/20 rounded-xl p-3", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-6 h-6 rounded-full bg-pink-500/20 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-black text-pink-400", children: "U" }) }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-bold text-zinc-300", children: "UNI (ETH)" }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[8px] text-zinc-600 font-mono leading-none mt-0.5", children: "0x2258...B91FF" })
-                      ] })
-                    ] }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "span",
-                      {
-                        "data-ocid": "treasury.panel.eth_uni_balance",
-                        className: "text-[12px] font-black text-pink-300 font-mono",
-                        title: treasuryEthUniUnavailable ? "Balance temporarily unavailable" : void 0,
-                        children: treasuryEthUniLoading ? "..." : treasuryEthUniUnavailable ? "—" : treasuryEthUniBalance ?? "0.0000"
-                      }
-                    )
-                  ] })
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[9px] text-zinc-600 mt-3 text-center", children: "Principal: c626g-iyaaa-aaaau-agpoa-cai" })
-              ]
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "hidden sm:flex items-center gap-4 text-[10px] font-bold text-zinc-500 mr-2", children: [
-          ethPrice && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-            "ETH",
-            " ",
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-blue-400", children: [
-              "$",
-              ethPrice.toLocaleString(void 0, {
-                maximumFractionDigits: 0
-              })
-            ] })
-          ] }),
-          uniPrice && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-            "UNI ",
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-white", children: [
-              "$",
-              uniPrice.toFixed(2)
-            ] })
-          ] }),
-          sgldtPrice && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-            "sGLDT",
-            " ",
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-yellow-400", children: [
-              "$",
-              sgldtPrice.toFixed(4)
-            ] })
-          ] })
-        ] }),
-        user && isAdmin && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            type: "button",
-            "data-ocid": "nav.admin.button",
-            onClick: () => {
-              setShowAdmin(!showAdmin);
-              setShowHistory(false);
-              setShowProfile(false);
-            },
-            className: "w-11 h-11 inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400",
-            title: showAdmin ? "Back to Refinery" : "Admin Panel",
-            "aria-label": showAdmin ? "Back to Refinery" : "Open admin panel",
-            "aria-pressed": showAdmin,
-            children: showAdmin ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 18 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { size: 18 })
-          }
-        ),
-        user && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            type: "button",
-            "data-ocid": "nav.history.button",
-            onClick: () => {
-              setShowHistory(!showHistory);
-              setShowAdmin(false);
-              setShowProfile(false);
-            },
-            className: `w-11 h-11 inline-flex items-center justify-center border rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400 ${showHistory ? "bg-yellow-500/15 border-yellow-500/30 text-yellow-400" : "bg-zinc-900 hover:bg-zinc-800 border-zinc-800 text-zinc-400"}`,
-            title: "Transaction History",
-            "aria-label": "Transaction history",
-            "aria-pressed": showHistory,
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { size: 18 })
-          }
-        ),
-        user && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            type: "button",
-            "data-ocid": "nav.profile.button",
-            onClick: () => setShowProfile(true),
-            className: "w-11 h-11 inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 md:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400",
-            title: "Your Profile",
-            "aria-label": "Open your profile",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleUserRound, { size: 18 })
-          }
-        ),
-        user && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            type: "button",
-            "data-ocid": "nav.logout.button",
-            onClick: handleLogout,
-            className: "w-11 h-11 inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400",
-            title: "Sign out",
-            "aria-label": "Sign out",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(LogOut, { size: 18 })
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, {})
-      ] })
-    ] }) }),
     priceWarning && /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
@@ -54205,1285 +53716,304 @@ function App() {
         }
       }
     ),
-    showProfile && user && /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "div",
+    transferModal && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      TransferModal,
       {
-        className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4",
-        "data-ocid": "profile.modal",
-        children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-950 border border-zinc-800 rounded-[2rem] p-8 w-full max-w-md relative", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "button",
-            {
-              type: "button",
-              "data-ocid": "profile.close_button",
-              onClick: () => setShowProfile(false),
-              className: "absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400",
-              children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 18 })
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 bg-gradient-to-br from-pink-600 to-pink-400 rounded-xl flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleUserRound, { size: 22, className: "text-white" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-bold", children: "Your Identity" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500 uppercase tracking-wider", children: user.identityType })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-900 border border-zinc-800 rounded-xl p-4", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-wider mb-1", children: "Principal ID" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-mono text-zinc-300 break-all flex-1", children: user.principal }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "button",
-                  {
-                    type: "button",
-                    "data-ocid": "profile.copy.button",
-                    onClick: () => {
-                      navigator.clipboard.writeText(user.principal);
-                      setCopiedPrincipal(true);
-                      setTimeout(() => setCopiedPrincipal(false), 2e3);
-                    },
-                    className: "p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-400 transition-colors shrink-0",
-                    title: "Copy to clipboard",
-                    children: copiedPrincipal ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14, className: "text-green-400" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 14 })
-                  }
-                )
-              ] })
-            ] }),
-            ethAddress2 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-900 border border-zinc-800 rounded-xl p-4", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-wider mb-1", children: "ETH Wallet" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-mono text-zinc-300 break-all flex-1", children: ethAddress2 }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "button",
-                  {
-                    type: "button",
-                    "data-ocid": "profile.copy_eth.button",
-                    onClick: async () => {
-                      try {
-                        await navigator.clipboard.writeText(ethAddress2);
-                        setCopiedEthAddress(true);
-                        setTimeout(() => setCopiedEthAddress(false), 2e3);
-                      } catch {
-                        try {
-                          const ta = document.createElement("textarea");
-                          ta.value = ethAddress2;
-                          ta.style.position = "fixed";
-                          ta.style.opacity = "0";
-                          document.body.appendChild(ta);
-                          ta.select();
-                          document.execCommand("copy");
-                          document.body.removeChild(ta);
-                          setCopiedEthAddress(true);
-                          setTimeout(() => setCopiedEthAddress(false), 2e3);
-                        } catch {
-                          ue.error(
-                            "Could not copy — please copy manually"
-                          );
-                        }
-                      }
-                    },
-                    className: "p-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-zinc-400 transition-colors shrink-0",
-                    title: "Copy ETH address",
-                    children: copiedEthAddress ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14, className: "text-green-400" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 14 })
-                  }
-                )
-              ] })
-            ] }),
-            ethBalance !== null && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-900 border border-zinc-800 rounded-xl p-4", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-wider mb-1", children: "ETH Balance" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-bold text-white", children: [
-                safeBalance(ethBalance),
-                " ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-blue-400", children: "ETH" }),
-                ethUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-zinc-500 ml-2", children: [
-                  "(~$",
-                  ethUsd,
-                  ")"
-                ] })
-              ] })
-            ] }),
-            uniBalance !== null && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-900 border border-zinc-800 rounded-xl p-4", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-wider mb-1", children: "UNI Balance" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-bold text-white", children: [
-                safeBalance(uniBalance),
-                " ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-pink-400", children: "UNI" }),
-                uniUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-zinc-500 ml-2", children: [
-                  "(~$",
-                  uniUsd,
-                  ")"
-                ] })
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-900 border border-zinc-800 rounded-xl p-4", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-wider mb-1", children: "sGLDT Balance" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-bold text-white", children: [
-                sgldtBalance ?? "0.0000",
-                " ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-500", children: "sGLDT" }),
-                sgldtUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-zinc-500 ml-2", children: [
-                  "(~$",
-                  sgldtUsd,
-                  ")"
-                ] })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                "button",
-                {
-                  type: "button",
-                  "data-ocid": "profile.transfer_sgldt.button",
-                  onClick: () => {
-                    setShowProfile(false);
-                    setTransferModal("sgldt");
-                    setTransferTo("");
-                    setTransferAmt("");
-                  },
-                  className: "mt-2 flex items-center gap-1 text-[10px] font-bold text-yellow-500 hover:text-yellow-400 transition-colors",
-                  children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { size: 10 }),
-                    " Transfer sGLDT"
-                  ]
-                }
-              )
-            ] })
-          ] })
-        ] })
+        token: transferModal,
+        to: transferTo,
+        amount: transferAmt,
+        loading: transferLoading,
+        onToChange: setTransferTo,
+        onAmountChange: setTransferAmt,
+        onClose: () => setTransferModal(null),
+        onSubmit: handleTransferSubmit
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12", children: showAdmin && user ? /* @__PURE__ */ jsxRuntimeExports.jsx(AdminPage, {}) : showHistory && user ? /* @__PURE__ */ jsxRuntimeExports.jsx(TransactionHistoryPage, {}) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      !ethAddress2 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-12 bg-gradient-to-br from-zinc-900 to-black border border-zinc-800 p-8 rounded-[2rem]", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col md:flex-row items-center justify-between gap-8", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-md text-center md:text-left", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-2 justify-center md:justify-start", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-yellow-400 animate-pulse" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-black text-yellow-500 uppercase tracking-widest", children: "Step 1 of 2" })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold mb-2", children: "Connect Ethereum Wallet" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-500 text-sm", children: "Link MetaMask or Brave Wallet to authorize your UNI deposit into the gold refinery." })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            GoldCTA,
-            {
-              "data-ocid": "wallet.connect.primary_button",
-              onClick: () => setConnectModalOpen(true),
-              size: "md",
-              fullWidth: false,
-              leadingIcon: /* @__PURE__ */ jsxRuntimeExports.jsx(Wallet, {}),
-              trailingIcon: null,
-              className: "w-full md:w-auto md:px-10",
-              children: "Connect Wallet"
-            }
-          )
-        ] }),
-        walletConnectLog.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "details",
-          {
-            className: "mt-4 rounded-2xl border border-zinc-800 bg-black/40 overflow-hidden group",
-            open: !!walletConnectionError,
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("summary", { className: "cursor-pointer select-none list-none flex items-center justify-between gap-2 px-4 py-2.5 text-[10px] font-black text-zinc-500 uppercase tracking-widest hover:text-zinc-300 transition-colors", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Connection diagnostics" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[9px] font-normal text-zinc-600 normal-case tracking-normal", children: [
-                  walletConnectLog.length,
-                  " ",
-                  walletConnectLog.length === 1 ? "entry" : "entries",
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 inline-block transition-transform group-open:rotate-90", children: "›" })
-                ] })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border-t border-zinc-800 px-4 py-3 space-y-1 max-h-40 overflow-y-auto font-mono text-[11px]", children: walletConnectLog.map((line, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "text-zinc-400 break-all",
-                  children: line
-                },
-                `${i}-${line.slice(0, 20)}`
-              )) })
-            ]
-          }
-        )
-      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        walletConnectionError && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "div",
-          {
-            "data-ocid": "wallet.connection_error",
-            className: "mb-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl px-4 py-3 flex items-start gap-3 text-xs text-amber-400 font-medium",
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { size: 14, className: "shrink-0 mt-0.5" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: walletConnectionError }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "button",
-                  {
-                    type: "button",
-                    disabled: balanceRefreshing,
-                    onClick: () => refreshBalances(ethAddress2),
-                    className: "mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-[11px] font-bold disabled:opacity-50",
-                    children: [
-                      balanceRefreshing ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 10, className: "animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRightLeft, { size: 10 }),
-                      "Retry balance fetch"
-                    ]
-                  }
-                )
-              ] })
-            ]
-          }
-        ),
-        (ethBalanceDiag || uniBalanceDiag) && /* @__PURE__ */ jsxRuntimeExports.jsxs("details", { className: "mb-3 text-[10px] font-mono", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("summary", { className: "cursor-pointer text-zinc-500 hover:text-zinc-400 select-none", children: [
-            "▸ Balance path diagnostics",
-            (ethBalanceDiag == null ? void 0 : ethBalanceDiag.source) ? ` · ETH=${ethBalanceDiag.source}` : "",
-            (uniBalanceDiag == null ? void 0 : uniBalanceDiag.source) ? ` · UNI=${uniBalanceDiag.source}` : ""
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 bg-zinc-900/60 border border-zinc-800 rounded-lg p-3 text-zinc-400 space-y-1", children: [
-            ethBalanceDiag && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: "ETH · " }),
-              ["wallet", "rpc", "canister"].map((k2) => {
-                const o = ethBalanceDiag.outcomes[k2];
-                const color = o === "ok" ? "text-emerald-400" : o === "null" ? "text-zinc-500" : o === "err" ? "text-red-400" : "text-zinc-700";
-                return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: `mr-2 ${color}`, children: [
-                  k2,
-                  "=",
-                  o ?? "…"
-                ] }, k2);
-              })
-            ] }),
-            uniBalanceDiag && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: "UNI · " }),
-              ["wallet", "rpc", "canister"].map((k2) => {
-                const o = uniBalanceDiag.outcomes[k2];
-                const color = o === "ok" ? "text-emerald-400" : o === "null" ? "text-zinc-500" : o === "err" ? "text-red-400" : "text-zinc-700";
-                return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: `mr-2 ${color}`, children: [
-                  k2,
-                  "=",
-                  o ?? "…"
-                ] }, k2);
-              })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                type: "button",
-                disabled: balanceRefreshing,
-                onClick: () => refreshBalances(ethAddress2),
-                className: "mt-2 w-full py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-bold disabled:opacity-50",
-                children: balanceRefreshing ? "Refreshing…" : "Refresh now"
+    redeemOpen && user && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      RedeemModal,
+      {
+        identity,
+        onClose: () => setRedeemOpen(false),
+        onRedeemed: () => {
+          if (ethAddress2) void refreshBalances(ethAddress2);
+          void refineFlow.refreshPosition();
+        }
+      }
+    ),
+    showProfile && user && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      ProfileModal,
+      {
+        user,
+        ethAddress: ethAddress2,
+        ethBalance,
+        uniBalance,
+        sgldtBalance,
+        ethUsd,
+        uniUsd,
+        sgldtUsd,
+        onClose: () => setShowProfile(false),
+        onTransferSgldt: () => {
+          setShowProfile(false);
+          setTransferModal("sgldt");
+          setTransferTo("");
+          setTransferAmt("");
+        }
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12", children: showAdmin && user ? /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(PageFallback, {}), children: /* @__PURE__ */ jsxRuntimeExports.jsx(AdminPage, {}) }) : showHistory && user ? /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(PageFallback, {}), children: /* @__PURE__ */ jsxRuntimeExports.jsx(TransactionHistoryPage, {}) }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(BraveStoryStrip, { onOpenBraveSoon: enterMinegoldBrave }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        WalletSection,
+        {
+          ethAddress: ethAddress2,
+          walletConnectLog,
+          walletConnectionError,
+          balanceRefreshing,
+          ethBalanceDiag,
+          uniBalanceDiag,
+          ethBalance,
+          uniBalance,
+          sgldtBalance,
+          ethUsd,
+          uniUsd,
+          sgldtUsd,
+          liveRate: effectiveRate,
+          uniPrice,
+          sgldtPrice,
+          onOpenConnect: () => setConnectModalOpen(true),
+          onRefreshBalances: () => {
+            if (ethAddress2) void refreshBalances(ethAddress2);
+          },
+          onOpenTransfer: (token) => {
+            setTransferModal(token);
+            setTransferTo("");
+            setTransferAmt("");
+          },
+          onOpenRedeem: () => setRedeemOpen(true)
+        }
+      ),
+      user && phase === "idle" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        HoldingsCard,
+        {
+          identity,
+          sgldtBalance,
+          sgldtUsd,
+          ckuniBalance: ((_a3 = refineFlow.position) == null ? void 0 : _a3.balance) ?? null,
+          ckuniRefinable: leftoverRefinable,
+          rateDisplay: (rateLine == null ? void 0 : rateLine.rateDisplay) ?? null,
+          rateProvenance: (rateLine == null ? void 0 : rateLine.provenance) ?? null,
+          onRedeem: () => setRedeemOpen(true)
+        }
+      ),
+      user && unclaimedDeposits.length > 0 && phase === "idle" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        UnclaimedDepositsBanner,
+        {
+          count: unclaimedDeposits.length,
+          claiming: retryPayout.isPending,
+          onClaim: async () => {
+            for (const d2 of unclaimedDeposits) {
+              try {
+                await retryPayout.mutateAsync(d2.id);
+              } catch {
               }
-            )
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "div",
-          {
-            "data-ocid": "wallet.stats.card",
-            className: "mb-6 bg-gradient-to-br from-zinc-900 via-zinc-900 to-black border border-yellow-500/20 rounded-[2rem] overflow-hidden shadow-xl shadow-yellow-500/5",
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-6 pt-5 pb-3 border-b border-zinc-800/70 flex items-center gap-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Wallet, { size: 14, className: "text-yellow-500" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-black text-yellow-500 uppercase tracking-widest", children: "Connected Wallet" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "ml-auto text-[10px] font-mono text-zinc-600", children: [
-                  ethAddress2.slice(0, 6),
-                  "...",
-                  ethAddress2.slice(-4)
-                ] })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 sm:grid-cols-4 divide-x divide-zinc-800/70", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-5", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2", children: "ETH Balance" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xl font-black text-blue-400", children: ethBalance !== null ? safeBalance(ethBalance) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600", children: "—" }) }),
-                  ethUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-zinc-400 mt-1", children: [
-                    "$",
-                    ethUsd,
-                    " USD"
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                    "button",
-                    {
-                      type: "button",
-                      "data-ocid": "wallet.eth.transfer_button",
-                      onClick: () => {
-                        setTransferModal("eth");
-                        setTransferTo("");
-                        setTransferAmt("");
-                      },
-                      className: "mt-3 flex items-center gap-1 text-[10px] font-bold text-blue-400 hover:text-blue-300 transition-colors",
-                      children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { size: 10 }),
-                        " Transfer ETH"
-                      ]
-                    }
-                  )
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-5", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2", children: "UNI Balance" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xl font-black text-pink-400", children: uniBalance !== null ? safeBalance(uniBalance) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600", children: "—" }) }),
-                  uniUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-zinc-400 mt-1", children: [
-                    "$",
-                    uniUsd,
-                    " USD"
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                    "button",
-                    {
-                      type: "button",
-                      "data-ocid": "wallet.uni.transfer_button",
-                      onClick: () => {
-                        setTransferModal("uni");
-                        setTransferTo("");
-                        setTransferAmt("");
-                      },
-                      className: "mt-3 flex items-center gap-1 text-[10px] font-bold text-pink-400 hover:text-pink-300 transition-colors",
-                      children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { size: 10 }),
-                        " Transfer UNI"
-                      ]
-                    }
-                  )
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-5", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2", children: "sGLDT Balance" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xl font-black text-yellow-500", children: sgldtBalance ?? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600", children: "—" }) }),
-                  sgldtUsd && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-zinc-400 mt-1", children: [
-                    "$",
-                    sgldtUsd,
-                    " USD"
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                    "button",
-                    {
-                      type: "button",
-                      "data-ocid": "wallet.sgldt.transfer_button",
-                      onClick: () => {
-                        setTransferModal("sgldt");
-                        setTransferTo("");
-                        setTransferAmt("");
-                      },
-                      className: "mt-3 flex items-center gap-1 text-[10px] font-bold text-yellow-500 hover:text-yellow-400 transition-colors",
-                      children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { size: 10 }),
-                        " Transfer sGLDT"
-                      ]
-                    }
-                  )
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-5", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2", children: "Exchange Rate" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xl font-black text-yellow-400", children: liveRate > 0 ? liveRate.toFixed(4) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-600", children: "—" }) }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-zinc-400 mt-1", children: "sGLDT per UNI" })
-                ] })
-              ] })
-            ]
+            }
+            ue.success("Payout(s) processed — check your sGLDT balance");
           }
-        ),
-        transferModal && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            "data-ocid": "wallet.transfer.modal",
-            className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-950 border border-zinc-800 rounded-[2rem] p-8 w-full max-w-md relative", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "button",
-                {
-                  type: "button",
-                  "data-ocid": "wallet.transfer.close_button",
-                  onClick: () => setTransferModal(null),
-                  className: "absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400",
-                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 18 })
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "div",
-                  {
-                    className: `w-12 h-12 rounded-xl flex items-center justify-center ${transferModal === "eth" ? "bg-blue-500/20" : transferModal === "uni" ? "bg-pink-500/20" : "bg-yellow-500/20"}`,
-                    children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      Send,
-                      {
-                        size: 20,
-                        className: transferModal === "eth" ? "text-blue-400" : transferModal === "uni" ? "text-pink-400" : "text-yellow-500"
-                      }
-                    )
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-xl font-bold text-white", children: [
-                    "Transfer",
-                    " ",
-                    transferModal === "eth" ? "ETH" : transferModal === "uni" ? "UNI" : "sGLDT"
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500", children: transferModal === "sgldt" ? "ICP Principal required" : "Ethereum address required" })
-                ] })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "label",
-                    {
-                      htmlFor: "transfer-address",
-                      className: "text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block",
-                      children: transferModal === "sgldt" ? "Recipient ICP Principal" : "Recipient ETH Address"
-                    }
-                  ),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "input",
-                    {
-                      id: "transfer-address",
-                      type: "text",
-                      "data-ocid": "wallet.transfer.address_input",
-                      value: transferTo,
-                      onChange: (e) => setTransferTo(e.target.value),
-                      placeholder: transferModal === "sgldt" ? "aaaaa-bbbbb-ccccc..." : "0x...",
-                      className: "w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500/60 text-white placeholder:text-zinc-600 rounded-xl px-4 py-3 text-sm font-mono outline-none transition-colors"
-                    }
-                  )
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                    "label",
-                    {
-                      htmlFor: "transfer-amount",
-                      className: "text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block",
-                      children: [
-                        "Amount (",
-                        transferModal === "eth" ? "ETH" : transferModal === "uni" ? "UNI" : "sGLDT",
-                        ")"
-                      ]
-                    }
-                  ),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "input",
-                    {
-                      id: "transfer-amount",
-                      type: "number",
-                      "data-ocid": "wallet.transfer.amount_input",
-                      value: transferAmt,
-                      min: "0",
-                      step: "0.0001",
-                      onChange: (e) => setTransferAmt(e.target.value),
-                      placeholder: "0.0000",
-                      className: "w-full bg-zinc-900 border border-zinc-700 focus:border-yellow-500/60 text-white placeholder:text-zinc-600 rounded-xl px-4 py-3 text-sm font-mono outline-none transition-colors"
-                    }
-                  )
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  GoldCTA,
-                  {
-                    "data-ocid": "wallet.transfer.submit_button",
-                    onClick: handleTransferSubmit,
-                    disabled: !transferTo || !transferAmt || Number.parseFloat(transferAmt) <= 0,
-                    loading: transferLoading,
-                    size: "md",
-                    leadingIcon: /* @__PURE__ */ jsxRuntimeExports.jsx(Send, {}),
-                    trailingIcon: null,
-                    children: transferLoading ? "Submitting…" : "Confirm Transfer"
-                  }
-                )
-              ] })
-            ] })
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            StatCard,
-            {
-              title: "Linked Address",
-              value: `${ethAddress2.slice(0, 6)}...${ethAddress2.slice(-4)}`,
-              sub: "Ethereum Mainnet",
-              icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { className: "text-pink-500" })
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            StatCard,
-            {
-              title: "UNI Balance",
-              value: uniBalance !== null ? safeBalance(uniBalance) : "...",
-              sub: uniUsd ? `≈ $${uniUsd} USD` : "Uniswap ERC-20",
-              icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { className: "text-pink-400" })
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            StatCard,
-            {
-              title: "Exchange Rate",
-              value: liveRate.toFixed(4),
-              sub: `UNI $${(uniPrice == null ? void 0 : uniPrice.toFixed(2)) ?? "—"} / sGLDT $${(sgldtPrice == null ? void 0 : sgldtPrice.toFixed(4)) ?? "—"}`,
-              icon: /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRightLeft, { className: "text-zinc-500" })
-            }
-          )
-        ] })
-      ] }),
-      user && unclaimedDeposits.length > 0 && phase === "idle" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6 rounded-3xl border border-yellow-500/40 bg-yellow-500/10 backdrop-blur p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-500", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "shrink-0 w-12 h-12 rounded-2xl bg-yellow-500/20 border border-yellow-500/30 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { className: "w-6 h-6 text-yellow-400" }) }),
+        }
+      ),
+      user && leftoverRefinable && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6 rounded-3xl border border-blue-500/40 bg-blue-500/10 backdrop-blur p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-500", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-black text-yellow-300 mb-1", children: unclaimedDeposits.length === 1 ? "1 unclaimed deposit ready to mint sGLDT" : `${unclaimedDeposits.length} unclaimed deposits ready to mint sGLDT` }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-yellow-200/70", children: "Your UNI deposit is confirmed on Ethereum. Claim your sGLDT now — this takes ~5 seconds." })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-black text-blue-300 mb-1", children: [
+            (Number(leftoverCkUNI) / 1e18).toFixed(6),
+            " ckUNI is in your account, ready to refine"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-blue-200/70", children: "The chain-key minter already bridged your UNI. One tap swaps it for sGLDT — no wallet needed." })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           GoldCTA,
           {
-            "data-ocid": "deposits.claim.button",
-            loading: retryPayout.isPending,
-            onClick: async () => {
-              for (const d2 of unclaimedDeposits) {
-                try {
-                  await retryPayout.mutateAsync(d2.id);
-                } catch {
-                }
-              }
-              ue.success("Payout(s) processed — check your sGLDT balance");
-            },
+            "data-ocid": "refine.leftover.button",
             size: "md",
             fullWidth: false,
             trailingIcon: null,
             className: "w-full sm:w-auto",
-            children: retryPayout.isPending ? "Claiming…" : "Claim sGLDT"
+            onClick: () => {
+              void refineFlow.refineNow(leftoverCkUNI, effectiveRateHint);
+            },
+            children: "Refine into sGLDT"
           }
         )
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "div",
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        RefineryShell,
         {
-          className: `transition-all duration-700 ${!ethAddress2 ? "opacity-30 pointer-events-none scale-95 grayscale" : ""}`,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "refinery-panel bg-zinc-900 border border-zinc-800 rounded-[2.5rem] overflow-hidden shadow-2xl", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 sm:p-10", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-3xl font-black bg-gradient-to-r from-white to-zinc-600 bg-clip-text text-transparent italic", children: "THE REFINERY" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-wrap items-center gap-3 mt-1.5", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" }),
-                      displaySGLDTLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-600 font-mono", children: "Loading treasury…" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                        "span",
-                        {
-                          className: "text-[11px] font-semibold font-mono text-emerald-400/90",
-                          "data-ocid": "refinery.treasury_balance",
-                          children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-emerald-300", children: formatTokenAmount(displaySGLDTBalance) }),
-                            " ",
-                            "sGLDT available"
-                          ]
-                        }
-                      )
-                    ] }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" }),
-                      displayCkUNILoading ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-600 font-mono", children: "Loading…" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                        "span",
-                        {
-                          className: "text-[11px] font-semibold font-mono text-blue-400/90",
-                          "data-ocid": "refinery.ckuni_balance",
-                          children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-blue-300", children: formatTokenAmount(displayCkUNIBalance, 18) }),
-                            " ",
-                            "ckUNI minted"
-                          ]
-                        }
-                      )
-                    ] }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-pink-400 shrink-0" }),
-                      treasuryEthUniLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-600 font-mono", children: "Loading…" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                        "span",
-                        {
-                          className: "text-[11px] font-semibold font-mono text-pink-400/90",
-                          "data-ocid": "refinery.eth_uni_balance",
-                          title: treasuryEthUniUnavailable ? "Balance temporarily unavailable" : void 0,
-                          children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-pink-300", children: treasuryEthUniUnavailable ? "—" : treasuryEthUniBalance ?? "0.0000" }),
-                            " ",
-                            "UNI on ETH"
-                          ]
-                        }
-                      )
-                    ] })
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mt-2", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-emerald-500 animate-pulse" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-zinc-500 text-xs font-bold uppercase tracking-widest", children: "UNI → sGLDT" })
-                  ] })
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-end gap-1", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-black border border-zinc-800 px-4 py-2 rounded-xl text-[10px] font-bold text-zinc-400", children: "GAS: ~0.002 ETH" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[9px] text-blue-500/60 font-mono", children: "via ICP ERC-20 Minter" })
-                ] })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-5 gap-4", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "lg:col-span-2 group", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-black/50 p-6 sm:p-8 rounded-3xl border border-zinc-800 group-focus-within:border-pink-500/40 transition-all", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-4", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-black text-zinc-500 tracking-widest uppercase", children: "From (Ethereum)" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-pink-500 font-bold", children: "UNI" })
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "input",
-                    {
-                      "data-ocid": "refinery.uni.input",
-                      type: "text",
-                      inputMode: "decimal",
-                      placeholder: "0.00",
-                      autoComplete: "off",
-                      autoCorrect: "off",
-                      autoCapitalize: "off",
-                      spellCheck: false,
-                      "aria-label": "UNI amount to swap",
-                      className: "bg-transparent text-3xl sm:text-4xl font-bold w-full outline-none text-white placeholder:text-zinc-600 focus-visible:placeholder:text-zinc-500 tabular-nums min-w-0",
-                      value: uniAmount,
-                      onChange: (e) => {
-                        let val = e.target.value.trim();
-                        if (!/^\d*\.?\d*$/.test(val)) return;
-                        if (val.startsWith(".")) val = `0${val}`;
-                        if (val === "" || val === "0" || val.endsWith(".")) {
-                          setUniAmount(val);
-                          return;
-                        }
-                        const raw = Number.parseFloat(val);
-                        if (Number.isNaN(raw) || raw < 0) {
-                          setUniAmount("");
-                          return;
-                        }
-                        const max = Number.parseFloat(uniBalance ?? "");
-                        if (Number.isFinite(max) && raw > max) {
-                          setUniAmount(uniBalance ?? "");
-                          return;
-                        }
-                        setUniAmount(val);
-                      },
-                      disabled: isActive
-                    }
-                  ),
-                  uniBalance && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: () => setUniAmount(uniBalance),
-                      className: "mt-2 px-3 py-2 text-xs text-pink-500 font-bold hover:underline hover:bg-pink-500/5 rounded-md -ml-1",
-                      children: [
-                        "MAX: ",
-                        uniBalance,
-                        " UNI"
-                      ]
-                    }
-                  ),
-                  uniBalance && Number.parseFloat(uniAmount) > Number.parseFloat(uniBalance) && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1.5 text-xs text-red-400 font-semibold", children: "Exceeds your UNI balance" })
-                ] }) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center lg:col-span-1 py-4 lg:py-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-14 h-14 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-yellow-500 shadow-xl", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRightLeft, { size: 24 }) }) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "lg:col-span-2 group", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-yellow-500/[0.03] p-6 sm:p-8 rounded-3xl border border-yellow-500/10 transition-all", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-4", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-black text-yellow-600 tracking-widest uppercase", children: "To (ICP Network)" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-yellow-500 font-bold", children: "sGLDT" })
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-4xl font-bold text-yellow-500 truncate", children: phase === "success" && sgldtReleased ? sgldtReleased : estimatedGold.toFixed(5) })
-                ] }) })
-              ] }),
-              miningSteps.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                TransactionTimeline,
-                {
-                  steps: miningSteps,
-                  defaultOpen: phase === "error" || phase === "success",
-                  onClear: resetSteps
+          dimmed: !ethAddress2,
+          displaySGLDTBalance,
+          displaySGLDTLoading,
+          displayCkUNIBalance,
+          displayCkUNILoading,
+          treasuryEthUniBalance,
+          treasuryEthUniLoading,
+          treasuryEthUniUnavailable,
+          uniAmount,
+          uniBalance,
+          inputDisabled: isActive,
+          outputDisplay: phase === "success" && sgldtReleased ? sgldtReleased : `≈ ${estimatedGold.toFixed(5)}`,
+          onUniAmountChange: setUniAmount,
+          ckuniLedgerCanisterId: CKUNI_LEDGER_CANISTER_ID,
+          gasEstimate,
+          rateLine,
+          minReceivedDisplay,
+          children: [
+            miningSteps.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              TransactionTimeline,
+              {
+                steps: miningSteps,
+                defaultOpen: phase === "error" || phase === "success",
+                onClear: resetSteps
+              }
+            ) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-10", children: phase === "success" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+              PhaseSuccess,
+              {
+                sgldtReleased,
+                currentTxHash,
+                settledRate: (successReceipt == null ? void 0 : successReceipt.settledRate) ?? null,
+                payBlock: (successReceipt == null ? void 0 : successReceipt.payBlock) ?? null,
+                onStartNew: () => {
+                  pollEpochRef.current += 1;
+                  clearRefineWatch(_principalSlug);
+                  refineFlow.reset();
+                  setPhase("idle");
+                  setSgldtReleased(null);
+                  setCurrentTxHash(null);
+                  setSuccessReceipt(null);
                 }
-              ) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-10", children: phase === "success" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-                PhaseSuccess,
-                {
-                  sgldtReleased,
-                  currentTxHash,
-                  onStartNew: () => {
+              }
+            ) : phase === "error" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+              PhaseError,
+              {
+                statusMsg,
+                currentTxHash,
+                pollAttempt,
+                retryErrorMsg,
+                miningSteps,
+                retryRefineAvailable: refineFlow.position != null && refineFlow.position.balance >= refineFlow.position.minRefine + 2n * CKUNI_FEE_FALLBACK,
+                retryRefineBalance: refineFlow.position ? (Number(refineFlow.position.balance) / 1e18).toFixed(4) : null,
+                onRetryRefine: () => {
+                  if (!refineFlow.position) return;
+                  const hint = effectiveRateHint;
+                  void refineFlow.refineNow(refineFlow.position.balance, hint);
+                },
+                onViewHistory: () => setShowHistory(true),
+                onTryAgain: async () => {
+                  if (depositRequestId !== null && actor) {
+                    try {
+                      await actor.resetMiningPhase(depositRequestId);
+                    } catch {
+                    }
+                  }
+                  pollEpochRef.current += 1;
+                  clearRefineWatch(_principalSlug);
+                  refineFlow.reset();
+                  setDepositRequestId(null);
+                  setCurrentTxHash(null);
+                  setStatusMsg("");
+                  setRetryErrorMsg(null);
+                  setPhase("idle");
+                }
+              }
+            ) : phase === "wallet_confirming" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+              PhaseWalletConfirming,
+              {
+                uniAmount,
+                depositAddress,
+                beneficiaryPrincipal: (user == null ? void 0 : user.principal) ?? "",
+                unlimitedApproval,
+                onBeginWatch: () => {
+                  const amountWei = parseDecimalToBigInt(uniAmount, 18);
+                  if (amountWei === 0n) {
                     setPhase("idle");
-                    setSgldtReleased(null);
-                    setCurrentTxHash(null);
+                    return;
                   }
+                  const hint = effectiveRateHint;
+                  writeRefineWatch(_principalSlug, {
+                    txHash: currentTxHash,
+                    amountWei: amountWei.toString(),
+                    rateHint: (hint == null ? void 0 : hint.toString()) ?? null,
+                    startedAt: Date.now()
+                  });
+                  updateStep(
+                    "ck-mint",
+                    "Chain-key minter confirming (12 Ethereum blocks)",
+                    "active",
+                    "watching for ckUNI credit"
+                  );
+                  setPhase("ckuni_minting");
+                  setStatusMsg("Watching for your ckUNI credit…");
+                  refineFlow.beginWatch(amountWei, hint);
+                },
+                onCancel: () => {
+                  pollEpochRef.current += 1;
+                  setPhase("idle");
+                  setStatusMsg("");
                 }
-              ) : phase === "error" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  "data-ocid": "refinery.error_state",
-                  className: "space-y-4",
-                  children: statusMsg === "still_processing" ? (
-                    /* Soft state: ETH confirmed but backend still processing — auto-polling */
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-amber-500/10 border border-amber-500/30 p-5 flex items-start gap-4", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "shrink-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(PixelAxeAnimation, { label: "" }) }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 pt-1", children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-amber-400 mb-1", children: "Ethereum Transaction Confirmed" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-400 mb-2", children: "Still mining — checking your sGLDT release automatically every 3 seconds." }),
-                          currentTxHash && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                            "a",
-                            {
-                              href: `https://etherscan.io/tx/${currentTxHash}`,
-                              target: "_blank",
-                              rel: "noopener noreferrer",
-                              className: "inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 underline transition-colors",
-                              "data-ocid": "refinery.etherscan_processing.link",
-                              children: [
-                                /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { size: 11 }),
-                                "View on Etherscan"
-                              ]
-                            }
-                          ),
-                          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-600 mt-2 font-mono animate-pulse", children: [
-                            "Checking transaction... (attempt ",
-                            pollAttempt,
-                            ")"
-                          ] })
-                        ] })
-                      ] }),
-                      retryErrorMsg && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                        "div",
-                        {
-                          "data-ocid": "refinery.retry_error.error_state",
-                          className: "rounded-2xl bg-red-500/10 border border-red-500/30 p-4 flex items-start gap-3",
-                          children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsx(
-                              CircleX,
-                              {
-                                className: "text-red-400 flex-shrink-0 mt-0.5",
-                                size: 18
-                              }
-                            ),
-                            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-semibold text-red-400 mb-0.5", children: "Payout Error" }),
-                              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-400", children: retryErrorMsg }),
-                              retryErrorMsg.toLowerCase().includes("too low") && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500 mt-1", children: "The treasury needs to be topped up with sGLDT before this payout can complete. Your deposit is safe — retrying automatically." })
-                            ] })
-                          ]
-                        }
-                      ),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "button",
-                        {
-                          type: "button",
-                          "data-ocid": "refinery.view_history.button",
-                          onClick: () => setShowHistory(true),
-                          className: "w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold h-12 rounded-2xl transition-all text-sm",
-                          children: "View Transaction History"
-                        }
-                      )
-                    ] })
-                  ) : (
-                    /* Hard error state */
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-red-500/10 border border-red-500/30 p-5 flex items-start gap-3", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(
-                          CircleX,
-                          {
-                            className: "text-red-400 flex-shrink-0 mt-0.5",
-                            size: 20
-                          }
-                        ),
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-red-400 mb-1", children: "Error" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-400", children: statusMsg }),
-                          currentTxHash && /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                            "a",
-                            {
-                              href: `https://etherscan.io/tx/${currentTxHash}`,
-                              target: "_blank",
-                              rel: "noopener noreferrer",
-                              className: "mt-2 inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 underline transition-colors",
-                              "data-ocid": "refinery.etherscan_error.link",
-                              children: [
-                                /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { size: 11 }),
-                                "Track on Etherscan"
-                              ]
-                            }
-                          )
-                        ] })
-                      ] }),
-                      miningSteps.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-zinc-900 border border-zinc-700/50 p-4 space-y-2", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest", children: "Progress" }),
-                        miningSteps.map((s) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-2 text-xs", children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "mt-0.5 shrink-0 text-sm", children: s.status === "done" ? "✅" : s.status === "error" ? "❌" : s.status === "active" ? "⏳" : "⚪" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: s.status === "done" ? "text-emerald-400" : s.status === "error" ? "text-red-400" : s.status === "active" ? "text-yellow-400" : "text-zinc-500", children: s.label }),
-                            s.detail && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] text-zinc-500 font-mono break-all mt-0.5", children: s.detail })
-                          ] })
-                        ] }, s.id))
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-emerald-500/10 border border-emerald-500/40 p-4 space-y-2", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-2", children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14, className: "text-emerald-400 shrink-0 mt-0.5" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[11px] text-emerald-300 leading-relaxed", children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "block text-emerald-200 mb-0.5", children: "Already signed your deposit?" }),
-                            "Tap below — we'll find your deposit on Ethereum and finalize it automatically."
-                          ] })
-                        ] }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(
-                          "button",
-                          {
-                            type: "button",
-                            disabled: manualRecoveryBusy,
-                            onClick: finalizeFromChain,
-                            className: "w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-3 rounded-xl disabled:opacity-50 text-sm flex items-center justify-center gap-2",
-                            "data-ocid": "refinery.finalize_from_chain.error_button",
-                            children: manualRecoveryBusy ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                              /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 animate-spin" }),
-                              "Searching Ethereum…"
-                            ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                              /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 16 }),
-                              "Finalize my deposit"
-                            ] })
-                          }
-                        )
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("details", { className: "rounded-2xl bg-zinc-900/60 border border-zinc-800 p-4", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("summary", { className: "cursor-pointer text-xs font-bold text-yellow-400 select-none", children: "Paste tx hash manually (advanced)" }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 space-y-2", children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-zinc-400 leading-relaxed", children: "Rarely needed — the green button above is the fastest path. Use this only if you want to explicitly paste a specific deposit hash." }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx(
-                            "input",
-                            {
-                              type: "text",
-                              value: manualTxHash,
-                              onChange: (e) => setManualTxHash(e.target.value),
-                              placeholder: "0x…",
-                              className: "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-xs text-yellow-300 font-mono placeholder:text-zinc-600"
-                            }
-                          ),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx(
-                            "button",
-                            {
-                              type: "button",
-                              disabled: manualRecoveryBusy || !manualTxHash,
-                              onClick: () => resumeFromTxHash(manualTxHash),
-                              className: "w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2 rounded-lg disabled:opacity-50 text-sm",
-                              children: manualRecoveryBusy ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mx-auto animate-spin" }) : "Resume monitoring"
-                            }
-                          )
-                        ] })
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        GoldCTA,
-                        {
-                          "data-ocid": "refinery.try_again.button",
-                          tone: "neutral",
-                          size: "md",
-                          trailingIcon: null,
-                          onClick: async () => {
-                            if (depositRequestId !== null && actor) {
-                              try {
-                                await actor.resetMiningPhase(
-                                  depositRequestId
-                                );
-                              } catch {
-                              }
-                            }
-                            setDepositRequestId(null);
-                            setCurrentTxHash(null);
-                            setStatusMsg("");
-                            setRetryErrorMsg(null);
-                            setPhase("idle");
-                          },
-                          children: "Try Again"
-                        }
-                      )
-                    ] })
-                  )
+              }
+            ) : phase === "eth_monitoring" || phase === "ckuni_minting" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+              PhaseEthMonitoring,
+              {
+                uniAmount,
+                bridgeProgress,
+                pollAttempt,
+                currentTxHash,
+                statusMsg,
+                minterFlow: phase === "ckuni_minting",
+                checkDisabled: phase === "ckuni_minting" ? false : !actor || !depositRequestId,
+                onCheckNow: checkNow,
+                onCancel: () => {
+                  pollEpochRef.current += 1;
+                  clearRefineWatch(_principalSlug);
+                  refineFlow.reset();
+                  setPhase("idle");
+                  setStatusMsg("");
                 }
-              ) : phase === "wallet_confirming" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-                PhaseWalletConfirming,
-                {
-                  uniAmount,
-                  depositAddress,
-                  manualTxHash,
-                  manualRecoveryBusy,
-                  onManualTxHashChange: setManualTxHash,
-                  onResumeFromTxHash: resumeFromTxHash,
-                  onFinalizeFromChain: finalizeFromChain,
-                  onCancel: () => {
-                    abortRef.current = true;
-                    setPhase("idle");
-                    setStatusMsg("");
-                  }
+              }
+            ) : phase === "awaiting_deposit" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+              PhaseAwaitingDeposit,
+              {
+                depositAddress,
+                copied: copiedDepositAddress,
+                onCopyAddress: copyDepositAddress,
+                onCancel: () => {
+                  pollEpochRef.current += 1;
+                  setPhase("idle");
                 }
-              ) : phase === "eth_monitoring" ? (
-                /* Waiting for Ethereum on-chain confirmation — new rich
-                   visualization: stepper + cross-chain flow + live block
-                   meter + prominent pixel mining animation. */
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "div",
-                  {
-                    "data-ocid": "refinery.eth_monitoring.loading_state",
-                    className: "space-y-4",
-                    children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(WorkflowStepper, { currentStep: 2 }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(CrossChainFlow, { phase: "bridge", amount: uniAmount }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative rounded-2xl border border-zinc-800 bg-zinc-900/40 overflow-hidden p-5 flex items-center gap-5", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "shrink-0 scale-90 sm:scale-100 origin-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                          PixelAxeAnimation,
-                          {
-                            label: "",
-                            compact: true,
-                            pollPing: pollAttempt > 0 ? pollAttempt : void 0
-                          }
-                        ) }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1", children: "Status" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-white text-sm sm:text-base mb-1 leading-snug", children: bridgeProgress >= 1 ? "Releasing sGLDT" : bridgeProgress > 0 ? "Minting ckUNI to treasury" : "Awaiting Ethereum confirmations" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-zinc-400 leading-relaxed", children: "The chain-key minter waits for 12 Ethereum blocks, then credits ckUNI to the treasury. sGLDT releases automatically on arrival." })
-                        ] })
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                        "div",
-                        {
-                          className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 space-y-2",
-                          "aria-live": "polite",
-                          "aria-atomic": "true",
-                          children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
-                              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 min-w-0", children: [
-                                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-blue-400 animate-pulse shrink-0", "aria-hidden": true }),
-                                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-black text-zinc-300 uppercase tracking-widest truncate", children: "Bridge progress" })
-                              ] }),
-                              /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                                "span",
-                                {
-                                  className: "text-[11px] font-mono font-bold text-zinc-200 tabular-nums",
-                                  "data-ocid": "refinery.bridge.progress_pct",
-                                  children: [
-                                    Math.round(bridgeProgress * 100),
-                                    "%"
-                                  ]
-                                }
-                              )
-                            ] }),
-                            /* @__PURE__ */ jsxRuntimeExports.jsx(
-                              "div",
-                              {
-                                className: "w-full h-2 rounded-full bg-zinc-800 overflow-hidden",
-                                role: "progressbar",
-                                "aria-valuemin": 0,
-                                "aria-valuemax": 100,
-                                "aria-valuenow": Math.round(bridgeProgress * 100),
-                                "aria-label": "Bridge progress: percent of your UNI deposit credited to the ICP treasury as ckUNI",
-                                children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                                  "div",
-                                  {
-                                    className: "h-full bg-gradient-to-r from-blue-500 via-blue-400 to-sky-300 transition-[width] duration-500 ease-out",
-                                    style: {
-                                      width: `${Math.max(2, Math.round(bridgeProgress * 100))}%`
-                                    }
-                                  }
-                                )
-                              }
-                            ),
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-zinc-400 leading-relaxed", children: bridgeProgress >= 1 ? "ckUNI received — finalizing sGLDT release (under 10 s)." : bridgeProgress > 0 ? "Minter is crediting ckUNI to the treasury. Typically finishes within a minute of the 12th Ethereum confirmation." : "Waiting for 12 Ethereum confirmations before the minter releases ckUNI. Typically 3–5 minutes." }),
-                            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 leading-relaxed", children: "Safe to close this tab — your deposit is recorded and the canister will finalize on its own." })
-                          ]
-                        }
-                      ),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(BlockConfirmationMeter, { txHash: currentTxHash }),
-                      currentTxHash && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-3 flex items-center justify-between gap-3", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-0.5", children: "Deposit Tx" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsxs("code", { className: "text-[11px] text-blue-300 font-mono truncate block", children: [
-                            currentTxHash.slice(0, 14),
-                            "…",
-                            currentTxHash.slice(-8)
-                          ] })
-                        ] }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                          "a",
-                          {
-                            href: `https://etherscan.io/tx/${currentTxHash}`,
-                            target: "_blank",
-                            rel: "noopener noreferrer",
-                            className: "shrink-0 inline-flex items-center gap-1.5 text-[11px] font-bold text-blue-300 hover:text-blue-200 bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-xl transition-colors",
-                            "data-ocid": "refinery.etherscan.link",
-                            children: [
-                              /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { size: 11 }),
-                              "Etherscan ↗"
-                            ]
-                          }
-                        )
-                      ] }),
-                      statusMsg && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center text-xs text-zinc-500 font-medium", children: statusMsg }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-2", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(
-                          GoldCTA,
-                          {
-                            "data-ocid": "refinery.check_now.button",
-                            tone: "info",
-                            size: "md",
-                            trailingIcon: null,
-                            disabled: !actor || !depositRequestId,
-                            onClick: async () => {
-                              if (!actor || !depositRequestId) return;
-                              try {
-                                const result = await actor.retryUNIDepositPayout(depositRequestId);
-                                const raw = typeof result === "string" ? result : String(result ?? "");
-                                const s = raw.toLowerCase();
-                                if (s.includes("paid") || s.includes("success")) {
-                                  const m2 = raw.match(/[:\s](\d+\.?\d*)\s*sgldt/i) ?? raw.match(/paid[:\s]+(\d+\.?\d*)/i);
-                                  await stopWithSuccess(m2 ? m2[1] : null);
-                                } else if (s.includes("payout_failed:")) {
-                                  const reason = raw.replace(/^.*payout_failed:\s*/i, "").trim();
-                                  const isFunds = reason.toLowerCase().includes("insufficientfunds") || reason.toLowerCase().includes("insufficient");
-                                  stopWithError(
-                                    isFunds ? "Refinery is out of sGLDT right now. Your deposit is recorded — try again in a few minutes, or contact support." : `Release failed: ${reason || "Unknown error"}`
-                                  );
-                                } else {
-                                  ue.info(
-                                    raw.trim().length > 0 ? `Still processing: ${raw.trim()}` : "Still processing. The backend sweeper runs every 30s — sGLDT will appear automatically."
-                                  );
-                                }
-                              } catch (err) {
-                                ue.error(
-                                  `Check failed: ${err instanceof Error ? err.message : String(err)}`
-                                );
-                              }
-                            },
-                            children: "Check now"
-                          }
-                        ),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(
-                          GoldCTA,
-                          {
-                            "data-ocid": "refinery.cancel.button",
-                            tone: "neutral",
-                            size: "md",
-                            trailingIcon: null,
-                            onClick: () => {
-                              abortRef.current = true;
-                              setPhase("idle");
-                              setStatusMsg("");
-                            },
-                            children: "Cancel monitoring"
-                          }
-                        )
-                      ] })
-                    ]
-                  }
-                )
-              ) : phase === "awaiting_deposit" ? (
-                /* Legacy fallback phase — should not show in normal flow */
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "div",
-                  {
-                    "data-ocid": "refinery.awaiting_deposit_state",
-                    className: "space-y-4",
-                    children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 px-1", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-yellow-400 animate-pulse shrink-0" }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-yellow-400 text-sm", children: "Waiting for your deposit on Ethereum..." })
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-zinc-900 border border-zinc-700 p-4", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-2", children: "Send UNI to this address" }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx(
-                            "code",
-                            {
-                              className: "flex-1 text-xs text-yellow-300 font-mono break-all leading-relaxed",
-                              "data-ocid": "refinery.deposit_address",
-                              children: depositAddress
-                            }
-                          ),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx(
-                            "button",
-                            {
-                              type: "button",
-                              "data-ocid": "refinery.copy_deposit_address.button",
-                              onClick: copyDepositAddress,
-                              "aria-label": "Copy deposit address",
-                              className: "shrink-0 w-9 h-9 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 flex items-center justify-center transition-colors",
-                              children: copiedDepositAddress ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-                                CircleCheck,
-                                {
-                                  size: 15,
-                                  className: "text-emerald-400"
-                                }
-                              ) : /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 15, className: "text-zinc-400" })
-                            }
-                          )
-                        ] })
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex gap-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "button",
-                        {
-                          type: "button",
-                          "data-ocid": "refinery.cancel.button",
-                          onClick: () => {
-                            abortRef.current = true;
-                            setPhase("idle");
-                          },
-                          className: "flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 font-bold h-14 rounded-2xl transition-all",
-                          children: "Cancel"
-                        }
-                      ) })
-                    ]
-                  }
-                )
-              ) : isActive ? (
-                /* Phase: releasing_sgldt — sGLDT being transferred */
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "div",
-                  {
-                    "data-ocid": "refinery.mining.loading_state",
-                    className: "space-y-6",
-                    children: [
-                      phase === "releasing_sgldt" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl bg-yellow-500/10 border border-yellow-500/30 p-4 flex items-center gap-4", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "shrink-0 bg-zinc-900/80 rounded-xl p-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx(PixelAxeAnimation, { label: "", success: true }) }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-yellow-400 text-sm", children: "Releasing sGLDT to Your Account" }),
-                          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-400 mt-1", children: "ETH transaction confirmed — sGLDT is being transferred from the treasury to your ICP account." })
-                        ] })
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: phaseLabels[phaseStep - 1] ?? statusMsg }),
-                        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-pink-500", children: [
-                          Math.round(phaseStep / 3 * 100),
-                          "%"
-                        ] })
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full bg-zinc-800 h-3 rounded-full overflow-hidden p-0.5", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "div",
-                        {
-                          className: "h-full bg-gradient-to-r from-blue-600 via-yellow-400 to-pink-600 rounded-full transition-all duration-700 shadow-[0_0_15px_rgba(255,0,122,0.3)]",
-                          style: { width: `${phaseStep / 3 * 100}%` }
-                        }
-                      ) }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center text-xs text-zinc-500 font-medium", children: statusMsg }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 text-[10px] text-zinc-600 font-bold italic", children: [
-                        /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 12, className: "animate-spin" }),
-                        "Processing on ICP..."
-                      ] }) })
-                    ]
-                  }
-                )
-              ) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  GoldCTA,
-                  {
-                    "data-ocid": "refinery.start.primary_button",
-                    onClick: startMining,
-                    disabled: !uniAmount || !ethAddress2 || !user || !actor && !actorTimedOut || liveRate <= 0 || !uniPrice || !sgldtPrice,
-                    "aria-label": "Mine sGLDT by depositing UNI",
-                    size: "lg",
-                    className: "shadow-2xl",
-                    children: "⛏ Mine sGLDT"
-                  }
-                ),
-                (liveRate <= 0 || !uniPrice || !sgldtPrice) && user && ethAddress2 && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-center text-xs text-amber-400", children: "Waiting for live exchange rate before enabling swap…" }),
-                user && !actor && !actorTimedOut && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-center text-xs text-zinc-500 animate-pulse", children: "Connecting to canister..." }),
-                actorTimedOut && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 text-center space-y-2", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-red-400", children: "Unable to reach the refinery. Please refresh the page." }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: () => window.location.reload(),
-                      className: "text-xs text-zinc-400 underline underline-offset-2 hover:text-white transition-colors",
-                      children: "Retry"
-                    }
-                  )
-                ] }),
-                user && ethAddress2 && actor && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: () => setShowRecoveryPanel((v2) => !v2),
-                      className: "w-full text-center text-[11px] text-zinc-500 hover:text-zinc-300 underline underline-offset-2 transition-colors py-2",
-                      "data-ocid": "refinery.recovery.toggle",
-                      "aria-expanded": showRecoveryPanel,
-                      children: showRecoveryPanel ? "Hide recovery options" : "Already sent UNI? Recover a previous deposit"
-                    }
-                  ),
-                  showRecoveryPanel && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 rounded-2xl border border-blue-500/30 bg-blue-500/5 p-4 space-y-4", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-black text-blue-300 uppercase tracking-widest mb-1", children: "Recover a previous deposit" }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-zinc-400 leading-relaxed", children: "If you sent UNI to the bridge but the dApp didn't track the swap, enter the same UNI amount above, then either scan for your recent tx or paste its hash. The canister re-verifies the calldata and releases your sGLDT." })
-                    ] }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "button",
-                      {
-                        type: "button",
-                        "data-ocid": "refinery.recovery.scan",
-                        onClick: finalizeFromChain,
-                        disabled: manualRecoveryBusy || !uniAmount || Number.parseFloat(uniAmount || "0") <= 0,
-                        className: "w-full min-h-[48px] rounded-xl bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/30 text-blue-200 font-bold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed",
-                        children: manualRecoveryBusy ? "Searching Ethereum…" : "Scan Ethereum for my deposit"
-                      }
-                    ),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-1 h-px bg-zinc-800" }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-zinc-600 uppercase tracking-widest", children: "or" }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-1 h-px bg-zinc-800" })
-                    ] }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "label",
-                        {
-                          htmlFor: "recovery-tx-hash",
-                          className: "block text-[10px] font-black text-zinc-500 uppercase tracking-widest",
-                          children: "Paste your deposit tx hash"
-                        }
-                      ),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "input",
-                        {
-                          id: "recovery-tx-hash",
-                          type: "text",
-                          inputMode: "text",
-                          autoCapitalize: "off",
-                          autoCorrect: "off",
-                          spellCheck: false,
-                          value: manualTxHash,
-                          onChange: (e) => setManualTxHash(e.target.value),
-                          placeholder: "0x… 64 hex chars",
-                          className: "w-full h-11 px-3 rounded-xl bg-zinc-900 border border-zinc-700 text-sm text-white placeholder-zinc-600 font-mono focus:outline-none focus:border-blue-400/60"
-                        }
-                      ),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "button",
-                        {
-                          type: "button",
-                          "data-ocid": "refinery.recovery.tx_submit",
-                          onClick: () => resumeFromTxHash(manualTxHash),
-                          disabled: manualRecoveryBusy || !manualTxHash || !uniAmount || Number.parseFloat(uniAmount || "0") <= 0,
-                          className: "w-full min-h-[44px] rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed",
-                          children: manualRecoveryBusy ? "Verifying…" : "Verify & release sGLDT"
-                        }
-                      )
-                    ] }),
-                    (!uniAmount || Number.parseFloat(uniAmount || "0") <= 0) && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-amber-400 text-center", children: "Enter the UNI amount you deposited in the input above — the canister needs it to match the on-chain tx." })
-                  ] })
-                ] })
-              ] }) })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-black/40 border-t border-zinc-800 p-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-[10px] font-bold text-zinc-600 uppercase tracking-tighter", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-1", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Lock, { size: 10 }),
-                " ckUNI Ledger:",
-                " ",
-                CKUNI_LEDGER_CANISTER_ID.slice(0, 20),
-                "..."
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "hidden sm:block text-zinc-800", children: "|" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-1", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Activity, { size: 10 }),
-                " ICP ERC-20 Minter: sv3dd-oaaaa..."
-              ] })
-            ] })
-          ] })
+              }
+            ) : isActive ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+              PhaseReleasing,
+              {
+                releasing: phase === "releasing_sgldt",
+                phaseStep,
+                phaseLabels,
+                statusMsg
+              }
+            ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+              PhaseIdle,
+              {
+                startDisabled: !uniAmount || !ethAddress2 || !user || !actor && !actorTimedOut || effectiveRate <= 0 || gasShortfall != null,
+                showRateHint: effectiveRate <= 0 && !!user && !!ethAddress2,
+                gasShortfall,
+                unlimitedApproval,
+                onUnlimitedApprovalChange: toggleUnlimitedApproval,
+                showConnecting: !!user && !actor && !actorTimedOut,
+                actorTimedOut,
+                onStartMining: startMining
+              }
+            ) })
+          ]
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-12 rounded-3xl border border-zinc-800/60 bg-zinc-900/40 p-6 sm:p-8", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-5 text-center", children: "How the Refinery Works" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 sm:grid-cols-4 gap-4", children: [
-          { icon: "🔗", step: "1", title: "Sign In", desc: "Authenticate with Internet Identity — no seed phrase, no custodian." },
-          { icon: "💼", step: "2", title: "Connect Wallet", desc: "Link MetaMask or Brave Wallet on Ethereum mainnet." },
-          { icon: "⛏", step: "3", title: "Approve & Deposit", desc: "Approve UNI spend, then the ckERC-20 helper pulls funds on-chain." },
-          { icon: "🪙", step: "4", title: "Receive sGLDT", desc: "sGLDT (synthetic gold) lands in your ICP account automatically." }
-        ].map((s) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center text-center gap-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-lg", children: s.icon }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[9px] font-black text-yellow-500/60 uppercase tracking-widest", children: [
-            "Step ",
-            s.step
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-bold text-white", children: s.title }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] text-zinc-500 leading-relaxed", children: s.desc })
-        ] }, s.step)) })
-      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(HowItWorksStrip, {}),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("footer", { className: "mt-10 text-center text-xs text-zinc-700", children: [
         "© ",
         (/* @__PURE__ */ new Date()).getFullYear(),
@@ -55498,39 +54028,110 @@ function App() {
             className: "hover:text-zinc-500 transition-colors underline underline-offset-2",
             children: "Internet Computer Protocol"
           }
+        ),
+        " · ",
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            "data-ocid": "footer.proof.link",
+            onClick: () => setShowProof(true),
+            className: "hover:text-zinc-500 transition-colors underline underline-offset-2",
+            children: "Proof & transparency"
+          }
         )
-      ] })
+      ] }),
+      showProof && /* @__PURE__ */ jsxRuntimeExports.jsx(ProofPanel, { onClose: () => setShowProof(false) })
     ] }) })
   ] });
 }
 BigInt.prototype.toJSON = function() {
   return this.toString();
 };
+{
+  const m2 = window.location.hash.match(
+    /^#\/(portfolio|brave|history|admin|proof|receipt(?:\/[^/?#]+)?)?$/
+  );
+  if (m2) {
+    window.history.replaceState(
+      null,
+      "",
+      `/${m2[1] ?? ""}${window.location.search}`
+    );
+  } else if (window.location.hash === "#/" || window.location.hash === "#") {
+    window.history.replaceState(null, "", `/${window.location.search}`);
+  }
+}
 const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")).render(
   /* @__PURE__ */ jsxRuntimeExports.jsx(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxRuntimeExports.jsx(InternetIdentityProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) }) })
 );
 export {
-  AuthClient as A,
-  BaseError$1 as B,
-  DelegationIdentity as D,
-  HttpAgent as H,
-  Text as T,
-  isDelegationValid as a,
-  useQuery as b,
-  isAddressEqual as c,
-  decodeErrorResult as d,
-  encode$4 as e,
-  localBatchGatewayRequest as f,
-  getUrl as g,
-  call as h,
-  isV3ResponseBody as i,
-  concat$1 as j,
-  encodeAbiParameters as k,
-  localBatchGatewayUrl as l,
-  HttpRequestError as m,
-  isHex as n,
+  useQueryClient as $,
+  ShieldCheck as A,
+  TrendingUp as B,
+  CircleAlert as C,
+  Lock as D,
+  fetchCkBatStatus as E,
+  Sparkles as F,
+  CK_MINTER_CANISTER_ID as G,
+  BAT_ERC20_ADDRESS as H,
+  cva as I,
+  useMyTransactions as J,
+  ArrowRightLeft as K,
+  LoaderCircle as L,
+  formatTimestamp as M,
+  ExternalLink as N,
+  ChevronDown as O,
+  Principal$1 as P,
+  encode$4 as Q,
+  React2 as R,
+  Send as S,
+  ThemeToggle as T,
+  Text as U,
+  isV3ResponseBody as V,
+  Wallet as W,
+  HttpAgent as X,
+  DelegationIdentity as Y,
+  isDelegationValid as Z,
+  AuthClient as _,
+  cn as a,
+  useQuery as a0,
+  BaseError$1 as a1,
+  getUrl as a2,
+  stringify$1 as a3,
+  decodeErrorResult as a4,
+  isAddressEqual as a5,
+  localBatchGatewayUrl as a6,
+  localBatchGatewayRequest as a7,
+  call as a8,
+  concat$1 as a9,
+  encodeAbiParameters as aa,
+  HttpRequestError as ab,
+  isHex as ac,
+  React$2 as b,
+  createLucideIcon as c,
+  useIsAdmin as d,
+  Coins as e,
+  useTreasuryICRC1Balances as f,
+  RefreshCw as g,
+  useGetTreasuryWalletInfo as h,
+  useUNIExchangeRate as i,
+  jsxRuntimeExports as j,
+  useSetUNIExchangeRate as k,
+  useAllUNIDeposits as l,
+  useBackendActor as m,
+  useAdminMintCkUNI as n,
+  useAdminDissolveCkUNI as o,
+  useAdminInitializeMinterAddress as p,
+  Copy as q,
   reactExports as r,
-  stringify$1 as s,
-  useQueryClient as u
+  CircleCheck as s,
+  useStrandedQueue as t,
+  useInternetIdentity as u,
+  directWhoAmI as v,
+  directAdminGrantAdmin as w,
+  directAdminTransfer as x,
+  ChevronRight as y,
+  Clock as z
 };

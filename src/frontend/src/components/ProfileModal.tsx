@@ -43,7 +43,7 @@ export function ProfileModal({
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
       data-ocid="profile.modal"
     >
-      <div className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-8 w-full max-w-md relative">
+      <div className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-md relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain">
         <button
           type="button"
           data-ocid="profile.close_button"

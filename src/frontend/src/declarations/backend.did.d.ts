@@ -49,11 +49,14 @@ export interface TxRecord {
 export type TxStatus = { 'Failed' : null } |
   { 'Confirmed' : null } |
   { 'Completed' : null } |
-  { 'Pending' : null };
+  { 'Pending' : null } |
+  { 'Held' : null };
 export type TxType = { 'Mint' : null } |
   { 'Refine' : null } |
   { 'Bridge' : null } |
-  { 'Transfer' : null };
+  { 'Transfer' : null } |
+  { 'Redeem' : null } |
+  { 'Refund' : null };
 export type UNIDepositStatus = { 'pending' : null } |
   { 'paid' : null } |
   { 'confirmed' : null } |

@@ -2946,7 +2946,6 @@ export default function App() {
                 ) : phase === "error" ? (
                   <PhaseError
                     statusMsg={statusMsg}
-                    bridgeProgress={bridgeProgress}
                     currentTxHash={currentTxHash}
                     pollAttempt={pollAttempt}
                     retryErrorMsg={retryErrorMsg}
@@ -3105,11 +3104,7 @@ export default function App() {
             </footer>
 
             {showProof && (
-              <ProofPanel
-                treasurySGLDT={displaySGLDTBalance}
-                treasuryCkUNI={displayCkUNIBalance}
-                onClose={() => setShowProof(false)}
-              />
+              <ProofPanel onClose={() => setShowProof(false)} />
             )}
           </>
         )}

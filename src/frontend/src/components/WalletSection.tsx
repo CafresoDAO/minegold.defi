@@ -268,9 +268,9 @@ export function WalletSection({
               type="button"
               data-ocid="wallet.eth.transfer_button"
               onClick={() => onOpenTransfer("eth")}
-              className="mt-3 flex items-center gap-1 text-[10px] font-bold text-blue-400 hover:text-blue-300 transition-colors"
+              className="mt-1 -mx-2 flex items-center gap-1 min-h-[44px] px-2 text-[11px] font-bold text-blue-400 hover:text-blue-300 transition-colors"
             >
-              <Send size={10} /> Transfer ETH
+              <Send size={11} /> Transfer ETH
             </button>
           </div>
           {/* UNI Balance */}
@@ -294,9 +294,9 @@ export function WalletSection({
               type="button"
               data-ocid="wallet.uni.transfer_button"
               onClick={() => onOpenTransfer("uni")}
-              className="mt-3 flex items-center gap-1 text-[10px] font-bold text-pink-400 hover:text-pink-300 transition-colors"
+              className="mt-1 -mx-2 flex items-center gap-1 min-h-[44px] px-2 text-[11px] font-bold text-pink-400 hover:text-pink-300 transition-colors"
             >
-              <Send size={10} /> Transfer UNI
+              <Send size={11} /> Transfer UNI
             </button>
           </div>
           {/* sGLDT Balance */}
@@ -314,22 +314,22 @@ export function WalletSection({
                 ${sgldtUsd} USD
               </div>
             )}
-            <div className="mt-3 flex items-center gap-4">
+            <div className="mt-1 -mx-2 flex flex-wrap items-center gap-x-2 gap-y-0">
               <button
                 type="button"
                 data-ocid="wallet.sgldt.transfer_button"
                 onClick={() => onOpenTransfer("sgldt")}
-                className="flex items-center gap-1 text-[10px] font-bold text-yellow-500 hover:text-yellow-400 transition-colors"
+                className="flex items-center gap-1 min-h-[44px] px-2 text-[11px] font-bold text-yellow-500 hover:text-yellow-400 transition-colors"
               >
-                <Send size={10} /> Transfer
+                <Send size={11} /> Transfer
               </button>
               <button
                 type="button"
                 data-ocid="wallet.sgldt.redeem_button"
                 onClick={onOpenRedeem}
-                className="flex items-center gap-1 text-[10px] font-bold text-pink-400 hover:text-pink-300 transition-colors"
+                className="flex items-center gap-1 min-h-[44px] px-2 text-[11px] font-bold text-pink-400 hover:text-pink-300 transition-colors"
               >
-                <ArrowRightLeft size={10} /> Redeem to ckUNI
+                <ArrowRightLeft size={11} /> Redeem to ckUNI
               </button>
             </div>
           </div>

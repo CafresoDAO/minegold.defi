@@ -40,7 +40,9 @@ type TxType =
  variant {
    Bridge;
    Mint;
+   Redeem;
    Refine;
+   Refund;
    Transfer;
  };
 type TxStatus = 
@@ -48,6 +50,7 @@ type TxStatus =
    Completed;
    Confirmed;
    Failed;
+   Held;
    Pending;
  };
 type TxRecord = 
@@ -324,6 +327,16 @@ service : {
   /// This is a query so it works for unauthenticated (anonymous) callers.
   /// Call refreshTreasuryBalances() to update the cache from the ledger.
   getSGLDTTreasuryBalance: () -> (nat) query;
+  /// PUBLIC transparency counter for /proof: how many refines and redeems are
+  /// currently held as #stranded (swap failed AND auto-refund failed, awaiting
+  /// manual resolution). Counts only — the records themselves stay admin-gated
+  /// because they carry principals and amounts. Publishing the count (even at
+  /// 0) is deliberate: "nothing is silently dropped" must be checkable.
+  getStrandedCounts: () ->
+   (record {
+      strandedRedeems: nat;
+      strandedRefines: nat;
+    }) query;
   /// Admin view: every redeem that ended #stranded.
   getStrandedRedeems: () -> (vec RedeemRecord) query;
   /// Admin view: every refine that ended #stranded and needs manual resolution.
@@ -333,6 +346,7 @@ service : {
   /// Call refreshTreasuryBalances() to pull fresh values from the ledgers.
   getTreasuryICRC1Balances: () ->
    (record {
+      cachedAtNs: int;
       ckUNIBalance: nat;
       sgldtBalance: nat;
     }) query;

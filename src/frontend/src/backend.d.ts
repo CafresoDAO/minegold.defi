@@ -77,13 +77,16 @@ export enum TxStatus {
     Failed = "Failed",
     Confirmed = "Confirmed",
     Completed = "Completed",
-    Pending = "Pending"
+    Pending = "Pending",
+    Held = "Held"
 }
 export enum TxType {
     Mint = "Mint",
     Refine = "Refine",
     Bridge = "Bridge",
-    Transfer = "Transfer"
+    Transfer = "Transfer",
+    Redeem = "Redeem",
+    Refund = "Refund"
 }
 export enum UNIDepositStatus {
     pending = "pending",

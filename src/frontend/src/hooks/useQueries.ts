@@ -310,6 +310,195 @@ export function useMyRedeems(identity: unknown) {
   });
 }
 
+// ── /proof transparency surface ──────────────────────────────────────────────
+// Everything here is deliberately callable ANONYMOUSLY: a skeptic must be able
+// to verify solvency claims without signing in.
+
+const proofIDL = ({ IDL }: { IDL: any }) =>
+  IDL.Service({
+    getTreasuryICRC1Balances: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          sgldtBalance: IDL.Nat,
+          ckUNIBalance: IDL.Nat,
+          cachedAtNs: IDL.Int,
+        }),
+      ],
+      ["query"],
+    ),
+    refreshTreasuryBalances: IDL.Func([], [], []),
+    getPayoutReadiness: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          treasurySGLDTBalance: IDL.Nat,
+          pendingDeposits: IDL.Nat,
+          estimatedSGLDTNeeded: IDL.Nat,
+          treasuryPrincipal: IDL.Text,
+        }),
+      ],
+      [],
+    ),
+    getStrandedCounts: IDL.Func(
+      [],
+      [IDL.Record({ strandedRefines: IDL.Nat, strandedRedeems: IDL.Nat })],
+      ["query"],
+    ),
+  });
+
+export type ProofSnapshot = {
+  sgldtBalance: bigint;
+  ckUNIBalance: bigint;
+  /** ns since epoch the balances were pulled from the ledgers; 0n = never. */
+  cachedAtNs: bigint;
+  /** Live (not cached) sGLDT vs total owed across pending deposits. */
+  treasurySGLDTLive: bigint;
+  pendingDeposits: bigint;
+  estimatedSGLDTNeeded: bigint;
+  strandedRefines: bigint;
+  strandedRedeems: bigint;
+};
+
+/** One anonymous sweep of every number /proof shows. getPayoutReadiness is an
+ *  update call (it reads the ledger live), so this is slower than a query —
+ *  fetched on open + on explicit refresh, not on an interval. */
+export function useProofSnapshot(open: boolean) {
+  return useQuery<ProofSnapshot>({
+    queryKey: ["proofSnapshot"],
+    enabled: open,
+    queryFn: async () => {
+      const actor = Actor.createActor(proofIDL, {
+        agent: getAnonymousAgent(),
+        canisterId: BACKEND_CANISTER_ID,
+      }) as any;
+      const [balances, readiness, strandedCounts] = await Promise.all([
+        actor.getTreasuryICRC1Balances(),
+        actor.getPayoutReadiness(),
+        actor.getStrandedCounts(),
+      ]);
+      return {
+        sgldtBalance: balances.sgldtBalance as bigint,
+        ckUNIBalance: balances.ckUNIBalance as bigint,
+        cachedAtNs: balances.cachedAtNs as bigint,
+        treasurySGLDTLive: readiness.treasurySGLDTBalance as bigint,
+        pendingDeposits: readiness.pendingDeposits as bigint,
+        estimatedSGLDTNeeded: readiness.estimatedSGLDTNeeded as bigint,
+        strandedRefines: strandedCounts.strandedRefines as bigint,
+        strandedRedeems: strandedCounts.strandedRedeems as bigint,
+      };
+    },
+    staleTime: 30_000,
+    retry: 1,
+  });
+}
+
+/** Warm the treasury balance cache from the ledgers, then refetch the
+ *  snapshot — the /proof "Refresh" button. Anonymous update call; anyone may
+ *  warm the cache. */
+export async function refreshProofBalances(): Promise<void> {
+  const actor = Actor.createActor(proofIDL, {
+    agent: getAnonymousAgent(),
+    canisterId: BACKEND_CANISTER_ID,
+  }) as any;
+  await actor.refreshTreasuryBalances();
+}
+
+// ── Admin stranded queue ─────────────────────────────────────────────────────
+// getStrandedRefines/Redeems are admin-gated on the backend (return [] for
+// anyone else) and include the affected user's principal — that's why they
+// aren't part of the public proof surface.
+
+const strandedAdminIDL = ({ IDL }: { IDL: any }) => {
+  const Status = IDL.Variant({
+    paid: IDL.Null,
+    pulled: IDL.Null,
+    refunded: IDL.Null,
+    stranded: IDL.Null,
+  });
+  const RefineRecord = IDL.Record({
+    id: IDL.Nat,
+    user: IDL.Principal,
+    ckuniAmount: IDL.Nat,
+    sgldtPaid: IDL.Nat,
+    rate: IDL.Nat,
+    status: Status,
+    timestamp: IDL.Int,
+    pullBlock: IDL.Opt(IDL.Nat),
+    payBlock: IDL.Opt(IDL.Nat),
+    errorMsg: IDL.Opt(IDL.Text),
+  });
+  const RedeemRecord = IDL.Record({
+    id: IDL.Nat,
+    user: IDL.Principal,
+    sgldtAmount: IDL.Nat,
+    ckuniPaid: IDL.Nat,
+    rate: IDL.Nat,
+    status: Status,
+    timestamp: IDL.Int,
+    pullBlock: IDL.Opt(IDL.Nat),
+    payBlock: IDL.Opt(IDL.Nat),
+    errorMsg: IDL.Opt(IDL.Text),
+  });
+  return IDL.Service({
+    getStrandedRefines: IDL.Func([], [IDL.Vec(RefineRecord)], ["query"]),
+    getStrandedRedeems: IDL.Func([], [IDL.Vec(RedeemRecord)], ["query"]),
+  });
+};
+
+export type StrandedEntry = {
+  kind: "refine" | "redeem";
+  id: bigint;
+  user: string;
+  /** What the user paid in (was pulled from them). */
+  pulled: string;
+  /** What they were owed but never received. */
+  owed: string;
+  timestampNs: bigint;
+  pullBlock: bigint | null;
+  errorMsg: string | null;
+};
+
+/** Every stranded refine + redeem, merged newest-first — the admin work
+ *  queue. Empty for non-admin callers by backend design. */
+export function useStrandedQueue(identity: unknown, enabled: boolean) {
+  return useQuery<StrandedEntry[]>({
+    queryKey: ["strandedQueue"],
+    enabled: enabled && identity != null,
+    queryFn: async () => {
+      const actor = await directActor(strandedAdminIDL, { identity });
+      const [refines, redeems] = (await Promise.all([
+        actor.getStrandedRefines(),
+        actor.getStrandedRedeems(),
+      ])) as [any[], any[]];
+      const rows: StrandedEntry[] = [
+        ...refines.map((r): StrandedEntry => ({
+          kind: "refine",
+          id: r.id as bigint,
+          user: (r.user as { toText(): string }).toText(),
+          pulled: `${(Number(r.ckuniAmount) / 1e18).toFixed(6)} ckUNI`,
+          owed: `${((Number(r.ckuniAmount) / 1e18) * (Number(r.rate) / 1e8)).toFixed(4)} sGLDT`,
+          timestampNs: r.timestamp as bigint,
+          pullBlock: optNat(r.pullBlock),
+          errorMsg: optText(r.errorMsg),
+        })),
+        ...redeems.map((r): StrandedEntry => ({
+          kind: "redeem",
+          id: r.id as bigint,
+          user: (r.user as { toText(): string }).toText(),
+          pulled: `${(Number(r.sgldtAmount) / 1e8).toFixed(4)} sGLDT`,
+          owed: `${((Number(r.sgldtAmount) / 1e8) / Math.max(1e-9, Number(r.rate) / 1e8)).toFixed(6)} ckUNI`,
+          timestampNs: r.timestamp as bigint,
+          pullBlock: optNat(r.pullBlock),
+          errorMsg: optText(r.errorMsg),
+        })),
+      ];
+      return rows.sort((a, b) => (a.timestampNs < b.timestampNs ? 1 : -1));
+    },
+    refetchInterval: 120_000,
+  });
+}
+
 export type CkUNIPosition = {
   balance: bigint;
   allowance: bigint;

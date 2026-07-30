@@ -1,5 +1,5 @@
-import { Clock, Coins, LogOut, Settings, UserCircle2, XCircle } from "lucide-react";
-import type { RefObject } from "react";
+import { Clock, Coins, LogOut, MoreHorizontal, Settings, UserCircle2, XCircle } from "lucide-react";
+import { useState, type RefObject } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
 type NavUser = {
@@ -63,6 +63,10 @@ export function NavBar({
   onOpenProfile,
   onLogout,
 }: Props) {
+  // Phones: admin/history/profile/logout collapse into one overflow menu —
+  // four 44px buttons plus the brand crumbs overflow a 375px viewport, which
+  // silently pushed history/profile off-screen.
+  const [moreOpen, setMoreOpen] = useState(false);
   return (
     <nav className="sticky top-0 z-50 bg-[#080808]/80 backdrop-blur-md border-b border-zinc-800/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
@@ -274,7 +278,7 @@ export function NavBar({
               type="button"
               data-ocid="nav.admin.button"
               onClick={onToggleAdmin}
-              className="w-11 h-11 inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
+              className="hidden sm:inline-flex w-11 h-11 items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
               title={showAdmin ? "Back to Refinery" : "Admin Panel"}
               aria-label={showAdmin ? "Back to Refinery" : "Open admin panel"}
               aria-pressed={showAdmin}
@@ -287,7 +291,7 @@ export function NavBar({
               type="button"
               data-ocid="nav.history.button"
               onClick={onToggleHistory}
-              className={`w-11 h-11 inline-flex items-center justify-center border rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400 ${
+              className={`hidden sm:inline-flex w-11 h-11 items-center justify-center border rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400 ${
                 showHistory
                   ? "bg-yellow-500/15 border-yellow-500/30 text-yellow-400"
                   : "bg-zinc-900 hover:bg-zinc-800 border-zinc-800 text-zinc-400"
@@ -304,7 +308,7 @@ export function NavBar({
               type="button"
               data-ocid="nav.profile.button"
               onClick={onOpenProfile}
-              className="w-11 h-11 inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 md:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
+              className="hidden sm:inline-flex w-11 h-11 items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 md:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
               title="Your Profile"
               aria-label="Open your profile"
             >
@@ -316,12 +320,72 @@ export function NavBar({
               type="button"
               data-ocid="nav.logout.button"
               onClick={onLogout}
-              className="w-11 h-11 inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
+              className="hidden sm:inline-flex w-11 h-11 items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
               title="Sign out"
               aria-label="Sign out"
             >
               <LogOut size={18} />
             </button>
+          )}
+          {user && (
+            <div className="relative sm:hidden">
+              <button
+                type="button"
+                data-ocid="nav.more.button"
+                onClick={() => setMoreOpen((v) => !v)}
+                className="w-11 h-11 inline-flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-colors text-zinc-400"
+                title="Menu"
+                aria-label="More options"
+                aria-expanded={moreOpen}
+              >
+                <MoreHorizontal size={18} />
+              </button>
+              {moreOpen && (
+                <div
+                  data-ocid="nav.more.menu"
+                  className="absolute right-0 top-full mt-2 w-48 bg-zinc-950 border border-zinc-700 rounded-2xl shadow-2xl z-50 p-1.5"
+                >
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      data-ocid="nav.more.admin"
+                      onClick={() => { setMoreOpen(false); onToggleAdmin(); }}
+                      className="w-full flex items-center gap-2.5 min-h-[44px] px-3 rounded-xl text-left text-xs font-semibold text-zinc-300 hover:bg-zinc-800"
+                    >
+                      {showAdmin ? <XCircle size={15} /> : <Settings size={15} />}
+                      {showAdmin ? "Back to Refinery" : "Admin panel"}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    data-ocid="nav.more.history"
+                    onClick={() => { setMoreOpen(false); onToggleHistory(); }}
+                    className="w-full flex items-center gap-2.5 min-h-[44px] px-3 rounded-xl text-left text-xs font-semibold text-zinc-300 hover:bg-zinc-800"
+                  >
+                    <Clock size={15} />
+                    Transaction history
+                  </button>
+                  <button
+                    type="button"
+                    data-ocid="nav.more.profile"
+                    onClick={() => { setMoreOpen(false); onOpenProfile(); }}
+                    className="w-full flex items-center gap-2.5 min-h-[44px] px-3 rounded-xl text-left text-xs font-semibold text-zinc-300 hover:bg-zinc-800"
+                  >
+                    <UserCircle2 size={15} />
+                    Your profile
+                  </button>
+                  <button
+                    type="button"
+                    data-ocid="nav.more.logout"
+                    onClick={() => { setMoreOpen(false); onLogout(); }}
+                    className="w-full flex items-center gap-2.5 min-h-[44px] px-3 rounded-xl text-left text-xs font-semibold text-red-400 hover:bg-zinc-800"
+                  >
+                    <LogOut size={15} />
+                    Sign out
+                  </button>
+                </div>
+              )}
+            </div>
           )}
           <ThemeToggle />
         </div>

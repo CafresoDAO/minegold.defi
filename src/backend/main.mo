@@ -21,11 +21,16 @@ import Principal "mo:core/Principal";
 import MixinAuthorization "mo:caffeineai-authorization/MixinAuthorization";
 import AccessControl "mo:caffeineai-authorization/access-control";
 import OutCall "mo:caffeineai-http-outcalls/outcall";
+import Migration "migration";
 
 
 
 
 
+// ONE-TIME migration (2026-07 taxonomy widening) — see migration.mo. Remove
+// this clause AND migration.mo after this upgrade ships, or the next upgrade
+// will fail its migration-input check.
+(with migration = Migration.run)
 actor Self {
   // Constants
   let BB_TOKEN_DECIMALS = 8;
@@ -75,6 +80,10 @@ actor Self {
   // Exposed via public shared query funcs so anonymous/unauthenticated callers can read them.
   var cachedSgldtTreasuryBalance : Nat = 0;
   var cachedCkUNITreasuryBalance : Nat = 0;
+  // When the two balances above were last pulled from the ledgers (ns since
+  // epoch, 0 = never). Lets /proof age-stamp the figures instead of passing
+  // cached values off as live.
+  var treasuryBalancesCachedAt : Int = 0;
   // Fixed treasury ERC-20 deposit address cached from the ICP ERC-20 minter.
   // Same address for ALL users — admin calls initializeMinterDepositAddress() once to populate.
   var cachedMinterDepositAddress : Text = "";
@@ -528,6 +537,8 @@ actor Self {
     #Mint;     // ckUNI minted on ICP
     #Refine;   // sGLDT released from treasury
     #Transfer; // user-initiated token transfer
+    #Redeem;   // sGLDT swapped back into ckUNI (the exit path)
+    #Refund;   // a failed swap's deposit returned to the user
   };
 
   public type TxStatus = {
@@ -535,6 +546,7 @@ actor Self {
     #Confirmed;
     #Completed;
     #Failed;
+    #Held;     // swap AND refund both failed — recorded for manual resolution
   };
 
   public type TxRecord = {
@@ -912,8 +924,15 @@ actor Self {
   public shared query func getTreasuryICRC1Balances() : async {
     sgldtBalance : Nat;
     ckUNIBalance : Nat;
+    // Extra field is candid-safe: old clients decode records by width
+    // subtyping and simply drop it. 0 = the cache has never been warmed.
+    cachedAtNs : Int;
   } {
-    { sgldtBalance = cachedSgldtTreasuryBalance; ckUNIBalance = cachedCkUNITreasuryBalance };
+    {
+      sgldtBalance = cachedSgldtTreasuryBalance;
+      ckUNIBalance = cachedCkUNITreasuryBalance;
+      cachedAtNs = treasuryBalancesCachedAt;
+    };
   };
 
   /// Fetches the live ICRC-1 balances for the treasury (this canister's own account) from both ledgers
@@ -927,6 +946,7 @@ actor Self {
     let ckUNIBal = await ckUNILedger.icrc1_balance_of(treasuryAccount);
     cachedSgldtTreasuryBalance := sgldtBal;
     cachedCkUNITreasuryBalance := ckUNIBal;
+    treasuryBalancesCachedAt := Time.now();
   };
 
   /// Public query: returns the sGLDT ICRC-1 balance for any given principal (their own ICP account).
@@ -3172,7 +3192,7 @@ actor Self {
           txType = #Refine;
           amount = amount;
           tokenSymbol = "ckUNI";
-          status = #Failed;
+          status = #Held;
           timestamp = Time.now();
           ethTxHash = null;
           icpBlockIndex = null;
@@ -3224,10 +3244,10 @@ actor Self {
           user,
           {
             id = _nextTxId();
-            txType = #Refine;
+            txType = #Refund;
             amount = refundAmount;
             tokenSymbol = "ckUNI";
-            status = #Failed;
+            status = #Completed;
             timestamp = Time.now();
             ethTxHash = null;
             icpBlockIndex = null;
@@ -3252,6 +3272,26 @@ actor Self {
     };
     let arr = out.toArray();
     arr.sort(func(a : RefineRecord, b : RefineRecord) : Order.Order { Int.compare(b.timestamp, a.timestamp) });
+  };
+
+  /// PUBLIC transparency counter for /proof: how many refines and redeems are
+  /// currently held as #stranded (swap failed AND auto-refund failed, awaiting
+  /// manual resolution). Counts only — the records themselves stay admin-gated
+  /// because they carry principals and amounts. Publishing the count (even at
+  /// 0) is deliberate: "nothing is silently dropped" must be checkable.
+  public query func getStrandedCounts() : async {
+    strandedRefines : Nat;
+    strandedRedeems : Nat;
+  } {
+    var rf : Nat = 0;
+    var rd : Nat = 0;
+    for ((_, r) in refines.entries()) {
+      switch (r.status) { case (#stranded) { rf += 1 }; case (_) {} };
+    };
+    for ((_, r) in redeems.entries()) {
+      switch (r.status) { case (#stranded) { rd += 1 }; case (_) {} };
+    };
+    { strandedRefines = rf; strandedRedeems = rd };
   };
 
   /// Admin view: every refine that ended #stranded and needs manual resolution.
@@ -3437,7 +3477,7 @@ actor Self {
       caller,
       {
         id = _nextTxId();
-        txType = #Refine;
+        txType = #Redeem;
         amount = amount;
         tokenSymbol = "sGLDT";
         status = #Completed;
@@ -3485,7 +3525,7 @@ actor Self {
           caller,
           {
             id = _nextTxId();
-            txType = #Mint;
+            txType = #Redeem;
             amount = ckuniAmount;
             tokenSymbol = "ckUNI";
             status = #Completed;
@@ -3550,10 +3590,10 @@ actor Self {
         user,
         {
           id = _nextTxId();
-          txType = #Refine;
+          txType = #Redeem;
           amount = amount;
           tokenSymbol = "sGLDT";
-          status = #Failed;
+          status = #Held;
           timestamp = Time.now();
           ethTxHash = null;
           icpBlockIndex = null;
@@ -3603,10 +3643,10 @@ actor Self {
           user,
           {
             id = _nextTxId();
-            txType = #Refine;
+            txType = #Refund;
             amount = refundAmount;
             tokenSymbol = "sGLDT";
-            status = #Failed;
+            status = #Completed;
             timestamp = Time.now();
             ethTxHash = null;
             icpBlockIndex = null;

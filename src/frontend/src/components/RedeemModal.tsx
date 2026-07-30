@@ -118,7 +118,7 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
       data-ocid="wallet.redeem.modal"
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
     >
-      <div className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-8 w-full max-w-md relative">
+      <div className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-md relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain">
         <button
           type="button"
           data-ocid="wallet.redeem.close_button"
@@ -303,6 +303,19 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
               Two Internet Identity signatures: one approval letting the
               refinery pull your sGLDT, then the atomic swap. If the payout
               fails for any reason, your sGLDT is refunded automatically.
+            </p>
+            <p className="text-[10px] text-zinc-500 leading-relaxed">
+              Prefer the gold itself? sGLDT unwraps 1:1 to GLDT at sVault, and
+              GLDT is redeemable for physical gold via Gold DAO —{" "}
+              <a
+                href="https://gldt.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 underline underline-offset-2"
+              >
+                gldt.org
+              </a>
+              .
             </p>
           </div>
         )}

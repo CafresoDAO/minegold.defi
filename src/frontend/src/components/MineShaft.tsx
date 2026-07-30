@@ -33,7 +33,9 @@ type Props = {
   confirmations: number;
   targetConfirmations: number;
   stage: Stage;
-  /** Canvas CSS height. Width tracks the container. */
+  /** Canvas CSS height. Width tracks the container. Omit for the responsive
+   *  default: clamp(320, 52vh, 520) — tall enough to read, never most of a
+   *  phone screen. */
   height?: number;
 };
 
@@ -108,10 +110,14 @@ export function MineShaft({
     let reduced = rmQuery?.matches ?? false;
 
     let cssW = wrap.clientWidth || 300;
-    const cssH = height;
+    const computeH = () =>
+      height ??
+      Math.max(320, Math.min(520, Math.round((window.innerHeight || 760) * 0.52)));
+    let cssH = computeH();
     const applySize = () => {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
       cssW = wrap.clientWidth || 300;
+      cssH = computeH();
       canvas.width = Math.round(cssW * dpr);
       canvas.height = Math.round(cssH * dpr);
       canvas.style.width = `${cssW}px`;
@@ -124,6 +130,13 @@ export function MineShaft({
       if (reduced) drawFrame(0);
     });
     ro.observe(wrap);
+    // ResizeObserver tracks the wrapper's WIDTH; the responsive height reads
+    // the viewport, so viewport resizes need their own listener.
+    const onWinResize = () => {
+      applySize();
+      if (reduced) drawFrame(0);
+    };
+    window.addEventListener("resize", onWinResize);
 
     // ── world geometry (CSS px, world y grows downward) ─────────────────
     const PAD_TOP = 44; // surface / sky sliver
@@ -418,9 +431,39 @@ export function MineShaft({
     };
     rmQuery?.addEventListener?.("change", onRmChange);
 
+    // Battery gate: on a low, discharging battery the loop drops to static
+    // frames — decoration must never drain someone's last percent. One-shot
+    // check; getBattery is Chromium-only and absent elsewhere (try/catch).
+    try {
+      (navigator as any).getBattery?.().then(
+        (b: { level: number; charging: boolean }) => {
+          if (b.level < 0.15 && !b.charging) {
+            reduced = true;
+            start();
+          }
+        },
+      );
+    } catch {
+      /* no Battery API — keep animating */
+    }
+
+    // Backgrounded tab: stop the loop entirely (rAF is throttled but not
+    // free, and time-based particles jump on return); resume + resync the
+    // clock when visible again.
+    const onVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(raf);
+      } else {
+        start();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      window.removeEventListener("resize", onWinResize);
+      document.removeEventListener("visibilitychange", onVisibility);
       rmQuery?.removeEventListener?.("change", onRmChange);
       redrawRef.current = null;
     };

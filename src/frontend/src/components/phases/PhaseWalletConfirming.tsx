@@ -65,6 +65,20 @@ export function PhaseWalletConfirming({
             {depositAddress.slice(0, 10)}…{depositAddress.slice(-4)}
           </span>
         </div>
+        {/* This isn't decoration: the app asserted the spender address equals
+            DFINITY's ckERC-20 helper BEFORE requesting any signature, and
+            halts if it doesn't. The check always existed — now the user can
+            see it passed. */}
+        <div className="flex items-center justify-between mt-1.5 gap-3">
+          <span className="text-zinc-600 font-sans shrink-0">Contract check</span>
+          <span
+            className="inline-flex items-center gap-1 text-emerald-300 text-[10px]"
+            title="Verified before signing: the deposit contract matches DFINITY's published ckERC-20 helper address. If it didn't, this app would have refused to open your wallet."
+          >
+            <CheckCircle2 size={10} />
+            verified DFINITY ckERC-20 helper
+          </span>
+        </div>
         <div className="flex items-center justify-between mt-1.5">
           <span className="text-zinc-600 font-sans">Amount</span>
           <span className="text-white">{uniAmount} UNI (ERC-20)</span>

@@ -90,7 +90,6 @@ export function PhaseEthMonitoring({
           confirmations={confs}
           targetConfirmations={TARGET}
           stage={stage}
-          height={360}
         />
         {/* Status overlay pinned to the shaft's top edge */}
         <div className="absolute top-0 inset-x-0 bg-gradient-to-b from-black/80 to-transparent px-4 pt-3 pb-8 pointer-events-none">

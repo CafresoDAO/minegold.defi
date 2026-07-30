@@ -51,6 +51,18 @@ const TX_TYPE_CONFIG: Record<
       "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/15",
     icon: <Coins size={11} />,
   },
+  [TxType.Redeem]: {
+    label: "Redeem",
+    className:
+      "bg-pink-500/15 text-pink-400 border border-pink-500/30 hover:bg-pink-500/15",
+    icon: <ArrowRightLeft size={11} />,
+  },
+  [TxType.Refund]: {
+    label: "Refund",
+    className:
+      "bg-sky-500/15 text-sky-400 border border-sky-500/30 hover:bg-sky-500/15",
+    icon: <ArrowRightLeft size={11} />,
+  },
 };
 
 const TX_STATUS_CONFIG: Record<TxStatus, { label: string; className: string }> =
@@ -74,6 +86,11 @@ const TX_STATUS_CONFIG: Record<TxStatus, { label: string; className: string }> =
       label: "Failed",
       className:
         "bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/15",
+    },
+    [TxStatus.Held]: {
+      label: "Held",
+      className:
+        "bg-amber-500/15 text-amber-400 border border-amber-500/30 hover:bg-amber-500/15",
     },
   };
 
@@ -100,7 +117,9 @@ function TxStatusBadge({ status }: { status: TxStatus }) {
 
 function TxRow({ tx }: { tx: TxRecord }) {
   const [expanded, setExpanded] = useState(false);
-  const hasFailed = tx.status === TxStatus.Failed && tx.errorMsg;
+  const hasFailed =
+    (tx.status === TxStatus.Failed || tx.status === TxStatus.Held) &&
+    tx.errorMsg;
   // ckUNI uses 18 decimal places (ERC-20 standard); all other tokens use 8
   const decimals = tx.tokenSymbol === "ckUNI" ? 1e18 : 1e8;
   const amountFormatted = `${(Number(tx.amount) / decimals).toFixed(8)} ${tx.tokenSymbol}`;
@@ -205,6 +224,8 @@ const TYPE_FILTERS: { value: TypeFilter; label: string }[] = [
   { value: TxType.Bridge, label: "Bridge" },
   { value: TxType.Mint, label: "Mint" },
   { value: TxType.Refine, label: "Refine" },
+  { value: TxType.Redeem, label: "Redeem" },
+  { value: TxType.Refund, label: "Refund" },
   { value: TxType.Transfer, label: "Transfer" },
 ];
 
@@ -214,6 +235,7 @@ const STATUS_FILTERS: { value: StatusFilter; label: string }[] = [
   { value: TxStatus.Confirmed, label: "Confirmed" },
   { value: TxStatus.Completed, label: "Completed" },
   { value: TxStatus.Failed, label: "Failed" },
+  { value: TxStatus.Held, label: "Held" },
 ];
 
 // ── Main page export ──────────────────────────────────────────────────────────

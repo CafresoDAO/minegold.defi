@@ -69,8 +69,8 @@ export function BankingBraveHome({
               </h2>
               <p className="text-xs mt-1 max-w-lg" style={{ color: "var(--bb-text-muted)" }}>
                 A family of cross-chain refinery workflows. Each workflow bridges a
-                specific ERC-20 source asset onto ICP and refines it into sGLDT
-                (synthetic gold) on the Internet Computer.
+                specific ERC-20 source asset onto ICP and refines it into sGLDT — a
+                1:1 wrapper of Gold DAO's physically backed GLDT (gldt.org).
               </p>
             </div>
           </div>
@@ -111,7 +111,7 @@ export function BankingBraveHome({
                   </div>
                   <p className="text-xs leading-relaxed" style={{ color: "var(--bb-text-muted)" }}>
                     Onboard UNI into ckUNI on ICP via the chain-key bridge, then refine
-                    into sGLDT synthetic gold at the locked-in live rate.
+                    into sGLDT — wrapped, physically backed GLDT — at the locked-in live rate.
                   </p>
                   <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-yellow-500 group-hover:text-yellow-400 transition-colors">
                     Open workflow

@@ -159,13 +159,16 @@ export enum TxStatus {
     Failed = "Failed",
     Confirmed = "Confirmed",
     Completed = "Completed",
-    Pending = "Pending"
+    Pending = "Pending",
+    Held = "Held"
 }
 export enum TxType {
     Mint = "Mint",
     Refine = "Refine",
     Bridge = "Bridge",
-    Transfer = "Transfer"
+    Transfer = "Transfer",
+    Redeem = "Redeem",
+    Refund = "Refund"
 }
 export enum UNIDepositStatus {
     pending = "pending",
@@ -1840,8 +1843,10 @@ function from_candid_variant_n12(_uploadFile: (file: ExternalBlob) => Promise<Ui
     Completed: null;
 } | {
     Pending: null;
+} | {
+    Held: null;
 }): TxStatus {
-    return "Failed" in value ? TxStatus.Failed : "Confirmed" in value ? TxStatus.Confirmed : "Completed" in value ? TxStatus.Completed : "Pending" in value ? TxStatus.Pending : value;
+    return "Failed" in value ? TxStatus.Failed : "Confirmed" in value ? TxStatus.Confirmed : "Completed" in value ? TxStatus.Completed : "Pending" in value ? TxStatus.Pending : "Held" in value ? TxStatus.Held : value;
 }
 function from_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     Mint: null;
@@ -1851,8 +1856,12 @@ function from_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Ui
     Bridge: null;
 } | {
     Transfer: null;
+} | {
+    Redeem: null;
+} | {
+    Refund: null;
 }): TxType {
-    return "Mint" in value ? TxType.Mint : "Refine" in value ? TxType.Refine : "Bridge" in value ? TxType.Bridge : "Transfer" in value ? TxType.Transfer : value;
+    return "Mint" in value ? TxType.Mint : "Refine" in value ? TxType.Refine : "Bridge" in value ? TxType.Bridge : "Transfer" in value ? TxType.Transfer : "Redeem" in value ? TxType.Redeem : "Refund" in value ? TxType.Refund : value;
 }
 function from_candid_variant_n23(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     pending: null;
@@ -2009,6 +2018,8 @@ function to_candid_variant_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8
     Completed: null;
 } | {
     Pending: null;
+} | {
+    Held: null;
 } {
     return value == TxStatus.Failed ? {
         Failed: null
@@ -2018,6 +2029,8 @@ function to_candid_variant_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8
         Completed: null
     } : value == TxStatus.Pending ? {
         Pending: null
+    } : value == TxStatus.Held ? {
+        Held: null
     } : value;
 }
 function to_candid_variant_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: TxType): {
@@ -2028,6 +2041,10 @@ function to_candid_variant_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8
     Bridge: null;
 } | {
     Transfer: null;
+} | {
+    Redeem: null;
+} | {
+    Refund: null;
 } {
     return value == TxType.Mint ? {
         Mint: null
@@ -2037,6 +2054,10 @@ function to_candid_variant_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8
         Bridge: null
     } : value == TxType.Transfer ? {
         Transfer: null
+    } : value == TxType.Redeem ? {
+        Redeem: null
+    } : value == TxType.Refund ? {
+        Refund: null
     } : value;
 }
 export interface CreateActorOptions {

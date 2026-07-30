@@ -83,7 +83,17 @@ export function BraveStoryStrip({ onOpenBraveSoon }: Props) {
           <p className="mt-1 text-[12px] sm:text-[13px] text-zinc-400 leading-relaxed">
             Brave pays you <span className="text-orange-300 font-semibold">BAT</span> for
             the ads you already see. MineGold turns that payout into{" "}
-            <span className="text-yellow-400 font-semibold">gold</span> — and the whole
+            <span className="text-yellow-400 font-semibold">gold</span> — sGLDT, a
+            1:1 wrapper of{" "}
+            <a
+              href="https://gldt.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-yellow-300 underline underline-offset-2 hover:text-yellow-200"
+            >
+              Gold DAO&apos;s GLDT
+            </a>
+            , each backed by 0.01&nbsp;g of vaulted physical gold — and the whole
             refinery runs as a canister on the Internet Computer: no server, no
             company holding your funds.
           </p>

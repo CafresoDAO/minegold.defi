@@ -26,6 +26,8 @@ type Props = {
 type ActivityRow = {
   key: string;
   kind: "refine" | "redeem";
+  /** Human reference for support: "refine #3" / "redeem #1". */
+  ref: string;
   title: string;
   detail: string;
   rate: string;
@@ -38,7 +40,7 @@ const STATUS_LABEL: Record<RefineStatusKey, { text: string; cls: string }> = {
   paid: { text: "settled", cls: "text-emerald-400" },
   pulled: { text: "in flight", cls: "text-amber-400" },
   refunded: { text: "refunded", cls: "text-blue-300" },
-  stranded: { text: "held — support", cls: "text-red-400" },
+  stranded: { text: "held — being resolved", cls: "text-amber-400" },
 };
 
 const fmtTime = (ns: bigint): string => {
@@ -72,6 +74,7 @@ export function HoldingsCard({
     ...(refines ?? []).map((r: RefineRecordView): ActivityRow => ({
       key: `rf-${r.id.toString()}`,
       kind: "refine",
+      ref: `refine #${r.id.toString()}`,
       title: `Refined ${(Number(r.ckuniAmount) / 1e18).toFixed(4)} ckUNI`,
       detail: `→ ${(Number(r.sgldtPaid) / 1e8).toFixed(4)} sGLDT`,
       rate: (Number(r.rate) / 1e8).toFixed(4),
@@ -82,6 +85,7 @@ export function HoldingsCard({
     ...(redeems ?? []).map((r: RedeemRecordView): ActivityRow => ({
       key: `rd-${r.id.toString()}`,
       kind: "redeem",
+      ref: `redeem #${r.id.toString()}`,
       title: `Redeemed ${(Number(r.sgldtAmount) / 1e8).toFixed(4)} sGLDT`,
       detail: `→ ${(Number(r.ckuniPaid) / 1e18).toFixed(4)} ckUNI`,
       rate: (Number(r.rate) / 1e8).toFixed(4),
@@ -89,9 +93,13 @@ export function HoldingsCard({
       timestampNs: r.timestamp,
       payBlock: r.payBlock,
     })),
-  ]
-    .sort((a, b) => (a.timestampNs < b.timestampNs ? 1 : -1))
-    .slice(0, 6);
+  ].sort((a, b) => (a.timestampNs < b.timestampNs ? 1 : -1));
+
+  // Held swaps must surface even when they've scrolled out of the 6-row
+  // preview — a stranded record with no visible resolution path is the bug
+  // this panel exists to fix.
+  const stranded = rows.filter((r) => r.status === "stranded");
+  const visibleRows = rows.slice(0, 6);
 
   const hasAnything =
     (sgldtBalance != null && Number.parseFloat(sgldtBalance) > 0) ||
@@ -150,13 +158,41 @@ export function HoldingsCard({
         </div>
       </div>
 
-      {rows.length > 0 && (
+      {/* Resolution path for held swaps — never a dead end. A stranded record
+          means the swap AND its auto-refund both failed: the funds are
+          recorded on-chain awaiting manual release, not lost. */}
+      {stranded.length > 0 && (
+        <div className="mt-4 rounded-2xl border border-amber-500/25 bg-amber-500/5 p-4 text-[11px] leading-relaxed text-zinc-300">
+          <p className="font-bold text-amber-300 mb-1">
+            A swap of yours is held for manual resolution
+          </p>
+          <p className="text-zinc-400">
+            Its refund couldn&apos;t be sent automatically, so the record is
+            held on-chain with your funds noted — nothing is dropped. Email{" "}
+            <a
+              href={`mailto:anthony@cafreso.com?subject=${encodeURIComponent(
+                `minegold.defi held swap: ${stranded.map((r) => r.ref).join(", ")}`,
+              )}`}
+              className="text-amber-300 underline underline-offset-2 hover:text-amber-200"
+            >
+              anthony@cafreso.com
+            </a>{" "}
+            quoting{" "}
+            <span className="font-mono text-zinc-200">
+              {stranded.map((r) => r.ref).join(", ")}
+            </span>{" "}
+            and it will be released or refunded by hand.
+          </p>
+        </div>
+      )}
+
+      {visibleRows.length > 0 && (
         <div className="mt-4 border-t border-zinc-800 pt-3">
           <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">
             Activity
           </p>
           <ul className="space-y-1.5">
-            {rows.map((row) => (
+            {visibleRows.map((row) => (
               <li
                 key={row.key}
                 className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 text-[11px]"

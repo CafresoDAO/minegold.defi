@@ -2,7 +2,7 @@ const STEPS = [
   { icon: "🔗", step: "1", title: "Sign In", desc: "Authenticate with Internet Identity — no seed phrase, no custodian." },
   { icon: "💼", step: "2", title: "Connect Wallet", desc: "Link MetaMask or Brave Wallet on Ethereum mainnet." },
   { icon: "⛏", step: "3", title: "Approve & Deposit", desc: "Approve UNI spend, then the ckERC-20 helper pulls funds on-chain." },
-  { icon: "🪙", step: "4", title: "Receive sGLDT", desc: "sGLDT (synthetic gold) lands in your ICP account automatically." },
+  { icon: "🪙", step: "4", title: "Receive sGLDT", desc: "sGLDT — a 1:1 wrapper of Gold DAO's physically backed GLDT — lands in your ICP account." },
 ];
 
 /** Static four-step explainer strip under the refinery widget. */
@@ -20,6 +20,19 @@ export function HowItWorksStrip() {
           </div>
         ))}
       </div>
+      <p className="mt-5 text-center text-[11px] text-zinc-500 leading-relaxed">
+        Each GLDT is backed by 0.01&nbsp;g of vaulted physical gold; sGLDT wraps
+        it 1:1 for 10,000× lower fees. New to GLDT?{" "}
+        <a
+          href="https://gldt.org"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 hover:text-blue-300 underline underline-offset-2"
+        >
+          gldt.org
+        </a>{" "}
+        explains the gold behind it.
+      </p>
     </div>
   );
 }

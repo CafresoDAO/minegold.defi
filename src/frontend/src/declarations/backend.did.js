@@ -13,12 +13,15 @@ export const TxStatus = IDL.Variant({
   'Confirmed' : IDL.Null,
   'Completed' : IDL.Null,
   'Pending' : IDL.Null,
+  'Held' : IDL.Null,
 });
 export const TxType = IDL.Variant({
   'Mint' : IDL.Null,
   'Refine' : IDL.Null,
   'Bridge' : IDL.Null,
   'Transfer' : IDL.Null,
+  'Redeem' : IDL.Null,
+  'Refund' : IDL.Null,
 });
 export const TxRecord = IDL.Record({
   'id' : IDL.Text,
@@ -338,12 +341,15 @@ export const idlFactory = ({ IDL }) => {
     'Confirmed' : IDL.Null,
     'Completed' : IDL.Null,
     'Pending' : IDL.Null,
+    'Held' : IDL.Null,
   });
   const TxType = IDL.Variant({
     'Mint' : IDL.Null,
     'Refine' : IDL.Null,
     'Bridge' : IDL.Null,
     'Transfer' : IDL.Null,
+    'Redeem' : IDL.Null,
+    'Refund' : IDL.Null,
   });
   const TxRecord = IDL.Record({
     'id' : IDL.Text,

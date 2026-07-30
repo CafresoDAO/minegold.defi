@@ -31,7 +31,7 @@ export function LoginOverlay({ isLoggingIn, onLogin }: Props) {
         </h1>
         <p className="text-xs text-yellow-500/60 font-mono uppercase tracking-widest mb-3">Cross-Chain Gold Refinery</p>
         <p className="text-zinc-400 text-sm mb-6 px-4">
-          Swap UNI (Ethereum) for sGLDT (synthetic gold) via the Internet Computer Protocol. Trustless. On-chain.
+          Swap UNI (Ethereum) for sGLDT — a 1:1 wrapper of Gold DAO’s physically backed GLDT — on the Internet Computer. Your keys, your account.
         </p>
         {/* How it works — 3 steps */}
         <div className="grid grid-cols-3 gap-2 mb-6 text-left">

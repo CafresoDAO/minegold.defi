@@ -1,4 +1,4 @@
-import { c as createLucideIcon, r as reactExports, j as jsxRuntimeExports, V as StatusPill, a1 as fmtAmount, I as ExternalLink, a2 as ledgerUrl } from "./index-we-wz8f3.js";
+import { c as createLucideIcon, r as reactExports, j as jsxRuntimeExports, Q as StatusPill, $ as fmtAmount, I as ExternalLink, a0 as ledgerUrl } from "./index-CkQl0tYQ.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -12,7 +12,7 @@ const __iconNode = [
 ];
 const Link2 = createLucideIcon("link-2", __iconNode);
 const KIND_LABEL = {
-  refine: "Refine — UNI into gold",
+  refine: "Deposit — UNI refined to sGLDT",
   redeem: "Redeem — gold back to ckUNI",
   bridge: "Deposit — UNI onto the bridge",
   mint: "Mint — ckUNI credited",

@@ -330,7 +330,7 @@ export async function verifyHashIsDeposit(
         ok: false,
         code: "approve_tx",
         detail:
-          "This is the UNI approve transaction (the first one your wallet signed). The deposit is the NEXT transaction — check your wallet's activity tab for one sent to the Banking.Brave bridge contract.",
+          "This is the UNI approve transaction (the first one your wallet signed). The deposit is the NEXT transaction — check your wallet's activity tab for one sent to the ckERC-20 deposit helper contract.",
       };
     }
     if (actualTo !== expected) {

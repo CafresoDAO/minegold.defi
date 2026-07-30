@@ -244,6 +244,49 @@ export function ProofPanel({ onClose }: Props) {
           the dashboard links above.
         </p>
 
+        {/* Treasury policy — written BEFORE it's needed, which is when
+            writing it is credible. No numbers are stated that haven't been
+            set; the band cap is published here the day it exists. */}
+        <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400">
+          <p className="t-label text-zinc-500 mb-1.5">Treasury policy</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li>
+              <span className="text-zinc-300 font-semibold">
+                Settlement is atomic and final.
+              </span>{" "}
+              The sGLDT you receive is fully backed the moment it lands
+              (sVault&apos;s 1:1 GLDT wrap) — after a swap settles, you have
+              zero exposure to this treasury or its choices.
+            </li>
+            <li>
+              <span className="text-zinc-300 font-semibold">
+                Inventory risk is the operator&apos;s, never yours.
+              </span>{" "}
+              Deposited tokens become treasury inventory. If their price
+              falls, the treasury&apos;s capacity to buy the next batch of
+              sGLDT shrinks — visible in the coverage meter above — but no
+              settled balance is touched, and an unpayable deposit is
+              auto-refunded, never taken.
+            </li>
+            <li>
+              <span className="text-zinc-300 font-semibold">Today (UNI):</span>{" "}
+              the operator converts inventory to maintain the sGLDT liquidity
+              shown live above. No leverage, no lending, no yield schemes on
+              treasury assets.
+            </li>
+            <li>
+              <span className="text-zinc-300 font-semibold">
+                Before BAT intake opens:
+              </span>{" "}
+              a reserve-band rule will be published here — a stated cap on
+              held BAT, conversion above the cap, and an advertising budget
+              drawn from the reserve. It will appear on this page before the
+              first BAT deposit is accepted, so you can watch the policy
+              execute rather than take it on faith.
+            </li>
+          </ul>
+        </div>
+
         {/* What we can't promise — neutral chrome, stated on purpose */}
         <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4 text-[11px] leading-relaxed text-zinc-400">
           <p className="t-label text-zinc-300 mb-1.5">

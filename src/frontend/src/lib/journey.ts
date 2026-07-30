@@ -22,8 +22,8 @@ export type JourneyStep = {
 export const JOURNEY: readonly JourneyStep[] = [
   { n: 1, title: "Vault", sub: "Face ID or fingerprint — where your gold will live" },
   { n: 2, title: "Wallet", sub: "connect the wallet holding your UNI" },
-  { n: 3, title: "Refine", sub: "two taps; Ethereum confirms in ~3 min" },
-  { n: 4, title: "Gold", sub: "sGLDT lands in your vault — cash out any time" },
+  { n: 3, title: "Deposit", sub: "two taps in your wallet; Ethereum confirms in ~3 min" },
+  { n: 4, title: "Gold", sub: "sGLDT lands in your vault — withdraw any time" },
 ] as const;
 
 export const JOURNEY_TOTAL = JOURNEY.length;

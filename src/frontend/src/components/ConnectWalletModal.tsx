@@ -204,7 +204,7 @@ export function ConnectWalletModal({
         <div className="px-6 pt-8 pb-4 text-center border-b border-zinc-800">
           <div className="inline-flex items-center gap-1.5 t-label text-zinc-500 mb-2">
             <ShieldCheck size={10} />
-            Banking.Brave · Self-custody
+            minegold.defi · Self-custody
           </div>
           <h2 id="connect-modal-title" className="font-black text-xl text-white mb-1">
             Connect your Ethereum wallet
@@ -345,7 +345,7 @@ export function ConnectWalletModal({
         {/* Footer */}
         <div className="px-6 py-3 bg-zinc-900/60 border-t border-zinc-800 text-center">
           <div className="text-[10px] text-zinc-600 leading-relaxed">
-            Banking.Brave doesn't custody your funds. You sign every transaction
+            minegold.defi doesn't custody your funds. You sign every transaction
             in your own wallet.
           </div>
         </div>

@@ -31,7 +31,6 @@ import { PhaseSuccess } from "./components/phases/PhaseSuccess";
 import { PhaseWalletConfirming } from "./components/phases/PhaseWalletConfirming";
 import { ConnectWalletModal } from "./components/ConnectWalletModal";
 import { LoginOverlay } from "./components/LoginOverlay";
-import { BraveStoryStrip } from "./components/BraveStoryStrip";
 import { MineShaftDemo } from "./components/MineShaft";
 import { ActionQueue } from "./components/ActionQueue";
 import { PortfolioHeader } from "./components/PortfolioHeader";
@@ -815,8 +814,8 @@ export default function App() {
     setStatusMsg("Transaction confirmed — sGLDT released!");
     toast.success(
       sgldtAmount != null
-        ? `⛏ Gold Mined! ${sgldtAmount} sGLDT released to your ICP account`
-        : "⛏ Gold Mined! sGLDT released — confirming the exact amount…",
+        ? `Deposit settled — ${sgldtAmount} sGLDT credited to your vault`
+        : "Deposit settled — sGLDT credited; confirming the exact amount…",
     );
     setDepositRequestId(null);
     setUniAmount("");
@@ -2912,10 +2911,6 @@ export default function App() {
           </Suspense>
         ) : (
           <>
-            {/* The three-beat story, truth-gated: BAT status checked live
-                against DFINITY's minter; the UNI refinery is the live proof. */}
-            <BraveStoryStrip onOpenBraveSoon={enterMinegoldBrave} />
-
 {/* ETH wallet connect / connected dashboard */}
             <WalletSection
               ethAddress={ethAddress}
@@ -3190,6 +3185,10 @@ export default function App() {
                     firstRun={firstRun}
                     uniAmount={uniAmount}
                     onStartMining={requestMining}
+                    onWithdraw={() => setRedeemOpen(true)}
+                    withdrawDisabled={
+                      !(sgldtBalanceRaw !== undefined && sgldtBalanceRaw > 0n)
+                    }
                   />
                 )}
               </div>

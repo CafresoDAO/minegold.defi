@@ -1,20 +1,10 @@
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  ChevronRight,
-  CircleDashed,
-  Clock,
-  Loader2,
-  ShieldCheck,
-  Sparkles,
-  Zap,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "../components/ThemeToggle";
 import {
+  fetchCkBatStatus,
   BAT_ERC20_ADDRESS,
   CK_MINTER_CANISTER_ID,
-  fetchCkBatStatus,
   type CkBatStatus,
 } from "../lib/ckMinter";
 
@@ -23,19 +13,18 @@ interface MinegoldBraveSoonProps {
   onOpenUni: () => void;
 }
 
-const NOTIFY_EMAIL = "hello@cafreso.com";
+const NOTIFY_EMAIL = "anthony@cafreso.com";
 
 /**
- * Minegold.Brave — status page.
+ * /brave — the BAT intake status page. minegold.defi's page, in its calm
+ * banking register: what the BAT intake is, the one external fact it is
+ * gated on, and that fact checked LIVE against DFINITY's minter on every
+ * load. No countdowns, no "coming soon" theater — the page flips itself to
+ * a launch state the moment ckBAT appears in the minter's allowlist.
  *
- * Minegold.Brave onboards BAT (Basic Attention Token, the Brave browser's
- * native ERC-20) onto ICP as ckBAT, reusing the ckERC-20 bridge that
- * Minegold.Uni already runs on.
- *
- * The launch is gated on exactly one external fact: whether DFINITY's minter
- * has listed BAT. So this page doesn't hard-code "coming soon" — it queries the
- * minter live on load (anonymous query, no backend, no auth) and flips itself
- * to a launch state the moment ckBAT appears in the allowlist.
+ * (This replaced the old "Minegold.Brave — a protocol" framing:
+ * minegold.brave is this application's future domain, not a sibling
+ * product. The intake is just called what it is: BAT intake.)
  */
 export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps) {
   const [status, setStatus] = useState<CkBatStatus | null>(null);
@@ -60,388 +49,198 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
 
   const notifyHref =
     `mailto:${NOTIFY_EMAIL}` +
-    `?subject=${encodeURIComponent("Notify me when Minegold.Brave goes live")}` +
+    `?subject=${encodeURIComponent("Notify me when BAT intake opens")}` +
     `&body=${encodeURIComponent(
-      "Add me to the Minegold.Brave waitlist — I'd like an email when BAT → ckBAT → sGLDT opens.",
+      "Add me to the BAT intake waitlist — one email when BAT → ckBAT → sGLDT opens on minegold.defi.",
     )}`;
 
   return (
     <div
+      data-ocid="brave.page"
       className="min-h-screen"
       style={{ background: "var(--bb-bg)", color: "var(--bb-text)" }}
     >
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        {/* Top bar: back + theme toggle */}
-        <div className="flex items-center justify-between mb-6">
+      <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
+        <div className="mb-10 flex items-center justify-between">
           <button
             type="button"
+            data-ocid="brave.back"
             onClick={onBack}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest transition-colors"
+            className="inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold"
             style={{ color: "var(--bb-text-muted)" }}
           >
-            <ArrowLeft size={14} />
-            Banking.Brave
+            <ArrowLeft size={14} /> minegold.defi
           </button>
           <ThemeToggle />
         </div>
 
-        {/* Breadcrumb */}
-        <div
-          className="t-label mb-2"
-          style={{ color: "var(--bb-text-dim)" }}
+        <p className="t-label mb-3" style={{ color: "var(--bb-text-dim)" }}>
+          BAT intake · status
+        </p>
+        <h1 className="t-display" style={{ fontSize: "clamp(1.9rem, 1.4rem + 2.2vw, 2.75rem)" }}>
+          Ad revenue, refined to gold.
+        </h1>
+        <p
+          className="mt-3 max-w-xl text-[15px] leading-relaxed"
+          style={{ color: "var(--bb-text-muted)" }}
         >
-          Banking.Brave · Minegold.Defi
+          The Brave browser pays its users BAT for the ads they already see.
+          This intake will accept that BAT and refine it into sGLDT — the same
+          gold-backed token, through the same refinery, that the UNI intake
+          settles today.
+        </p>
+
+        {/* The one gate, checked live. */}
+        <div
+          data-ocid="brave.status_card"
+          className="mt-8 rounded-3xl border p-6"
+          style={{ borderColor: "var(--bb-border)", background: "var(--bb-surface)" }}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="t-label" style={{ color: "var(--bb-text-dim)" }}>
+              The one thing this is waiting on
+            </p>
+            {checkedAt && (
+              <p className="text-[10px]" style={{ color: "var(--bb-text-dim)" }}>
+                checked live at {checkedAt.toLocaleTimeString()}
+              </p>
+            )}
+          </div>
+          <div className="mt-2 flex items-start gap-3">
+            <span
+              aria-hidden
+              className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full"
+              style={{
+                background: loading
+                  ? "var(--trust-unknown)"
+                  : live
+                    ? "var(--trust-verified)"
+                    : status?.error
+                      ? "var(--trust-fault)"
+                      : "var(--trust-attested)",
+              }}
+            />
+            <div>
+              <p className="text-sm font-bold">
+                {loading
+                  ? "Reading DFINITY's chain-key minter…"
+                  : live
+                    ? "ckBAT is listed — the intake is opening"
+                    : status?.error
+                      ? "The minter couldn't be reached just now"
+                      : "DFINITY's minter does not yet list BAT"}
+              </p>
+              <p
+                className="mt-1 text-[12px] leading-relaxed"
+                style={{ color: "var(--bb-text-muted)" }}
+              >
+                Chain-key intake requires DFINITY&apos;s ckERC-20 minter to
+                support the token. That listing happens by NNS vote — a public
+                process we participate in but don&apos;t control — so this page
+                reads the minter&apos;s own supported-token list on every load
+                {tokenCount > 0 ? (
+                  <> ({tokenCount} tokens listed today, BAT {live ? "among" : "not among"} them)</>
+                ) : null}
+                . No date is promised because no date is ours to promise.
+              </p>
+              <p className="mt-2 text-[11px]" style={{ color: "var(--bb-text-dim)" }}>
+                Verify it yourself: minter{" "}
+                <a
+                  href={`https://dashboard.internetcomputer.org/canister/${CK_MINTER_CANISTER_ID}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-mono underline underline-offset-2"
+                  style={{ color: "var(--bb-brand)" }}
+                >
+                  {CK_MINTER_CANISTER_ID} <ExternalLink size={10} />
+                </a>{" "}
+                · BAT contract{" "}
+                <a
+                  href={`https://etherscan.io/token/${BAT_ERC20_ADDRESS}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-mono underline underline-offset-2"
+                  style={{ color: "var(--bb-brand)" }}
+                >
+                  {BAT_ERC20_ADDRESS.slice(0, 10)}… <ExternalLink size={10} />
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* ── Hero ─────────────────────────────────────────────────────── */}
-        <header className="mb-10">
-          <div className="flex items-center gap-3 mb-3">
-            <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-              style={{ background: "linear-gradient(135deg, #f97316, #ea580c)" }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path d="M12 3L3 8l9 5 9-5-9-5z" fill="#FFFFFF" />
-                <path d="M3 8v8l9 5 9-5V8" stroke="#FFFFFF" strokeWidth="1.5" fill="none" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
-                Minegold<span style={{ color: "var(--bb-brand)" }}>.</span>Brave
-              </h1>
-              <div className="inline-flex items-center gap-1.5 mt-1">
-                {loading ? (
-                  <span
-                    className="inline-flex items-center gap-1.5 t-label rounded-full px-2 py-0.5 border"
-                    style={{
-                      background: "var(--bb-surface)",
-                      color: "var(--bb-text-muted)",
-                      borderColor: "var(--bb-border)",
-                    }}
-                  >
-                    <Loader2 size={10} className="animate-spin" />
-                    Checking bridge…
-                  </span>
-                ) : live ? (
-                  <span
-                    className="inline-flex items-center gap-1.5 t-label rounded-full px-2 py-0.5 border"
-                    style={{
-                      background: "rgba(16, 185, 129, 0.12)",
-                      color: "#059669",
-                      borderColor: "rgba(16, 185, 129, 0.35)",
-                    }}
-                  >
-                    <Sparkles size={10} />
-                    ckBAT is live
-                  </span>
-                ) : (
-                  <span
-                    className="t-label rounded-full px-2 py-0.5 border"
-                    style={{
-                      background: "rgba(234, 179, 8, 0.12)",
-                      color: "#ca8a04",
-                      borderColor: "rgba(234, 179, 8, 0.35)",
-                    }}
-                  >
-                    Awaiting ckBAT
-                  </span>
-                )}
-                <Clock size={11} style={{ color: "var(--bb-text-dim)" }} />
-              </div>
-            </div>
-          </div>
-          <p
-            className="text-sm sm:text-base max-w-2xl mt-3"
-            style={{ color: "var(--bb-text-muted)" }}
-          >
-            Onboard <strong>BAT (Basic Attention Token)</strong> to the Internet
-            Computer as <strong>ckBAT</strong>, then refine it into sGLDT — the
-            same proven workflow as Minegold.Uni, with a different source asset.
-          </p>
-        </header>
-
-        {/* ── Live bridge status ───────────────────────────────────────── */}
-        <section className="mb-12">
-          <div className="flex items-center gap-2 mb-4">
-            <span
-              className="t-label"
-              style={{ color: "var(--bb-brand)" }}
-            >
-              Bridge status · checked live
-            </span>
-            <span className="flex-1 border-t" style={{ borderColor: "var(--bb-border)" }} />
-          </div>
-
+        {/* What's true meanwhile */}
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <div
-            className="rounded-2xl border p-5 sm:p-6"
-            style={{
-              background: live
-                ? "linear-gradient(135deg, rgba(16, 185, 129, 0.08), var(--bb-surface))"
-                : "var(--bb-surface)",
-              borderColor: live ? "rgba(16, 185, 129, 0.35)" : "var(--bb-border)",
-            }}
+            className="rounded-3xl border p-5"
+            style={{ borderColor: "var(--bb-border)", background: "var(--bb-surface)" }}
           >
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 shrink-0">
-                {loading ? (
-                  <Loader2 size={18} className="animate-spin" style={{ color: "var(--bb-text-dim)" }} />
-                ) : live ? (
-                  <Sparkles size={18} style={{ color: "#059669" }} />
-                ) : (
-                  <CircleDashed size={18} style={{ color: "#ca8a04" }} />
-                )}
-              </div>
-              <div className="min-w-0 flex-1">
-                {loading && (
-                  <p className="text-sm" style={{ color: "var(--bb-text-muted)" }}>
-                    Asking DFINITY's ckERC-20 minter which assets it bridges…
-                  </p>
-                )}
-
-                {!loading && status?.error && (
-                  <>
-                    <div className="font-bold text-sm mb-1">Status check unavailable</div>
-                    <p className="text-xs leading-relaxed" style={{ color: "var(--bb-text-muted)" }}>
-                      We couldn't reach the minter just now, so this page can't
-                      confirm ckBAT's status. Minegold.Brave opens as soon as BAT
-                      is listed — please check back shortly.
-                    </p>
-                  </>
-                )}
-
-                {!loading && !status?.error && live && (
-                  <>
-                    <div className="font-bold text-sm mb-1">
-                      BAT is now bridgeable — Minegold.Brave can open.
-                    </div>
-                    <p className="text-xs leading-relaxed" style={{ color: "var(--bb-text-muted)" }}>
-                      The minter lists <strong>{status?.token?.symbol}</strong> with
-                      ledger{" "}
-                      <code className="font-mono">{status?.token?.ledgerCanisterId}</code>.
-                      The refinery flow is being switched on — check back within a day.
-                    </p>
-                  </>
-                )}
-
-                {!loading && !status?.error && !live && (
-                  <>
-                    <div className="font-bold text-sm mb-1">
-                      BAT is not yet listed on the ckERC-20 bridge.
-                    </div>
-                    <p className="text-xs leading-relaxed" style={{ color: "var(--bb-text-muted)" }}>
-                      Adding a token is an NNS governance decision, not something
-                      we control. This page re-checks the minter every time it
-                      loads and will switch itself on the day BAT appears —
-                      nothing here is hand-updated.
-                    </p>
-                  </>
-                )}
-
-                {/* Evidence: what the bridge supports right now */}
-                {!loading && !status?.error && tokenCount > 0 && (
-                  <div className="mt-4">
-                    <div
-                      className="t-label mb-2"
-                      style={{ color: "var(--bb-text-dim)" }}
-                    >
-                      Bridged today · {tokenCount} assets
-                    </div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {status?.allTokens.map((t) => (
-                        <span
-                          key={t.ledgerCanisterId || t.symbol}
-                          className="text-[10px] font-bold rounded-lg px-2 py-1 border"
-                          style={{
-                            borderColor: "var(--bb-border)",
-                            color:
-                              t.symbol.toLowerCase() === "ckuni"
-                                ? "var(--bb-brand)"
-                                : "var(--bb-text-muted)",
-                            background: "var(--bb-bg)",
-                          }}
-                        >
-                          {t.symbol}
-                        </span>
-                      ))}
-                      <span
-                        className="text-[10px] font-bold rounded-lg px-2 py-1 border border-dashed"
-                        style={{ borderColor: "rgba(234, 179, 8, 0.5)", color: "#ca8a04" }}
-                      >
-                        ckBAT — pending
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {checkedAt && (
-                  <div
-                    className="mt-4 text-[10px] font-mono"
-                    style={{ color: "var(--bb-text-dim)" }}
-                  >
-                    minter {CK_MINTER_CANISTER_ID} · checked{" "}
-                    {checkedAt.toLocaleTimeString()}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Waitlist ─────────────────────────────────────────────────── */}
-        {!live && (
-          <section className="mb-12">
-            <div
-              className="rounded-2xl border p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between"
-              style={{
-                background: "linear-gradient(135deg, rgba(249, 115, 22, 0.06), var(--bb-surface))",
-                borderColor: "var(--bb-border)",
-              }}
-            >
-              <div className="min-w-0">
-                <div
-                  className="t-label mb-1"
-                  style={{ color: "var(--bb-brand)" }}
-                >
-                  Get notified
-                </div>
-                <p className="text-sm" style={{ color: "var(--bb-text)" }}>
-                  Want an email the day BAT refining opens?
-                </p>
-                <p className="text-xs mt-0.5" style={{ color: "var(--bb-text-muted)" }}>
-                  One message, at launch. No newsletter.
-                </p>
-              </div>
-              <a
-                href={notifyHref}
-                className="inline-flex items-center gap-1.5 text-sm font-bold rounded-xl px-4 py-2 transition-all shrink-0"
-                style={{ background: "var(--bb-brand)", color: "#ffffff" }}
-              >
-                Notify me
-                <ArrowUpRight size={14} />
-              </a>
-            </div>
-          </section>
-        )}
-
-        {/* ── Planned workflow ─────────────────────────────────────────── */}
-        <section className="mb-12">
-          <div className="flex items-center gap-2 mb-4">
-            <span
-              className="t-label"
+            <p className="t-label mb-1" style={{ color: "var(--bb-text-dim)" }}>
+              Working today
+            </p>
+            <p className="text-sm font-bold">The same refinery, via UNI</p>
+            <p className="mt-1 text-[12px] leading-relaxed" style={{ color: "var(--bb-text-muted)" }}>
+              Every part of this machine except the BAT door is live on
+              mainnet — deposits, atomic settlement, withdrawals, the public
+              proof page. BAT intake reuses it unchanged.
+            </p>
+            <button
+              type="button"
+              data-ocid="brave.open_uni"
+              onClick={onOpenUni}
+              className="mt-3 inline-flex min-h-[40px] items-center gap-1.5 text-xs font-bold"
               style={{ color: "var(--bb-brand)" }}
             >
-              {live ? "How it works" : "Planned workflow"}
-            </span>
-            <span className="flex-1 border-t" style={{ borderColor: "var(--bb-border)" }} />
+              Open the live app <ArrowRight size={13} />
+            </button>
           </div>
-
-          <ol className="grid sm:grid-cols-3 gap-4">
-            {[
-              {
-                n: "01",
-                title: "Bridge BAT → ckBAT",
-                body: "You sign a deposit() call on the ckERC-20 helper contract on Ethereum. DFINITY's minter credits the treasury on ICP.",
-              },
-              {
-                n: "02",
-                title: "Verify on ICP",
-                body: "The backend canister reads the Ethereum transaction via HTTPS outcalls and cryptographically verifies amount and recipient.",
-              },
-              {
-                n: "03",
-                title: "Release sGLDT",
-                body: "Locked-rate sGLDT transfers from treasury to your ICP account over ICRC-1 — no custodian in the middle.",
-              },
-            ].map((step) => (
-              <li
-                key={step.n}
-                className="rounded-2xl border p-5"
-                style={{ background: "var(--bb-surface)", borderColor: "var(--bb-border)" }}
-              >
-                <div
-                  className="text-[10px] font-black tracking-widest mb-2"
-                  style={{ color: "var(--bb-brand)" }}
-                >
-                  STEP {step.n}
-                </div>
-                <div className="font-bold text-sm mb-1">{step.title}</div>
-                <div className="text-xs leading-relaxed" style={{ color: "var(--bb-text-muted)" }}>
-                  {step.body}
-                </div>
-              </li>
-            ))}
-          </ol>
-
-          <p className="text-[11px] mt-3" style={{ color: "var(--bb-text-dim)" }}>
-            BAT contract <code className="font-mono">{BAT_ERC20_ADDRESS}</code>
-          </p>
-        </section>
-
-        {/* ── Why it fits ──────────────────────────────────────────────── */}
-        <section className="mb-16 grid sm:grid-cols-3 gap-4 text-xs">
-          {[
-            {
-              icon: ShieldCheck,
-              color: "var(--bb-brand)",
-              title: "Brave-native",
-              desc: "BAT is the Brave browser's own token — a natural pairing with Brave Wallet.",
-            },
-            {
-              icon: Zap,
-              color: "#10b981",
-              title: "Same bridge",
-              desc: "Reuses the chain-key ckERC-20 path already running for UNI. No new contracts to audit.",
-            },
-            {
-              icon: Clock,
-              color: "#eab308",
-              title: "Self-updating",
-              desc: "This page reads the minter directly, so it goes live the day ckBAT does.",
-            },
-          ].map((item) => (
-            <div
-              key={item.title}
-              className="flex items-start gap-2 rounded-2xl border p-4"
-              style={{ borderColor: "var(--bb-border)", background: "var(--bb-surface)" }}
-            >
-              <item.icon className="w-4 h-4 shrink-0 mt-0.5" style={{ color: item.color }} />
-              <div>
-                <div className="font-bold mb-0.5">{item.title}</div>
-                <div style={{ color: "var(--bb-text-muted)" }}>{item.desc}</div>
-              </div>
-            </div>
-          ))}
-        </section>
-
-        {/* ── Footer CTA back to Uni ───────────────────────────────────── */}
-        <div
-          className="rounded-2xl border p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
-          style={{
-            background: "linear-gradient(135deg, rgba(234, 179, 8, 0.06), var(--bb-surface))",
-            borderColor: "var(--bb-border)",
-          }}
-        >
-          <div>
-            <div
-              className="t-label mb-1"
-              style={{ color: "var(--bb-brand)" }}
-            >
-              In the meantime
-            </div>
-            <p className="text-sm" style={{ color: "var(--bb-text)" }}>
-              The live <strong>Minegold.Uni</strong> workflow refines UNI into sGLDT today.
+          <div
+            className="rounded-3xl border p-5"
+            style={{ borderColor: "var(--bb-border)", background: "var(--bb-surface)" }}
+          >
+            <p className="t-label mb-1" style={{ color: "var(--bb-text-dim)" }}>
+              Worth knowing
+            </p>
+            <p className="text-sm font-bold">Where your BAT actually lives</p>
+            <p className="mt-1 text-[12px] leading-relaxed" style={{ color: "var(--bb-text-muted)" }}>
+              Brave&apos;s newer self-custody payouts settle BAT on Solana;
+              chain-key intake starts with the Ethereum ERC-20. Small monthly
+              amounts are cheapest to convert once accumulated — and if ICP&apos;s
+              Solana integration reaches SPL tokens, that cost drops to cents.
+              This page will say so plainly when either fact changes.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onOpenUni}
-            className="inline-flex items-center gap-1.5 text-sm font-bold rounded-xl px-4 py-2 transition-all"
-            style={{ background: "var(--bb-brand)", color: "#ffffff" }}
-          >
-            Open Minegold.Uni
-            <ChevronRight size={14} />
-          </button>
         </div>
+
+        {/* Waitlist — one message, stated as policy */}
+        <div
+          className="mt-4 rounded-3xl border p-6 text-center"
+          style={{ borderColor: "var(--bb-border)", background: "var(--bb-surface)" }}
+        >
+          <p className="text-sm font-bold mb-1">
+            {live ? "It's opening — watch your inbox" : "One message, at launch. No newsletter."}
+          </p>
+          <p className="mb-4 text-[12px]" style={{ color: "var(--bb-text-muted)" }}>
+            Ask to be told when BAT intake opens, and that is the only email
+            you will ever get from it.
+          </p>
+          <a
+            href={notifyHref}
+            data-ocid="brave.notify"
+            className="inline-flex min-h-[48px] items-center gap-2 rounded-2xl px-5 text-sm font-bold"
+            style={{ background: "var(--royal-700)", color: "#ffffff" }}
+          >
+            <Mail size={15} /> Notify me at launch
+          </a>
+        </div>
+
+        <footer
+          className="mt-10 border-t pt-5 text-center text-[11px]"
+          style={{ borderColor: "var(--bb-border)", color: "var(--bb-text-dim)" }}
+        >
+          minegold.defi · part of the Banking.Brave ecosystem, powered by
+          CafresoDAO
+        </footer>
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ import { StatusPill } from "./StatusPill";
  */
 
 const KIND_LABEL: Record<LedgerEntry["kind"], string> = {
-  refine: "Refine — UNI into gold",
+  refine: "Deposit — UNI refined to sGLDT",
   redeem: "Redeem — gold back to ckUNI",
   bridge: "Deposit — UNI onto the bridge",
   mint: "Mint — ckUNI credited",

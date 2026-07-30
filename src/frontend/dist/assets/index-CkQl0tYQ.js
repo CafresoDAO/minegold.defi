@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-CfewnLLu.js","assets/button-BQo6YNqq.js","assets/MinegoldBraveSoon-BCfQ-52X.js","assets/arrow-left-CpEElhDA.js","assets/TransactionHistoryPage-yYy7KoLD.js","assets/ReceiptBlock-0uLhA4WO.js","assets/ReceiptPage-BYT9wafM.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage--cYtwp0I.js","assets/button-BlgyoV5S.js","assets/LandingPage-DIrQYsA6.js","assets/ckMinter--R090JR0.js","assets/MinegoldBraveSoon-BX8-tND6.js","assets/arrow-left-DadBKtS-.js","assets/TransactionHistoryPage-CP8Trr2N.js","assets/ReceiptBlock-BKipn9si.js","assets/ReceiptPage-D5UXgzHT.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -33583,7 +33583,7 @@ async function call(client2, args) {
   } catch (err) {
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-Cv-6SyVU.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-CV8nJ2XZ.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -41558,7 +41558,7 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$w = [
+const __iconNode$v = [
   [
     "path",
     {
@@ -41567,19 +41567,7 @@ const __iconNode$w = [
     }
   ]
 ];
-const Activity = createLucideIcon("activity", __iconNode$w);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$v = [
-  ["path", { d: "M12 17V3", key: "1cwfxf" }],
-  ["path", { d: "m6 11 6 6 6-6", key: "12ii2o" }],
-  ["path", { d: "M19 21H5", key: "150jfl" }]
-];
-const ArrowDownToLine = createLucideIcon("arrow-down-to-line", __iconNode$v);
+const Activity = createLucideIcon("activity", __iconNode$v);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41587,12 +41575,11 @@ const ArrowDownToLine = createLucideIcon("arrow-down-to-line", __iconNode$v);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$u = [
-  ["path", { d: "m16 3 4 4-4 4", key: "1x1c3m" }],
-  ["path", { d: "M20 7H4", key: "zbl0bi" }],
-  ["path", { d: "m8 21-4-4 4-4", key: "h9nckh" }],
-  ["path", { d: "M4 17h16", key: "g4d7ey" }]
+  ["path", { d: "M12 17V3", key: "1cwfxf" }],
+  ["path", { d: "m6 11 6 6 6-6", key: "12ii2o" }],
+  ["path", { d: "M19 21H5", key: "150jfl" }]
 ];
-const ArrowRightLeft = createLucideIcon("arrow-right-left", __iconNode$u);
+const ArrowDownToLine = createLucideIcon("arrow-down-to-line", __iconNode$u);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41600,55 +41587,56 @@ const ArrowRightLeft = createLucideIcon("arrow-right-left", __iconNode$u);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$t = [
+  ["path", { d: "m16 3 4 4-4 4", key: "1x1c3m" }],
+  ["path", { d: "M20 7H4", key: "zbl0bi" }],
+  ["path", { d: "m8 21-4-4 4-4", key: "h9nckh" }],
+  ["path", { d: "M4 17h16", key: "g4d7ey" }]
+];
+const ArrowRightLeft = createLucideIcon("arrow-right-left", __iconNode$t);
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$s = [
   ["path", { d: "m18 9-6-6-6 6", key: "kcunyi" }],
   ["path", { d: "M12 3v14", key: "7cf3v8" }],
   ["path", { d: "M5 21h14", key: "11awu3" }]
 ];
-const ArrowUpFromLine = createLucideIcon("arrow-up-from-line", __iconNode$t);
+const ArrowUpFromLine = createLucideIcon("arrow-up-from-line", __iconNode$s);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$s = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$s);
+const __iconNode$r = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$r);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$r = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$r);
+const __iconNode$q = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$q);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$q = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("chevron-right", __iconNode$q);
+const __iconNode$p = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$p);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$p = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
-const ChevronUp = createLucideIcon("chevron-up", __iconNode$p);
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$o = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
-];
-const CircleAlert = createLucideIcon("circle-alert", __iconNode$o);
+const __iconNode$o = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
+const ChevronUp = createLucideIcon("chevron-up", __iconNode$o);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41657,9 +41645,10 @@ const CircleAlert = createLucideIcon("circle-alert", __iconNode$o);
  */
 const __iconNode$n = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
 ];
-const CircleCheck = createLucideIcon("circle-check", __iconNode$n);
+const CircleAlert = createLucideIcon("circle-alert", __iconNode$n);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41667,11 +41656,10 @@ const CircleCheck = createLucideIcon("circle-check", __iconNode$n);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$m = [
-  ["path", { d: "M18 20a6 6 0 0 0-12 0", key: "1qehca" }],
-  ["circle", { cx: "12", cy: "10", r: "4", key: "1h16sb" }],
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CircleUserRound = createLucideIcon("circle-user-round", __iconNode$m);
+const CircleCheck = createLucideIcon("circle-check", __iconNode$m);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41679,11 +41667,11 @@ const CircleUserRound = createLucideIcon("circle-user-round", __iconNode$m);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$l = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
+  ["path", { d: "M18 20a6 6 0 0 0-12 0", key: "1qehca" }],
+  ["circle", { cx: "12", cy: "10", r: "4", key: "1h16sb" }],
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
 ];
-const CircleX = createLucideIcon("circle-x", __iconNode$l);
+const CircleUserRound = createLucideIcon("circle-user-round", __iconNode$l);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41692,9 +41680,10 @@ const CircleX = createLucideIcon("circle-x", __iconNode$l);
  */
 const __iconNode$k = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
 ];
-const Clock = createLucideIcon("clock", __iconNode$k);
+const CircleX = createLucideIcon("circle-x", __iconNode$k);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41702,12 +41691,10 @@ const Clock = createLucideIcon("clock", __iconNode$k);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$j = [
-  ["circle", { cx: "8", cy: "8", r: "6", key: "3yglwk" }],
-  ["path", { d: "M18.09 10.37A6 6 0 1 1 10.34 18", key: "t5s6rm" }],
-  ["path", { d: "M7 6h1v4", key: "1obek4" }],
-  ["path", { d: "m16.71 13.88.7.71-2.82 2.82", key: "1rbuyh" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
 ];
-const Coins = createLucideIcon("coins", __iconNode$j);
+const Clock = createLucideIcon("clock", __iconNode$j);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41715,10 +41702,12 @@ const Coins = createLucideIcon("coins", __iconNode$j);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$i = [
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["circle", { cx: "8", cy: "8", r: "6", key: "3yglwk" }],
+  ["path", { d: "M18.09 10.37A6 6 0 1 1 10.34 18", key: "t5s6rm" }],
+  ["path", { d: "M7 6h1v4", key: "1obek4" }],
+  ["path", { d: "m16.71 13.88.7.71-2.82 2.82", key: "1rbuyh" }]
 ];
-const Copy = createLucideIcon("copy", __iconNode$i);
+const Coins = createLucideIcon("coins", __iconNode$i);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41726,11 +41715,10 @@ const Copy = createLucideIcon("copy", __iconNode$i);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$h = [
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
-  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
-  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const Ellipsis = createLucideIcon("ellipsis", __iconNode$h);
+const Copy = createLucideIcon("copy", __iconNode$h);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41738,11 +41726,11 @@ const Ellipsis = createLucideIcon("ellipsis", __iconNode$h);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$g = [
-  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
-  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
-  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
+  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
+  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
 ];
-const ExternalLink = createLucideIcon("external-link", __iconNode$g);
+const Ellipsis = createLucideIcon("ellipsis", __iconNode$g);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41750,17 +41738,29 @@ const ExternalLink = createLucideIcon("external-link", __iconNode$g);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$f = [
-  ["path", { d: "M6 16c5 0 7-8 12-8a4 4 0 0 1 0 8c-5 0-7-8-12-8a4 4 0 1 0 0 8", key: "18ogeb" }]
+  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
+  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
+  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
 ];
-const Infinity$1 = createLucideIcon("infinity", __iconNode$f);
+const ExternalLink = createLucideIcon("external-link", __iconNode$f);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$e = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("loader-circle", __iconNode$e);
+const __iconNode$e = [
+  ["path", { d: "M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4", key: "1nerag" }],
+  ["path", { d: "M14 13.12c0 2.38 0 6.38-1 8.88", key: "o46ks0" }],
+  ["path", { d: "M17.29 21.02c.12-.6.43-2.3.5-3.02", key: "ptglia" }],
+  ["path", { d: "M2 12a10 10 0 0 1 18-6", key: "ydlgp0" }],
+  ["path", { d: "M2 16h.01", key: "1gqxmh" }],
+  ["path", { d: "M21.8 16c.2-2 .131-5.354 0-6", key: "drycrb" }],
+  ["path", { d: "M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2", key: "1tidbn" }],
+  ["path", { d: "M8.65 22c.21-.66.45-1.32.57-2", key: "13wd9y" }],
+  ["path", { d: "M9 6.8a6 6 0 0 1 9 5.2v2", key: "1fr1j5" }]
+];
+const Fingerprint = createLucideIcon("fingerprint", __iconNode$e);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41768,22 +41768,17 @@ const LoaderCircle = createLucideIcon("loader-circle", __iconNode$e);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$d = [
-  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
-  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
+  ["path", { d: "M6 16c5 0 7-8 12-8a4 4 0 0 1 0 8c-5 0-7-8-12-8a4 4 0 1 0 0 8", key: "18ogeb" }]
 ];
-const Lock = createLucideIcon("lock", __iconNode$d);
+const Infinity$1 = createLucideIcon("infinity", __iconNode$d);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$c = [
-  ["path", { d: "m16 17 5-5-5-5", key: "1bji2h" }],
-  ["path", { d: "M21 12H9", key: "dn1m92" }],
-  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }]
-];
-const LogOut = createLucideIcon("log-out", __iconNode$c);
+const __iconNode$c = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("loader-circle", __iconNode$c);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41791,9 +41786,10 @@ const LogOut = createLucideIcon("log-out", __iconNode$c);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$b = [
-  ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
+  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
+  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
 ];
-const Moon = createLucideIcon("moon", __iconNode$b);
+const Lock = createLucideIcon("lock", __iconNode$b);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41801,30 +41797,11 @@ const Moon = createLucideIcon("moon", __iconNode$b);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$a = [
-  ["path", { d: "M14.531 12.469 6.619 20.38a1 1 0 1 1-3-3l7.912-7.912", key: "we99rg" }],
-  [
-    "path",
-    {
-      d: "M15.686 4.314A12.5 12.5 0 0 0 5.461 2.958 1 1 0 0 0 5.58 4.71a22 22 0 0 1 6.318 3.393",
-      key: "1w6hck"
-    }
-  ],
-  [
-    "path",
-    {
-      d: "M17.7 3.7a1 1 0 0 0-1.4 0l-4.6 4.6a1 1 0 0 0 0 1.4l2.6 2.6a1 1 0 0 0 1.4 0l4.6-4.6a1 1 0 0 0 0-1.4z",
-      key: "15hgfx"
-    }
-  ],
-  [
-    "path",
-    {
-      d: "M19.686 8.314a12.501 12.501 0 0 1 1.356 10.225 1 1 0 0 1-1.751-.119 22 22 0 0 0-3.393-6.319",
-      key: "452b4h"
-    }
-  ]
+  ["path", { d: "m16 17 5-5-5-5", key: "1bji2h" }],
+  ["path", { d: "M21 12H9", key: "dn1m92" }],
+  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }]
 ];
-const Pickaxe = createLucideIcon("pickaxe", __iconNode$a);
+const LogOut = createLucideIcon("log-out", __iconNode$a);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41832,12 +41809,9 @@ const Pickaxe = createLucideIcon("pickaxe", __iconNode$a);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$9 = [
-  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
-  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
-  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
-  ["path", { d: "M8 16H3v5", key: "1cv678" }]
+  ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
 ];
-const RefreshCw = createLucideIcon("refresh-cw", __iconNode$9);
+const Moon = createLucideIcon("moon", __iconNode$9);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41845,16 +41819,12 @@ const RefreshCw = createLucideIcon("refresh-cw", __iconNode$9);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$8 = [
-  [
-    "path",
-    {
-      d: "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z",
-      key: "1ffxy3"
-    }
-  ],
-  ["path", { d: "m21.854 2.147-10.94 10.939", key: "12cjpa" }]
+  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
+  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
+  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
+  ["path", { d: "M8 16H3v5", key: "1cv678" }]
 ];
-const Send = createLucideIcon("send", __iconNode$8);
+const RefreshCw = createLucideIcon("refresh-cw", __iconNode$8);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41865,13 +41835,13 @@ const __iconNode$7 = [
   [
     "path",
     {
-      d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",
-      key: "1qme2f"
+      d: "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z",
+      key: "1ffxy3"
     }
   ],
-  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+  ["path", { d: "m21.854 2.147-10.94 10.939", key: "12cjpa" }]
 ];
-const Settings = createLucideIcon("settings", __iconNode$7);
+const Send = createLucideIcon("send", __iconNode$7);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41882,13 +41852,13 @@ const __iconNode$6 = [
   [
     "path",
     {
-      d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
-      key: "oel41y"
+      d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",
+      key: "1qme2f"
     }
   ],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
 ];
-const ShieldCheck = createLucideIcon("shield-check", __iconNode$6);
+const Settings = createLucideIcon("settings", __iconNode$6);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41896,10 +41866,16 @@ const ShieldCheck = createLucideIcon("shield-check", __iconNode$6);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$5 = [
-  ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2", key: "1yt0o3" }],
-  ["path", { d: "M12 18h.01", key: "mhygvu" }]
+  [
+    "path",
+    {
+      d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
+      key: "oel41y"
+    }
+  ],
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const Smartphone = createLucideIcon("smartphone", __iconNode$5);
+const ShieldCheck = createLucideIcon("shield-check", __iconNode$5);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -41907,19 +41883,10 @@ const Smartphone = createLucideIcon("smartphone", __iconNode$5);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$4 = [
-  [
-    "path",
-    {
-      d: "M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z",
-      key: "4pj2yx"
-    }
-  ],
-  ["path", { d: "M20 3v4", key: "1olli1" }],
-  ["path", { d: "M22 5h-4", key: "1gvqau" }],
-  ["path", { d: "M4 17v2", key: "vumght" }],
-  ["path", { d: "M5 18H3", key: "zchphs" }]
+  ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2", key: "1yt0o3" }],
+  ["path", { d: "M12 18h.01", key: "mhygvu" }]
 ];
-const Sparkles = createLucideIcon("sparkles", __iconNode$4);
+const Smartphone = createLucideIcon("smartphone", __iconNode$4);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -45878,26 +45845,43 @@ function PhaseIdle({
   gasShortfall,
   unlimitedApproval,
   onUnlimitedApprovalChange,
-  onStartMining
+  onStartMining,
+  onWithdraw,
+  withdrawDisabled
 }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      GoldCTA,
-      {
-        "data-ocid": "refinery.start.primary_button",
-        onClick: onStartMining,
-        disabled: startDisabled,
-        "aria-label": "Mine sGLDT by depositing UNI",
-        size: "lg",
-        className: "shadow-2xl",
-        children: [
-          "⛏ Refine",
-          uniAmount ? ` ${uniAmount} UNI` : " UNI",
-          " into gold"
-        ]
-      }
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1.5 text-center text-[11px] text-zinc-500", children: "Minimum 0.005 UNI — below that, ledger fees eat the deposit." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-2.5", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        GoldCTA,
+        {
+          "data-ocid": "refinery.start.primary_button",
+          onClick: onStartMining,
+          disabled: startDisabled,
+          "aria-label": "Deposit UNI to receive sGLDT",
+          size: "lg",
+          fullWidth: true,
+          trailingIcon: null,
+          className: "shadow-2xl",
+          children: [
+            "Deposit",
+            uniAmount ? ` ${uniAmount} UNI` : ""
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          type: "button",
+          "data-ocid": "refinery.withdraw.button",
+          onClick: onWithdraw,
+          disabled: withdrawDisabled,
+          "aria-label": "Withdraw — redeem sGLDT back to ckUNI",
+          className: "h-full min-h-[56px] rounded-2xl border border-zinc-700 bg-zinc-900 text-sm font-bold text-zinc-200 transition-colors hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed",
+          children: "Withdraw"
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1.5 text-center text-[11px] text-zinc-500", children: "Deposits convert to sGLDT at the on-chain rate (minimum 0.005 UNI — below that, ledger fees eat the deposit). Withdrawals redeem sGLDT back to ckUNI at the same rate source." }),
     showRateHint && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-center text-xs text-amber-400", children: "Waiting for the on-chain exchange rate before enabling swap…" }),
     gasShortfall && /* @__PURE__ */ jsxRuntimeExports.jsx(
       "p",
@@ -46121,11 +46105,7 @@ function PhaseSuccess({
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative flex flex-col items-center text-center", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/30", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 44, className: "text-emerald-400", strokeWidth: 2.2 }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { size: 16, className: "text-yellow-400" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "font-black text-xl sm:text-2xl tracking-tight bg-gradient-to-r from-emerald-300 via-yellow-300 to-yellow-400 bg-clip-text text-transparent", children: "Refinery Complete" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { size: 16, className: "text-yellow-400" })
-        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "mb-2 text-xl sm:text-2xl font-black tracking-tight text-white", children: "Deposit settled" }),
         sgldtReleased != null ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-300 mb-1", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-yellow-400 font-black text-lg", children: [
             sgldtReleased,
@@ -46181,7 +46161,7 @@ function PhaseSuccess({
         onClick: onStartNew,
         size: "md",
         trailingIcon: null,
-        children: "Refine more UNI"
+        children: "Make another deposit"
       }
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-center text-[12px] text-zinc-400", children: [
@@ -46192,7 +46172,7 @@ function PhaseSuccess({
           "data-ocid": "refinery.success.redeem",
           onClick: onRedeem,
           className: "text-yellow-400 font-semibold underline underline-offset-2 hover:text-yellow-300",
-          children: "Cash out any time ›"
+          children: "Withdraw any time ›"
         }
       ),
       " ",
@@ -46465,7 +46445,7 @@ function ConnectWalletModal({
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-6 pt-8 pb-4 text-center border-b border-zinc-800", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "inline-flex items-center gap-1.5 t-label text-zinc-500 mb-2", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(ShieldCheck, { size: 10 }),
-                "Banking.Brave · Self-custody"
+                "minegold.defi · Self-custody"
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { id: "connect-modal-title", className: "font-black text-xl text-white mb-1", children: "Connect your Ethereum wallet" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500 max-w-xs mx-auto leading-relaxed", children: "Pick the wallet that holds your UNI. Your keys never leave your device." })
@@ -46559,7 +46539,7 @@ function ConnectWalletModal({
                 }
               )
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-6 py-3 bg-zinc-900/60 border-t border-zinc-800 text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] text-zinc-600 leading-relaxed", children: "Banking.Brave doesn't custody your funds. You sign every transaction in your own wallet." }) })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-6 py-3 bg-zinc-900/60 border-t border-zinc-800 text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] text-zinc-600 leading-relaxed", children: "minegold.defi doesn't custody your funds. You sign every transaction in your own wallet." }) })
           ]
         }
       )
@@ -46596,8 +46576,8 @@ function CoinbaseIcon() {
 const JOURNEY = [
   { n: 1, title: "Vault", sub: "Face ID or fingerprint — where your gold will live" },
   { n: 2, title: "Wallet", sub: "connect the wallet holding your UNI" },
-  { n: 3, title: "Refine", sub: "two taps; Ethereum confirms in ~3 min" },
-  { n: 4, title: "Gold", sub: "sGLDT lands in your vault — cash out any time" }
+  { n: 3, title: "Deposit", sub: "two taps in your wallet; Ethereum confirms in ~3 min" },
+  { n: 4, title: "Gold", sub: "sGLDT lands in your vault — withdraw any time" }
 ];
 function LoginOverlay({ isLoggingIn, onLogin, onBack }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -46686,162 +46666,6 @@ function LoginOverlay({ isLoggingIn, onLogin, onBack }) {
           }
         )
       ] })
-    }
-  );
-}
-const CK_MINTER_CANISTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai";
-const BAT_ERC20_ADDRESS = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF";
-const minterIDL = ({ IDL: IDL2 }) => {
-  const CkErc20 = IDL2.Record({
-    ckerc20_token_symbol: IDL2.Text,
-    erc20_contract_address: IDL2.Text,
-    ledger_canister_id: IDL2.Principal
-  });
-  const MinterInfo = IDL2.Record({
-    supported_ckerc20_tokens: IDL2.Opt(IDL2.Vec(CkErc20))
-  });
-  return IDL2.Service({
-    get_minter_info: IDL2.Func([], [MinterInfo], ["query"])
-  });
-};
-async function fetchCkBatStatus() {
-  const empty = {
-    supported: false,
-    token: null,
-    allTokens: [],
-    error: null
-  };
-  try {
-    const agent = await HttpAgent.create({ host: "https://icp-api.io" });
-    const actor = Actor.createActor(minterIDL, {
-      agent,
-      canisterId: CK_MINTER_CANISTER_ID
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    });
-    const info = await actor.get_minter_info();
-    const raw = (info == null ? void 0 : info.supported_ckerc20_tokens) ?? [];
-    const list = Array.isArray(raw) && raw.length > 0 ? raw[0] : [];
-    const allTokens = (list ?? []).map(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (t) => {
-        var _a3, _b3;
-        return {
-          symbol: String(t.ckerc20_token_symbol ?? ""),
-          erc20Address: String(t.erc20_contract_address ?? ""),
-          ledgerCanisterId: ((_b3 = (_a3 = t.ledger_canister_id) == null ? void 0 : _a3.toString) == null ? void 0 : _b3.call(_a3)) ?? ""
-        };
-      }
-    );
-    const wanted = BAT_ERC20_ADDRESS.toLowerCase();
-    const token = allTokens.find(
-      (t) => t.erc20Address.toLowerCase() === wanted || t.symbol.toLowerCase() === "ckbat"
-    ) ?? null;
-    return { supported: token !== null, token, allTokens, error: null };
-  } catch (e) {
-    return {
-      ...empty,
-      error: e instanceof Error ? e.message : "Could not reach the ckERC-20 minter"
-    };
-  }
-}
-const DISMISS_KEY = "minegold_story_dismissed";
-function BraveStoryStrip({ onOpenBraveSoon }) {
-  const [dismissed, setDismissed] = reactExports.useState(() => {
-    try {
-      return localStorage.getItem(DISMISS_KEY) === "1";
-    } catch {
-      return false;
-    }
-  });
-  const [bat, setBat] = reactExports.useState(null);
-  reactExports.useEffect(() => {
-    if (dismissed) return;
-    let cancelled = false;
-    fetchCkBatStatus().then((s) => {
-      if (!cancelled) setBat(s);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [dismissed]);
-  if (dismissed) return null;
-  const batChip = bat === null ? "checking DFINITY's minter…" : bat.supported ? "BAT is live on the chain-key minter — the BAT refinery is opening" : bat.error ? "minter status check unavailable" : "not yet listed by DFINITY's minter — checked live just now";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    "section",
-    {
-      "data-ocid": "story.strip",
-      className: "relative mb-6 rounded-[2rem] border border-yellow-500/20 bg-gradient-to-br from-yellow-500/[0.06] via-zinc-900/60 to-zinc-900/60 p-5 sm:p-6",
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            type: "button",
-            "aria-label": "Dismiss",
-            "data-ocid": "story.dismiss",
-            onClick: () => {
-              setDismissed(true);
-              try {
-                localStorage.setItem(DISMISS_KEY, "1");
-              } catch {
-              }
-            },
-            className: "absolute top-3 right-3 p-1.5 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 14 })
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-xl bg-yellow-500/15 border border-yellow-500/30 flex items-center justify-center shrink-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pickaxe, { size: 18, className: "text-yellow-400" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-black text-white text-base sm:text-lg leading-snug", children: "Your browser is the mine." }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-1 text-[12px] sm:text-[13px] text-zinc-400 leading-relaxed", children: [
-              "Brave pays you ",
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-orange-300 font-semibold", children: "BAT" }),
-              " for the ads you already see. MineGold turns that payout into",
-              " ",
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400 font-semibold", children: "gold" }),
-              " — sGLDT, a 1:1 wrapper of",
-              " ",
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "a",
-                {
-                  href: "https://gldt.org",
-                  target: "_blank",
-                  rel: "noopener noreferrer",
-                  className: "text-yellow-300 underline underline-offset-2 hover:text-yellow-200",
-                  children: "Gold DAO's GLDT"
-                }
-              ),
-              ", each backed by 0.01 g of vaulted physical gold — and the whole refinery runs as a canister on the Internet Computer: no server, no company holding your funds."
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px]", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                "button",
-                {
-                  type: "button",
-                  "data-ocid": "story.bat_status",
-                  onClick: onOpenBraveSoon,
-                  className: "inline-flex items-center gap-1.5 rounded-lg border border-orange-500/25 bg-orange-500/10 px-2.5 py-1 font-semibold text-orange-300 hover:bg-orange-500/20 transition-colors",
-                  children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "span",
-                      {
-                        className: `w-1.5 h-1.5 rounded-full ${(bat == null ? void 0 : bat.supported) ? "bg-emerald-400" : "bg-zinc-500"}`
-                      }
-                    ),
-                    "BAT refinery: ",
-                    batChip
-                  ]
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 font-semibold text-emerald-300", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-400" }),
-                "UNI refinery: live on mainnet — the same machine, running today"
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: "Intake: ERC-20 on Ethereum" })
-            ] })
-          ] })
-        ] })
-      ]
     }
   );
 }
@@ -49768,7 +49592,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DfSE_dFW.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-jnHZrMTg.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49799,7 +49623,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DfSE_dFW.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-jnHZrMTg.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49823,7 +49647,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DfSE_dFW.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-jnHZrMTg.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -50130,7 +49954,7 @@ function PortfolioHeader({
               className: "inline-flex min-h-[36px] items-center gap-1.5 text-[11px] font-bold text-pink-300 hover:text-pink-200 bg-pink-500/10 border border-pink-500/20 px-3 py-1.5 rounded-xl transition-colors",
               children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowUpFromLine, { size: 11 }),
-                "Cash out — redeem sGLDT"
+                "Withdraw — redeem sGLDT"
               ]
             }
           )
@@ -50565,6 +50389,31 @@ function ProofPanel({ onClose }) {
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono text-zinc-400", children: "dfx canister info" }),
           " or the dashboard links above."
         ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label text-zinc-500 mb-1.5", children: "Treasury policy" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc pl-4 space-y-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Settlement is atomic and final." }),
+              " ",
+              "The sGLDT you receive is fully backed the moment it lands (sVault's 1:1 GLDT wrap) — after a swap settles, you have zero exposure to this treasury or its choices."
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Inventory risk is the operator's, never yours." }),
+              " ",
+              "Deposited tokens become treasury inventory. If their price falls, the treasury's capacity to buy the next batch of sGLDT shrinks — visible in the coverage meter above — but no settled balance is touched, and an unpayable deposit is auto-refunded, never taken."
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Today (UNI):" }),
+              " ",
+              "the operator converts inventory to maintain the sGLDT liquidity shown live above. No leverage, no lending, no yield schemes on treasury assets."
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Before BAT intake opens:" }),
+              " ",
+              "a reserve-band rule will be published here — a stated cap on held BAT, conversion above the cap, and an advertising budget drawn from the reserve. It will appear on this page before the first BAT deposit is accepted, so you can watch the policy execute rather than take it on faith."
+            ] })
+          ] })
+        ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 text-[11px] leading-relaxed text-zinc-400", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label text-zinc-300 mb-1.5", children: "What we can't promise (stated on purpose)" }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc pl-4 space-y-1", children: [
@@ -50587,7 +50436,12 @@ function ProofPanel({ onClose }) {
     }
   );
 }
-const STEP_ICONS = ["🔐", "💼", "⛏", "🪙"];
+const STEP_ICONS = [
+  /* @__PURE__ */ jsxRuntimeExports.jsx(Fingerprint, { size: 18, className: "text-zinc-300" }, "i1"),
+  /* @__PURE__ */ jsxRuntimeExports.jsx(Wallet, { size: 18, className: "text-zinc-300" }, "i2"),
+  /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowDownToLine, { size: 18, className: "text-zinc-300" }, "i3"),
+  /* @__PURE__ */ jsxRuntimeExports.jsx(Coins, { size: 18, className: "text-yellow-500" }, "i4")
+];
 const STEP_DESC = [
   "Open your vault with Face ID or a fingerprint — no seed phrase, no custodian.",
   "Connect the Ethereum wallet holding your UNI (MetaMask or Brave Wallet).",
@@ -52621,24 +52475,24 @@ function usePathRoute() {
   return [match.route, navigate, match.params];
 }
 const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-CfewnLLu.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+  () => __vitePreload(() => import("./AdminPage--cYtwp0I.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
 );
 const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-BqfU8-rR.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+  () => __vitePreload(() => import("./BankingBraveHome-asYdYhyf.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
 );
 const LandingPage = reactExports.lazy(
-  () => __vitePreload(() => import("./LandingPage-DxAn97cg.js"), true ? [] : void 0).then((m2) => ({ default: m2.LandingPage }))
+  () => __vitePreload(() => import("./LandingPage-DIrQYsA6.js"), true ? __vite__mapDeps([2,3]) : void 0).then((m2) => ({ default: m2.LandingPage }))
 );
 const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-BCfQ-52X.js"), true ? __vite__mapDeps([2,3]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+  () => __vitePreload(() => import("./MinegoldBraveSoon-BX8-tND6.js"), true ? __vite__mapDeps([4,3,5]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
 );
 const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-yYy7KoLD.js"), true ? __vite__mapDeps([4,1,5]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./TransactionHistoryPage-CP8Trr2N.js"), true ? __vite__mapDeps([6,1,7]) : void 0).then((m2) => ({
     default: m2.TransactionHistoryPage
   }))
 );
 const ReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./ReceiptPage-BYT9wafM.js"), true ? __vite__mapDeps([6,5,3]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
+  () => __vitePreload(() => import("./ReceiptPage-D5UXgzHT.js"), true ? __vite__mapDeps([8,7,5]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
 );
 const PageFallback = () => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-[40vh] flex items-center justify-center text-xs text-zinc-500 animate-pulse", children: "Loading…" });
 const UNI_CONTRACT_ADDRESS = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984";
@@ -52996,7 +52850,7 @@ function App() {
     setPhase("success");
     setStatusMsg("Transaction confirmed — sGLDT released!");
     ue.success(
-      sgldtAmount != null ? `⛏ Gold Mined! ${sgldtAmount} sGLDT released to your ICP account` : "⛏ Gold Mined! sGLDT released — confirming the exact amount…"
+      sgldtAmount != null ? `Deposit settled — ${sgldtAmount} sGLDT credited to your vault` : "Deposit settled — sGLDT credited; confirming the exact amount…"
     );
     setDepositRequestId(null);
     setUniAmount("");
@@ -54451,7 +54305,6 @@ function App() {
         onBack: () => navigate("history")
       }
     ) }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(BraveStoryStrip, { onOpenBraveSoon: enterMinegoldBrave }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         WalletSection,
         {
@@ -54688,7 +54541,9 @@ function App() {
                 actorTimedOut,
                 firstRun,
                 uniAmount,
-                onStartMining: requestMining
+                onStartMining: requestMining,
+                onWithdraw: () => setRedeemOpen(true),
+                withdrawDisabled: !(sgldtBalanceRaw !== void 0 && sgldtBalanceRaw > 0n)
               }
             ) })
           ]
@@ -54748,7 +54603,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   /* @__PURE__ */ jsxRuntimeExports.jsx(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxRuntimeExports.jsx(InternetIdentityProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) }) })
 );
 export {
-  cva as $,
+  fmtAmount as $,
   ShieldCheck as A,
   TrendingUp as B,
   CircleAlert as C,
@@ -54758,49 +54613,46 @@ export {
   CANISTERS as G,
   DASHBOARD as H,
   ExternalLink as I,
-  fetchCkBatStatus as J,
-  JOURNEY as K,
+  JOURNEY as J,
+  HttpAgent as K,
   LoaderCircle as L,
-  Sparkles as M,
-  CK_MINTER_CANISTER_ID as N,
-  BAT_ERC20_ADDRESS as O,
+  Actor as M,
+  useLedger as N,
+  ArrowRightLeft as O,
   Principal$1 as P,
-  useLedger as Q,
+  StatusPill as Q,
   React2 as R,
   Send as S,
   ThemeToggle as T,
-  ArrowRightLeft as U,
-  StatusPill as V,
+  ChevronUp as U,
+  ChevronDown as V,
   Wallet as W,
-  ChevronUp as X,
-  ChevronDown as Y,
-  ArrowDownToLine as Z,
-  ArrowUpFromLine as _,
+  ArrowDownToLine as X,
+  ArrowUpFromLine as Y,
+  cva as Z,
+  findEntry as _,
   cn as a,
-  findEntry as a0,
-  fmtAmount as a1,
-  ledgerUrl as a2,
-  encode$4 as a3,
-  Text as a4,
-  isV3ResponseBody as a5,
-  HttpAgent as a6,
-  DelegationIdentity as a7,
-  isDelegationValid as a8,
-  AuthClient as a9,
-  useQueryClient as aa,
-  useQuery as ab,
-  BaseError$1 as ac,
-  getUrl as ad,
-  stringify$1 as ae,
-  decodeErrorResult as af,
-  isAddressEqual as ag,
-  localBatchGatewayUrl as ah,
-  localBatchGatewayRequest as ai,
-  call as aj,
-  concat$1 as ak,
-  encodeAbiParameters as al,
-  HttpRequestError as am,
-  isHex as an,
+  ledgerUrl as a0,
+  encode$4 as a1,
+  Text as a2,
+  isV3ResponseBody as a3,
+  DelegationIdentity as a4,
+  isDelegationValid as a5,
+  AuthClient as a6,
+  useQueryClient as a7,
+  useQuery as a8,
+  BaseError$1 as a9,
+  getUrl as aa,
+  stringify$1 as ab,
+  decodeErrorResult as ac,
+  isAddressEqual as ad,
+  localBatchGatewayUrl as ae,
+  localBatchGatewayRequest as af,
+  call as ag,
+  concat$1 as ah,
+  encodeAbiParameters as ai,
+  HttpRequestError as aj,
+  isHex as ak,
   React$2 as b,
   createLucideIcon as c,
   useIsAdmin as d,

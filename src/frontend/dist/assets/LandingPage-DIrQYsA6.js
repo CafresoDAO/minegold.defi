@@ -1,15 +1,5 @@
-import { c as createLucideIcon, r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, J as fetchCkBatStatus, T as ThemeToggle, y as ChevronRight, K as JOURNEY } from "./index-we-wz8f3.js";
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
-];
-const ArrowRight = createLucideIcon("arrow-right", __iconNode);
+import { r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, T as ThemeToggle, y as ChevronRight, J as JOURNEY } from "./index-CkQl0tYQ.js";
+import { f as fetchCkBatStatus, A as ArrowRight } from "./ckMinter--R090JR0.js";
 function Reveal({
   children,
   delayMs = 0,

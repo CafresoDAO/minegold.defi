@@ -1,4 +1,4 @@
-import { Activity, CheckCircle2, Sparkles } from "lucide-react";
+import { Activity, CheckCircle2 } from "lucide-react";
 import { CrossChainFlow } from "../CrossChainFlow";
 import { GoldCTA } from "../ui/GoldCTA";
 import { WorkflowStepper } from "../WorkflowStepper";
@@ -44,13 +44,9 @@ export function PhaseSuccess({
           <div className="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/30">
             <CheckCircle2 size={44} className="text-emerald-400" strokeWidth={2.2} />
           </div>
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles size={16} className="text-yellow-400" />
-            <h2 className="font-black text-xl sm:text-2xl tracking-tight bg-gradient-to-r from-emerald-300 via-yellow-300 to-yellow-400 bg-clip-text text-transparent">
-              Refinery Complete
-            </h2>
-            <Sparkles size={16} className="text-yellow-400" />
-          </div>
+          <h2 className="mb-2 text-xl sm:text-2xl font-black tracking-tight text-white">
+            Deposit settled
+          </h2>
           {sgldtReleased != null ? (
             <>
               <p className="text-sm text-zinc-300 mb-1">
@@ -112,7 +108,7 @@ export function PhaseSuccess({
         size="md"
         trailingIcon={null}
       >
-        Refine more UNI
+        Make another deposit
       </GoldCTA>
       {/* The exit path, offered at the moment of highest trust — gold that
           can leave is the proof it's really yours. */}
@@ -123,7 +119,7 @@ export function PhaseSuccess({
           onClick={onRedeem}
           className="text-yellow-400 font-semibold underline underline-offset-2 hover:text-yellow-300"
         >
-          Cash out any time ›
+          Withdraw any time ›
         </button>{" "}
         — redeem sGLDT back to ckUNI at the live rate.
       </p>

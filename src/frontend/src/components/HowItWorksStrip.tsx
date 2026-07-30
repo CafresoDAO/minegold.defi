@@ -1,7 +1,15 @@
+import { ArrowDownToLine, Coins, Fingerprint, Wallet } from "lucide-react";
 import { JOURNEY } from "../lib/journey";
 
-/** Icons per canonical journey step (lib/journey is the copy authority). */
-const STEP_ICONS = ["🔐", "💼", "⛏", "🪙"];
+/** Icons per canonical journey step (lib/journey is the copy authority).
+ *  Lucide, not emoji — this strip sits inside the account surface, which
+ *  speaks in banking chrome. */
+const STEP_ICONS = [
+  <Fingerprint key="i1" size={18} className="text-zinc-300" />,
+  <Wallet key="i2" size={18} className="text-zinc-300" />,
+  <ArrowDownToLine key="i3" size={18} className="text-zinc-300" />,
+  <Coins key="i4" size={18} className="text-yellow-500" />,
+];
 const STEP_DESC = [
   "Open your vault with Face ID or a fingerprint — no seed phrase, no custodian.",
   "Connect the Ethereum wallet holding your UNI (MetaMask or Brave Wallet).",

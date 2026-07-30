@@ -19,6 +19,12 @@ type Props = {
   unlimitedApproval: boolean;
   onUnlimitedApprovalChange: (v: boolean) => void;
   onStartMining: () => void;
+  /** Opens the redeem modal. BANKING GRAMMAR: withdraw is a peer of
+   *  deposit, not a small link — a visible, equal exit is what makes the
+   *  deposit feel safe. Disabled (not hidden) at zero balance so the door
+   *  is always on screen. */
+  onWithdraw: () => void;
+  withdrawDisabled: boolean;
 };
 
 /** Idle phase — the "Mine sGLDT" call-to-action and readiness hints.
@@ -38,22 +44,41 @@ export function PhaseIdle({
   unlimitedApproval,
   onUnlimitedApprovalChange,
   onStartMining,
+  onWithdraw,
+  withdrawDisabled,
 }: Props) {
   return (
     <>
-      <GoldCTA
-        data-ocid="refinery.start.primary_button"
-        onClick={onStartMining}
-        disabled={startDisabled}
-        aria-label="Mine sGLDT by depositing UNI"
-        size="lg"
-        className="shadow-2xl"
-      >
-        ⛏ Refine{uniAmount ? ` ${uniAmount} UNI` : " UNI"} into gold
-      </GoldCTA>
-      {/* The floor, stated BEFORE the tap — not as an error after it. */}
+      {/* Deposit and Withdraw as equal peers — banking grammar. */}
+      <div className="grid grid-cols-2 gap-2.5">
+        <GoldCTA
+          data-ocid="refinery.start.primary_button"
+          onClick={onStartMining}
+          disabled={startDisabled}
+          aria-label="Deposit UNI to receive sGLDT"
+          size="lg"
+          fullWidth
+          trailingIcon={null}
+          className="shadow-2xl"
+        >
+          Deposit{uniAmount ? ` ${uniAmount} UNI` : ""}
+        </GoldCTA>
+        <button
+          type="button"
+          data-ocid="refinery.withdraw.button"
+          onClick={onWithdraw}
+          disabled={withdrawDisabled}
+          aria-label="Withdraw — redeem sGLDT back to ckUNI"
+          className="h-full min-h-[56px] rounded-2xl border border-zinc-700 bg-zinc-900 text-sm font-bold text-zinc-200 transition-colors hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Withdraw
+        </button>
+      </div>
+      {/* What each action is, in one line each — stated BEFORE the tap. */}
       <p className="mt-1.5 text-center text-[11px] text-zinc-500">
-        Minimum 0.005 UNI — below that, ledger fees eat the deposit.
+        Deposits convert to sGLDT at the on-chain rate (minimum 0.005 UNI —
+        below that, ledger fees eat the deposit). Withdrawals redeem sGLDT
+        back to ckUNI at the same rate source.
       </p>
       {showRateHint && (
         <p className="mt-2 text-center text-xs text-amber-400">

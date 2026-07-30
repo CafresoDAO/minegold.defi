@@ -94,7 +94,7 @@ export function PortfolioHeader({
             className="inline-flex min-h-[36px] items-center gap-1.5 text-[11px] font-bold text-pink-300 hover:text-pink-200 bg-pink-500/10 border border-pink-500/20 px-3 py-1.5 rounded-xl transition-colors"
           >
             <ArrowUpFromLine size={11} />
-            Cash out — redeem sGLDT
+            Withdraw — redeem sGLDT
           </button>
         </div>
       </div>

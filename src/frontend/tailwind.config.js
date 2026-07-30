@@ -16,9 +16,14 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Bricolage Grotesque"', '"Cabinet Grotesk"', "system-ui", "sans-serif"],
-        body: ['"Sora"', '"Cabinet Grotesk"', "system-ui", "sans-serif"],
-        mono: ['"Geist Mono"', "monospace"],
+        // Honest stacks: no webfont is loaded anywhere (no <link>, no
+        // @font-face), so naming Satoshi/Bricolage/Sora/Geist here only
+        // pretended. The app ships in the system UI font on purpose —
+        // fast, zero FOUT — and font-mono resolves to the platform's
+        // real monospace for addresses and hashes.
+        display: ["system-ui", "-apple-system", "'Segoe UI'", "sans-serif"],
+        body: ["system-ui", "-apple-system", "'Segoe UI'", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
       },
       colors: {
         border: "oklch(var(--border))",

@@ -42,13 +42,16 @@ export function PhaseReleasing({
       )}
       <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">
         <span>{phaseLabels[phaseStep - 1] ?? statusMsg}</span>
-        <span className="text-pink-500">
+        <span className="text-yellow-400">
           {Math.round((phaseStep / 3) * 100)}%
         </span>
       </div>
       <div className="w-full bg-zinc-800 h-3 rounded-full overflow-hidden p-0.5">
+        {/* Blue (chain) → gold (sGLDT): the bar terminates in the thing being
+            released. The old to-pink-600 end-stop rendered as a second blue
+            under an orphaned magenta glow after the rebrand remap. */}
         <div
-          className="h-full bg-gradient-to-r from-blue-600 via-yellow-400 to-pink-600 rounded-full transition-all duration-700 shadow-[0_0_15px_rgba(255,0,122,0.3)]"
+          className="h-full bg-gradient-to-r from-blue-500 via-yellow-400 to-yellow-300 rounded-full transition-all duration-700 shadow-[0_0_15px_rgba(250,204,21,0.3)]"
           style={{ width: `${(phaseStep / 3) * 100}%` }}
         />
       </div>

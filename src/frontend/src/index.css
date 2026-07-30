@@ -407,69 +407,98 @@ html.theme-light [class*="bg-amber-500/10"] {
   background-color: rgba(184, 134, 11, 0.10) !important;
 }
 
-/* ── Global pink → Banking.Brave royal-blue rebrand (both themes) ─────
-   The legacy minegold.defi UI used pink accents for the user principal
-   badge, UNI input focus, tab backgrounds, and progress bars. Replace
-   every shade of pink with the Banking.Brave blue family so the brand
-   color comes through consistently on every screen. */
+/* ── Global pink → violet remap (both themes) ────────────────────────
+   The legacy UI used pink accents; the rebrand replaced them — but the
+   first pass mapped pink onto the SAME blues as ETH, so UNI and ETH
+   rendered identically (two different tokens, one color). Violet keeps
+   the no-pink brand intent while restoring the semantic distinction:
+   ETH = blue-400 family, UNI = violet family, ckUNI = light blue,
+   sGLDT = gold. Declared once here; components still write text-pink-*
+   and get violet. */
+:root {
+  --token-eth: #60a5fa;    /* blue-400 — ETH accents (unchanged) */
+  --token-uni: #a78bfa;    /* violet-400 — UNI accents (via pink remap) */
+  --token-ckuni: #93c5fd;  /* blue-300 — chain-key twin */
+  --token-sgldt: #facc15;  /* yellow-400 — the gold */
+}
 
 /* Text */
-.text-pink-300 { color: #93c5fd !important; }
-.text-pink-400 { color: #60a5fa !important; }
-.text-pink-500 { color: #3b82f6 !important; }
-html.theme-light .text-pink-300 { color: #1D4ED8 !important; }
-html.theme-light .text-pink-400 { color: #1D4ED8 !important; }
-html.theme-light .text-pink-500 { color: #1E3A8A !important; }
-.hover\:text-pink-300:hover { color: #bfdbfe !important; }
-.hover\:text-pink-400:hover { color: #93c5fd !important; }
-html.theme-light .hover\:text-pink-300:hover { color: #1E3A8A !important; }
-html.theme-light .hover\:text-pink-400:hover { color: #1E3A8A !important; }
+.text-pink-300 { color: #c4b5fd !important; }
+.text-pink-400 { color: #a78bfa !important; }
+.text-pink-500 { color: #8b5cf6 !important; }
+html.theme-light .text-pink-300 { color: #6D28D9 !important; }
+html.theme-light .text-pink-400 { color: #6D28D9 !important; }
+html.theme-light .text-pink-500 { color: #5B21B6 !important; }
+.hover\:text-pink-300:hover { color: #ddd6fe !important; }
+.hover\:text-pink-400:hover { color: #c4b5fd !important; }
+html.theme-light .hover\:text-pink-300:hover { color: #5B21B6 !important; }
+html.theme-light .hover\:text-pink-400:hover { color: #5B21B6 !important; }
 
 /* Backgrounds (solid) */
-.bg-pink-400 { background-color: #60a5fa !important; }
-.bg-pink-500 { background-color: #3b82f6 !important; }
-.bg-pink-600 { background-color: #1D4ED8 !important; }
-html.theme-light .bg-pink-400 { background-color: #3b82f6 !important; }
-html.theme-light .bg-pink-500 { background-color: #1D4ED8 !important; }
-html.theme-light .bg-pink-600 { background-color: #1E3A8A !important; }
+.bg-pink-400 { background-color: #a78bfa !important; }
+.bg-pink-500 { background-color: #8b5cf6 !important; }
+.bg-pink-600 { background-color: #7c3aed !important; }
+html.theme-light .bg-pink-400 { background-color: #8b5cf6 !important; }
+html.theme-light .bg-pink-500 { background-color: #6D28D9 !important; }
+html.theme-light .bg-pink-600 { background-color: #5B21B6 !important; }
 
 /* Backgrounds (alpha-tinted) */
-[class*="bg-pink-500/5"] { background-color: rgba(59, 130, 246, 0.06) !important; }
-[class*="bg-pink-500/10"] { background-color: rgba(59, 130, 246, 0.10) !important; }
-[class*="bg-pink-500/20"] { background-color: rgba(59, 130, 246, 0.18) !important; }
-[class*="bg-pink-500/30"] { background-color: rgba(59, 130, 246, 0.25) !important; }
-html.theme-light [class*="bg-pink-500/5"] { background-color: rgba(29, 78, 216, 0.06) !important; }
-html.theme-light [class*="bg-pink-500/10"] { background-color: rgba(29, 78, 216, 0.10) !important; }
-html.theme-light [class*="bg-pink-500/20"] { background-color: rgba(29, 78, 216, 0.16) !important; }
+[class*="bg-pink-500/5"] { background-color: rgba(139, 92, 246, 0.06) !important; }
+[class*="bg-pink-500/10"] { background-color: rgba(139, 92, 246, 0.10) !important; }
+[class*="bg-pink-500/20"] { background-color: rgba(139, 92, 246, 0.18) !important; }
+[class*="bg-pink-500/30"] { background-color: rgba(139, 92, 246, 0.25) !important; }
+html.theme-light [class*="bg-pink-500/5"] { background-color: rgba(109, 40, 217, 0.06) !important; }
+html.theme-light [class*="bg-pink-500/10"] { background-color: rgba(109, 40, 217, 0.10) !important; }
+html.theme-light [class*="bg-pink-500/20"] { background-color: rgba(109, 40, 217, 0.16) !important; }
 
 /* Borders */
-[class*="border-pink-500/20"] { border-color: rgba(59, 130, 246, 0.3) !important; }
-[class*="border-pink-500/30"] { border-color: rgba(59, 130, 246, 0.4) !important; }
-[class*="border-pink-500/40"] { border-color: rgba(59, 130, 246, 0.5) !important; }
-html.theme-light [class*="border-pink-500/20"] { border-color: rgba(29, 78, 216, 0.3) !important; }
-html.theme-light [class*="border-pink-500/30"] { border-color: rgba(29, 78, 216, 0.4) !important; }
-html.theme-light [class*="border-pink-500/40"] { border-color: rgba(29, 78, 216, 0.5) !important; }
+[class*="border-pink-500/20"] { border-color: rgba(139, 92, 246, 0.3) !important; }
+[class*="border-pink-500/30"] { border-color: rgba(139, 92, 246, 0.4) !important; }
+[class*="border-pink-500/40"] { border-color: rgba(139, 92, 246, 0.5) !important; }
+html.theme-light [class*="border-pink-500/20"] { border-color: rgba(109, 40, 217, 0.3) !important; }
+html.theme-light [class*="border-pink-500/30"] { border-color: rgba(109, 40, 217, 0.4) !important; }
+html.theme-light [class*="border-pink-500/40"] { border-color: rgba(109, 40, 217, 0.5) !important; }
 
-/* Gradients (dark → royal blue, light → royal blue) */
-.from-pink-400 { --tw-gradient-from: #60a5fa !important; }
-.from-pink-500 { --tw-gradient-from: #3b82f6 !important; }
-.from-pink-600 { --tw-gradient-from: #1D4ED8 !important; }
-.to-pink-400 { --tw-gradient-to: #60a5fa !important; }
-.to-pink-500 { --tw-gradient-to: #3b82f6 !important; }
-.to-pink-600 { --tw-gradient-to: #1D4ED8 !important; }
-.via-pink-500 { --tw-gradient-via: #3b82f6 !important; }
-.via-pink-600 { --tw-gradient-via: #1D4ED8 !important; }
+/* Gradients */
+.from-pink-400 { --tw-gradient-from: #a78bfa !important; }
+.from-pink-500 { --tw-gradient-from: #8b5cf6 !important; }
+.from-pink-600 { --tw-gradient-from: #7c3aed !important; }
+.to-pink-400 { --tw-gradient-to: #a78bfa !important; }
+.to-pink-500 { --tw-gradient-to: #8b5cf6 !important; }
+.to-pink-600 { --tw-gradient-to: #7c3aed !important; }
+.via-pink-500 { --tw-gradient-via: #8b5cf6 !important; }
+.via-pink-600 { --tw-gradient-via: #7c3aed !important; }
 html.theme-light .from-pink-400,
 html.theme-light .from-pink-500,
-html.theme-light .from-pink-600 { --tw-gradient-from: #1D4ED8 !important; }
+html.theme-light .from-pink-600 { --tw-gradient-from: #6D28D9 !important; }
 html.theme-light .to-pink-400,
 html.theme-light .to-pink-500,
-html.theme-light .to-pink-600 { --tw-gradient-to: #1E3A8A !important; }
+html.theme-light .to-pink-600 { --tw-gradient-to: #5B21B6 !important; }
 
 /* Shadow */
-[class*="shadow-pink-500"] { --tw-shadow-color: rgba(29, 78, 216, 0.3) !important; }
+[class*="shadow-pink-500"] { --tw-shadow-color: rgba(124, 58, 237, 0.3) !important; }
 .selection\:bg-pink-500\/30::selection,
-::selection { background-color: rgba(29, 78, 216, 0.25); }
+::selection { background-color: rgba(109, 40, 217, 0.25); }
+
+/* ── Light-theme gaps the allowlist missed ───────────────────────────── */
+/* "THE REFINERY" heading is a white→zinc gradient clipped to text — on the
+   light panel that rendered as white-on-white. Give the stops light-theme
+   values. */
+html.theme-light .from-white { --tw-gradient-from: #0B1E3B !important; }
+html.theme-light .to-zinc-600 { --tw-gradient-to: #475569 !important; }
+/* Translucent-black inset panels (bg-black/20|30|40) had no light-theme
+   rule and rendered as black slabs on white. */
+html.theme-light [class*="bg-black/20"],
+html.theme-light [class*="bg-black/30"],
+html.theme-light [class*="bg-black/40"] { background-color: #EEF2F7 !important; }
+
+/* ── Dark-theme contrast floor ───────────────────────────────────────────
+   zinc-600 (2.3:1) and zinc-700 (1.9:1) were used as TEXT colors across
+   micro-labels — well below WCAG AA. Promote both onto the readable ramp;
+   decorative rules use border-*, so this touches type only. (zinc-500 at
+   tiny sizes is still marginal at 3.65:1 — tracked as follow-up.) */
+html:not(.theme-light) .text-zinc-600 { color: #a1a1aa !important; } /* → zinc-400 */
+html:not(.theme-light) .text-zinc-700 { color: #a1a1aa !important; } /* → zinc-400 */
 
 @layer base {
   :root {
@@ -522,6 +551,6 @@ html.theme-light .to-pink-600 { --tw-gradient-to: #1E3A8A !important; }
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Satoshi", system-ui, sans-serif;
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   }
 }

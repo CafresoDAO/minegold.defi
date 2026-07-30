@@ -31,6 +31,7 @@ import { PhaseWalletConfirming } from "./components/phases/PhaseWalletConfirming
 import { ConnectWalletModal } from "./components/ConnectWalletModal";
 import { LoginOverlay } from "./components/LoginOverlay";
 import { BraveStoryStrip } from "./components/BraveStoryStrip";
+import { MineShaftDemo } from "./components/MineShaft";
 import { HoldingsCard } from "./components/HoldingsCard";
 import { ProofPanel } from "./components/ProofPanel";
 import { HowItWorksStrip } from "./components/HowItWorksStrip";
@@ -2625,6 +2626,11 @@ export default function App() {
   // Banking.Brave top-level routing — landing, or the Minegold.Brave preview.
   // The live Minegold.Uni workflow (this file's main return) runs only when
   // the user has explicitly entered it. No auth required for landing/preview.
+  // Dev harness for the shaft animation — ?shaft_demo simulates a descent.
+  if (new URLSearchParams(window.location.search).has("shaft_demo")) {
+    return <MineShaftDemo />;
+  }
+
   if (topView === "home") {
     return (
       <BankingBraveHome

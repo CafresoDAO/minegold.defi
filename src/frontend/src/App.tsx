@@ -33,7 +33,10 @@ import { ConnectWalletModal } from "./components/ConnectWalletModal";
 import { LoginOverlay } from "./components/LoginOverlay";
 import { BraveStoryStrip } from "./components/BraveStoryStrip";
 import { MineShaftDemo } from "./components/MineShaft";
-import { HoldingsCard } from "./components/HoldingsCard";
+import { ActionQueue } from "./components/ActionQueue";
+import { PortfolioHeader } from "./components/PortfolioHeader";
+import { GetStarted } from "./components/GetStarted";
+import { LedgerPreview } from "./components/LedgerPreview";
 import { ProofPanel } from "./components/ProofPanel";
 import { HowItWorksStrip } from "./components/HowItWorksStrip";
 import { NavBar } from "./components/NavBar";
@@ -41,12 +44,11 @@ import { RefineryShell } from "./components/RefineryShell";
 import { ProfileModal } from "./components/ProfileModal";
 import { RedeemModal } from "./components/RedeemModal";
 import { TransferModal } from "./components/TransferModal";
-import { UnclaimedDepositsBanner } from "./components/UnclaimedDepositsBanner";
 import { WalletSection } from "./components/WalletSection";
 import { TransactionTimeline } from "./components/TransactionTimeline";
 import { useBackendActor } from "./hooks/useBackendActor";
+import { useLedger } from "./hooks/useLedger";
 import { useRefineFlow } from "./hooks/useRefineFlow";
-import { GoldCTA } from "./components/ui/GoldCTA";
 import { safeBalance } from "./lib/format";
 import { hapticFailure, hapticMilestone, hapticSuccess } from "./lib/haptics";
 import {
@@ -87,6 +89,9 @@ const TransactionHistoryPage = lazy(() =>
   import("./pages/TransactionHistoryPage").then((m) => ({
     default: m.TransactionHistoryPage,
   })),
+);
+const ReceiptPage = lazy(() =>
+  import("./pages/ReceiptPage").then((m) => ({ default: m.ReceiptPage })),
 );
 
 const PageFallback = () => (
@@ -594,11 +599,12 @@ export default function App() {
   // Real (hash) URLs replace the old localStorage view-switch + booleans.
   // BRAND DECISION: the refinery IS the product, so #/ lands on it; the
   // Banking.Brave protocol portfolio is demoted to #/portfolio.
-  const [route, navigate] = usePathRoute();
+  const [route, navigate, routeParams] = usePathRoute();
   const topView: "home" | "uni" | "brave-soon" =
     route === "portfolio" ? "home" : route === "brave" ? "brave-soon" : "uni";
   const showAdmin = route === "admin";
   const showHistory = route === "history";
+  const showReceipt = route === "receipt";
   // Thin boolean wrappers keep the many existing call sites unchanged.
   const setShowAdmin = (v: boolean) => navigate(v ? "admin" : "refinery");
   const setShowHistory = (v: boolean) => navigate(v ? "history" : "refinery");
@@ -1176,6 +1182,11 @@ export default function App() {
   const { data: isAdminData } = useIsAdmin();
   const isLocalAdmin = user?.principal === ADMIN_PRINCIPAL;
   const isAdmin = isLocalAdmin || !!isAdminData;
+
+  // Unified ledger — one merged activity stream (refines + redeems +
+  // bridge/mint/transfer records) powering ActionQueue, the home preview,
+  // and the empty-state check. /history and /receipt read the same hook.
+  const { entries: ledgerEntries } = useLedger(identity);
 
   // Unclaimed deposits recovery — surfaces any #confirmed deposits the user has
   // that weren't paid out (e.g. user closed the tab mid-flow).
@@ -2707,8 +2718,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#080808] text-zinc-100 font-sans">
-      {/* Login Overlay */}
-      {!user && <LoginOverlay isLoggingIn={isLoggingIn} onLogin={handleLogin} />}
+      {/* Login Overlay — suppressed on /receipt/:id, whose page carries its
+          own receipts-are-private sign-in prompt (a shared link should
+          explain itself, not open on a product pitch). */}
+      {!user && !showReceipt && (
+        <LoginOverlay isLoggingIn={isLoggingIn} onLogin={handleLogin} />
+      )}
 
       {/* Nav */}
       <NavBar
@@ -2852,6 +2867,13 @@ export default function App() {
           <Suspense fallback={<PageFallback />}>
             <TransactionHistoryPage />
           </Suspense>
+        ) : showReceipt ? (
+          <Suspense fallback={<PageFallback />}>
+            <ReceiptPage
+              id={routeParams.id}
+              onBack={() => navigate("history")}
+            />
+          </Suspense>
         ) : (
           <>
             {/* The three-beat story, truth-gated: BAT status checked live
@@ -2887,28 +2909,28 @@ export default function App() {
               onOpenRedeem={() => setRedeemOpen(true)}
             />
 
-            {/* Position-first view: your gold, your ckUNI, the live rate, and
-                a reconcilable activity list from getMyRefines/getMyRedeems.
-                Renders only when the user actually holds or has done
-                something — first-time visitors go straight to the refinery. */}
+            {/* Position-first dashboard. PortfolioHeader ALWAYS renders for
+                a signed-in user (an empty vault shows $0 and the journey
+                checklist, not a blank) — the old HoldingsCard returned null
+                and left new users mapless. */}
             {user && phase === "idle" && (
-              <HoldingsCard
-                identity={identity}
+              <PortfolioHeader
                 sgldtBalance={sgldtBalance}
-                sgldtUsd={sgldtUsd}
                 ckuniBalance={refineFlow.position?.balance ?? null}
-                ckuniRefinable={leftoverRefinable}
-                rateDisplay={rateLine?.rateDisplay ?? null}
-                rateProvenance={rateLine?.provenance ?? null}
+                sgldtPrice={sgldtPrice}
+                uniPrice={uniPrice}
                 onRedeem={() => setRedeemOpen(true)}
               />
             )}
 
-            {/* Unclaimed deposits banner — safety net for deposits the frontend
-                missed claiming (e.g. user closed tab after tx confirmed). */}
-            {user && unclaimedDeposits.length > 0 && phase === "idle" && (
-              <UnclaimedDepositsBanner
-                count={unclaimedDeposits.length}
+            {/* ActionQueue — held swaps, unclaimed deposits, leftover ckUNI,
+                in-flight notes as ONE ranked stack. Renders in every phase
+                (attention doesn't pause for animations); only the action
+                buttons gate on the flow being idle. */}
+            {user && (
+              <ActionQueue
+                entries={ledgerEntries}
+                unclaimedCount={unclaimedDeposits.length}
                 claiming={retryPayout.isPending}
                 onClaim={async () => {
                   for (const d of unclaimedDeposits) {
@@ -2920,36 +2942,29 @@ export default function App() {
                   }
                   toast.success("Payout(s) processed — check your sGLDT balance");
                 }}
+                leftoverCkUNI={leftoverRefinable ? leftoverCkUNI : 0n}
+                actionable={phase === "idle"}
+                onRefineLeftover={() => {
+                  void refineFlow.refineNow(leftoverCkUNI, effectiveRateHint);
+                }}
+                onViewHistory={() => setShowHistory(true)}
               />
             )}
 
-            {/* Leftover ckUNI banner — the minter credited this user's own
-                account (perhaps in a session that ended before refining), so
-                the swap can finish right here without touching Ethereum. */}
-            {user && leftoverRefinable && (
-              <div className="mb-6 rounded-3xl border border-blue-500/40 bg-blue-500/10 backdrop-blur p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-500">
-                <div className="flex-1">
-                  <p className="text-sm font-black text-blue-300 mb-1">
-                    {(Number(leftoverCkUNI) / 1e18).toFixed(6)} ckUNI is in your account, ready to refine
-                  </p>
-                  <p className="text-xs text-blue-200/70">
-                    The chain-key minter already bridged your UNI. One tap swaps it for sGLDT — no wallet needed.
-                  </p>
-                </div>
-                <GoldCTA
-                  data-ocid="refine.leftover.button"
-                  size="md"
-                  fullWidth={false}
-                  trailingIcon={null}
-                  className="w-full sm:w-auto"
-                  onClick={() => {
-                    void refineFlow.refineNow(leftoverCkUNI, effectiveRateHint);
-                  }}
-                >
-                  Refine into sGLDT
-                </GoldCTA>
-              </div>
-            )}
+            {/* Empty vault → the journey checklist; anything to show → the
+                five newest ledger entries linking into /history. */}
+            {user &&
+              phase === "idle" &&
+              (ledgerEntries.length === 0 &&
+              !(sgldtBalance != null && Number.parseFloat(sgldtBalance) > 0) &&
+              (refineFlow.position?.balance ?? 0n) === 0n ? (
+                <GetStarted walletConnected={!!ethAddress} />
+              ) : (
+                <LedgerPreview
+                  entries={ledgerEntries}
+                  onViewAll={() => setShowHistory(true)}
+                />
+              ))}
 
 {/* Refinery Widget */}
             <RefineryShell

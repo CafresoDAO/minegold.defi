@@ -1,5 +1,18 @@
-import { c as createLucideIcon, j as jsxRuntimeExports, a as cn, r as reactExports, R as React2, b as React, u as useInternetIdentity, d as useIsAdmin, L as LoaderCircle, W as Wallet, C as CircleAlert, e as Coins, f as useTreasuryICRC1Balances, g as RefreshCw, h as useGetTreasuryWalletInfo, i as useUNIExchangeRate, k as useSetUNIExchangeRate, S as Send, l as useAllUNIDeposits, m as useBackendActor, n as useAdminMintCkUNI, o as useAdminDissolveCkUNI, p as useAdminInitializeMinterAddress, q as Copy, s as CircleCheck, t as useStrandedQueue, v as directWhoAmI, w as directAdminGrantAdmin, P as Principal, x as directAdminTransfer } from "./index-B405mWCw.js";
-import { c as createSlot$3, a as composeRefs, u as useComposedRefs, B as Button, F as Flame } from "./button-IOs4E9MA.js";
+import { c as createLucideIcon, j as jsxRuntimeExports, a as cn, r as reactExports, R as React2, b as React, u as useInternetIdentity, d as useIsAdmin, L as LoaderCircle, W as Wallet, C as CircleAlert, e as Coins, f as useTreasuryICRC1Balances, g as RefreshCw, h as useGetTreasuryWalletInfo, i as useUNIExchangeRate, k as useSetUNIExchangeRate, S as Send, l as useAllUNIDeposits, m as useBackendActor, n as useAdminMintCkUNI, o as useAdminDissolveCkUNI, p as useAdminInitializeMinterAddress, q as Copy, s as CircleCheck, t as useStrandedQueue, v as directWhoAmI, w as directAdminGrantAdmin, P as Principal, x as directAdminTransfer } from "./index-BjvrAIp3.js";
+import { c as createSlot$3, a as composeRefs, u as useComposedRefs, B as Button } from "./button-DIzQ28Ap.js";
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$3 = [
+  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
+  ["path", { d: "M4 7h16", key: "6tx8e3" }],
+  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
+  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+];
+const ArrowLeftRight = createLucideIcon("arrow-left-right", __iconNode$3);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -7,12 +20,15 @@ import { c as createSlot$3, a as composeRefs, u as useComposedRefs, B as Button,
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$2 = [
-  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
-  ["path", { d: "M4 7h16", key: "6tx8e3" }],
-  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
-  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+  [
+    "path",
+    {
+      d: "M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042.348-1.97M7.48 20.364l3.126-17.727",
+      key: "yr8idg"
+    }
+  ]
 ];
-const ArrowLeftRight = createLucideIcon("arrow-left-right", __iconNode$2);
+const Bitcoin = createLucideIcon("bitcoin", __iconNode$2);
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -23,12 +39,12 @@ const __iconNode$1 = [
   [
     "path",
     {
-      d: "M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042.348-1.97M7.48 20.364l3.126-17.727",
-      key: "yr8idg"
+      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
+      key: "96xj49"
     }
   ]
 ];
-const Bitcoin = createLucideIcon("bitcoin", __iconNode$1);
+const Flame = createLucideIcon("flame", __iconNode$1);
 /**
  * @license lucide-react v0.511.0 - ISC
  *

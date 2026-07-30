@@ -7,62 +7,13 @@ import {
   useRateStatus,
   formatTokenAmount,
 } from "../hooks/useQueries";
+import { CANISTERS, OPERATOR_CONTROLLER } from "../lib/canisters";
+import { CanisterRow } from "./trust/CanisterRow";
+import { CoverageMeter } from "./trust/CoverageMeter";
 
 type Props = {
   onClose: () => void;
 };
-
-const DASHBOARD = "https://dashboard.internetcomputer.org/canister";
-
-/** Who actually controls each canister in the money path. "operator" =
- *  Anthony's single controller principal (shown below); "DFINITY" = NNS-
- *  controlled infrastructure; "Gold DAO / sVault" = third parties we link to
- *  but do not control. */
-type Party = "operator" | "DFINITY" | "Gold DAO / sVault";
-
-const PARTY_STYLE: Record<Party, string> = {
-  operator: "bg-amber-500/10 border-amber-500/25 text-amber-300",
-  DFINITY: "bg-blue-500/10 border-blue-500/25 text-blue-300",
-  "Gold DAO / sVault": "bg-emerald-500/10 border-emerald-500/25 text-emerald-300",
-};
-
-/** Sole controller of the backend + frontend canisters — verified live via
- *  `dfx canister info` 2026-07-30. One person. Stated, not hidden. */
-const OPERATOR_CONTROLLER =
-  "xip3r-mhzcr-csb7y-ilqf5-4tpge-dka64-jv2ow-zon7z-key3x-77kf3-mae";
-
-const CANISTERS: { label: string; id: string; party: Party; note: string }[] = [
-  {
-    label: "Refinery backend (the treasury)",
-    id: "c626g-iyaaa-aaaau-agpoa-cai",
-    party: "operator",
-    note: "holds treasury funds; executes atomic swaps with auto-refund",
-  },
-  {
-    label: "sGLDT ledger (the GLDT wrapper)",
-    id: "i2s4q-syaaa-aaaan-qz4sq-cai",
-    party: "Gold DAO / sVault",
-    note: "every payout is a block here — sVault's 1:1 GLDT wrapper",
-  },
-  {
-    label: "ckUNI ledger",
-    id: "ilzky-ayaaa-aaaar-qahha-cai",
-    party: "DFINITY",
-    note: "your bridged UNI lives here, in YOUR account",
-  },
-  {
-    label: "ckERC-20 minter",
-    id: "sv3dd-oaaaa-aaaar-qacoa-cai",
-    party: "DFINITY",
-    note: "mints ckUNI after 12 Ethereum blocks — not our code",
-  },
-  {
-    label: "Exchange Rate Canister (XRC)",
-    id: "uf6dk-hyaaa-aaaaq-qaaaq-cai",
-    party: "DFINITY",
-    note: "the UNI/USD oracle — DFINITY infrastructure",
-  },
-];
 
 const ageLabel = (ns: bigint): string => {
   if (ns <= 0n) return "never refreshed";
@@ -105,11 +56,6 @@ export function ProofPanel({ onClose }: Props) {
 
   const balances = snap?.balances ?? null;
   const readiness = snap?.readiness ?? null;
-  // Refine coverage: live treasury sGLDT vs what's owed to pending deposits.
-  const coverage =
-    readiness && readiness.estimatedSGLDTNeeded > 0n
-      ? Number(readiness.treasurySGLDTLive) / Number(readiness.estimatedSGLDTNeeded)
-      : null;
   const strandedTotal = snap?.stranded
     ? snap.stranded.refines + snap.stranded.redeems
     : null;
@@ -193,37 +139,7 @@ export function ProofPanel({ onClose }: Props) {
 
         {/* Coverage + stranded — the two "is anything wrong?" numbers */}
         <div className="grid grid-cols-2 gap-3 mb-5">
-          <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4">
-            <p className="t-label text-zinc-500 mb-1">
-              Refine coverage
-            </p>
-            {isLoading ? (
-              <p className="text-sm text-zinc-500">…</p>
-            ) : !readiness ? (
-              <p className="text-sm text-zinc-500">Unavailable right now</p>
-            ) : readiness.pendingDeposits === 0n ? (
-              <p className="text-sm font-bold text-emerald-400">
-                No pending payouts owed
-              </p>
-            ) : (
-              <>
-                <p
-                  className={`text-sm font-bold ${
-                    (coverage ?? 0) >= 1 ? "text-emerald-400" : "text-amber-400"
-                  }`}
-                >
-                  {coverage != null
-                    ? `${Math.min(999, Math.round(coverage * 100))}% of owed payouts covered`
-                    : "—"}
-                </p>
-                <p className="text-[10px] text-zinc-500 mt-0.5">
-                  {formatTokenAmount(readiness.treasurySGLDTLive)} live vs{" "}
-                  {formatTokenAmount(readiness.estimatedSGLDTNeeded)} owed across{" "}
-                  {readiness.pendingDeposits.toString()} pending
-                </p>
-              </>
-            )}
-          </div>
+          <CoverageMeter readiness={readiness} loading={isLoading} />
           <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4">
             <p className="t-label text-zinc-500 mb-1">
               Held (stranded) swaps
@@ -315,23 +231,7 @@ export function ProofPanel({ onClose }: Props) {
         </p>
         <ul className="space-y-1.5 mb-3">
           {CANISTERS.map((c) => (
-            <li key={c.id} className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[11px]">
-              <a
-                href={`${DASHBOARD}/${c.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 font-mono text-blue-400 hover:text-blue-300 underline underline-offset-2"
-              >
-                {c.id.slice(0, 14)}… <ExternalLink size={10} />
-              </a>
-              <span className="text-zinc-300 font-semibold">{c.label}</span>
-              <span
-                className={`rounded-md border px-1.5 py-px text-[9px] font-bold uppercase tracking-wider ${PARTY_STYLE[c.party]}`}
-              >
-                {c.party}
-              </span>
-              <span className="text-zinc-500">— {c.note}</span>
-            </li>
+            <CanisterRow key={c.id} canister={c} />
           ))}
         </ul>
         <p className="mb-5 text-[10px] text-zinc-500 leading-relaxed">

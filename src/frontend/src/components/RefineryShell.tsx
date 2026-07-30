@@ -1,6 +1,7 @@
-import { Activity, ArrowRightLeft, Lock, ShieldCheck } from "lucide-react";
+import { Activity, ArrowRightLeft, Lock } from "lucide-react";
 import type React from "react";
 import { formatTokenAmount } from "../hooks/useQueries";
+import { CustodyIndicator } from "./trust/CustodyIndicator";
 
 export type RateLine = {
   /** e.g. "1 UNI = 4.1152 sGLDT" */
@@ -290,25 +291,11 @@ export function RefineryShell({
             </div>
           )}
 
-          {/* Custody strip — WHO holds the funds at each step. This is the
-           *  architecture's strongest trust property; every clause maps to
-           *  code: minter → user principal (startMining encodes the caller's
-           *  principal in the deposit calldata), treasury custody only inside
-           *  the atomic refineCkUNI call, auto-refund via _refundCkUNI. */}
-          <div className="mt-4 rounded-2xl border border-zinc-800 bg-black/30 px-4 py-3">
-            <div className="flex items-start gap-2.5">
-              <ShieldCheck size={14} className="text-emerald-400 shrink-0 mt-0.5" />
-              <p className="text-[11px] leading-relaxed text-zinc-400">
-                <span className="font-bold text-zinc-300">Who holds your funds: </span>
-                DFINITY&apos;s chain-key minter mints ckUNI{" "}
-                <span className="text-zinc-200 font-semibold">to your own ICP account</span>{" "}
-                — never to us. The refinery takes custody only for the seconds
-                of the atomic ckUNI→sGLDT swap, and a failed swap{" "}
-                <span className="text-zinc-200 font-semibold">refunds your ckUNI automatically</span>.
-                No servers, no custodian — the whole app is a canister on the
-                Internet Computer.
-              </p>
-            </div>
+          {/* Custody rail — WHO holds the funds at each step, scannable;
+           *  the prose case for it lives behind the rail's "Why?" toggle.
+           *  This is the architecture's strongest trust property. */}
+          <div className="mt-4">
+            <CustodyIndicator />
           </div>
 
           {children}

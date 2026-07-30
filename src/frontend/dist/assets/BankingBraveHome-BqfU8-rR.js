@@ -1,4 +1,4 @@
-import { j as jsxRuntimeExports, T as ThemeToggle, y as ChevronRight, z as Clock, A as ShieldCheck, B as TrendingUp, D as Lock } from "./index-M3INk0cV.js";
+import { j as jsxRuntimeExports, T as ThemeToggle, y as ChevronRight, z as Clock, A as ShieldCheck, B as TrendingUp, D as Lock } from "./index-we-wz8f3.js";
 function BankingBraveHome({
   onOpenMinegoldUni,
   onOpenMinegoldBrave
@@ -33,7 +33,15 @@ function BankingBraveHome({
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
             "Brave"
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm sm:text-base max-w-xl", style: { color: "var(--bb-text-muted)" }, children: "On-chain financial primitives on the Internet Computer. We govern open, auditable cross-chain protocols under the Minegold.Defi family." })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm sm:text-base max-w-xl", style: { color: "var(--bb-text-muted)" }, children: "On-chain financial primitives on the Internet Computer — open, auditable, and self-custodial by construction." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "p",
+            {
+              className: "mt-2 t-label",
+              style: { color: "var(--bb-text-dim)" },
+              children: "Powered by CafresoDAO"
+            }
+          )
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "mb-12", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-end justify-between flex-wrap gap-2 mb-5", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -42,15 +50,15 @@ function BankingBraveHome({
               {
                 className: "t-label mb-1",
                 style: { color: "var(--bb-text-dim)" },
-                children: "Protocols we govern"
+                children: "Applications in the ecosystem"
               }
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-xl sm:text-2xl font-black tracking-tight", children: [
-              "Minegold",
+              "minegold",
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
-              "Defi"
+              "defi"
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs mt-1 max-w-lg", style: { color: "var(--bb-text-muted)" }, children: "A family of cross-chain refinery workflows. Each workflow bridges a specific ERC-20 source asset onto ICP and refines it into sGLDT — a 1:1 wrapper of Gold DAO's physically backed GLDT (gldt.org)." })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs mt-1 max-w-lg", style: { color: "var(--bb-text-muted)" }, children: "A cross-chain refinery: it bridges an ERC-20 asset onto ICP and refines it into sGLDT — a 1:1 wrapper of Gold DAO's physically backed GLDT (gldt.org). It runs as its own product, with its own front door." })
           ] }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -75,16 +83,16 @@ function BankingBraveHome({
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-1", children: [
                       /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-lg font-black", children: [
-                        "Minegold",
+                        "minegold",
                         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
-                        "Uni"
+                        "defi"
                       ] }),
                       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "t-label bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-full px-2 py-0.5", children: "Live" })
                     ] }),
                     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-mono mb-2", style: { color: "var(--bb-text-dim)" }, children: "UNI (ERC-20) → ckUNI → sGLDT" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs leading-relaxed", style: { color: "var(--bb-text-muted)" }, children: "Onboard UNI into ckUNI on ICP via the chain-key bridge, then refine into sGLDT — wrapped, physically backed GLDT — at the locked-in live rate." }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs leading-relaxed", style: { color: "var(--bb-text-muted)" }, children: "The UNI intake — minegold.uni — is live on mainnet: bridge UNI into ckUNI via the chain-key minter, then refine into sGLDT at the canister's own rate. This is the path the application is proven on today." }),
                     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 flex items-center gap-1.5 text-xs font-bold text-yellow-500 group-hover:text-yellow-400 transition-colors", children: [
-                      "Open workflow",
+                      "Open minegold.defi",
                       /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14, className: "group-hover:translate-x-1 transition-transform" })
                     ] })
                   ] })
@@ -116,20 +124,16 @@ function BankingBraveHome({
                   ),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-1", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-lg font-black", children: [
-                        "Minegold",
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
-                        "Brave"
-                      ] }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-black", children: "BAT intake" }),
                       /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "inline-flex items-center gap-1 t-label bg-amber-500/15 text-amber-500 border border-amber-500/30 rounded-full px-2 py-0.5", children: [
                         /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { size: 9 }),
                         " Soon"
                       ] })
                     ] }),
                     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-mono mb-2", style: { color: "var(--bb-text-dim)" }, children: "BAT (ERC-20) → ckBAT → sGLDT" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs leading-relaxed", style: { color: "var(--bb-text-muted)" }, children: "Onboard the Brave browser's native BAT token as ckBAT on ICP. Unlocks once DFINITY's chain-key ERC-20 minter adds ckBAT support." }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs leading-relaxed", style: { color: "var(--bb-text-muted)" }, children: "The same refinery, fed by the Brave browser's BAT. Opens only once DFINITY's chain-key minter lists ckBAT — a condition we don't control, checked live." }),
                     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 flex items-center gap-1.5 text-xs font-bold text-orange-500 group-hover:text-orange-400 transition-colors", children: [
-                      "Preview details",
+                      "Live status",
                       /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14, className: "group-hover:translate-x-1 transition-transform" })
                     ] })
                   ] })
@@ -163,7 +167,10 @@ function BankingBraveHome({
             className: "pt-6 border-t text-center text-[11px]",
             style: { borderColor: "var(--bb-border)", color: "var(--bb-text-dim)" },
             children: [
-              "Built on",
+              "Banking.Brave is powered by",
+              " ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-text-muted)" }, children: "CafresoDAO" }),
+              " · built on",
               " ",
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "a",

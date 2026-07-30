@@ -1,7 +1,6 @@
-import { ArrowRight, ChevronRight, Clock } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "../components/ThemeToggle";
-import { MineShaft } from "../components/MineShaft";
 import { Reveal } from "../components/landing/Reveal";
 import { ProofBand } from "../components/landing/ProofBand";
 import { FAQ } from "../components/landing/FAQ";
@@ -9,20 +8,26 @@ import { JOURNEY } from "../lib/journey";
 import { fetchCkBatStatus, type CkBatStatus } from "../lib/ckMinter";
 
 /**
- * The public front door. Before I6, signing out left `/` as a login wall —
- * a stranger could not read a single claim without a passkey. Now the root
- * is adaptive: signed-out lands here, signed-in goes straight to the
+ * minegold.defi's public front door. Before I6, signing out left `/` as a
+ * login wall — a stranger could not read a single claim without a passkey.
+ * The root is now adaptive: signed-out lands here, signed-in goes to the
  * refinery dashboard (App owns that switch).
  *
- * BRAND LAW (from the lion seal): house surfaces are royal blue + white +
- * serif display — a bank's face. The refinery below keeps the gold product
- * identity. The seal leads the hero and the circular motif echoes it,
- * without cosplaying as an actual bank document.
+ * BRAND BOUNDARY — two distinct products, one ecosystem:
  *
- * Three paths are deliberately open from this page:
- *   skeptic     → the proof band, and /proof, in one click, no sign-in
- *   crypto-native → the sticky "Open the refinery" CTA after 400px
- *   BAT holder  → the live truth-gate chip → /brave waitlist
+ *   Banking.Brave   the institution, powered by CafresoDAO. Its own product
+ *                   and its own surface (/portfolio). NOT this page's brand.
+ *   minegold.defi   THIS application: an ERC-20 → ICP refinery producing
+ *                   gold-backed sGLDT. minegold.brave is the domain we own
+ *                   and where this app will eventually live.
+ *   minegold.uni    the configuration that works today — the UNI path, and
+ *                   how the application is being tested on mainnet.
+ *
+ * So this page wears minegold's identity, not the lion seal; Banking.Brave
+ * appears as ecosystem attribution in the footer, where an owner belongs.
+ *
+ * Three paths stay open: skeptic (proof, no sign-in), operator-minded
+ * (sticky CTA), and BAT holder (the live ckBAT gate).
  */
 type Props = {
   onOpenRefinery: () => void;
@@ -61,10 +66,10 @@ export function LandingPage({
     bat === null
       ? "checking DFINITY's minter…"
       : bat.supported
-        ? "BAT is live on the chain-key minter — the BAT refinery is opening"
+        ? "BAT is listed on the chain-key minter — BAT intake can open"
         : bat.error
           ? "minter status check unavailable"
-          : "not yet listed by DFINITY's minter — checked live just now";
+          : "BAT not yet listed by DFINITY's minter — checked live just now";
 
   return (
     <div
@@ -72,15 +77,14 @@ export function LandingPage({
       className="min-h-screen"
       style={{ background: "var(--bb-bg)", color: "var(--bb-text)" }}
     >
-      {/* Sticky CTA — appears once the hero is behind you (crypto-native
-          path: someone who already knows what this is shouldn't have to
-          scroll back up to start). */}
+      {/* Sticky CTA — appears once the hero is behind you. */}
       <div
         className="fixed bottom-0 inset-x-0 z-40 px-4 pb-4 pointer-events-none sm:px-6"
         style={{
           opacity: sticky ? 1 : 0,
           transform: sticky ? "none" : "translateY(12px)",
-          transition: "opacity 300ms var(--ease-settle), transform 300ms var(--ease-settle)",
+          transition:
+            "opacity 300ms var(--ease-settle), transform 300ms var(--ease-settle)",
         }}
         aria-hidden={!sticky}
       >
@@ -97,113 +101,93 @@ export function LandingPage({
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        <div className="flex justify-end mb-4">
+        <div className="flex items-center justify-between mb-10">
+          <span className="text-lg font-black tracking-tight">
+            minegold<span style={{ color: "var(--gold-500)" }}>.defi</span>
+          </span>
           <ThemeToggle />
         </div>
 
         {/* ── Hero ─────────────────────────────────────────────────────── */}
-        <header className="mb-16 grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-          <div>
-            <span
-              className="mb-6 block h-24 w-24 overflow-hidden rounded-full sm:h-28 sm:w-28"
-              style={{ boxShadow: "0 0 30px rgba(2, 69, 140, 0.45)" }}
-            >
-              <img
-                src="/brand/icon-512.png"
-                alt="Banking.Brave"
-                width={112}
-                height={112}
-                className="h-full w-full"
-              />
-            </span>
-            <h1 className="t-display">Your browser is the mine.</h1>
-            <p
-              className="mt-3 max-w-xl text-[15px] leading-relaxed"
-              style={{ color: "var(--bb-text-muted)" }}
-            >
-              Brave pays you <strong style={{ color: "#ff7a45" }}>BAT</strong>{" "}
-              for the ads you already see. MineGold turns crypto you already
-              hold into <strong style={{ color: "var(--gold-500)" }}>gold</strong>{" "}
-              — sGLDT, a 1:1 wrapper of Gold DAO&apos;s GLDT, each backed by
-              0.01&nbsp;g of vaulted physical metal. The whole refinery runs as
-              a canister on the Internet Computer: no server, no company
-              holding your funds.
-            </p>
+        <header className="mb-16 max-w-3xl">
+          <p
+            className="t-label mb-3"
+            style={{ color: "var(--bb-text-dim)" }}
+          >
+            An ERC-20 refinery on the Internet Computer
+          </p>
+          <h1 className="t-display">Tokens in. Gold out.</h1>
+          <p
+            className="mt-4 max-w-2xl text-[15px] leading-relaxed"
+            style={{ color: "var(--bb-text-muted)" }}
+          >
+            minegold.defi bridges an ERC-20 token from Ethereum onto ICP and
+            refines it into{" "}
+            <strong style={{ color: "var(--gold-500)" }}>sGLDT</strong> — a 1:1
+            wrapper of Gold DAO&apos;s GLDT, each token backed by 0.01&nbsp;g of
+            LBMA-sourced physical gold held in audited Swiss vaults. The entire
+            refinery is a canister: no server, no company holding your funds,
+            and an exit path that works the same day you arrive.
+          </p>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                data-ocid="landing.hero_cta"
-                onClick={onOpenRefinery}
-                className="inline-flex min-h-[48px] items-center gap-2 rounded-2xl px-5 text-sm font-bold shadow-lg transition-transform hover:-translate-y-0.5"
-                style={{ background: "var(--royal-700)", color: "#ffffff" }}
-              >
-                Open the refinery <ArrowRight size={15} />
-              </button>
-              <button
-                type="button"
-                data-ocid="landing.hero_proof"
-                onClick={onOpenProof}
-                className="inline-flex min-h-[48px] items-center text-sm font-bold underline underline-offset-4"
-                style={{ color: "var(--bb-brand)" }}
-              >
-                See the proof first ›
-              </button>
-            </div>
-
-            {/* Truth-gated status chips */}
-            <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px]">
-              <button
-                type="button"
-                data-ocid="landing.bat_status"
-                onClick={onOpenBrave}
-                className="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-semibold"
-                style={{
-                  borderColor: "rgba(255,122,69,0.3)",
-                  background: "rgba(255,122,69,0.1)",
-                  color: "#ff9a6e",
-                }}
-              >
-                <span
-                  className="h-1.5 w-1.5 rounded-full"
-                  style={{
-                    background: bat?.supported ? "var(--trust-verified)" : "var(--trust-unknown)",
-                  }}
-                />
-                BAT refinery: {batChip}
-              </button>
-              <span
-                className="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-semibold"
-                style={{
-                  borderColor: "rgba(52,211,153,0.3)",
-                  background: "rgba(52,211,153,0.1)",
-                  color: "var(--trust-verified)",
-                }}
-              >
-                <span
-                  className="h-1.5 w-1.5 rounded-full"
-                  style={{ background: "var(--trust-verified)" }}
-                />
-                UNI refinery: live on mainnet today
-              </span>
-            </div>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              data-ocid="landing.hero_cta"
+              onClick={onOpenRefinery}
+              className="inline-flex min-h-[48px] items-center gap-2 rounded-2xl px-5 text-sm font-bold shadow-lg transition-transform hover:-translate-y-0.5"
+              style={{ background: "var(--royal-700)", color: "#ffffff" }}
+            >
+              Open the refinery <ArrowRight size={15} />
+            </button>
+            <button
+              type="button"
+              data-ocid="landing.hero_proof"
+              onClick={onOpenProof}
+              className="inline-flex min-h-[48px] items-center text-sm font-bold underline underline-offset-4"
+              style={{ color: "var(--bb-brand)" }}
+            >
+              Read the proof first ›
+            </button>
           </div>
 
-          {/* Shaft cameo — decorative only. No numbers are shown, because
-              nothing here is bound to a verified quantity; the shaft earns
-              its numbers inside the flow, not on a marketing page. */}
-          <div
-            className="hidden overflow-hidden rounded-[2rem] border lg:block"
-            style={{ borderColor: "var(--bb-border)", background: "#08080a" }}
-            aria-hidden
-          >
-            <MineShaft
-              confirmations={0}
-              targetConfirmations={12}
-              stage="surface"
-              height={360}
-              decorative
-            />
+          {/* Status, truth-gated. */}
+          <div className="mt-5 flex flex-wrap items-center gap-2 text-[11px]">
+            <span
+              className="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-semibold"
+              style={{
+                borderColor: "rgba(52,211,153,0.3)",
+                background: "rgba(52,211,153,0.1)",
+                color: "var(--trust-verified)",
+              }}
+            >
+              <span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ background: "var(--trust-verified)" }}
+              />
+              UNI intake live on mainnet
+            </span>
+            <button
+              type="button"
+              data-ocid="landing.bat_status"
+              onClick={onOpenBrave}
+              className="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-semibold"
+              style={{
+                borderColor: "rgba(255,122,69,0.3)",
+                background: "rgba(255,122,69,0.1)",
+                color: "#ff9a6e",
+              }}
+            >
+              <span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{
+                  background: bat?.supported
+                    ? "var(--trust-verified)"
+                    : "var(--trust-unknown)",
+                }}
+              />
+              {batChip}
+            </button>
           </div>
         </header>
 
@@ -212,19 +196,19 @@ export function LandingPage({
           <div className="grid gap-4 sm:grid-cols-3">
             {[
               {
-                accent: "#ff7a45",
-                kicker: "You already earn it",
-                body: "BAT from Brave, UNI in your wallet — value you hold today, sitting still.",
+                accent: "var(--royal-400)",
+                kicker: "Bridge",
+                body: "DFINITY's chain-key minter moves your ERC-20 onto ICP and credits it to your own account — not to ours.",
               },
               {
                 accent: "var(--gold-500)",
-                kicker: "It becomes gold",
-                body: "One deposit refines it into sGLDT at the canister's own on-chain rate.",
+                kicker: "Refine",
+                body: "One atomic swap converts it to sGLDT at the canister's own on-chain rate. A failed swap refunds you automatically.",
               },
               {
-                accent: "var(--royal-400)",
-                kicker: "It stays yours",
-                body: "The gold lands in your vault, opened only by your passkey. Cash out any time.",
+                accent: "var(--trust-verified)",
+                kicker: "Hold or exit",
+                body: "The gold sits in a vault only your passkey opens. Redeem back to ckUNI whenever you want.",
               },
             ].map((b, i) => (
               <div
@@ -300,115 +284,77 @@ export function LandingPage({
             ))}
           </ol>
           <p className="mt-3 text-[12px]" style={{ color: "var(--bb-text-dim)" }}>
-            The wait in step 3 is Ethereum&apos;s, not ours — 12 blocks. You
-            can close the tab; the payout happens on-chain either way.
+            The wait in step 3 is Ethereum&apos;s, not ours — 12 blocks. You can
+            close the tab; the payout happens on-chain either way.
           </p>
         </Reveal>
 
-        {/* ── Protocol family ──────────────────────────────────────────── */}
+        {/* ── Where the application stands ─────────────────────────────── */}
         <Reveal className="mb-16">
-          <p className="t-label mb-2" style={{ color: "var(--bb-text-dim)" }}>
-            Protocols we govern
-          </p>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <button
-              type="button"
-              data-ocid="landing.family.uni"
-              onClick={onOpenRefinery}
-              className="group text-left rounded-3xl border p-6 transition-transform hover:-translate-y-0.5 sm:col-span-2"
-              style={{
-                borderColor: "var(--bb-border)",
-                background:
-                  "linear-gradient(135deg, rgba(232,182,44,0.10), var(--bb-surface))",
-                color: "var(--bb-text)",
-              }}
-            >
-              <div className="mb-1 flex items-center gap-2">
-                <h3 className="text-lg font-black">
-                  Minegold<span style={{ color: "var(--bb-brand)" }}>.</span>Uni
-                </h3>
-                <span
-                  className="t-label rounded-full border px-2 py-0.5"
-                  style={{
-                    borderColor: "rgba(52,211,153,0.3)",
-                    background: "rgba(52,211,153,0.12)",
-                    color: "var(--trust-verified)",
-                  }}
+          <h2
+            className="t-display mb-4"
+            style={{ fontSize: "clamp(1.5rem, 1.2rem + 1.4vw, 2rem)" }}
+          >
+            Where this stands today
+          </h2>
+          <div
+            className="rounded-3xl border p-6"
+            style={{
+              borderColor: "var(--bb-border)",
+              background: "var(--bb-surface)",
+            }}
+          >
+            <dl className="grid gap-5 sm:grid-cols-3">
+              <div>
+                <dt className="t-label mb-1" style={{ color: "var(--bb-text-dim)" }}>
+                  Live intake
+                </dt>
+                <dd className="text-sm font-bold">minegold.uni</dd>
+                <dd
+                  className="mt-1 text-[12px] leading-relaxed"
+                  style={{ color: "var(--bb-text-muted)" }}
                 >
-                  Live
-                </span>
+                  UNI → ckUNI → sGLDT. The path that works on mainnet today,
+                  and the one the application is being proven on.
+                </dd>
               </div>
-              <div
-                className="mb-2 font-mono text-[10px]"
-                style={{ color: "var(--bb-text-dim)" }}
-              >
-                UNI (ERC-20) → ckUNI → sGLDT
-              </div>
-              <p
-                className="text-[13px] leading-relaxed"
-                style={{ color: "var(--bb-text-muted)" }}
-              >
-                The refinery running on mainnet today. Bridge UNI onto ICP
-                through DFINITY&apos;s chain-key minter, then refine it into
-                gold at the canister&apos;s own rate.
-              </p>
-              <span
-                className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold"
-                style={{ color: "var(--gold-500)" }}
-              >
-                Open the refinery
-                <ChevronRight size={14} className="transition-transform group-hover:translate-x-1" />
-              </span>
-            </button>
-
-            <button
-              type="button"
-              data-ocid="landing.family.brave"
-              onClick={onOpenBrave}
-              className="group text-left rounded-3xl border p-6 transition-transform hover:-translate-y-0.5"
-              style={{
-                borderColor: "var(--bb-border)",
-                background:
-                  "linear-gradient(135deg, rgba(255,122,69,0.10), var(--bb-surface))",
-                color: "var(--bb-text)",
-              }}
-            >
-              <div className="mb-1 flex items-center gap-2">
-                <h3 className="text-lg font-black">
-                  Minegold<span style={{ color: "var(--bb-brand)" }}>.</span>Brave
-                </h3>
-                <span
-                  className="t-label inline-flex items-center gap-1 rounded-full border px-2 py-0.5"
-                  style={{
-                    borderColor: "rgba(251,191,36,0.3)",
-                    background: "rgba(251,191,36,0.12)",
-                    color: "var(--trust-attested)",
-                  }}
+              <div>
+                <dt className="t-label mb-1" style={{ color: "var(--bb-text-dim)" }}>
+                  Next intake
+                </dt>
+                <dd className="text-sm font-bold">BAT</dd>
+                <dd
+                  className="mt-1 text-[12px] leading-relaxed"
+                  style={{ color: "var(--bb-text-muted)" }}
                 >
-                  <Clock size={9} /> Gated
-                </span>
+                  Opens if and when DFINITY&apos;s chain-key minter lists BAT.
+                  The status chip above reads that list live, on every visit —
+                  it is not a promise we control.{" "}
+                  <button
+                    type="button"
+                    onClick={onOpenBrave}
+                    className="underline underline-offset-2"
+                    style={{ color: "var(--bb-brand)" }}
+                  >
+                    Live status ›
+                  </button>
+                </dd>
               </div>
-              <div
-                className="mb-2 font-mono text-[10px]"
-                style={{ color: "var(--bb-text-dim)" }}
-              >
-                BAT (ERC-20) → ckBAT → sGLDT
+              <div>
+                <dt className="t-label mb-1" style={{ color: "var(--bb-text-dim)" }}>
+                  Home
+                </dt>
+                <dd className="text-sm font-bold">minegold.brave</dd>
+                <dd
+                  className="mt-1 text-[12px] leading-relaxed"
+                  style={{ color: "var(--bb-text-muted)" }}
+                >
+                  The domain this application will move to. Until then it runs
+                  at its canister address — which keeps working afterwards
+                  regardless.
+                </dd>
               </div>
-              <p
-                className="text-[13px] leading-relaxed"
-                style={{ color: "var(--bb-text-muted)" }}
-              >
-                Opens when DFINITY&apos;s minter lists BAT — checked live, not
-                promised. Join the waitlist for one message at launch.
-              </p>
-              <span
-                className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold"
-                style={{ color: "#ff9a6e" }}
-              >
-                See the live status
-                <ChevronRight size={14} className="transition-transform group-hover:translate-x-1" />
-              </span>
-            </button>
+            </dl>
           </div>
         </Reveal>
 
@@ -422,7 +368,7 @@ export function LandingPage({
           className="border-t pt-6 pb-24 text-[11px] leading-relaxed"
           style={{ borderColor: "var(--bb-border)", color: "var(--bb-text-dim)" }}
         >
-          <p className="mb-1">
+          <p className="mb-2">
             Refinery backend{" "}
             <span className="font-mono">c626g-iyaaa-aaaau-agpoa-cai</span> ·
             frontend{" "}
@@ -438,10 +384,18 @@ export function LandingPage({
               Internet Computer Protocol
             </a>
           </p>
-          <p>
-            banking.cafreso.com is an interim home while banking.brave awaits
-            ICANN. The canister URL above keeps working regardless — bookmark
-            it if you prefer an address nobody can take away.
+          {/* Ecosystem attribution — Banking.Brave is a separate product that
+              this one belongs to, not this page's brand. */}
+          <p className="flex flex-wrap items-center gap-1.5">
+            <img
+              src="/brand/icon-512.png"
+              alt=""
+              width={16}
+              height={16}
+              className="rounded-full"
+            />
+            minegold.defi is part of the Banking.Brave ecosystem, powered by
+            CafresoDAO.
           </p>
         </footer>
       </div>

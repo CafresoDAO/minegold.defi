@@ -1,4 +1,4 @@
-import { c as createLucideIcon, r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, J as fetchCkBatStatus, T as ThemeToggle, M as MineShaft, y as ChevronRight, K as JOURNEY, z as Clock } from "./index-M3INk0cV.js";
+import { c as createLucideIcon, r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, J as fetchCkBatStatus, T as ThemeToggle, y as ChevronRight, K as JOURNEY } from "./index-we-wz8f3.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -178,9 +178,9 @@ function Figure({
       className: "rounded-2xl border p-4",
       style: { borderColor: "var(--bb-border)", background: "var(--bb-bg-soft)" },
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label mb-1", style: { color: "var(--bb-text-dim)" }, children: label }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label mb-1", style: { color: "var(--bb-text-muted)" }, children: label }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xl font-black tabular-nums", style: { color: "var(--bb-text)" }, children: value }),
-        note && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] mt-0.5", style: { color: "var(--bb-text-dim)" }, children: note })
+        note && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] mt-0.5", style: { color: "var(--bb-text-muted)" }, children: note })
       ]
     }
   );
@@ -230,12 +230,26 @@ const ITEMS = [
     a: /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: "No. Your vault is an Internet Identity passkey — Face ID or a fingerprint, about 20 seconds to create, nothing to write down or lose. You'll also connect an ordinary Ethereum wallet for the tokens you're spending; that one is yours already." })
   },
   {
-    q: "When does the BAT refinery open?",
+    q: "When does BAT intake open?",
     a: /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: "When DFINITY's chain-key minter lists BAT — not before, and not on our say-so. The chip at the top of this page is a live read of the minter's supported-token list, so it tells you the truth on every visit. Join the waitlist and you get exactly one message, at launch." })
   },
   {
-    q: "Who runs this?",
-    a: /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: "One person, on purpose stated: the backend and frontend canisters have a single controller, published on the proof page alongside the code's limitations. It is unaudited. Small, verifiable, and honest about its size beats big claims — check the numbers before you send anything." })
+    q: "Who runs this, and how does it relate to Banking.Brave?",
+    a: /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      "minegold.defi is an application in the",
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Banking.Brave" }),
+      " ecosystem, which is powered by",
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "CafresoDAO" }),
+      ". They are separate products: Banking.Brave is the institution; this is a refinery that runs under it. Day to day, the canisters here have a",
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "single controller" }),
+      " — published on the proof page alongside the code's limitations — and the code is",
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "unaudited" }),
+      ". Check the numbers before you send anything; that is what the proof page is for."
+    ] })
   }
 ];
 function FAQ() {
@@ -305,7 +319,7 @@ function LandingPage({
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-  const batChip = bat === null ? "checking DFINITY's minter…" : bat.supported ? "BAT is live on the chain-key minter — the BAT refinery is opening" : bat.error ? "minter status check unavailable" : "not yet listed by DFINITY's minter — checked live just now";
+  const batChip = bat === null ? "checking DFINITY's minter…" : bat.supported ? "BAT is listed on the chain-key minter — BAT intake can open" : bat.error ? "minter status check unavailable" : "BAT not yet listed by DFINITY's minter — checked live just now";
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
@@ -341,155 +355,128 @@ function LandingPage({
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-end mb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, {}) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "mb-16 grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "span",
-                {
-                  className: "mb-6 block h-24 w-24 overflow-hidden rounded-full sm:h-28 sm:w-28",
-                  style: { boxShadow: "0 0 30px rgba(2, 69, 140, 0.45)" },
-                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "img",
-                    {
-                      src: "/brand/icon-512.png",
-                      alt: "Banking.Brave",
-                      width: 112,
-                      height: 112,
-                      className: "h-full w-full"
-                    }
-                  )
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "t-display", children: "Your browser is the mine." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-10", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-lg font-black tracking-tight", children: [
+              "minegold",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--gold-500)" }, children: ".defi" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, {})
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "mb-16 max-w-3xl", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "p",
+              {
+                className: "t-label mb-3",
+                style: { color: "var(--bb-text-dim)" },
+                children: "An ERC-20 refinery on the Internet Computer"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "t-display", children: "Tokens in. Gold out." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "p",
+              {
+                className: "mt-4 max-w-2xl text-[15px] leading-relaxed",
+                style: { color: "var(--bb-text-muted)" },
+                children: [
+                  "minegold.defi bridges an ERC-20 token from Ethereum onto ICP and refines it into",
+                  " ",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { style: { color: "var(--gold-500)" }, children: "sGLDT" }),
+                  " — a 1:1 wrapper of Gold DAO's GLDT, each token backed by 0.01 g of LBMA-sourced physical gold held in audited Swiss vaults. The entire refinery is a canister: no server, no company holding your funds, and an exit path that works the same day you arrive."
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 flex flex-wrap items-center gap-3", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                "p",
+                "button",
                 {
-                  className: "mt-3 max-w-xl text-[15px] leading-relaxed",
-                  style: { color: "var(--bb-text-muted)" },
+                  type: "button",
+                  "data-ocid": "landing.hero_cta",
+                  onClick: onOpenRefinery,
+                  className: "inline-flex min-h-[48px] items-center gap-2 rounded-2xl px-5 text-sm font-bold shadow-lg transition-transform hover:-translate-y-0.5",
+                  style: { background: "var(--royal-700)", color: "#ffffff" },
                   children: [
-                    "Brave pays you ",
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { style: { color: "#ff7a45" }, children: "BAT" }),
-                    " ",
-                    "for the ads you already see. MineGold turns crypto you already hold into ",
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { style: { color: "var(--gold-500)" }, children: "gold" }),
-                    " ",
-                    "— sGLDT, a 1:1 wrapper of Gold DAO's GLDT, each backed by 0.01 g of vaulted physical metal. The whole refinery runs as a canister on the Internet Computer: no server, no company holding your funds."
+                    "Open the refinery ",
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRight, { size: 15 })
                   ]
                 }
               ),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-5 flex flex-wrap items-center gap-3", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "button",
-                  {
-                    type: "button",
-                    "data-ocid": "landing.hero_cta",
-                    onClick: onOpenRefinery,
-                    className: "inline-flex min-h-[48px] items-center gap-2 rounded-2xl px-5 text-sm font-bold shadow-lg transition-transform hover:-translate-y-0.5",
-                    style: { background: "var(--royal-700)", color: "#ffffff" },
-                    children: [
-                      "Open the refinery ",
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRight, { size: 15 })
-                    ]
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "button",
-                  {
-                    type: "button",
-                    "data-ocid": "landing.hero_proof",
-                    onClick: onOpenProof,
-                    className: "inline-flex min-h-[48px] items-center text-sm font-bold underline underline-offset-4",
-                    style: { color: "var(--bb-brand)" },
-                    children: "See the proof first ›"
-                  }
-                )
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 flex flex-wrap items-center gap-2 text-[11px]", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "button",
-                  {
-                    type: "button",
-                    "data-ocid": "landing.bat_status",
-                    onClick: onOpenBrave,
-                    className: "inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-semibold",
-                    style: {
-                      borderColor: "rgba(255,122,69,0.3)",
-                      background: "rgba(255,122,69,0.1)",
-                      color: "#ff9a6e"
-                    },
-                    children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "span",
-                        {
-                          className: "h-1.5 w-1.5 rounded-full",
-                          style: {
-                            background: (bat == null ? void 0 : bat.supported) ? "var(--trust-verified)" : "var(--trust-unknown)"
-                          }
-                        }
-                      ),
-                      "BAT refinery: ",
-                      batChip
-                    ]
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                  "span",
-                  {
-                    className: "inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-semibold",
-                    style: {
-                      borderColor: "rgba(52,211,153,0.3)",
-                      background: "rgba(52,211,153,0.1)",
-                      color: "var(--trust-verified)"
-                    },
-                    children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "span",
-                        {
-                          className: "h-1.5 w-1.5 rounded-full",
-                          style: { background: "var(--trust-verified)" }
-                        }
-                      ),
-                      "UNI refinery: live on mainnet today"
-                    ]
-                  }
-                )
-              ] })
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "landing.hero_proof",
+                  onClick: onOpenProof,
+                  className: "inline-flex min-h-[48px] items-center text-sm font-bold underline underline-offset-4",
+                  style: { color: "var(--bb-brand)" },
+                  children: "Read the proof first ›"
+                }
+              )
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "div",
-              {
-                className: "hidden overflow-hidden rounded-[2rem] border lg:block",
-                style: { borderColor: "var(--bb-border)", background: "#08080a" },
-                "aria-hidden": true,
-                children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  MineShaft,
-                  {
-                    confirmations: 0,
-                    targetConfirmations: 12,
-                    stage: "surface",
-                    height: 360,
-                    decorative: true
-                  }
-                )
-              }
-            )
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-5 flex flex-wrap items-center gap-2 text-[11px]", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "span",
+                {
+                  className: "inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-semibold",
+                  style: {
+                    borderColor: "rgba(52,211,153,0.3)",
+                    background: "rgba(52,211,153,0.1)",
+                    color: "var(--trust-verified)"
+                  },
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "span",
+                      {
+                        className: "h-1.5 w-1.5 rounded-full",
+                        style: { background: "var(--trust-verified)" }
+                      }
+                    ),
+                    "UNI intake live on mainnet"
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "button",
+                {
+                  type: "button",
+                  "data-ocid": "landing.bat_status",
+                  onClick: onOpenBrave,
+                  className: "inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-semibold",
+                  style: {
+                    borderColor: "rgba(255,122,69,0.3)",
+                    background: "rgba(255,122,69,0.1)",
+                    color: "#ff9a6e"
+                  },
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "span",
+                      {
+                        className: "h-1.5 w-1.5 rounded-full",
+                        style: {
+                          background: (bat == null ? void 0 : bat.supported) ? "var(--trust-verified)" : "var(--trust-unknown)"
+                        }
+                      }
+                    ),
+                    batChip
+                  ]
+                }
+              )
+            ] })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Reveal, { className: "mb-16", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid gap-4 sm:grid-cols-3", children: [
             {
-              accent: "#ff7a45",
-              kicker: "You already earn it",
-              body: "BAT from Brave, UNI in your wallet — value you hold today, sitting still."
+              accent: "var(--royal-400)",
+              kicker: "Bridge",
+              body: "DFINITY's chain-key minter moves your ERC-20 onto ICP and credits it to your own account — not to ours."
             },
             {
               accent: "var(--gold-500)",
-              kicker: "It becomes gold",
-              body: "One deposit refines it into sGLDT at the canister's own on-chain rate."
+              kicker: "Refine",
+              body: "One atomic swap converts it to sGLDT at the canister's own on-chain rate. A failed swap refunds you automatically."
             },
             {
-              accent: "var(--royal-400)",
-              kicker: "It stays yours",
-              body: "The gold lands in your vault, opened only by your passkey. Cash out any time."
+              accent: "var(--trust-verified)",
+              kicker: "Hold or exit",
+              body: "The gold sits in a vault only your passkey opens. Redeem back to ckUNI whenever you want."
             }
           ].map((b, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "div",
@@ -572,136 +559,75 @@ function LandingPage({
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-3 text-[12px]", style: { color: "var(--bb-text-dim)" }, children: "The wait in step 3 is Ethereum's, not ours — 12 blocks. You can close the tab; the payout happens on-chain either way." })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(Reveal, { className: "mb-16", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label mb-2", style: { color: "var(--bb-text-dim)" }, children: "Protocols we govern" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-4 sm:grid-cols-3", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                "button",
-                {
-                  type: "button",
-                  "data-ocid": "landing.family.uni",
-                  onClick: onOpenRefinery,
-                  className: "group text-left rounded-3xl border p-6 transition-transform hover:-translate-y-0.5 sm:col-span-2",
-                  style: {
-                    borderColor: "var(--bb-border)",
-                    background: "linear-gradient(135deg, rgba(232,182,44,0.10), var(--bb-surface))",
-                    color: "var(--bb-text)"
-                  },
-                  children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-1 flex items-center gap-2", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-lg font-black", children: [
-                        "Minegold",
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
-                        "Uni"
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsx(
-                        "span",
-                        {
-                          className: "t-label rounded-full border px-2 py-0.5",
-                          style: {
-                            borderColor: "rgba(52,211,153,0.3)",
-                            background: "rgba(52,211,153,0.12)",
-                            color: "var(--trust-verified)"
-                          },
-                          children: "Live"
-                        }
-                      )
-                    ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "h2",
+              {
+                className: "t-display mb-4",
+                style: { fontSize: "clamp(1.5rem, 1.2rem + 1.4vw, 2rem)" },
+                children: "Where this stands today"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "div",
+              {
+                className: "rounded-3xl border p-6",
+                style: {
+                  borderColor: "var(--bb-border)",
+                  background: "var(--bb-surface)"
+                },
+                children: /* @__PURE__ */ jsxRuntimeExports.jsxs("dl", { className: "grid gap-5 sm:grid-cols-3", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { className: "t-label mb-1", style: { color: "var(--bb-text-dim)" }, children: "Live intake" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("dd", { className: "text-sm font-bold", children: "minegold.uni" }),
                     /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "div",
+                      "dd",
                       {
-                        className: "mb-2 font-mono text-[10px]",
-                        style: { color: "var(--bb-text-dim)" },
-                        children: "UNI (ERC-20) → ckUNI → sGLDT"
-                      }
-                    ),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "p",
-                      {
-                        className: "text-[13px] leading-relaxed",
+                        className: "mt-1 text-[12px] leading-relaxed",
                         style: { color: "var(--bb-text-muted)" },
-                        children: "The refinery running on mainnet today. Bridge UNI onto ICP through DFINITY's chain-key minter, then refine it into gold at the canister's own rate."
+                        children: "UNI → ckUNI → sGLDT. The path that works on mainnet today, and the one the application is being proven on."
                       }
-                    ),
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { className: "t-label mb-1", style: { color: "var(--bb-text-dim)" }, children: "Next intake" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("dd", { className: "text-sm font-bold", children: "BAT" }),
                     /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                      "span",
+                      "dd",
                       {
-                        className: "mt-4 inline-flex items-center gap-1.5 text-xs font-bold",
-                        style: { color: "var(--gold-500)" },
+                        className: "mt-1 text-[12px] leading-relaxed",
+                        style: { color: "var(--bb-text-muted)" },
                         children: [
-                          "Open the refinery",
-                          /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14, className: "transition-transform group-hover:translate-x-1" })
+                          "Opens if and when DFINITY's chain-key minter lists BAT. The status chip above reads that list live, on every visit — it is not a promise we control.",
+                          " ",
+                          /* @__PURE__ */ jsxRuntimeExports.jsx(
+                            "button",
+                            {
+                              type: "button",
+                              onClick: onOpenBrave,
+                              className: "underline underline-offset-2",
+                              style: { color: "var(--bb-brand)" },
+                              children: "Live status ›"
+                            }
+                          )
                         ]
                       }
                     )
-                  ]
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                "button",
-                {
-                  type: "button",
-                  "data-ocid": "landing.family.brave",
-                  onClick: onOpenBrave,
-                  className: "group text-left rounded-3xl border p-6 transition-transform hover:-translate-y-0.5",
-                  style: {
-                    borderColor: "var(--bb-border)",
-                    background: "linear-gradient(135deg, rgba(255,122,69,0.10), var(--bb-surface))",
-                    color: "var(--bb-text)"
-                  },
-                  children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-1 flex items-center gap-2", children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-lg font-black", children: [
-                        "Minegold",
-                        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "var(--bb-brand)" }, children: "." }),
-                        "Brave"
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                        "span",
-                        {
-                          className: "t-label inline-flex items-center gap-1 rounded-full border px-2 py-0.5",
-                          style: {
-                            borderColor: "rgba(251,191,36,0.3)",
-                            background: "rgba(251,191,36,0.12)",
-                            color: "var(--trust-attested)"
-                          },
-                          children: [
-                            /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { size: 9 }),
-                            " Gated"
-                          ]
-                        }
-                      )
-                    ] }),
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("dt", { className: "t-label mb-1", style: { color: "var(--bb-text-dim)" }, children: "Home" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("dd", { className: "text-sm font-bold", children: "minegold.brave" }),
                     /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "div",
+                      "dd",
                       {
-                        className: "mb-2 font-mono text-[10px]",
-                        style: { color: "var(--bb-text-dim)" },
-                        children: "BAT (ERC-20) → ckBAT → sGLDT"
-                      }
-                    ),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
-                      "p",
-                      {
-                        className: "text-[13px] leading-relaxed",
+                        className: "mt-1 text-[12px] leading-relaxed",
                         style: { color: "var(--bb-text-muted)" },
-                        children: "Opens when DFINITY's minter lists BAT — checked live, not promised. Join the waitlist for one message at launch."
-                      }
-                    ),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs(
-                      "span",
-                      {
-                        className: "mt-4 inline-flex items-center gap-1.5 text-xs font-bold",
-                        style: { color: "#ff9a6e" },
-                        children: [
-                          "See the live status",
-                          /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14, className: "transition-transform group-hover:translate-x-1" })
-                        ]
+                        children: "The domain this application will move to. Until then it runs at its canister address — which keeps working afterwards regardless."
                       }
                     )
-                  ]
-                }
-              )
-            ] })
+                  ] })
+                ] })
+              }
+            )
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Reveal, { className: "mb-16", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FAQ, {}) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -710,7 +636,7 @@ function LandingPage({
               className: "border-t pt-6 pb-24 text-[11px] leading-relaxed",
               style: { borderColor: "var(--bb-border)", color: "var(--bb-text-dim)" },
               children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mb-1", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mb-2", children: [
                   "Refinery backend",
                   " ",
                   /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono", children: "c626g-iyaaa-aaaau-agpoa-cai" }),
@@ -731,7 +657,19 @@ function LandingPage({
                     }
                   )
                 ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "banking.cafreso.com is an interim home while banking.brave awaits ICANN. The canister URL above keeps working regardless — bookmark it if you prefer an address nobody can take away." })
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "flex flex-wrap items-center gap-1.5", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "img",
+                    {
+                      src: "/brand/icon-512.png",
+                      alt: "",
+                      width: 16,
+                      height: 16,
+                      className: "rounded-full"
+                    }
+                  ),
+                  "minegold.defi is part of the Banking.Brave ecosystem, powered by CafresoDAO."
+                ] })
               ]
             }
           )

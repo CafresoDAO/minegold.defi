@@ -151,14 +151,16 @@ function Figure({
       className="rounded-2xl border p-4"
       style={{ borderColor: "var(--bb-border)", background: "var(--bb-bg-soft)" }}
     >
-      <p className="t-label mb-1" style={{ color: "var(--bb-text-dim)" }}>
+      {/* --bb-text-muted, not -dim: these labels sit on --bb-bg-soft (the
+          inset wash), where -dim measures 4.24:1 and fails AA. */}
+      <p className="t-label mb-1" style={{ color: "var(--bb-text-muted)" }}>
         {label}
       </p>
       <p className="text-xl font-black tabular-nums" style={{ color: "var(--bb-text)" }}>
         {value}
       </p>
       {note && (
-        <p className="text-[10px] mt-0.5" style={{ color: "var(--bb-text-dim)" }}>
+        <p className="text-[10px] mt-0.5" style={{ color: "var(--bb-text-muted)" }}>
           {note}
         </p>
       )}

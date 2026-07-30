@@ -65,7 +65,7 @@ const ITEMS: { q: string; a: React.ReactNode }[] = [
     ),
   },
   {
-    q: "When does the BAT refinery open?",
+    q: "When does BAT intake open?",
     a: (
       <>
         When DFINITY&apos;s chain-key minter lists BAT — not before, and not
@@ -77,14 +77,18 @@ const ITEMS: { q: string; a: React.ReactNode }[] = [
     ),
   },
   {
-    q: "Who runs this?",
+    q: "Who runs this, and how does it relate to Banking.Brave?",
     a: (
       <>
-        One person, on purpose stated: the backend and frontend canisters
-        have a single controller, published on the proof page alongside the
-        code&apos;s limitations. It is unaudited. Small, verifiable, and
-        honest about its size beats big claims — check the numbers before you
-        send anything.
+        minegold.defi is an application in the{" "}
+        <strong>Banking.Brave</strong> ecosystem, which is powered by{" "}
+        <strong>CafresoDAO</strong>. They are separate products: Banking.Brave
+        is the institution; this is a refinery that runs under it. Day to day,
+        the canisters here have a{" "}
+        <strong>single controller</strong> — published on the proof page
+        alongside the code&apos;s limitations — and the code is{" "}
+        <strong>unaudited</strong>. Check the numbers before you send
+        anything; that is what the proof page is for.
       </>
     ),
   },

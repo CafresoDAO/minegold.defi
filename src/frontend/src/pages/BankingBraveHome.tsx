@@ -7,13 +7,18 @@ interface BankingBraveHomeProps {
 }
 
 /**
- * Banking.Brave landing — the top-level entry point.
+ * Banking.Brave — the institution's own surface, powered by CafresoDAO.
  *
- * Hierarchy rendered here:
- *   Banking.Brave               ← this page's brand
- *     └── Minegold.Defi         ← the "protocols we govern" vertical
- *           ├── Minegold.Uni    ← LIVE — UNI → ckUNI → sGLDT
- *           └── Minegold.Brave  ← COMING SOON — BAT → ckBAT → sGLDT
+ * This page is Banking.Brave's brand and nothing else's. minegold.defi is a
+ * SEPARATE product that belongs to the ecosystem; it wears its own identity
+ * on its own front door (pages/LandingPage) and is presented here the way an
+ * institution presents an application it backs — named, linked, and not
+ * absorbed.
+ *
+ *   Banking.Brave      the institution (this page) · powered by CafresoDAO
+ *     └── minegold.defi   an ERC-20 → ICP gold refinery (its own product)
+ *           minegold.uni  the live intake, and how the app is proven today
+ *           BAT intake    gated on DFINITY listing ckBAT
  */
 export function BankingBraveHome({
   onOpenMinegoldUni,
@@ -48,12 +53,19 @@ export function BankingBraveHome({
             Banking<span style={{ color: "var(--bb-brand)" }}>.</span>Brave
           </h1>
           <p className="text-sm sm:text-base max-w-xl" style={{ color: "var(--bb-text-muted)" }}>
-            On-chain financial primitives on the Internet Computer. We govern open,
-            auditable cross-chain protocols under the Minegold.Defi family.
+            On-chain financial primitives on the Internet Computer — open,
+            auditable, and self-custodial by construction.
+          </p>
+          <p
+            className="mt-2 t-label"
+            style={{ color: "var(--bb-text-dim)" }}
+          >
+            Powered by CafresoDAO
           </p>
         </header>
 
-        {/* Minegold.Defi — the protocol family */}
+        {/* Applications in the ecosystem — minegold.defi is its own product,
+            named and linked, not folded into this page's brand. */}
         <section className="mb-12">
           <div className="flex items-end justify-between flex-wrap gap-2 mb-5">
             <div>
@@ -61,21 +73,22 @@ export function BankingBraveHome({
                 className="t-label mb-1"
                 style={{ color: "var(--bb-text-dim)" }}
               >
-                Protocols we govern
+                Applications in the ecosystem
               </div>
               <h2 className="text-xl sm:text-2xl font-black tracking-tight">
-                Minegold<span style={{ color: "var(--bb-brand)" }}>.</span>Defi
+                minegold<span style={{ color: "var(--bb-brand)" }}>.</span>defi
               </h2>
               <p className="text-xs mt-1 max-w-lg" style={{ color: "var(--bb-text-muted)" }}>
-                A family of cross-chain refinery workflows. Each workflow bridges a
-                specific ERC-20 source asset onto ICP and refines it into sGLDT — a
-                1:1 wrapper of Gold DAO's physically backed GLDT (gldt.org).
+                A cross-chain refinery: it bridges an ERC-20 asset onto ICP and
+                refines it into sGLDT — a 1:1 wrapper of Gold DAO&apos;s
+                physically backed GLDT (gldt.org). It runs as its own product,
+                with its own front door.
               </p>
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            {/* Minegold.Uni — LIVE */}
+            {/* minegold.defi via its live UNI intake */}
             <button
               type="button"
               onClick={onOpenMinegoldUni}
@@ -99,7 +112,7 @@ export function BankingBraveHome({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="text-lg font-black">
-                      Minegold<span style={{ color: "var(--bb-brand)" }}>.</span>Uni
+                      minegold<span style={{ color: "var(--bb-brand)" }}>.</span>defi
                     </h3>
                     <span className="t-label bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-full px-2 py-0.5">
                       Live
@@ -109,18 +122,20 @@ export function BankingBraveHome({
                     UNI (ERC-20) → ckUNI → sGLDT
                   </div>
                   <p className="text-xs leading-relaxed" style={{ color: "var(--bb-text-muted)" }}>
-                    Onboard UNI into ckUNI on ICP via the chain-key bridge, then refine
-                    into sGLDT — wrapped, physically backed GLDT — at the locked-in live rate.
+                    The UNI intake — minegold.uni — is live on mainnet: bridge UNI
+                    into ckUNI via the chain-key minter, then refine into sGLDT at
+                    the canister&apos;s own rate. This is the path the application
+                    is proven on today.
                   </p>
                   <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-yellow-500 group-hover:text-yellow-400 transition-colors">
-                    Open workflow
+                    Open minegold.defi
                     <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
               </div>
             </button>
 
-            {/* Minegold.Brave — COMING SOON, but clickable */}
+            {/* BAT intake — gated on DFINITY, checked live */}
             <button
               type="button"
               onClick={onOpenMinegoldBrave}
@@ -143,9 +158,7 @@ export function BankingBraveHome({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-lg font-black">
-                      Minegold<span style={{ color: "var(--bb-brand)" }}>.</span>Brave
-                    </h3>
+                    <h3 className="text-lg font-black">BAT intake</h3>
                     <span className="inline-flex items-center gap-1 t-label bg-amber-500/15 text-amber-500 border border-amber-500/30 rounded-full px-2 py-0.5">
                       <Clock size={9} /> Soon
                     </span>
@@ -154,11 +167,12 @@ export function BankingBraveHome({
                     BAT (ERC-20) → ckBAT → sGLDT
                   </div>
                   <p className="text-xs leading-relaxed" style={{ color: "var(--bb-text-muted)" }}>
-                    Onboard the Brave browser's native BAT token as ckBAT on ICP.
-                    Unlocks once DFINITY's chain-key ERC-20 minter adds ckBAT support.
+                    The same refinery, fed by the Brave browser&apos;s BAT. Opens
+                    only once DFINITY&apos;s chain-key minter lists ckBAT — a
+                    condition we don&apos;t control, checked live.
                   </p>
                   <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-orange-500 group-hover:text-orange-400 transition-colors">
-                    Preview details
+                    Live status
                     <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
@@ -193,7 +207,9 @@ export function BankingBraveHome({
           className="pt-6 border-t text-center text-[11px]"
           style={{ borderColor: "var(--bb-border)", color: "var(--bb-text-dim)" }}
         >
-          Built on{" "}
+          Banking.Brave is powered by{" "}
+          <span style={{ color: "var(--bb-text-muted)" }}>CafresoDAO</span> ·
+          built on{" "}
           <a
             href="https://internetcomputer.org"
             target="_blank"

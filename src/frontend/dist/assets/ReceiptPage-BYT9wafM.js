@@ -1,6 +1,6 @@
-import { u as useInternetIdentity, U as useLedger, a1 as findEntry, j as jsxRuntimeExports, A as ShieldCheck, L as LoaderCircle } from "./index-M3INk0cV.js";
-import { R as ReceiptBlock } from "./ReceiptBlock-gnoPrV7u.js";
-import { A as ArrowLeft } from "./arrow-left-DL6x6DYE.js";
+import { u as useInternetIdentity, Q as useLedger, a0 as findEntry, j as jsxRuntimeExports, A as ShieldCheck, L as LoaderCircle } from "./index-we-wz8f3.js";
+import { R as ReceiptBlock } from "./ReceiptBlock-0uLhA4WO.js";
+import { A as ArrowLeft } from "./arrow-left-CpEElhDA.js";
 function ReceiptPage({
   id,
   onBack

@@ -38,6 +38,7 @@ import { HowItWorksStrip } from "./components/HowItWorksStrip";
 import { NavBar } from "./components/NavBar";
 import { RefineryShell } from "./components/RefineryShell";
 import { ProfileModal } from "./components/ProfileModal";
+import { RedeemModal } from "./components/RedeemModal";
 import { TransferModal } from "./components/TransferModal";
 import { UnclaimedDepositsBanner } from "./components/UnclaimedDepositsBanner";
 import { WalletSection } from "./components/WalletSection";
@@ -942,6 +943,7 @@ export default function App() {
   const [transferTo, setTransferTo] = useState("");
   const [transferAmt, setTransferAmt] = useState("");
   const [transferLoading, setTransferLoading] = useState(false);
+  const [redeemOpen, setRedeemOpen] = useState(false);
 
   // Public treasury balance (no auth required)
   // Prefer direct ledger queries (bypass backend cache), fall back to cached backend values
@@ -2754,6 +2756,18 @@ export default function App() {
         />
       )}
 
+      {/* Redeem Modal — sGLDT back to ckUNI at the oracle rate */}
+      {redeemOpen && user && (
+        <RedeemModal
+          identity={identity}
+          onClose={() => setRedeemOpen(false)}
+          onRedeemed={() => {
+            if (ethAddress) void refreshBalances(ethAddress);
+            void refineFlow.refreshPosition();
+          }}
+        />
+      )}
+
       {/* Profile Modal */}
       {showProfile && user && (
         <ProfileModal
@@ -2809,6 +2823,7 @@ export default function App() {
                 setTransferTo("");
                 setTransferAmt("");
               }}
+              onOpenRedeem={() => setRedeemOpen(true)}
             />
 
             {/* Unclaimed deposits banner — safety net for deposits the frontend

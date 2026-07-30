@@ -246,6 +246,127 @@ export async function refineCkUNI(opts: {
   return { ok: false, error: result.err as string };
 }
 
+/** Backend methods for the redeem (sGLDT → ckUNI) exit path. */
+const redeemIDL = ({ IDL }: { IDL: any }) => {
+  const RedeemOk = IDL.Record({
+    redeemId: IDL.Nat,
+    ckuniPaid: IDL.Nat,
+    rate: IDL.Nat,
+    blockIndex: IDL.Nat,
+  });
+  return IDL.Service({
+    getMySGLDTPosition: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          balance: IDL.Nat,
+          allowance: IDL.Nat,
+          minRedeem: IDL.Nat,
+          rate: IDL.Nat,
+          treasuryCkUNI: IDL.Nat,
+        }),
+      ],
+      [],
+    ),
+    redeemSGLDT: IDL.Func(
+      [IDL.Nat, IDL.Opt(IDL.Nat)],
+      [IDL.Variant({ ok: RedeemOk, err: IDL.Text })],
+      [],
+    ),
+  });
+};
+
+export type SGLDTPosition = {
+  balance: bigint;
+  allowance: bigint;
+  minRedeem: bigint;
+  rate: bigint;
+  treasuryCkUNI: bigint;
+};
+
+/** The caller's sGLDT balance, the allowance granted to the refinery, and the
+ *  treasury's ckUNI liquidity — everything the redeem UI needs to gate the
+ *  button and size the approve. */
+export async function fetchMySGLDTPosition(
+  identity: unknown,
+): Promise<SGLDTPosition | null> {
+  try {
+    const actor = await directActor(redeemIDL, { identity });
+    return (await actor.getMySGLDTPosition()) as SGLDTPosition;
+  } catch (err) {
+    console.warn("[redeem] sGLDT position fetch failed:", err);
+    return null;
+  }
+}
+
+/** Approve the refinery canister to pull `amount` sGLDT (e8s) from the caller. */
+export async function approveSGLDTForRedeem(opts: {
+  identity: unknown;
+  amount: bigint;
+}): Promise<{ ok: true; blockIndex: bigint } | { ok: false; error: string }> {
+  const actor = await directActor(icrc2ApproveIDL, {
+    identity: opts.identity,
+    canisterId: SGLDT_CANISTER_ID,
+  });
+  const result = await actor.icrc2_approve({
+    from_subaccount: [],
+    spender: {
+      owner: DfinityPrincipal.fromText(BACKEND_CANISTER_ID),
+      subaccount: [],
+    },
+    amount: opts.amount,
+    expected_allowance: [],
+    expires_at: [],
+    fee: [],
+    memo: [],
+    created_at_time: [],
+  });
+  if ("Ok" in result) return { ok: true, blockIndex: result.Ok as bigint };
+  const err = result.Err;
+  if ("InsufficientFunds" in err) {
+    return {
+      ok: false,
+      error: `Not enough sGLDT to cover the approval fee (balance ${err.InsufficientFunds.balance}).`,
+    };
+  }
+  if ("TemporarilyUnavailable" in err) {
+    return { ok: false, error: "sGLDT ledger temporarily unavailable. Try again." };
+  }
+  if ("GenericError" in err) {
+    return {
+      ok: false,
+      error: `Approve failed (${err.GenericError.error_code}): ${err.GenericError.message}`,
+    };
+  }
+  return { ok: false, error: `Approve failed: ${JSON.stringify(err)}` };
+}
+
+export type RedeemOutcome =
+  | { ok: true; redeemId: bigint; ckuniPaid: bigint; rate: bigint; blockIndex: bigint }
+  | { ok: false; error: string };
+
+/** Swap sGLDT back into ckUNI at the oracle rate. Requires a prior
+ *  approveSGLDTForRedeem for at least `amount` + the sGLDT fee. */
+export async function redeemSGLDT(opts: {
+  identity: unknown;
+  amount: bigint;
+  rateHint: bigint | null;
+}): Promise<RedeemOutcome> {
+  const actor = await directActor(redeemIDL, { identity: opts.identity });
+  const rateOpt: [] | [bigint] = opts.rateHint == null ? [] : [opts.rateHint];
+  const result = await actor.redeemSGLDT(opts.amount, rateOpt);
+  if ("ok" in result) {
+    return {
+      ok: true,
+      redeemId: result.ok.redeemId as bigint,
+      ckuniPaid: result.ok.ckuniPaid as bigint,
+      rate: result.ok.rate as bigint,
+      blockIndex: result.ok.blockIndex as bigint,
+    };
+  }
+  return { ok: false, error: result.err as string };
+}
+
 const directAdminIDL = ({ IDL }: { IDL: any }) => {
   const WhoAmI = IDL.Record({
     caller: IDL.Text,

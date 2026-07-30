@@ -37,6 +37,7 @@ type Props = {
   onOpenConnect: () => void;
   onRefreshBalances: () => void;
   onOpenTransfer: (token: TransferToken) => void;
+  onOpenRedeem: () => void;
 };
 
 const StatCard = ({
@@ -89,6 +90,7 @@ export function WalletSection({
   onOpenConnect,
   onRefreshBalances,
   onOpenTransfer,
+  onOpenRedeem,
 }: Props) {
   if (!ethAddress) {
     return (
@@ -312,14 +314,24 @@ export function WalletSection({
                 ${sgldtUsd} USD
               </div>
             )}
-            <button
-              type="button"
-              data-ocid="wallet.sgldt.transfer_button"
-              onClick={() => onOpenTransfer("sgldt")}
-              className="mt-3 flex items-center gap-1 text-[10px] font-bold text-yellow-500 hover:text-yellow-400 transition-colors"
-            >
-              <Send size={10} /> Transfer sGLDT
-            </button>
+            <div className="mt-3 flex items-center gap-4">
+              <button
+                type="button"
+                data-ocid="wallet.sgldt.transfer_button"
+                onClick={() => onOpenTransfer("sgldt")}
+                className="flex items-center gap-1 text-[10px] font-bold text-yellow-500 hover:text-yellow-400 transition-colors"
+              >
+                <Send size={10} /> Transfer
+              </button>
+              <button
+                type="button"
+                data-ocid="wallet.sgldt.redeem_button"
+                onClick={onOpenRedeem}
+                className="flex items-center gap-1 text-[10px] font-bold text-pink-400 hover:text-pink-300 transition-colors"
+              >
+                <ArrowRightLeft size={10} /> Redeem to ckUNI
+              </button>
+            </div>
           </div>
           {/* Exchange Rate */}
           <div className="p-5">

@@ -1,0 +1,11 @@
+{
+  "name": "minegold-asset-sync",
+  "private": true,
+  "type": "module",
+  "description": "Ops tool: sync src/frontend/dist to the mainnet asset canister over the asset API (dfx deploy cannot upgrade this canister - see repo docs/memory).",
+  "dependencies": {
+    "@dfinity/agent": "^3.3.0",
+    "@dfinity/assets": "^3.3.0",
+    "@dfinity/identity-secp256k1": "^3.3.0"
+  }
+}

@@ -9,10 +9,20 @@ type Props = {
    *  number presented as settled is the fastest way to lose trust. */
   sgldtReleased: string | null;
   currentTxHash: string | null;
+  /** On-chain receipt: settled rate + sGLDT ledger payout block. Null for
+   *  legacy-flow successes where the backend didn't return them. */
+  settledRate: string | null;
+  payBlock: string | null;
   onStartNew: () => void;
 };
 
-export function PhaseSuccess({ sgldtReleased, currentTxHash, onStartNew }: Props) {
+export function PhaseSuccess({
+  sgldtReleased,
+  currentTxHash,
+  settledRate,
+  payBlock,
+  onStartNew,
+}: Props) {
   return (
     <div data-ocid="refinery.success_state" className="space-y-4">
       <WorkflowStepper currentStep={3} complete />
@@ -60,6 +70,23 @@ export function PhaseSuccess({ sgldtReleased, currentTxHash, onStartNew }: Props
                 your sGLDT was released — fetching the exact amount
               </p>
             </>
+          )}
+          {(settledRate || payBlock) && (
+            <p className="mt-2 text-[10px] text-zinc-500 font-mono">
+              {settledRate && <>settled @ {settledRate} sGLDT/UNI</>}
+              {settledRate && payBlock && " · "}
+              {payBlock && (
+                <a
+                  href="https://dashboard.internetcomputer.org/canister/i2s4q-syaaa-aaaan-qz4sq-cai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 underline underline-offset-2"
+                  title="sGLDT ledger canister on the ICP dashboard"
+                >
+                  sGLDT ledger block #{payBlock}
+                </a>
+              )}
+            </p>
           )}
           {currentTxHash && (
             <a

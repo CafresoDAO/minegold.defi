@@ -6,6 +6,13 @@ import { WorkflowStepper } from "../WorkflowStepper";
 type Props = {
   uniAmount: string;
   depositAddress: string;
+  /** The ICP principal the minter will credit — encoded in the deposit
+   *  calldata. The user should see WHO the beneficiary is before/while the
+   *  wallet sheet is open. */
+  beneficiaryPrincipal: string;
+  /** What the approve signature grants: exact amount (default) or unlimited
+   *  (the user's explicit opt-in). */
+  unlimitedApproval: boolean;
   /** "I signed in my wallet but the promise hung" escape hatch: skip straight
    *  to watching for the minter's ckUNI credit. Harmless if pressed early —
    *  the watch simply polls until the credit lands or times out. */
@@ -25,6 +32,8 @@ type Props = {
 export function PhaseWalletConfirming({
   uniAmount,
   depositAddress,
+  beneficiaryPrincipal,
+  unlimitedApproval,
   onBeginWatch,
   onCancel,
 }: Props) {
@@ -59,6 +68,21 @@ export function PhaseWalletConfirming({
         <div className="flex items-center justify-between mt-1.5">
           <span className="text-zinc-600 font-sans">Amount</span>
           <span className="text-white">{uniAmount} UNI (ERC-20)</span>
+        </div>
+        <div className="flex items-center justify-between mt-1.5">
+          <span className="text-zinc-600 font-sans">Approval</span>
+          <span className={unlimitedApproval ? "text-amber-300" : "text-emerald-300"}>
+            {unlimitedApproval ? "unlimited (you opted in)" : `exactly ${uniAmount} UNI`}
+          </span>
+        </div>
+        <div className="flex items-center justify-between mt-1.5 gap-3">
+          <span className="text-zinc-600 font-sans shrink-0">Credited to</span>
+          <span
+            className="text-emerald-300 text-[10px] truncate"
+            title={`Your own ICP principal — DFINITY's minter credits the ckUNI here, not to this app: ${beneficiaryPrincipal}`}
+          >
+            your ICP account · {beneficiaryPrincipal.slice(0, 11)}…{beneficiaryPrincipal.slice(-4)}
+          </span>
         </div>
       </div>
 

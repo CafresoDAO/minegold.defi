@@ -1,6 +1,16 @@
-import { Activity, ArrowRightLeft, Lock } from "lucide-react";
+import { Activity, ArrowRightLeft, Lock, ShieldCheck } from "lucide-react";
 import type React from "react";
 import { formatTokenAmount } from "../hooks/useQueries";
+
+export type RateLine = {
+  /** e.g. "1 UNI = 4.1152 sGLDT" */
+  rateDisplay: string;
+  /** e.g. "XRC oracle (UNI/USD) · synced 12m ago" */
+  provenance: string;
+  /** Non-null when something deserves attention (oracle stale/error, market
+   *  divergence). Rendered amber. */
+  warning: string | null;
+};
 
 type Props = {
   dimmed: boolean;
@@ -19,6 +29,12 @@ type Props = {
   outputDisplay: string;
   onUniAmountChange: (v: string) => void;
   ckuniLedgerCanisterId: string;
+  /** Real gas estimate (e.g. "~0.0011 ETH ($3.80)"), or null while unknown. */
+  gasEstimate: string | null;
+  /** The authoritative rate + where it comes from. Null while loading. */
+  rateLine: RateLine | null;
+  /** "0.02050 sGLDT" — the rate-clamp floor (quote − 2%). Null when no amount. */
+  minReceivedDisplay: string | null;
   /** Timeline + phase-specific progress/action content. */
   children: React.ReactNode;
 };
@@ -40,6 +56,9 @@ export function RefineryShell({
   outputDisplay,
   onUniAmountChange,
   ckuniLedgerCanisterId,
+  gasEstimate,
+  rateLine,
+  minReceivedDisplay,
   children,
 }: Props) {
   return (
@@ -127,8 +146,12 @@ export function RefineryShell({
               </div>
             </div>
             <div className="flex flex-col items-end gap-1">
-              <div className="bg-black border border-zinc-800 px-4 py-2 rounded-xl text-[10px] font-bold text-zinc-400">
-                GAS: ~0.002 ETH
+              <div
+                className="bg-black border border-zinc-800 px-4 py-2 rounded-xl text-[10px] font-bold text-zinc-400"
+                data-ocid="refinery.gas.estimate"
+                title="Live estimate for the two Ethereum transactions (approve + deposit) at the current gas price. Unused gas is refunded."
+              >
+                GAS: {gasEstimate ?? "estimating…"}
               </div>
               <div className="text-[9px] text-blue-500/60 font-mono">
                 via ICP ERC-20 Minter
@@ -229,7 +252,62 @@ export function RefineryShell({
                 <div className="text-4xl font-bold text-yellow-500 truncate">
                   {outputDisplay}
                 </div>
+                {minReceivedDisplay && (
+                  <p
+                    className="mt-2 text-[11px] text-zinc-400"
+                    data-ocid="refinery.min_received"
+                    title="The canister settles at its own on-chain rate, clamped within ±2% of this quote — this is the floor."
+                  >
+                    Minimum received:{" "}
+                    <span className="text-yellow-500/90 font-semibold">
+                      {minReceivedDisplay}
+                    </span>
+                  </p>
+                )}
               </div>
+            </div>
+          </div>
+
+          {/* Rate provenance — the quote's source and freshness, stated
+           *  plainly. The displayed rate IS the canister's settlement rate
+           *  (getRateStatus), not a third-party feed. */}
+          {rateLine && (
+            <div
+              className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px]"
+              data-ocid="refinery.rate.provenance"
+              aria-live="polite"
+            >
+              <span className="font-semibold text-zinc-300">
+                {rateLine.rateDisplay}
+              </span>
+              <span className="text-zinc-600">·</span>
+              <span className="text-zinc-500">{rateLine.provenance}</span>
+              {rateLine.warning && (
+                <span className="basis-full text-center text-amber-400/90">
+                  {rateLine.warning}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Custody strip — WHO holds the funds at each step. This is the
+           *  architecture's strongest trust property; every clause maps to
+           *  code: minter → user principal (startMining encodes the caller's
+           *  principal in the deposit calldata), treasury custody only inside
+           *  the atomic refineCkUNI call, auto-refund via _refundCkUNI. */}
+          <div className="mt-4 rounded-2xl border border-zinc-800 bg-black/30 px-4 py-3">
+            <div className="flex items-start gap-2.5">
+              <ShieldCheck size={14} className="text-emerald-400 shrink-0 mt-0.5" />
+              <p className="text-[11px] leading-relaxed text-zinc-400">
+                <span className="font-bold text-zinc-300">Who holds your funds: </span>
+                DFINITY&apos;s chain-key minter mints ckUNI{" "}
+                <span className="text-zinc-200 font-semibold">to your own ICP account</span>{" "}
+                — never to us. The refinery takes custody only for the seconds
+                of the atomic ckUNI→sGLDT swap, and a failed swap{" "}
+                <span className="text-zinc-200 font-semibold">refunds your ckUNI automatically</span>.
+                No servers, no custodian — the whole app is a canister on the
+                Internet Computer.
+              </p>
             </div>
           </div>
 

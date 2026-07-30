@@ -30,6 +30,9 @@ import { PhaseSuccess } from "./components/phases/PhaseSuccess";
 import { PhaseWalletConfirming } from "./components/phases/PhaseWalletConfirming";
 import { ConnectWalletModal } from "./components/ConnectWalletModal";
 import { LoginOverlay } from "./components/LoginOverlay";
+import { BraveStoryStrip } from "./components/BraveStoryStrip";
+import { HoldingsCard } from "./components/HoldingsCard";
+import { ProofPanel } from "./components/ProofPanel";
 import { HowItWorksStrip } from "./components/HowItWorksStrip";
 import { NavBar } from "./components/NavBar";
 import { RefineryShell } from "./components/RefineryShell";
@@ -43,6 +46,7 @@ import { useBackendActor } from "./hooks/useBackendActor";
 import { useRefineFlow } from "./hooks/useRefineFlow";
 import { GoldCTA } from "./components/ui/GoldCTA";
 import { safeBalance } from "./lib/format";
+import { hapticFailure, hapticMilestone, hapticSuccess } from "./lib/haptics";
 import {
   clearRefineWatch,
   readRefineWatch,
@@ -58,6 +62,7 @@ import {
   usePublicCkUNITreasuryBalance,
   usePublicTreasuryBalance,
   useRefreshTreasuryBalances,
+  useRateStatus,
   useRetryUNIDepositPayout,
   useUserSGLDTBalance,
   CKUNI_FEE_FALLBACK,
@@ -716,6 +721,11 @@ export default function App() {
   // 0..1 progress derived from the deposit's backend status (see the tick in
   // startAutoPolling). Drives the mining animation + progress bar.
   const [bridgeProgress, setBridgeProgress] = useState(0);
+  // On-chain receipt for the success screen (settled rate + payout block).
+  const [successReceipt, setSuccessReceipt] = useState<{
+    settledRate: string;
+    payBlock: string;
+  } | null>(null);
 
   /** Stop any running poll and transition to a terminal failure state */
   const stopWithError = useCallback((message: string) => {
@@ -990,6 +1000,7 @@ export default function App() {
   const [transferAmt, setTransferAmt] = useState("");
   const [transferLoading, setTransferLoading] = useState(false);
   const [redeemOpen, setRedeemOpen] = useState(false);
+  const [showProof, setShowProof] = useState(false);
 
   // Public treasury balance (no auth required)
   // Prefer direct ledger queries (bypass backend cache), fall back to cached backend values
@@ -1176,6 +1187,26 @@ export default function App() {
       ? treasuryWalletInfo.depositAddress
       : FALLBACK_DEPOSIT_ADDRESS;
 
+  // Approval mode. Default is EXACT-AMOUNT — the user signs for precisely
+  // what this swap moves. Unlimited (the MAX_UINT256 DeFi pattern that skips
+  // the approve signature on future swaps) is an explicit opt-in, remembered
+  // per browser.
+  const [unlimitedApproval, setUnlimitedApproval] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("minegold_unlimited_approve") === "1";
+    } catch {
+      return false;
+    }
+  });
+  const toggleUnlimitedApproval = (v: boolean) => {
+    setUnlimitedApproval(v);
+    try {
+      localStorage.setItem("minegold_unlimited_approve", v ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  };
+
   const [copiedDepositAddress, setCopiedDepositAddress] = useState(false);
 
   // Legacy "pending deposit intent" cleanup. Under treasury attribution a
@@ -1337,9 +1368,106 @@ export default function App() {
     await checkPayoutNow();
   };
 
-  const estimatedGold = (Number.parseFloat(uniAmount) || 0) * liveRate;
+  // ── Rate: the canister's on-chain rate is AUTHORITATIVE ─────────────────
+  // getRateStatus is an anonymous IC query — it works signed-out and is
+  // unaffected by Brave Shields. The CoinGecko-derived liveRate is demoted to
+  // a market cross-check and a fallback for the rare case the oracle read
+  // fails. The Mine button must never be gated on a third-party HTTP API:
+  // this app's core audience runs Brave, and Shields blocks those APIs.
+  const { data: rateStatus } = useRateStatus();
+  const onchainRate =
+    rateStatus && rateStatus.rate > 0n ? Number(rateStatus.rate) / 1e8 : 0;
+  const effectiveRate = onchainRate > 0 ? onchainRate : liveRate;
+  /** The hint sent with refine calls — the exact rate the user was quoted.
+   *  When quoting on-chain this is the canister's own rate (always in-band);
+   *  the backend clamps any hint to ±2% of its rate regardless. */
+  const effectiveRateHint: bigint | null =
+    rateStatus && rateStatus.rate > 0n
+      ? rateStatus.rate
+      : liveRate > 0
+        ? BigInt(Math.round(liveRate * 1e8))
+        : null;
+  const rateSyncAgeMin =
+    rateStatus && rateStatus.lastSyncNs > 0n
+      ? Math.max(
+          0,
+          Math.round(
+            (Date.now() - Number(rateStatus.lastSyncNs / 1_000_000n)) / 60_000,
+          ),
+        )
+      : null;
+  const marketDivergencePct =
+    onchainRate > 0 && liveRate > 0
+      ? (Math.abs(liveRate - onchainRate) / onchainRate) * 100
+      : null;
+  const rateLine =
+    effectiveRate > 0
+      ? onchainRate > 0
+        ? {
+            rateDisplay: `1 UNI = ${effectiveRate.toFixed(4)} sGLDT`,
+            provenance: `on-chain rate · XRC oracle (UNI/USD) · synced ${
+              rateSyncAgeMin != null ? `${rateSyncAgeMin}m ago` : "—"
+            }`,
+            warning: rateStatus?.lastError
+              ? "Oracle note: the last sync reported an issue — quoting the last good on-chain rate."
+              : marketDivergencePct != null && marketDivergencePct > 2
+                ? `Market feeds differ from the on-chain rate by ${marketDivergencePct.toFixed(1)}% — settlement uses the on-chain rate.`
+                : null,
+          }
+        : {
+            rateDisplay: `1 UNI = ${effectiveRate.toFixed(4)} sGLDT`,
+            provenance: "market feed (CoinGecko) — on-chain oracle unreachable",
+            warning:
+              "Quoting from market data; the canister settles at its own rate (clamped within ±2%).",
+          }
+      : null;
+
+  const estimatedGold = (Number.parseFloat(uniAmount) || 0) * effectiveRate;
   // Keep the ref in sync so polling callbacks always read the current estimated amount
   estimatedGoldRef.current = estimatedGold;
+  /** The ±2% clamp floor — the least the user can settle for at this quote. */
+  const minReceivedDisplay =
+    estimatedGold > 0 ? `${(estimatedGold * 0.98).toFixed(5)} sGLDT` : null;
+
+  // ── Real gas estimate (replaces the old hardcoded "~0.002 ETH" chip) ────
+  // approve (~55k) + helper deposit (~200k) at the live gas price, with a
+  // safety ceiling. Unused gas is refunded by the EVM, so overestimating
+  // costs nothing; underestimating strands the user mid-flow.
+  const [gasEstimateEth, setGasEstimateEth] = useState<number | null>(null);
+  useEffect(() => {
+    if (!ethAddress) {
+      setGasEstimateEth(null);
+      return;
+    }
+    let cancelled = false;
+    const refresh = async () => {
+      try {
+        const gasPrice = await publicClient.getGasPrice();
+        const totalGas = 260_000n; // approve + deposit ceiling
+        if (!cancelled) setGasEstimateEth(Number(totalGas * gasPrice) / 1e18);
+      } catch {
+        // RPC hiccup — keep the previous estimate (or null → "estimating…")
+      }
+    };
+    void refresh();
+    const t = setInterval(() => void refresh(), 90_000);
+    return () => {
+      cancelled = true;
+      clearInterval(t);
+    };
+  }, [ethAddress]);
+  const gasEstimate =
+    gasEstimateEth != null
+      ? `~${gasEstimateEth.toFixed(4)} ETH${
+          ethPrice ? ` ($${(gasEstimateEth * ethPrice).toFixed(2)})` : ""
+        }`
+      : null;
+  const gasShortfall =
+    gasEstimateEth != null &&
+    ethBalance != null &&
+    Number.parseFloat(ethBalance) < gasEstimateEth
+      ? `Needs ~${gasEstimateEth.toFixed(4)} ETH for gas — you have ${ethBalance} ETH.`
+      : null;
   const isActive =
     phase === "awaiting_deposit" ||
     phase === "wallet_confirming" ||
@@ -1969,6 +2097,16 @@ export default function App() {
       setStatusMsg("Minimum swap amount is 0.005 UNI (ledger fees make smaller deposits unrefinable).");
       return;
     }
+    // The spender address comes from the backend at runtime. Assert it IS
+    // the canonical DFINITY ckERC-20 helper before ANY signature — a wrong
+    // address here would grant an allowance to an arbitrary contract.
+    if (depositAddress.toLowerCase() !== CKERC20_HELPER_CONTRACT.toLowerCase()) {
+      setPhase("error");
+      setStatusMsg(
+        `Deposit halted before signing: the backend returned an unexpected deposit contract (${depositAddress}); expected DFINITY's ckERC-20 helper ${CKERC20_HELPER_CONTRACT}. Nothing was signed and no funds moved.`,
+      );
+      return;
+    }
 
     setSgldtReleased(null);
     setDepositRequestId(null);
@@ -2067,28 +2205,26 @@ export default function App() {
       if (needsApprove) {
         updateStep(
           "approve-sign",
-          "One-time: approve the bridge to spend your UNI",
+          unlimitedApproval
+            ? "Approve the bridge to spend your UNI (unlimited — you opted in)"
+            : `Approve the bridge to spend exactly ${uniAmount} UNI`,
           "active",
-          "Sign once — future swaps won't need this step",
+          unlimitedApproval
+            ? "Sign once — future swaps skip this step"
+            : "Exact-amount approval — each swap signs its own",
         );
         try {
-          // MAX_UINT256 approval — the DeFi-standard "unlimited allowance"
-          // pattern. Uniswap, 1inch, Curve, Aave all do this. The tradeoff
-          // is that the helper contract can pull any amount of UNI from
-          // this wallet in the future, but:
-          //   (a) The helper is the canonical DFINITY ckERC-20 contract,
-          //       audited and used by every ICP cross-chain app
-          //   (b) UNI only ever moves when the user calls deposit(), which
-          //       goes through our UI + the user's wallet signing — no
-          //       passive drain surface
-          //   (c) The user can always revoke via revoke.cash or by signing
-          //       a fresh approve(helper, 0)
-          // Upside: every subsequent swap is ONE signature instead of two.
+          // Approval sizing. Default: EXACT amount — the helper can pull
+          // only what this swap moves, nothing else, ever. Opt-in: the
+          // MAX_UINT256 "unlimited" DeFi pattern (Uniswap/Aave-style) that
+          // skips this signature on future swaps. Either way the spender is
+          // asserted above to be the canonical DFINITY helper contract, and
+          // revoking is always possible (revoke.cash or approve(helper, 0)).
           const MAX_UINT256 =
             0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffn;
           const approveData = encodeERC20Approve(
             depositAddress,
-            MAX_UINT256,
+            unlimitedApproval ? MAX_UINT256 : amountWei,
           ) as `0x${string}`;
           // Pre-estimate via public RPC so wallets that fail at internal
           // gas estimation (observed on desktop Brave Wallet) still receive
@@ -2108,10 +2244,15 @@ export default function App() {
             gas: approveGas,
             chain: null,
           });
-          console.log("[mining] approve signed (unlimited):", approveHash);
+          console.log(
+            `[mining] approve signed (${unlimitedApproval ? "unlimited" : "exact"}):`,
+            approveHash,
+          );
           updateStep(
             "approve-sign",
-            "UNI approval signed — future swaps skip this step",
+            unlimitedApproval
+              ? "UNI approval signed — future swaps skip this step"
+              : `Approved exactly ${uniAmount} UNI`,
             "done",
             String(approveHash).slice(0, 14) + "…",
           );
@@ -2264,7 +2405,7 @@ export default function App() {
       // link to its depositor, which is what every recovery path existed to
       // repair. Now the attribution is carried on-chain by the minter, so a
       // missing hash costs us only the Etherscan convenience link.
-      const rateHintNat: bigint | null = liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
+      const rateHintNat: bigint | null = effectiveRateHint;
 
       // Persist the watch so a refresh mid-wait resumes this screen instead
       // of landing on a pristine idle refinery (cleared on done/failed/cancel).
@@ -2413,6 +2554,7 @@ export default function App() {
         setPhase("releasing_sgldt");
         setBridgeProgress(refineFlow.progress);
         setStatusMsg("ckUNI received — authorizing the refinery…");
+        hapticMilestone(); // the chain-key seam: ckUNI just landed
         updateStep("ck-mint", "ckUNI credited by the chain-key minter", "done");
         updateStep("refine", "Authorizing the refinery to swap your ckUNI", "active");
         break;
@@ -2424,6 +2566,11 @@ export default function App() {
         break;
       case "done": {
         clearRefineWatch(_principalSlug);
+        hapticSuccess();
+        setSuccessReceipt({
+          settledRate: (Number(st.settledRate) / 1e8).toFixed(4),
+          payBlock: st.payBlock.toString(),
+        });
         const amount = (Number(st.sgldt) / 1e8).toFixed(5);
         setSgldtReleased(amount);
         setBridgeProgress(1);
@@ -2437,6 +2584,7 @@ export default function App() {
         // the leftover banner / retry CTA) or timed out — either way there is
         // nothing left to resume on refresh.
         clearRefineWatch(_principalSlug);
+        hapticFailure();
         setPhase("error");
         setStatusMsg(st.error);
         updateStep("refine", "Refine did not complete", "error", st.error.slice(0, 120));
@@ -2614,6 +2762,10 @@ export default function App() {
           <TransactionHistoryPage />
         ) : (
           <>
+            {/* The three-beat story, truth-gated: BAT status checked live
+                against DFINITY's minter; the UNI refinery is the live proof. */}
+            <BraveStoryStrip onOpenBraveSoon={enterMinegoldBrave} />
+
 {/* ETH wallet connect / connected dashboard */}
             <WalletSection
               ethAddress={ethAddress}
@@ -2628,7 +2780,7 @@ export default function App() {
               ethUsd={ethUsd}
               uniUsd={uniUsd}
               sgldtUsd={sgldtUsd}
-              liveRate={liveRate}
+              liveRate={effectiveRate}
               uniPrice={uniPrice}
               sgldtPrice={sgldtPrice}
               onOpenConnect={() => setConnectModalOpen(true)}
@@ -2642,6 +2794,23 @@ export default function App() {
               }}
               onOpenRedeem={() => setRedeemOpen(true)}
             />
+
+            {/* Position-first view: your gold, your ckUNI, the live rate, and
+                a reconcilable activity list from getMyRefines/getMyRedeems.
+                Renders only when the user actually holds or has done
+                something — first-time visitors go straight to the refinery. */}
+            {user && phase === "idle" && (
+              <HoldingsCard
+                identity={identity}
+                sgldtBalance={sgldtBalance}
+                sgldtUsd={sgldtUsd}
+                ckuniBalance={refineFlow.position?.balance ?? null}
+                ckuniRefinable={leftoverRefinable}
+                rateDisplay={rateLine?.rateDisplay ?? null}
+                rateProvenance={rateLine?.provenance ?? null}
+                onRedeem={() => setRedeemOpen(true)}
+              />
+            )}
 
             {/* Unclaimed deposits banner — safety net for deposits the frontend
                 missed claiming (e.g. user closed tab after tx confirmed). */}
@@ -2682,9 +2851,7 @@ export default function App() {
                   trailingIcon={null}
                   className="w-full sm:w-auto"
                   onClick={() => {
-                    const rateHintNat: bigint | null =
-                      liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
-                    void refineFlow.refineNow(leftoverCkUNI, rateHintNat);
+                    void refineFlow.refineNow(leftoverCkUNI, effectiveRateHint);
                   }}
                 >
                   Refine into sGLDT
@@ -2712,6 +2879,9 @@ export default function App() {
               }
               onUniAmountChange={setUniAmount}
               ckuniLedgerCanisterId={CKUNI_LEDGER_CANISTER_ID}
+              gasEstimate={gasEstimate}
+              rateLine={rateLine}
+              minReceivedDisplay={minReceivedDisplay}
             >
               {/* Persistent transaction timeline — visible across phases,
                   surfaces per-step timestamps/durations, survives reloads. */}
@@ -2731,6 +2901,8 @@ export default function App() {
                   <PhaseSuccess
                     sgldtReleased={sgldtReleased}
                     currentTxHash={currentTxHash}
+                    settledRate={successReceipt?.settledRate ?? null}
+                    payBlock={successReceipt?.payBlock ?? null}
                     onStartNew={() => {
                       pollEpochRef.current += 1; // kills any settled-amount re-poll
                       clearRefineWatch(_principalSlug);
@@ -2738,6 +2910,7 @@ export default function App() {
                       setPhase("idle");
                       setSgldtReleased(null);
                       setCurrentTxHash(null);
+                      setSuccessReceipt(null);
                     }}
                   />
                 ) : phase === "error" ? (
@@ -2760,8 +2933,7 @@ export default function App() {
                     }
                     onRetryRefine={() => {
                       if (!refineFlow.position) return;
-                      const hint =
-                        liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
+                      const hint = effectiveRateHint;
                       void refineFlow.refineNow(refineFlow.position.balance, hint);
                     }}
                     onViewHistory={() => setShowHistory(true)}
@@ -2788,14 +2960,15 @@ export default function App() {
                   <PhaseWalletConfirming
                     uniAmount={uniAmount}
                     depositAddress={depositAddress}
+                    beneficiaryPrincipal={user?.principal ?? ""}
+                    unlimitedApproval={unlimitedApproval}
                     onBeginWatch={() => {
                       const amountWei = parseDecimalToBigInt(uniAmount, 18);
                       if (amountWei === 0n) {
                         setPhase("idle");
                         return;
                       }
-                      const hint =
-                        liveRate > 0 ? BigInt(Math.round(liveRate * 1e8)) : null;
+                      const hint = effectiveRateHint;
                       writeRefineWatch(_principalSlug, {
                         txHash: currentTxHash,
                         amountWei: amountWei.toString(),
@@ -2862,15 +3035,13 @@ export default function App() {
                       !ethAddress ||
                       !user ||
                       (!actor && !actorTimedOut) ||
-                      liveRate <= 0 ||
-                      !uniPrice ||
-                      !sgldtPrice
+                      effectiveRate <= 0 ||
+                      gasShortfall != null
                     }
-                    showRateHint={
-                      (liveRate <= 0 || !uniPrice || !sgldtPrice) &&
-                      !!user &&
-                      !!ethAddress
-                    }
+                    showRateHint={effectiveRate <= 0 && !!user && !!ethAddress}
+                    gasShortfall={gasShortfall}
+                    unlimitedApproval={unlimitedApproval}
+                    onUnlimitedApprovalChange={toggleUnlimitedApproval}
                     showConnecting={!!user && !actor && !actorTimedOut}
                     actorTimedOut={actorTimedOut}
                     onStartMining={startMining}
@@ -2892,7 +3063,24 @@ export default function App() {
               >
                 Internet Computer Protocol
               </a>
+              {" · "}
+              <button
+                type="button"
+                data-ocid="footer.proof.link"
+                onClick={() => setShowProof(true)}
+                className="hover:text-zinc-500 transition-colors underline underline-offset-2"
+              >
+                Proof &amp; transparency
+              </button>
             </footer>
+
+            {showProof && (
+              <ProofPanel
+                treasurySGLDT={displaySGLDTBalance}
+                treasuryCkUNI={displayCkUNIBalance}
+                onClose={() => setShowProof(false)}
+              />
+            )}
           </>
         )}
       </main>

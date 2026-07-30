@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Activity, Clock } from "lucide-react";
 import { publicClient } from "../lib/eth";
+import { hapticTick } from "../lib/haptics";
 
 type Props = {
   /** The tx hash we're tracking on Ethereum. When null, meter shows "waiting
@@ -50,6 +51,17 @@ export function BlockConfirmationMeter({
     const id = setInterval(() => setNow(Date.now()), 1_000);
     return () => clearInterval(id);
   }, []);
+
+  // One haptic "pick strike" per newly confirmed block (Android; silently a
+  // no-op on iOS) — pocket the phone and feel the confirmations land.
+  const lastBuzzedRef = useRef(0);
+  useEffect(() => {
+    const c = Math.min(state.confirmations, targetConfirmations);
+    if (c > lastBuzzedRef.current) {
+      lastBuzzedRef.current = c;
+      hapticTick();
+    }
+  }, [state.confirmations, targetConfirmations]);
 
   // Poll the chain for tx receipt + current head. Scales interval by state:
   // pending — 4s (user is actively waiting for mine)

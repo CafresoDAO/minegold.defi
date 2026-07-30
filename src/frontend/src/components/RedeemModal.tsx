@@ -21,7 +21,7 @@ type RedeemPhase =
   | { kind: "input"; position: SGLDTPosition }
   | { kind: "approving"; position: SGLDTPosition }
   | { kind: "redeeming"; position: SGLDTPosition }
-  | { kind: "done"; ckuni: bigint; sgldt: bigint }
+  | { kind: "done"; ckuni: bigint; sgldt: bigint; payBlock: bigint; rate: bigint }
   | { kind: "error"; message: string; position: SGLDTPosition | null };
 
 /** sGLDT fee headroom added to the approve so the ledger's fee deduction
@@ -94,7 +94,13 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
         setPhase({ kind: "error", message: result.error, position });
         return;
       }
-      setPhase({ kind: "done", ckuni: result.ckuniPaid, sgldt: amountE8s });
+      setPhase({
+        kind: "done",
+        ckuni: result.ckuniPaid,
+        sgldt: amountE8s,
+        payBlock: result.blockIndex,
+        rate: result.rate,
+      });
       onRedeemed();
     } catch (err) {
       setPhase({
@@ -152,6 +158,20 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
                 for {(Number(phase.sgldt) / 1e8).toFixed(4)} sGLDT — the ckUNI is
                 in your own ICP account. Bridge it back to native UNI on Ethereum
                 any time via the chain-key minter.
+              </p>
+              {/* On-chain receipt: the settled rate and the ckUNI ledger
+               *  block of the payout — the verifiable proof of this swap. */}
+              <p className="text-[10px] text-zinc-500 font-mono mt-2">
+                settled @ {(Number(phase.rate) / 1e8).toFixed(4)} sGLDT/UNI ·{" "}
+                <a
+                  href="https://dashboard.internetcomputer.org/canister/ilzky-ayaaa-aaaar-qahha-cai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 underline underline-offset-2"
+                  title="ckUNI ledger canister on the ICP dashboard"
+                >
+                  ckUNI ledger block #{phase.payBlock.toString()}
+                </a>
               </p>
             </div>
             <GoldCTA

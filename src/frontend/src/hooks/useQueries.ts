@@ -148,6 +148,168 @@ const refineIDL = ({ IDL }: { IDL: any }) => {
   });
 };
 
+/** Rate provenance + user activity — the backend's richest data surface,
+ *  previously called by nothing in the frontend. */
+const rateAndActivityIDL = ({ IDL }: { IDL: any }) => {
+  const RefineStatus = IDL.Variant({
+    paid: IDL.Null,
+    pulled: IDL.Null,
+    refunded: IDL.Null,
+    stranded: IDL.Null,
+  });
+  const RefineRecord = IDL.Record({
+    id: IDL.Nat,
+    user: IDL.Principal,
+    ckuniAmount: IDL.Nat,
+    sgldtPaid: IDL.Nat,
+    rate: IDL.Nat,
+    status: RefineStatus,
+    timestamp: IDL.Int,
+    pullBlock: IDL.Opt(IDL.Nat),
+    payBlock: IDL.Opt(IDL.Nat),
+    errorMsg: IDL.Opt(IDL.Text),
+  });
+  const RedeemRecord = IDL.Record({
+    id: IDL.Nat,
+    user: IDL.Principal,
+    sgldtAmount: IDL.Nat,
+    ckuniPaid: IDL.Nat,
+    rate: IDL.Nat,
+    status: RefineStatus,
+    timestamp: IDL.Int,
+    pullBlock: IDL.Opt(IDL.Nat),
+    payBlock: IDL.Opt(IDL.Nat),
+    errorMsg: IDL.Opt(IDL.Text),
+  });
+  return IDL.Service({
+    getRateStatus: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          rate: IDL.Nat,
+          uniUsdE8: IDL.Nat,
+          sgldtUsdE8: IDL.Nat,
+          lastSyncNs: IDL.Int,
+          lastError: IDL.Text,
+          autoSyncSeconds: IDL.Nat,
+        }),
+      ],
+      ["query"],
+    ),
+    getMyRefines: IDL.Func([], [IDL.Vec(RefineRecord)], ["query"]),
+    getMyRedeems: IDL.Func([], [IDL.Vec(RedeemRecord)], ["query"]),
+  });
+};
+
+export type RateStatus = {
+  /** sGLDT per UNI, 1e8 precision. The rate the canister will settle at. */
+  rate: bigint;
+  /** UNI/USD from the XRC oracle (1e8). 0 = never synced. */
+  uniUsdE8: bigint;
+  /** Admin-set sGLDT/USD reference (1e8). 0 = unset (legacy manual rate). */
+  sgldtUsdE8: bigint;
+  lastSyncNs: bigint;
+  lastError: string;
+  autoSyncSeconds: bigint;
+};
+
+export type RefineStatusKey = "paid" | "pulled" | "refunded" | "stranded";
+export type RefineRecordView = {
+  id: bigint;
+  ckuniAmount: bigint;
+  sgldtPaid: bigint;
+  rate: bigint;
+  status: RefineStatusKey;
+  timestamp: bigint;
+  pullBlock: bigint | null;
+  payBlock: bigint | null;
+  errorMsg: string | null;
+};
+export type RedeemRecordView = {
+  id: bigint;
+  sgldtAmount: bigint;
+  ckuniPaid: bigint;
+  rate: bigint;
+  status: RefineStatusKey;
+  timestamp: bigint;
+  pullBlock: bigint | null;
+  payBlock: bigint | null;
+  errorMsg: string | null;
+};
+
+const statusKey = (v: Record<string, null>): RefineStatusKey =>
+  (Object.keys(v)[0] ?? "pulled") as RefineStatusKey;
+const optNat = (v: [] | [bigint]): bigint | null => (v.length ? v[0] : null);
+const optText = (v: [] | [string]): string | null => (v.length ? v[0] : null);
+
+/** The canister's authoritative rate + oracle provenance. Anonymous query —
+ *  works signed-out, unaffected by Brave Shields (it's an IC call, not a
+ *  third-party HTTP API). The quote the UI shows MUST come from here; the
+ *  CoinGecko feed is only a market cross-check. */
+export function useRateStatus() {
+  return useQuery<RateStatus | null>({
+    queryKey: ["rateStatus"],
+    queryFn: async () => {
+      const actor = Actor.createActor(rateAndActivityIDL, {
+        agent: getAnonymousAgent(),
+        canisterId: BACKEND_CANISTER_ID,
+      }) as any;
+      return (await actor.getRateStatus()) as RateStatus;
+    },
+    refetchInterval: 60_000,
+    staleTime: 55_000,
+    retry: 2,
+  });
+}
+
+/** The caller's refine history (newest first, per the backend sort). */
+export function useMyRefines(identity: unknown) {
+  return useQuery<RefineRecordView[]>({
+    queryKey: ["myRefines"],
+    enabled: identity != null,
+    queryFn: async () => {
+      const actor = await directActor(rateAndActivityIDL, { identity });
+      const raw = (await actor.getMyRefines()) as any[];
+      return raw.map((r) => ({
+        id: r.id as bigint,
+        ckuniAmount: r.ckuniAmount as bigint,
+        sgldtPaid: r.sgldtPaid as bigint,
+        rate: r.rate as bigint,
+        status: statusKey(r.status),
+        timestamp: r.timestamp as bigint,
+        pullBlock: optNat(r.pullBlock),
+        payBlock: optNat(r.payBlock),
+        errorMsg: optText(r.errorMsg),
+      }));
+    },
+    refetchInterval: 120_000,
+  });
+}
+
+/** The caller's redeem history (newest first). */
+export function useMyRedeems(identity: unknown) {
+  return useQuery<RedeemRecordView[]>({
+    queryKey: ["myRedeems"],
+    enabled: identity != null,
+    queryFn: async () => {
+      const actor = await directActor(rateAndActivityIDL, { identity });
+      const raw = (await actor.getMyRedeems()) as any[];
+      return raw.map((r) => ({
+        id: r.id as bigint,
+        sgldtAmount: r.sgldtAmount as bigint,
+        ckuniPaid: r.ckuniPaid as bigint,
+        rate: r.rate as bigint,
+        status: statusKey(r.status),
+        timestamp: r.timestamp as bigint,
+        pullBlock: optNat(r.pullBlock),
+        payBlock: optNat(r.payBlock),
+        errorMsg: optText(r.errorMsg),
+      }));
+    },
+    refetchInterval: 120_000,
+  });
+}
+
 export type CkUNIPosition = {
   balance: bigint;
   allowance: bigint;

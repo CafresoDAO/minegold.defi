@@ -31,7 +31,15 @@ export type RefineState =
   | { kind: "waiting_mint"; target: bigint; observed: bigint; elapsedMs: number }
   | { kind: "approving"; target: bigint }
   | { kind: "refining"; target: bigint }
-  | { kind: "done"; sgldt: bigint; refineId: bigint }
+  | {
+      kind: "done";
+      sgldt: bigint;
+      refineId: bigint;
+      /** sGLDT ledger block index of the payout — the on-chain receipt. */
+      payBlock: bigint;
+      /** The 1e8 rate the swap actually settled at. */
+      settledRate: bigint;
+    }
   | { kind: "failed"; error: string; recoverable: boolean };
 
 /** Poll cadence while waiting for the minter. The minter needs ~12 Ethereum
@@ -126,6 +134,8 @@ export function useRefineFlow(identity: unknown) {
           kind: "done",
           sgldt: result.sgldtPaid,
           refineId: result.refineId,
+          payBlock: result.blockIndex,
+          settledRate: result.rate,
         });
       } catch (err) {
         setState({

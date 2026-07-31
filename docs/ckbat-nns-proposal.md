@@ -11,11 +11,11 @@ mainnet: the orchestrator's own metadata and state, DFINITY's published wasm
 builds, the BAT contract on Ethereum, and every live ckERC20 ledger's fee.
 Section 8 lists exactly what was confirmed, how, and what's still open.
 
-**The payload in section 4 is complete and submittable.** Every field is
-filled in with a verified value, and every value can be re-derived by a
-reviewer with the commands shown alongside it. One open question remains
-(whether the ckETH minter needs a separate action) — it is deliberately
-asked in the forum post rather than assumed away.
+**The payload in section 4 is complete and submittable.** Every field —
+including the token logo — is filled in with a verified value, and every
+value can be re-derived by a reviewer with the commands shown alongside it.
+No open technical questions remain. What remains is process: post to the
+forum, let reviewers converge, then submit.
 
 ---
 
@@ -147,7 +147,7 @@ didc encode -d ledger_suite_orchestrator.did -t '(OrchestratorArg)' \
        transfer_fee = 100_000_000_000_000_000;
        token_symbol = "ckBAT";
        token_name = "ckBAT";
-       token_logo = "data:image/svg+xml;base64,<BAT mark, base64-encoded>";
+       token_logo = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAwIDIwMDAiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgMTQwLjUpIj48cGF0aCBmaWxsPSIjNjYyZDkxIiBkPSJNMjAwMCAxNzE2LjY0IDEwMDQuNzkgMTE0Ni43OCAwIDE3MTkgMjAwMCAxNzE2LjY0eiIvPjxwYXRoIGZpbGw9IiM5ZTFmNjMiIGQ9Ik0xMDA1LjExIDAgMTAwNC43OSAxMTQ2Ljc4IDIwMDAgMTcxNi42NCAxMDA1LjExIDB6Ii8+PHBhdGggZmlsbD0iI2ZmNTAwMCIgZD0iTTAgMTcxOSAxMDA0Ljc5IDExNDYuNzggMTAwNS4xMSAwIDAgMTcxOXoiLz48cGF0aCBmaWxsPSIjZmZmIiBzdHJva2U9IiNmZjUwMDAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLXdpZHRoPSIyNSIgZD0ibTEwMDIuNzUgNjk1LjY3bC00MTAuODUgNjg2LjI1aDgyMy41NGwtNDEyLjY5LTY4Ni4yNXoiLz48L2c+PC9zdmc+";
        initial_balances = vec {};
        maximum_number_of_accounts = null;
        accounts_overflow_trim_quantity = null
@@ -195,6 +195,32 @@ proposal's numbers are still current, these are read from live mainnet state
 and independently reproduced from DFINITY's published build artifacts. Any
 reviewer can re-run both commands in under a minute.
 
+**`token_logo`** — the official BAT tri-colour triangle, sourced as SVG and
+inlined as a 646-character data URL (vs. ckUNI's ~4.5 KB, so it is
+comfortably small). Two deliberate changes from the source file:
+
+- The source declared `width="2000" height="2000"` against a
+  `viewBox="0 0 2000 1719"`. That mismatch renders acceptably *only* by
+  relying on the `preserveAspectRatio` default. It is now an explicit
+  `viewBox="0 0 2000 2000"` with the artwork centred via
+  `transform="translate(0 140.5)"` — square by construction, since token
+  logos are almost always drawn into square or circular frames.
+- No `width`/`height` attributes, so it scales cleanly to any size.
+
+Rasterised and visually checked before inclusion: correct mark, correct
+colours (`#662d91` / `#9e1f63` / `#ff5000`), transparent background, no
+clipping. Reproduce the SVG from the data URL with:
+
+```bash
+python3 -c "import base64,sys;print(base64.b64decode(sys.argv[1]).decode())" "<the base64 above>"
+```
+
+*Note:* the BAT mark is Brave Software's trademark. Using the originating
+project's own logo is the established convention for every ckERC20 token
+(ckUNI carries Uniswap's unicorn, and so on), but it is worth a sentence in
+the forum post acknowledging it is Brave's mark, used to identify the
+underlying asset.
+
 **`transfer_fee = 100_000_000_000_000_000`** — that is **0.1 BAT** at 18
 decimals, ≈ **$0.0065** at BAT's 2026-07-31 price of ~$0.065. The current
 orchestrator README states the rule as *"typically $0.001–$0.01 USD
@@ -239,16 +265,28 @@ ten landing in the low single-digit-cent range.
 account and fee-collector subaccount convention every other ckERC20 token
 uses.
 
-**One step still unconfirmed.** The minter's own supported-token list has to
-include BAT before deposits mint ckBAT and withdrawals burn back to
-Ethereum. Neither the ckOCT thread nor the orchestrator README says
-explicitly whether the orchestrator notifies the minter automatically on
-`AddErc20`, or whether a second action is required. The README's phrasing
-("standard orchestrator notification procedures") suggests it is automatic,
-but that is an inference, not a confirmation — **ask this directly in the
-forum post.** It is a good question to open with: it is specific, it shows
-the homework is done, and getting it wrong after adoption would mean a
-ledger exists that the minter cannot mint into.
+**The minter is wired automatically — confirmed.** An earlier draft flagged
+as unknown whether the minter's supported-token list needs a second action.
+It does not. The orchestrator's own Candid interface documents the field:
+
+```
+// Canister ID of the minter that will be notified when new ERC-20 tokens are added.
+minter_id: opt principal;
+```
+
+and the running orchestrator already has it populated with
+`sv3dd-oaaaa-aaaar-qacoa-cai`, the ckETH/ckERC20 minter (visible in the
+`get_orchestrator_info` output above). So a single adopted proposal is the
+whole job: on execution the orchestrator spawns the ckBAT ledger, index and
+archive, and notifies the minter to begin accepting BAT deposits.
+
+**This is precisely why the payload must be right on the first submission.**
+There is no staging step and no dry run — adoption creates live canisters
+and switches on a real deposit path. A wrong `transfer_fee` is a permanent
+economic parameter absent a second proposal; a wrong contract address would
+create a ledger for the wrong asset. Every value in the payload above is
+therefore stated with the command that reproduces it, so reviewers can check
+each one independently rather than taking the proposer's word.
 
 ## 5. Anticipated questions
 
@@ -294,9 +332,10 @@ elsewhere.
 > `transfer_fee` is 0.1 BAT (≈$0.0065 today) — a power of ten inside the
 > README's $0.001–$0.01 band, which for BAT's price uniquely determines it.
 >
-> One question before I finalize: does `AddErc20` notify the ckETH minter to
-> add BAT to its supported-token list automatically, or is a separate action
-> required? I want the ledger and the minter to go live together.
+> Since adoption immediately spawns the ledger, index and archive and
+> notifies the minter (per the orchestrator's `minter_id` wiring), there's no
+> second chance to correct a parameter — so I'd rather have the fee and the
+> logo picked apart here than after execution.
 >
 > I hold a neuron with the standing to submit the NNS proposal myself once
 > there's rough consensus — happy to iterate here first, the way the ckOCT
@@ -361,12 +400,17 @@ made; (c) implied someone else typically submits the actual NNS proposal
 on a community member's behalf — the ckOCT precedent shows a community
 neuron-holder submitted directly, which is exactly Anthony's position.
 
-**Still not independently confirmed — one item, down from two:** whether the
-minter's supported-token list needs a separate action beyond the
-orchestrator proposal. The ckOCT thread doesn't cover that half explicitly,
-and the README only alludes to it. This is now an open question in the forum
-post itself rather than a silent assumption. *(The fee-guidance question is
-resolved: the current README rule replaces the 2024 forum range.)*
+**Both previously-open questions are now closed:**
+- *Fee guidance* — the current orchestrator README rule
+  (`$0.001–$0.01`, power of 10) supersedes the mid-2024 forum range.
+- *Minter wiring* — the orchestrator's Candid documents `minter_id` as the
+  minter "that will be notified when new ERC-20 tokens are added," and the
+  live orchestrator has it set to `sv3dd-oaaaa-aaaar-qacoa-cai`. One adopted
+  proposal creates the ledger suite *and* enables minting. No second action.
+
+**Logo provenance:** the official BAT SVG mark, re-canvased to a square
+`viewBox` and rasterised for a visual check before inclusion (correct mark,
+correct brand colours, transparent background, no clipping).
 
 **One thing that will go stale:** the fee is justified against BAT at
 ~$0.065. If BAT moves materially before submission, re-run the arithmetic —

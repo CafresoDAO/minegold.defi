@@ -71,14 +71,21 @@ const metaBlock = (r) => {
   const m = routeMeta(r);
   const url = `${SITE_ORIGIN}${m.path}`;
   const img = `${OG_ASSET_ORIGIN}${m.ogImage}`;
+  // Social cards truncate more aggressively than search results, so a route
+  // may carry a shorter `ogDescription`; otherwise both use `description`.
+  const ogDesc = m.ogDescription ?? m.description;
   return `<!--meta:start-->
+    <!-- GENERATED from routes.manifest.mjs by scripts/post-build.mjs.
+         Edits here are overwritten on every build — change the manifest. -->
     <title>${esc(m.title)}</title>
-    <meta name="description" content="${esc(m.description)}" />
+    <meta name="description" content="${esc(m.description)}" />${
+      m.keywords ? `\n    <meta name="keywords" content="${esc(m.keywords)}" />` : ""
+    }
     <link rel="canonical" href="${esc(url)}" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="minegold.defi" />
     <meta property="og:title" content="${esc(m.title)}" />
-    <meta property="og:description" content="${esc(m.description)}" />
+    <meta property="og:description" content="${esc(ogDesc)}" />
     <meta property="og:url" content="${esc(url)}" />
     <meta property="og:image" content="${esc(img)}" />
     <meta property="og:image:width" content="1200" />
@@ -86,21 +93,36 @@ const metaBlock = (r) => {
     <meta property="og:image:alt" content="${esc(m.ogImageAlt)}" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${esc(m.title)}" />
-    <meta name="twitter:description" content="${esc(m.description)}" />
+    <meta name="twitter:description" content="${esc(ogDesc)}" />
     <meta name="twitter:image" content="${esc(img)}" />
     ${m.noindex ? '<meta name="robots" content="noindex,nofollow" />' : ""}
     <!--meta:end-->`;
 };
 
-const indexHtml = readFileSync(resolve(dist, "index.html"), "utf8");
+const rawIndexHtml = readFileSync(resolve(dist, "index.html"), "utf8");
 const SENTINELS = /<!--meta:start-->[\s\S]*?<!--meta:end-->/;
-if (!SENTINELS.test(indexHtml)) {
+if (!SENTINELS.test(rawIndexHtml)) {
   // A silently-unmodified shell is worse than none: it looks deployed while
   // carrying the wrong route's meta. Fail the build.
   throw new Error(
     "[post-build] meta sentinels missing from dist/index.html — cannot generate route shells",
   );
 }
+
+// The ROOT route's meta is generated from the manifest too. Without this the
+// manifest is the source of truth for every route EXCEPT the most important
+// one, whose meta lives hand-written in index.html — and that block silently
+// goes stale. (It did: it still described the product as "A Banking.Brave
+// protocol" for a while after the two were separated.) Now `/` is generated
+// like everything else, and index.html's block is only what dev-mode serves.
+const rootRoute = ROUTES.find((r) => r.path === "/");
+if (!rootRoute) {
+  throw new Error("[post-build] no route with path '/' in the manifest");
+}
+const indexHtml = rawIndexHtml.replace(SENTINELS, metaBlock(rootRoute));
+writeFileSync(resolve(dist, "index.html"), indexHtml);
+console.log("[post-build] meta: / (root)");
+
 for (const r of ROUTES.filter((x) => x.shell)) {
   const seg = r.path.replace(/^\//, "");
   const outDir = resolve(dist, seg);

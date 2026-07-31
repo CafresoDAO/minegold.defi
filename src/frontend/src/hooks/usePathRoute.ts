@@ -11,8 +11,11 @@ import { useCallback, useEffect, useState } from "react";
  *
  *   /            refinery (default)
  *   /portfolio   Banking.Brave house page
- *   /brave       Minegold.Brave ckBAT truth-gate + waitlist
+ *   /brave       BAT intake status
  *   /proof       Proof & transparency
+ *   /docs        docs index
+ *   /docs/:slug  a single doc page
+ *   /status      changelog + incidents
  *   /history     activity (noindex)
  *   /admin       operator console (noindex)
  *   /receipt/:id on-chain receipt (noindex, generic OG)
@@ -25,13 +28,20 @@ export type Route =
   | "history"
   | "admin"
   | "proof"
+  | "docs"
+  | "status"
   | "receipt";
 
 export interface RouteParams {
   id?: string;
+  slug?: string;
 }
 
-const parse = (pathname: string): { route: Route; params: RouteParams } => {
+/** Exported so in-page links (the docs render real <a href="/proof">) can be
+ *  resolved to a route without duplicating this table. */
+export const routeFromPath = (
+  pathname: string,
+): { route: Route; params: RouteParams } => {
   const segs = pathname.replace(/^\/+|\/+$/g, "").split("/");
   switch (segs[0]) {
     case "portfolio":
@@ -44,6 +54,10 @@ const parse = (pathname: string): { route: Route; params: RouteParams } => {
       return { route: "admin", params: {} };
     case "proof":
       return { route: "proof", params: {} };
+    case "docs":
+      return { route: "docs", params: { slug: segs[1] || undefined } };
+    case "status":
+      return { route: "status", params: {} };
     case "receipt":
       return { route: "receipt", params: { id: segs[1] || undefined } };
     default:
@@ -51,9 +65,12 @@ const parse = (pathname: string): { route: Route; params: RouteParams } => {
   }
 };
 
+const parse = routeFromPath;
+
 const toPath = (r: Route, params?: RouteParams): string => {
   if (r === "refinery") return "/";
   if (r === "receipt" && params?.id) return `/receipt/${params.id}`;
+  if (r === "docs" && params?.slug) return `/docs/${params.slug}`;
   return `/${r}`;
 };
 

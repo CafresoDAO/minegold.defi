@@ -13,6 +13,9 @@ import { CoverageMeter } from "./trust/CoverageMeter";
 
 type Props = {
   onClose: () => void;
+  /** Follow an in-app path. /proof is the summary; the docs are the long
+   *  form, and a reader who got this far is exactly who wants them. */
+  onNavigatePath: (path: string) => void;
 };
 
 const ageLabel = (ns: bigint): string => {
@@ -32,7 +35,7 @@ const ageLabel = (ns: bigint): string => {
  *  canister in the money path with WHO controls it, and the limitations
  *  stated as plainly as the strengths. An unverifiable "trust us" page would
  *  be worse than none. */
-export function ProofPanel({ onClose }: Props) {
+export function ProofPanel({ onClose, onNavigatePath }: Props) {
   const { data: rate } = useRateStatus();
   const { data: snap, isLoading, refetch, isFetching } = useProofSnapshot(true);
   const qc = useQueryClient();
@@ -321,6 +324,29 @@ export function ProofPanel({ onClose }: Props) {
               them.
             </li>
           </ul>
+        </div>
+
+        {/* The long form. This panel is the live-numbers summary; the docs
+            are where each limitation is argued out in full. */}
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-[11px]">
+          {[
+            ["Risks & limitations, in full", "/docs/risks"],
+            ["How the rate is made", "/docs/rate-methodology"],
+            ["Redeem & recovery", "/docs/redeem-and-recovery"],
+          ].map(([label, path]) => (
+            <button
+              key={path}
+              type="button"
+              data-ocid={`proof.docs${path.replace(/\//g, ".")}`}
+              onClick={() => {
+                onClose();
+                onNavigatePath(path);
+              }}
+              className="min-h-[32px] font-semibold text-blue-400 underline underline-offset-2 hover:text-blue-300"
+            >
+              {label} ›
+            </button>
+          ))}
         </div>
       </div>
     </div>

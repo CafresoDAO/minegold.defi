@@ -71,7 +71,7 @@ import {
   CKUNI_FEE_FALLBACK,
 } from "./hooks/useQueries";
 import { ThemeToggle } from "./components/ThemeToggle";
-import { usePathRoute } from "./hooks/usePathRoute";
+import { routeFromPath, usePathRoute } from "./hooks/usePathRoute";
 
 // Secondary pages are code-split out of the money-path bundle. The operator
 // console in particular has no business shipping to every visitor.
@@ -94,6 +94,9 @@ const TransactionHistoryPage = lazy(() =>
 );
 const ReceiptPage = lazy(() =>
   import("./pages/ReceiptPage").then((m) => ({ default: m.ReceiptPage })),
+);
+const DocsPage = lazy(() =>
+  import("./pages/DocsPage").then((m) => ({ default: m.DocsPage })),
 );
 
 const PageFallback = () => (
@@ -613,6 +616,16 @@ export default function App() {
   const enterMinegoldUni = () => navigate("refinery");
   const enterMinegoldBrave = () => navigate("brave");
   const backToBankingBrave = () => navigate("portfolio");
+  // In-app content (the docs) links with real hrefs like "/proof". One
+  // resolver keeps those working through the router instead of reloading the
+  // SPA, without every page learning the route table.
+  const navigatePath = useCallback(
+    (path: string) => {
+      const { route: r, params: p } = routeFromPath(path);
+      navigate(r, p);
+    },
+    [navigate],
+  );
   // I6: `/` is adaptive — signed-out visitors get the public landing page,
   // signed-in users get the dashboard. This flag is the signed-out visitor
   // saying "show me the refinery anyway"; it renders the refinery behind the
@@ -2721,6 +2734,21 @@ export default function App() {
     );
   }
 
+  // Docs come BEFORE the auth-sensitive branches on purpose. The risks page
+  // is the one a skeptic most needs, and putting a sign-in wall (or even a
+  // product landing page) between a stranger and it would defeat the point.
+  if (route === "docs") {
+    return (
+      <Suspense fallback={<PageFallback />}>
+        <DocsPage
+          slug={routeParams.slug}
+          onBack={enterMinegoldUni}
+          onNavigatePath={navigatePath}
+        />
+      </Suspense>
+    );
+  }
+
   // The adaptive front door: a stranger at `/` reads the landing page —
   // every claim, the live proof band, and /proof itself — without a passkey.
   // Signing out returns here rather than to a wall.
@@ -2733,6 +2761,7 @@ export default function App() {
           onOpenRefinery={() => setEnteredRefinery(true)}
           onOpenBrave={enterMinegoldBrave}
           onOpenProof={() => setShowProof(true)}
+          onNavigatePath={navigatePath}
         />
       </Suspense>
     );
@@ -3219,7 +3248,10 @@ export default function App() {
             </footer>
 
             {showProof && (
-              <ProofPanel onClose={() => setShowProof(false)} />
+              <ProofPanel
+                onClose={() => setShowProof(false)}
+                onNavigatePath={navigatePath}
+              />
             )}
           </>
         )}

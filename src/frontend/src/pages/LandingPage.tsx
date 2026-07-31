@@ -33,12 +33,15 @@ type Props = {
   onOpenRefinery: () => void;
   onOpenBrave: () => void;
   onOpenProof: () => void;
+  /** Follow an in-app path ("/docs", "/docs/risks") through the router. */
+  onNavigatePath: (path: string) => void;
 };
 
 export function LandingPage({
   onOpenRefinery,
   onOpenBrave,
   onOpenProof,
+  onNavigatePath,
 }: Props) {
   const [bat, setBat] = useState<CkBatStatus | null>(null);
   const [sticky, setSticky] = useState(false);
@@ -368,6 +371,28 @@ export function LandingPage({
           className="border-t pt-6 pb-24 text-[11px] leading-relaxed"
           style={{ borderColor: "var(--bb-border)", color: "var(--bb-text-dim)" }}
         >
+          {/* Docs sit in the footer as a plain list, including the risks
+              page by name. Burying "risks" behind a friendlier label would
+              undercut the reason for writing it. */}
+          <nav className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px]">
+            {[
+              ["How it works", "/docs/how-it-works"],
+              ["Risks & limitations", "/docs/risks"],
+              ["How the rate is made", "/docs/rate-methodology"],
+              ["Redeem & recovery", "/docs/redeem-and-recovery"],
+            ].map(([label, path]) => (
+              <button
+                key={path}
+                type="button"
+                data-ocid={`landing.footer${path.replace(/\//g, ".")}`}
+                onClick={() => onNavigatePath(path)}
+                className="min-h-[32px] font-semibold underline underline-offset-2"
+                style={{ color: "var(--bb-brand)" }}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
           <p className="mb-2">
             Refinery backend{" "}
             <span className="font-mono">c626g-iyaaa-aaaau-agpoa-cai</span> ·

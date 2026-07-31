@@ -29,25 +29,30 @@ export const ROUTES = [
     id: "refinery",
     path: "/",
     shell: false, // the root index.html IS this route's shell
-    title: "minegold.defi — turn your tokens into gold, on-chain",
+    title: "minegold.defi — tokens in, gold out",
     description:
-      "The on-chain gold refinery. Bridge UNI from Ethereum via DFINITY's chain-key minter — your keys, your account — and refine it into sGLDT, a 1:1 wrapper of Gold DAO's physically backed GLDT. A Banking.Brave protocol.",
+      "Deposit UNI from Ethereum via DFINITY's chain-key minter — your keys, your account — and receive sGLDT, a 1:1 wrapper of Gold DAO's physically backed GLDT. Withdraw any time. An application in the Banking.Brave ecosystem, powered by CafresoDAO.",
+    // Social cards truncate hard; this is the same claim, shorter.
+    ogDescription:
+      "Deposit UNI, receive sGLDT — a 1:1 wrapper of physically backed GLDT — through chain-key custody you keep. Withdraw any time. Built on the Internet Computer.",
+    keywords:
+      "Banking Brave, CafresoDAO, defi, ICP, Internet Computer, cross-chain, ckERC-20, minegold, sGLDT, GLDT, gold, UNI, BAT",
   },
   {
     id: "portfolio",
     path: "/portfolio",
     shell: true,
-    title: "Banking.Brave — on-chain financial protocols",
+    title: "Banking.Brave — powered by CafresoDAO",
     description:
-      "The Banking.Brave protocol family on the Internet Computer. minegold.defi refines tokens into gold today; Minegold.Brave opens for BAT the day DFINITY lists ckBAT.",
+      "On-chain financial applications on the Internet Computer. minegold.defi converts tokens into gold-backed sGLDT today; BAT intake opens the day DFINITY lists ckBAT.",
   },
   {
     id: "brave",
     path: "/brave",
     shell: true,
-    title: "Minegold.Brave — your browser is the mine",
+    title: "BAT intake — minegold.defi",
     description:
-      "Brave pays you BAT for the ads you already see. Minegold.Brave will refine it into gold — gated on DFINITY listing ckBAT, checked live on this page.",
+      "Brave pays its users BAT for the ads they already see. This intake will refine it into gold through the same refinery the UNI intake uses today — gated on DFINITY listing ckBAT, checked live against the minter on this page.",
   },
   {
     id: "proof",
@@ -56,6 +61,49 @@ export const ROUTES = [
     title: "Proof & transparency — minegold.defi",
     description:
       "Live treasury liquidity, the full rate formula with oracle provenance, every canister in the money path, and the limitations stated plainly. Verify it — don't trust it.",
+  },
+  {
+    id: "docs",
+    path: "/docs",
+    shell: true,
+    title: "Documentation — minegold.defi",
+    description:
+      "How the refinery works, the full rate methodology, every exit path, and the limitations stated as plainly as the strengths. No sign-in required for any of it.",
+  },
+  // Each doc gets its own shell so it unfurls as itself when shared. The
+  // risks page in particular gets linked BY skeptics — it should arrive
+  // carrying its own title, not the generic site card.
+  {
+    id: "docs-how-it-works",
+    path: "/docs/how-it-works",
+    shell: true,
+    title: "How it works — minegold.defi",
+    description:
+      "The full path from a token on Ethereum to gold-backed sGLDT: DFINITY's chain-key minter, atomic settlement with auto-refund, and what sGLDT is actually backed by.",
+  },
+  {
+    id: "docs-risks",
+    path: "/docs/risks",
+    shell: true,
+    title: "Risks & limitations — minegold.defi",
+    description:
+      "Unaudited. One operator controls the treasury. One leg of the rate is operator-set. Payouts depend on treasury liquidity. The honest list, and how to verify every item on it yourself.",
+  },
+  {
+    id: "docs-rate-methodology",
+    path: "/docs/rate-methodology",
+    shell: true,
+    title: "How the rate is made — minegold.defi",
+    description:
+      "The whole formula: UNI/USD from DFINITY's Exchange Rate Canister divided by an operator-set sGLDT/USD reference, with every guardrail and its actual number.",
+  },
+  {
+    id: "docs-redeem-and-recovery",
+    path: "/docs/redeem-and-recovery",
+    shell: true,
+    title: "Redeem & recovery — minegold.defi",
+    description:
+      "Three ways out of sGLDT, two of which don't involve us at all. Plus what to do when a deposit stalls, a swap fails, or you lose access to your vault.",
   },
   {
     id: "history",

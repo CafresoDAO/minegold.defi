@@ -11,6 +11,23 @@ Dates are ISO. Newest first.
 
 ---
 
+## 2026-07-31 — Shareable receipts, and an incident banner
+
+*Backend built and verified; not yet deployed.*
+
+- **Receipts can be shared without exposing who they belong to.** Publishing a
+  receipt mints a random 32-byte token; anyone with the link sees the amounts,
+  rate, status and ledger blocks — and no principal. Links are revocable.
+- **Sharing is opt-in, and stays that way.** The share link is keyed on an
+  unguessable token rather than the record's id. Sequential ids would have
+  made every receipt readable by counting upward, and because a receipt
+  carries its ledger payout block, that would have exposed every user's
+  account and amounts.
+- **Added an operator incident banner** readable by anyone. It exists so
+  disclosing an incident doesn't require a full frontend deploy — if the
+  honest path is the slow path, it stops being taken under pressure.
+  Editing an open notice preserves its original raise time.
+
 ## 2026-07-31 — Documentation
 
 - **Published `/docs`** — four pages, readable without signing in: how it

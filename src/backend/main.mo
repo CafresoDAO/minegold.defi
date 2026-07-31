@@ -3303,6 +3303,252 @@ actor Self {
   };
 
   // =======================================================
+  // PUBLIC RECEIPTS — opt-in, unguessable, revocable
+  // =======================================================
+  // Receipts are private by default. `publishReceipt` mints a random token
+  // for one record the caller owns; `getPublicReceipt` resolves that token to
+  // a view with the owner's principal stripped out. `unpublishReceipt`
+  // revokes it.
+  //
+  // WHY A TOKEN AND NOT THE RECORD ID — this is the whole design decision:
+  //
+  // Refine and redeem ids are sequential integers. An endpoint keyed on them
+  // would let anyone walk 1..n and read every swap this canister has ever
+  // settled. Worse, a receipt carries its sGLDT ledger `payBlock`, and that
+  // block is public — so each receipt is enough to find the recipient's
+  // account on the ledger. Sequential ids would therefore quietly turn
+  // "shareable receipt" into "enumerate every user and their amounts".
+  //
+  // The token is 32 bytes from `raw_rand`, so a receipt is reachable only by
+  // someone who was given the link. That is what makes sharing an explicit
+  // act by the owner rather than a property of every record by default.
+
+  type ReceiptKind = { #refine; #redeem };
+
+  /// A receipt with the identifying field — `user` — absent by construction
+  /// rather than by filtering. `errorMsg` is also omitted: it is operational
+  /// text written for the operator, not a field we want to publish verbatim.
+  type PublicReceipt = {
+    kind : ReceiptKind;
+    /// e18 ckUNI for a refine; e8s sGLDT for a redeem.
+    amountIn : Nat;
+    /// e8s sGLDT for a refine; e18 ckUNI for a redeem.
+    amountOut : Nat;
+    rate : Nat;
+    status : RefineStatus;
+    timestamp : Time.Time;
+    pullBlock : ?Nat;
+    payBlock : ?Nat;
+  };
+
+  /// share token → the record it points at.
+  let publicReceipts = Map.empty<Text, (ReceiptKind, Nat)>();
+  /// "rf-3" / "rd-7" → its share token. Makes publish idempotent and lets
+  /// unpublish find the token without scanning the whole map.
+  let receiptShareTokens = Map.empty<Text, Text>();
+
+  func _receiptKey(kind : ReceiptKind, id : Nat) : Text {
+    switch (kind) {
+      case (#refine) { "rf-" # id.toText() };
+      case (#redeem) { "rd-" # id.toText() };
+    };
+  };
+
+  let HEX_DIGITS : [Char] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+
+  func _toHex(bytes : Blob) : Text {
+    var out = "";
+    for (b in bytes.toArray().values()) {
+      let n = b.toNat();
+      out #= HEX_DIGITS[n / 16].toText();
+      out #= HEX_DIGITS[n % 16].toText();
+    };
+    out;
+  };
+
+  /// Does this caller own that record? Ownership is checked here rather than
+  /// trusted from the frontend — publishing someone else's receipt would
+  /// expose their ledger block.
+  func _ownsReceipt(caller : Principal, kind : ReceiptKind, id : Nat) : Bool {
+    switch (kind) {
+      case (#refine) {
+        switch (refines.get(id)) {
+          case (?r) { r.user == caller };
+          case null { false };
+        };
+      };
+      case (#redeem) {
+        switch (redeems.get(id)) {
+          case (?r) { r.user == caller };
+          case null { false };
+        };
+      };
+    };
+  };
+
+  /// Mint (or return) the share token for one of the caller's own receipts.
+  /// Idempotent: publishing twice returns the same token rather than
+  /// scattering live links for the same record.
+  public shared ({ caller }) func publishReceipt(kind : ReceiptKind, id : Nat) : async {
+    #ok : Text;
+    #err : Text;
+  } {
+    if (not isAuthenticatedUser(caller)) {
+      return #err("Sign in with Internet Identity before sharing a receipt.");
+    };
+    if (not _ownsReceipt(caller, kind, id)) {
+      // Deliberately the same message whether the record is missing or
+      // belongs to someone else — distinguishing them would confirm the
+      // existence of other people's records.
+      return #err("No such receipt in your vault.");
+    };
+
+    let key = _receiptKey(kind, id);
+    switch (receiptShareTokens.get(key)) {
+      case (?existing) { return #ok(existing) };
+      case null {};
+    };
+
+    let token = _toHex(await IC.raw_rand());
+    publicReceipts.add(token, (kind, id));
+    receiptShareTokens.add(key, token);
+    #ok(token);
+  };
+
+  /// Revoke a share link. The receipt stays in the owner's own history; only
+  /// the public token stops resolving.
+  public shared ({ caller }) func unpublishReceipt(kind : ReceiptKind, id : Nat) : async {
+    #ok : ();
+    #err : Text;
+  } {
+    if (not isAuthenticatedUser(caller)) {
+      return #err("Sign in with Internet Identity first.");
+    };
+    if (not _ownsReceipt(caller, kind, id)) {
+      return #err("No such receipt in your vault.");
+    };
+    let key = _receiptKey(kind, id);
+    switch (receiptShareTokens.get(key)) {
+      case (?token) {
+        publicReceipts.remove(token);
+        receiptShareTokens.remove(key);
+      };
+      case null {};
+    };
+    #ok(());
+  };
+
+  /// Has the caller already shared this receipt, and under what token? Lets
+  /// the UI show "shared" state without minting a link as a side effect of
+  /// looking.
+  public query ({ caller }) func getReceiptShareToken(kind : ReceiptKind, id : Nat) : async ?Text {
+    if (not _ownsReceipt(caller, kind, id)) { return null };
+    receiptShareTokens.get(_receiptKey(kind, id));
+  };
+
+  /// PUBLIC, anonymous-callable. Resolves a share token to a receipt with no
+  /// principal in it. An unknown or revoked token returns null — and returns
+  /// it identically, so probing can't distinguish "never existed" from
+  /// "revoked".
+  public query func getPublicReceipt(token : Text) : async ?PublicReceipt {
+    switch (publicReceipts.get(token)) {
+      case null { null };
+      case (?(kind, id)) {
+        switch (kind) {
+          case (#refine) {
+            switch (refines.get(id)) {
+              case null { null };
+              case (?r) {
+                ?{
+                  kind = #refine;
+                  amountIn = r.ckuniAmount;
+                  amountOut = r.sgldtPaid;
+                  rate = r.rate;
+                  status = r.status;
+                  timestamp = r.timestamp;
+                  pullBlock = r.pullBlock;
+                  payBlock = r.payBlock;
+                };
+              };
+            };
+          };
+          case (#redeem) {
+            switch (redeems.get(id)) {
+              case null { null };
+              case (?r) {
+                ?{
+                  kind = #redeem;
+                  amountIn = r.sgldtAmount;
+                  amountOut = r.ckuniPaid;
+                  rate = r.rate;
+                  status = r.status;
+                  timestamp = r.timestamp;
+                  pullBlock = r.pullBlock;
+                  payBlock = r.payBlock;
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  };
+
+  // =======================================================
+  // INCIDENT NOTICE — operator-raised, publicly readable
+  // =======================================================
+  // Lets the operator raise a banner on every surface WITHOUT a frontend
+  // rebuild and asset sync. That matters because the incident rule published
+  // on /status is "post before the fix": if disclosing required a full
+  // deploy, the honest thing would be the slow thing, and under pressure the
+  // slow thing quietly stops happening.
+  //
+  // Text only, no severity field — "sev-3" makes a problem sound handled;
+  // describing the actual impact does not.
+
+  type IncidentNotice = {
+    message : Text;
+    /// When the notice was raised, not when the incident began.
+    sinceNs : Time.Time;
+    /// Optional deep link, e.g. "/status".
+    url : ?Text;
+  };
+
+  var incidentNotice : ?IncidentNotice = null;
+
+  /// PUBLIC. null = nothing being reported right now.
+  public query func getIncidentNotice() : async ?IncidentNotice {
+    incidentNotice;
+  };
+
+  /// Admin-only. Pass null to clear.
+  public shared ({ caller }) func setIncidentNotice(message : ?Text, url : ?Text) : async {
+    #ok : ();
+    #err : Text;
+  } {
+    if (not isAdmin(caller)) { return #err("Admin only.") };
+    switch (message) {
+      case null { incidentNotice := null };
+      case (?m) {
+        let trimmed = m.trim(#char ' ');
+        if (trimmed == "") { return #err("Message cannot be empty — pass null to clear.") };
+        incidentNotice := ?{
+          message = trimmed;
+          // Preserve the original raise time across edits, so updating the
+          // wording of an open incident doesn't reset how long it has been
+          // open. Under-reporting duration is exactly the wrong direction.
+          sinceNs = switch (incidentNotice) {
+            case (?existing) { existing.sinceNs };
+            case null { Time.now() };
+          };
+          url = url;
+        };
+      };
+    };
+    #ok(());
+  };
+
+  // =======================================================
   // REDEEM — sGLDT → ckUNI (the exit path)
   // =======================================================
   // The mirror image of refineCkUNI: pull sGLDT via ICRC-2, pay ckUNI from

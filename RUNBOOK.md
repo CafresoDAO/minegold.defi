@@ -230,6 +230,12 @@ dfx canister call c626g-iyaaa-aaaau-agpoa-cai getRateStatus --query --network ic
       real funds, because that is the only configuration users will meet.
 - [ ] **Reconcile the smoke test independently.** Confirm the payout on the
       sGLDT ledger by block index, not by what the UI displayed.
+- [ ] **Exercise the public-receipt round-trip on the smoke-test swap.** Call
+      `publishReceipt`, open the returned token via `getPublicReceipt` **while
+      signed out**, and confirm the response carries no principal. This path
+      cannot be tested locally — it needs a real settled record — so it is a
+      launch-checklist item rather than a pre-merge one. Then call
+      `unpublishReceipt` and confirm the token stops resolving.
 - [ ] **Stranded count is 0** and `/proof` is publishing it.
 - [ ] **DNS live and verified** — `banking.cafreso.com` resolving, with the
       canonical/OG origin switched over (`OG_ASSET_ORIGIN` → `SITE_ORIGIN` in

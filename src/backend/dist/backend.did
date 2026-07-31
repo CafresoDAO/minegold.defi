@@ -111,6 +111,28 @@ type RedeemRecord =
    timestamp: Time;
    user: principal;
  };
+type ReceiptKind = 
+ variant {
+   redeem;
+   refine;
+ };
+type PublicReceipt = 
+ record {
+   amountIn: nat;
+   amountOut: nat;
+   kind: ReceiptKind;
+   payBlock: opt nat;
+   pullBlock: opt nat;
+   rate: nat;
+   status: RefineStatus;
+   timestamp: Time;
+ };
+type IncidentNotice = 
+ record {
+   message: text;
+   sinceNs: Time;
+   url: opt text;
+ };
 type AutoFinalizeResult = 
  variant {
    alreadyExists: record {
@@ -245,6 +267,8 @@ service : {
   /// wei (18 decimals) on success, traps on network failure so the frontend
   /// can fall back to other paths. */
   getEthBalanceOnchain: (ethAddress: text) -> (nat);
+  /// PUBLIC. null = nothing being reported right now.
+  getIncidentNotice: () -> (opt IncidentNotice) query;
   /// Public query — returns the cached treasury Ethereum deposit address for the ERC-20 minter.
   /// Falls back to the fixed hardcoded address (0x22582083361bf06579BbfFcC1138D3fc986B91FF)
   /// if the minter-derived address has not been initialized yet — so callers always get a
@@ -307,6 +331,11 @@ service : {
       treasuryPrincipal: text;
       treasurySGLDTBalance: nat;
     });
+  /// PUBLIC, anonymous-callable. Resolves a share token to a receipt with no
+  /// principal in it. An unknown or revoked token returns null — and returns
+  /// it identically, so probing can't distinguish "never existed" from
+  /// "revoked".
+  getPublicReceipt: (token: text) -> (opt PublicReceipt) query;
   /// Full rate provenance for the UI and ops: where the current rate came
   /// from and how fresh the on-chain oracle reading is.
   getRateStatus: () ->
@@ -318,6 +347,10 @@ service : {
       sgldtUsdE8: nat;
       uniUsdE8: nat;
     }) query;
+  /// Has the caller already shared this receipt, and under what token? Lets
+  /// the UI show "shared" state without minting a link as a side effect of
+  /// looking.
+  getReceiptShareToken: (kind: ReceiptKind, id: nat) -> (opt text) query;
   /// Returns this canister's principal as Text — this IS the treasury (c626g-iyaaa-aaaau-agpoa-cai).
   /// Admin must send sGLDT to this address on the sGLDT ledger (i2s4q-syaaa-aaaan-qz4sq-cai)
   /// to fund user payouts. No separate "refinery payout balance" exists — there is one treasury.
@@ -390,6 +423,14 @@ service : {
   /// without any round-trip to the admin panel itself.
   isAdminCaller: () -> (bool) query;
   isCallerAdmin: () -> (bool) query;
+  /// Mint (or return) the share token for one of the caller's own receipts.
+  /// Idempotent: publishing twice returns the same token rather than
+  /// scattering live links for the same record.
+  publishReceipt: (kind: ReceiptKind, id: nat) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
   /// Redeem sGLDT back into ckUNI at the oracle rate. Prerequisite: the user
   /// has icrc2_approve'd this canister on the sGLDT ledger for at least
   /// `amount` plus the sGLDT transfer fee.
@@ -493,6 +534,12 @@ service : {
                                         err: text;
                                         ok: text;
                                       });
+  /// Admin-only. Pass null to clear.
+  setIncidentNotice: (message: opt text, url: opt text) ->
+   (variant {
+      err: text;
+      ok;
+    });
   /// Syncs the live exchange rate from the frontend CoinGecko feed to the backend.
   /// Called by the frontend after fetching UNI/sGLDT prices so the backend always uses
   /// the same rate the user sees. Only admin may call this; rate is in 1e8 precision
@@ -543,6 +590,12 @@ service : {
   /// Only the original depositor or admin may call this.
   /// NEVER traps — all outcomes returned as descriptive Text.
   triggerSGLDTPayout: (requestId: nat) -> (text);
+  /// Revoke a share link. The receipt stays in the owner's own history; only
+  /// the public token stops resolving.
+  unpublishReceipt: (kind: ReceiptKind, id: nat) -> (variant {
+                                                       err: text;
+                                                       ok;
+                                                     });
   /// Releases sGLDT from the treasury to the depositing user via ICRC-1 transfer.
   /// 
   /// Trust model: The frontend confirms the ETH transaction before calling submitUNIDeposit,

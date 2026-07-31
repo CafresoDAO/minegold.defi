@@ -380,6 +380,7 @@ export function LandingPage({
               ["Risks & limitations", "/docs/risks"],
               ["How the rate is made", "/docs/rate-methodology"],
               ["Redeem & recovery", "/docs/redeem-and-recovery"],
+              ["Status & incidents", "/status"],
             ].map(([label, path]) => (
               <button
                 key={path}

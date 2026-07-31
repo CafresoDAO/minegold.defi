@@ -106,6 +106,14 @@ export const ROUTES = [
       "Three ways out of sGLDT, two of which don't involve us at all. Plus what to do when a deposit stalls, a swap fails, or you lose access to your vault.",
   },
   {
+    id: "status",
+    path: "/status",
+    shell: true,
+    title: "Status — minegold.defi",
+    description:
+      "The changelog and the incident log. Incidents are posted when detected, not when resolved, and entries are never deleted.",
+  },
+  {
     id: "history",
     path: "/history",
     shell: false,

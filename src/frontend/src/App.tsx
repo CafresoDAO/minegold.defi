@@ -98,6 +98,9 @@ const ReceiptPage = lazy(() =>
 const DocsPage = lazy(() =>
   import("./pages/DocsPage").then((m) => ({ default: m.DocsPage })),
 );
+const StatusPage = lazy(() =>
+  import("./pages/StatusPage").then((m) => ({ default: m.StatusPage })),
+);
 
 const PageFallback = () => (
   <div className="min-h-[40vh] flex items-center justify-center text-xs text-zinc-500 animate-pulse">
@@ -2745,6 +2748,16 @@ export default function App() {
           onBack={enterMinegoldUni}
           onNavigatePath={navigatePath}
         />
+      </Suspense>
+    );
+  }
+
+  // /status is public for the same reason /docs is: an incident log behind a
+  // sign-in is not disclosure.
+  if (route === "status") {
+    return (
+      <Suspense fallback={<PageFallback />}>
+        <StatusPage onBack={enterMinegoldUni} onNavigatePath={navigatePath} />
       </Suspense>
     );
   }

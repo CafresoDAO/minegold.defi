@@ -1,5 +1,6 @@
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { IncidentBanner } from "../components/IncidentBanner";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { Reveal } from "../components/landing/Reveal";
 import { ProofBand } from "../components/landing/ProofBand";
@@ -80,6 +81,8 @@ export function LandingPage({
       className="min-h-screen"
       style={{ background: "var(--bb-bg)", color: "var(--bb-text)" }}
     >
+      {/* An open incident belongs above the pitch, not below it. */}
+      <IncidentBanner onNavigatePath={onNavigatePath} />
       {/* Sticky CTA — appears once the hero is behind you. */}
       <div
         className="fixed bottom-0 inset-x-0 z-40 px-4 pb-4 pointer-events-none sm:px-6"

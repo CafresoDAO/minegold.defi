@@ -1,6 +1,7 @@
 import { ArrowLeft, Loader2, ShieldCheck } from "lucide-react";
 import { useInternetIdentity } from "../auth";
 import { ReceiptBlock } from "../components/trust/ReceiptBlock";
+import { ShareReceiptControl } from "../components/trust/ShareReceiptControl";
 import { useLedger } from "../hooks/useLedger";
 import { findEntry } from "../lib/ledger";
 
@@ -88,7 +89,12 @@ export function ReceiptPage({
             </p>
           </div>
         ) : (
-          <ReceiptBlock entry={entry} showLink={false} />
+          <>
+            <ReceiptBlock entry={entry} showLink={false} />
+            {identity && (
+              <ShareReceiptControl entry={entry} identity={identity} />
+            )}
+          </>
         )}
       </div>
     </div>

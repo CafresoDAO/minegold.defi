@@ -36,6 +36,7 @@ import { ActionQueue } from "./components/ActionQueue";
 import { PortfolioHeader } from "./components/PortfolioHeader";
 import { GetStarted } from "./components/GetStarted";
 import { LedgerPreview } from "./components/LedgerPreview";
+import { IncidentBanner } from "./components/IncidentBanner";
 import { ProofPanel } from "./components/ProofPanel";
 import { HowItWorksStrip } from "./components/HowItWorksStrip";
 import { NavBar } from "./components/NavBar";
@@ -100,6 +101,11 @@ const DocsPage = lazy(() =>
 );
 const StatusPage = lazy(() =>
   import("./pages/StatusPage").then((m) => ({ default: m.StatusPage })),
+);
+const SharedReceiptPage = lazy(() =>
+  import("./pages/SharedReceiptPage").then((m) => ({
+    default: m.SharedReceiptPage,
+  })),
 );
 
 const PageFallback = () => (
@@ -2752,6 +2758,19 @@ export default function App() {
     );
   }
 
+  // A shared receipt must open for a stranger with no vault — that is the
+  // entire purpose of the link.
+  if (route === "shared") {
+    return (
+      <Suspense fallback={<PageFallback />}>
+        <SharedReceiptPage
+          token={routeParams.token}
+          onNavigatePath={navigatePath}
+        />
+      </Suspense>
+    );
+  }
+
   // /status is public for the same reason /docs is: an incident log behind a
   // sign-in is not disclosure.
   if (route === "status") {
@@ -2789,6 +2808,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#080808] text-zinc-100 font-sans">
+      {/* Above everything, including the login overlay: if something is
+          wrong, that outranks asking someone to sign in. */}
+      <IncidentBanner onNavigatePath={navigatePath} />
       {/* Login Overlay — suppressed on /receipt/:id, whose page carries its
           own receipts-are-private sign-in prompt (a shared link should
           explain itself, not open on a product pitch). */}

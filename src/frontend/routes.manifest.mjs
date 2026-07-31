@@ -138,6 +138,18 @@ export const ROUTES = [
     title: "Receipt — minegold.defi",
     description: "An on-chain refinery receipt.",
   },
+  {
+    id: "shared",
+    path: "/r",
+    param: "token",
+    shell: false,
+    // The receipt itself names nobody, but an unfurl would still broadcast
+    // that a specific link exists, and to a crawler that indexes it. Sharing
+    // is the owner's decision to make once, not ours to amplify.
+    noindex: true,
+    title: "Shared receipt — minegold.defi",
+    description: "A shared refinery receipt. It carries no account or identity.",
+  },
 ];
 
 /** Per-route OG image/meta used by shell generation. */

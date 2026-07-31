@@ -18,7 +18,8 @@ import { useCallback, useEffect, useState } from "react";
  *   /status      changelog + incidents
  *   /history     activity (noindex)
  *   /admin       operator console (noindex)
- *   /receipt/:id on-chain receipt (noindex, generic OG)
+ *   /receipt/:id on-chain receipt, owner-only (noindex, generic OG)
+ *   /r/:token    a SHARED receipt — public, carries no principal (noindex)
  */
 
 export type Route =
@@ -30,11 +31,14 @@ export type Route =
   | "proof"
   | "docs"
   | "status"
-  | "receipt";
+  | "receipt"
+  | "shared";
 
 export interface RouteParams {
   id?: string;
   slug?: string;
+  /** /r/:token — the share token, never a record id. */
+  token?: string;
 }
 
 /** Exported so in-page links (the docs render real <a href="/proof">) can be
@@ -60,6 +64,8 @@ export const routeFromPath = (
       return { route: "status", params: {} };
     case "receipt":
       return { route: "receipt", params: { id: segs[1] || undefined } };
+    case "r":
+      return { route: "shared", params: { token: segs[1] || undefined } };
     default:
       return { route: "refinery", params: {} };
   }
@@ -71,6 +77,7 @@ const toPath = (r: Route, params?: RouteParams): string => {
   if (r === "refinery") return "/";
   if (r === "receipt" && params?.id) return `/receipt/${params.id}`;
   if (r === "docs" && params?.slug) return `/docs/${params.slug}`;
+  if (r === "shared") return params?.token ? `/r/${params.token}` : "/r";
   return `/${r}`;
 };
 

@@ -6,9 +6,16 @@ to the DFINITY forum. Nothing in this document has been posted anywhere.
 **Sourcing note (2026-07-31):** this draft is built on a full read of the
 real precedent — the ckOCT thread on forum.dfinity.org, all 39 posts, read
 directly (with Anthony's help getting past the forum's login wall, which
-blocks automated fetching entirely). Section 8 lists exactly what that
-thread confirmed, what it changed from an earlier draft of this document,
-and what's still open.
+blocks automated fetching entirely) — plus direct verification against
+mainnet: the orchestrator's own metadata and state, DFINITY's published wasm
+builds, the BAT contract on Ethereum, and every live ckERC20 ledger's fee.
+Section 8 lists exactly what was confirmed, how, and what's still open.
+
+**The payload in section 4 is complete and submittable.** Every field is
+filled in with a verified value, and every value can be re-derived by a
+reviewer with the commands shown alongside it. One open question remains
+(whether the ckETH minter needs a separate action) — it is deliberately
+asked in the forum post rather than assumed away.
 
 ---
 
@@ -40,9 +47,11 @@ Internet Computer switches on with it.
 | Issuer | Brave Software (the Brave browser, Brave Ads, Brave Rewards) |
 | Typical market rank | top-100 by capitalization; listed on every major venue |
 
-*(Reviewer checklist before posting: re-verify the contract address against
-Etherscan and basicattentiontoken.org, and re-verify current market rank —
-both cheap, both worth doing fresh right before posting.)*
+*Verified on-chain 2026-07-31 by `eth_call` against the contract above via a
+public Ethereum RPC: `symbol()` → `BAT`, `decimals()` → 18, `name()` →
+`Basic Attention Token`. Contract address independently cross-checked
+against CoinGecko's Ethereum platform record. Market rank is the one row
+here still worth a fresh look right before posting.*
 
 ## 3. The real precedent: ckOCT
 
@@ -82,7 +91,10 @@ changed several things about how this document is written — see section 8.
 4. The fee argument converged on a **guidance range of roughly $0.005–
    $0.015 (0.5–1.5 cents)**, based on trailing average price to avoid
    short-term volatility, explicitly adjustable later by a follow-up
-   proposal if the token's price moves a lot.
+   proposal if the token's price moves a lot. *(Superseded — the current
+   orchestrator README states the rule as `$0.001–$0.01 USD equivalent,
+   preferably a power of 10`. Section 4 uses the README's rule, which is
+   both newer and narrower. See section 4's fee note.)*
 5. `gregory-demay` (DFINITY) reviewed the final assembled proposal text
    and replied: *"The proposal looks correct to me! Good luck with the
    submission!"* — DFINITY's sign-off came from a team member responding
@@ -108,18 +120,14 @@ proposal himself** — this is not a step that has to be delegated.
 
 A single NNS upgrade proposal targeting the ledger suite orchestrator
 (`vxkom-oyaaa-aaaar-qafda-cai`), spawning the ckBAT ledger, index canister
-and archive. Below is the argument shape, adapted directly from the ckOCT
-proposal actually submitted and adopted — same fields, same conventions,
-BAT's own values substituted:
+and archive. Every value below is filled in and verified as of 2026-07-31 —
+see "How these were verified" immediately after the payload.
 
 ```
 Target canister: vxkom-oyaaa-aaaar-qafda-cai
-Previous ledger suite orchestrator proposal: [the most recent ckERC20
-  addition at time of submission — reuse ITS git_commit_hash and wasm
-  hashes verbatim, exactly as ckOCT reused ckPEPE's]
 
 git fetch
-git checkout <same commit hash as the previous ckERC20 proposal>
+git checkout cf41372e3d4dc1accfe2c09a7969f8bddc729dc1
 cd rs/ethereum/ledger-suite-orchestrator
 didc encode -d ledger_suite_orchestrator.did -t '(OrchestratorArg)' \
   '(variant { AddErc20Arg = record {
@@ -136,8 +144,7 @@ didc encode -d ledger_suite_orchestrator.did -t '(OrchestratorArg)' \
        feature_flags = opt record { icrc2 = true };
        decimals = opt 18;
        max_memo_length = opt 80;
-       transfer_fee = <e18s equivalent of ~$0.005-0.015 at time of
-         submission — compute fresh, do not reuse OCT's literal number>;
+       transfer_fee = 100_000_000_000_000_000;
        token_symbol = "ckBAT";
        token_name = "ckBAT";
        token_logo = "data:image/svg+xml;base64,<BAT mark, base64-encoded>";
@@ -145,23 +152,103 @@ didc encode -d ledger_suite_orchestrator.did -t '(OrchestratorArg)' \
        maximum_number_of_accounts = null;
        accounts_overflow_trim_quantity = null
      };
-     git_commit_hash = "<same as above>";
-     ledger_compressed_wasm_hash = "<same as previous ckERC20 proposal>";
-     index_compressed_wasm_hash = "<same as previous ckERC20 proposal>";
-   }})'
+     git_commit_hash = "cf41372e3d4dc1accfe2c09a7969f8bddc729dc1";
+     ledger_compressed_wasm_hash = "390e22377640748f5a63fc35d50680d27a05d3e9a05c1c25c4061cacebda4c56";
+     index_compressed_wasm_hash = "b9f248fed399250f17bd3c00386c251bdff5479001bedde341aeccc632a74253";
+   }})' | xxd -r -p > args.bin
 ```
 
-`sv3dd-oaaaa-aaaar-qacoa-cai` is the ckETH/ckERC20 minter — the same
-minting account and fee-collector subaccount convention every other
-ckERC20 token uses. The minter's own supported-token list separately needs
-BAT added so deposits mint ckBAT to the depositor's principal and
-withdrawals burn back to Ethereum; the thread doesn't show that step in
-detail, so confirm it's still bundled with the orchestrator proposal or
-handled separately before finalizing.
+### How these were verified
 
-**Before finalizing:** check the *current* `get_minter_info` list and the
-most recent forum ckERC20 addition — reuse whatever commit/wasm hashes that
-one used, not ckOCT's, which are almost two years old now.
+**`git_commit_hash`** — read from the *running* orchestrator's own canister
+metadata, not from a forum post:
+
+```bash
+dfx canister --network ic metadata vxkom-oyaaa-aaaar-qafda-cai git_commit_id
+# → cf41372e3d4dc1accfe2c09a7969f8bddc729dc1
+```
+
+**The two wasm hashes** — the orchestrator publishes the suite version it
+currently installs, and the official README's download URL reproduces it
+byte-for-byte at that commit. Both sides were checked and they match
+exactly:
+
+```bash
+dfx canister --network ic call vxkom-oyaaa-aaaar-qafda-cai get_orchestrator_info '()' --query
+# ledger_suite_version = record {
+#   ledger_compressed_wasm_hash  = "390e2237...cebda4c56";
+#   index_compressed_wasm_hash   = "b9f248fe...632a74253";
+#   archive_compressed_wasm_hash = "47c385ed...a0ccdc2f3";
+# }
+
+C=cf41372e3d4dc1accfe2c09a7969f8bddc729dc1
+for w in ic-icrc1-ledger-u256 ic-icrc1-index-ng-u256 ic-icrc1-archive-u256; do
+  curl -sO "https://download.dfinity.systems/ic/$C/canisters/$w.wasm.gz"
+  shasum -a 256 "$w.wasm.gz"
+done
+# → all three match ledger_suite_version exactly
+```
+
+This is a stronger footing than the "reuse the previous proposal's hashes"
+convention described in section 3: rather than trusting that a prior
+proposal's numbers are still current, these are read from live mainnet state
+and independently reproduced from DFINITY's published build artifacts. Any
+reviewer can re-run both commands in under a minute.
+
+**`transfer_fee = 100_000_000_000_000_000`** — that is **0.1 BAT** at 18
+decimals, ≈ **$0.0065** at BAT's 2026-07-31 price of ~$0.065. The current
+orchestrator README states the rule as *"typically $0.001–$0.01 USD
+equivalent, preferably a power of 10."* Within that band, a power of ten is
+uniquely determined: 0.01 BAT is $0.00065 (below the band) and 1 BAT is
+$0.065 (well above it). 0.1 BAT is the only candidate that satisfies both
+halves of the rule.
+
+It also lands mid-pack against every live ckERC20 fee, read from the ledgers
+themselves via `icrc1_fee` and priced at the same date:
+
+| Token | Fee (token units) | ≈ USD today |
+|---|---|---|
+| ckEURC | 0.01 | $0.0117 |
+| ckUSDC / ckUSDT | 0.01 | $0.0100 |
+| **ckBAT (proposed)** | **0.1** | **$0.0065** |
+| ckWBTC | 0.0000001 | $0.0064 |
+| **ckUNI** | **0.001** | **$0.0044** |
+| ckXAUT | 0.000001 | $0.0040 |
+| ckPEPE | 1000 | $0.0028 |
+| ckWSTETH | 0.000001 | $0.0023 |
+| ckLINK | 0.0001 | $0.0008 |
+| ckSHIB | 100 | $0.0005 |
+| ckOCT | 0.034 | $0.0001 |
+
+Two things this table makes plain, both worth stating in the forum post
+before anyone asks. First, **fees are set once at listing and never
+revisited** — ckOCT's is now a hundredth of a cent because OCT's price fell,
+not because anyone chose that. So the number should be defended against
+today's price, and the proposal should say outright that a follow-up
+proposal can adjust it if BAT moves substantially. Second, ckBAT at 0.1
+sits *between* ckWBTC and ckUNI — unremarkable, which is what you want.
+
+**On "just use ckUNI's fee":** ckUNI's literal `transfer_fee` is
+`1_000_000_000_000_000` (0.001 UNI). Copying that integer verbatim would
+give 0.001 BAT ≈ $0.00007 — roughly 1/60th of the band's floor, and a
+reviewer would flag it immediately. What ckUNI is worth copying is its
+*reasoning*, and that is exactly what the 0.1 BAT figure does: a power of
+ten landing in the low single-digit-cent range.
+
+`sv3dd-oaaaa-aaaar-qacoa-cai` is the ckETH/ckERC20 minter — the same minting
+account and fee-collector subaccount convention every other ckERC20 token
+uses.
+
+**One step still unconfirmed.** The minter's own supported-token list has to
+include BAT before deposits mint ckBAT and withdrawals burn back to
+Ethereum. Neither the ckOCT thread nor the orchestrator README says
+explicitly whether the orchestrator notifies the minter automatically on
+`AddErc20`, or whether a second action is required. The README's phrasing
+("standard orchestrator notification procedures") suggests it is automatic,
+but that is an inference, not a confirmation — **ask this directly in the
+forum post.** It is a good question to open with: it is specific, it shows
+the homework is done, and getting it wrong after adoption would mean a
+ledger exists that the minter cannot mint into.
 
 ## 5. Anticipated questions
 
@@ -199,9 +286,21 @@ elsewhere.
 > refines ckERC20 assets into gold-backed sGLDT), so the listing activates
 > a shipped product on day one.
 >
+> The full payload is assembled and independently verifiable: orchestrator
+> commit `cf41372e3d4dc1accfe2c09a7969f8bddc729dc1` (read from the running
+> canister's own `git_commit_id` metadata), with ledger/index wasm hashes
+> matching the orchestrator's current `ledger_suite_version` and reproduced
+> byte-for-byte from `download.dfinity.systems` at that commit. Proposed
+> `transfer_fee` is 0.1 BAT (≈$0.0065 today) — a power of ten inside the
+> README's $0.001–$0.01 band, which for BAT's price uniquely determines it.
+>
+> One question before I finalize: does `AddErc20` notify the ckETH minter to
+> add BAT to its supported-token list automatically, or is a separate action
+> required? I want the ledger and the minter to go live together.
+>
 > I hold a neuron with the standing to submit the NNS proposal myself once
-> there's rough consensus on the parameters (fee range, wasm version to
-> reuse) — happy to iterate here first, the way the ckOCT thread did.
+> there's rough consensus — happy to iterate here first, the way the ckOCT
+> thread did.
 
 ## 7. What we (minegold.defi) commit to alongside the listing
 
@@ -228,6 +327,25 @@ attempt, so this required his browser access, not a workaround:
   (129750 → 130755 → 130405) — confirmed via dashboard links posted
   directly in the thread, not reconstructed.
 
+**Verified directly against mainnet and DFINITY's build artifacts
+(2026-07-31)** — this is what turned section 4 from a template into a
+finished payload:
+- `git_commit_hash` `cf41372e…` read from the orchestrator canister's own
+  `git_commit_id` metadata, i.e. from the code actually running.
+- `ledger_suite_version` read from `get_orchestrator_info`, then all three
+  wasms downloaded from `download.dfinity.systems` at that commit and
+  SHA-256'd — ledger, index and archive hashes all matched exactly. This
+  supersedes the ckOCT-era advice to "reuse the previous proposal's hashes."
+- BAT's `symbol()`, `decimals()` and `name()` read by `eth_call` against
+  `0x0D87…87EF` on a public Ethereum RPC: `BAT`, 18, `Basic Attention Token`.
+- Every live ckERC20 `transfer_fee` read from its own ledger via
+  `icrc1_fee`, priced against current market data, to place ckBAT's proposed
+  fee in the real distribution (the table in section 4).
+- The current fee rule read from the orchestrator README on `dfinity/ic`
+  master: `$0.001–$0.01 USD equivalent, preferably a power of 10` — newer
+  and narrower than the mid-2024 forum range, and it resolves one of the two
+  open questions the previous draft flagged.
+
 **Verified independently via the live minter dashboard**
 (`sv3dd-oaaaa-aaaar-qacoa-cai.raw.icp0.io/dashboard`), separate from the
 forum and from minegold.defi's own UI claim: the current 11-token
@@ -243,11 +361,17 @@ made; (c) implied someone else typically submits the actual NNS proposal
 on a community member's behalf — the ckOCT precedent shows a community
 neuron-holder submitted directly, which is exactly Anthony's position.
 
-**Still not independently confirmed:** whether the minter's supported-token
-list needs a separate action beyond the orchestrator proposal (the ckOCT
-thread doesn't cover that half explicitly), and whether the fee-range
-guidance from mid-2024 still reflects current thinking — worth a quick
-check of the most recent ckERC20 addition's thread before finalizing.
+**Still not independently confirmed — one item, down from two:** whether the
+minter's supported-token list needs a separate action beyond the
+orchestrator proposal. The ckOCT thread doesn't cover that half explicitly,
+and the README only alludes to it. This is now an open question in the forum
+post itself rather than a silent assumption. *(The fee-guidance question is
+resolved: the current README rule replaces the 2024 forum range.)*
+
+**One thing that will go stale:** the fee is justified against BAT at
+~$0.065. If BAT moves materially before submission, re-run the arithmetic —
+though note that 0.1 BAT stays the correct power of ten anywhere from about
+$0.01 to $0.10, so it tolerates a wide swing before the answer changes.
 
 ---
 

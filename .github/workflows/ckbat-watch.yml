@@ -1,0 +1,75 @@
+name: ckbat-watch
+
+# BAT intake is gated on one external fact: whether DFINITY's ckERC-20 minter
+# lists BAT. That flips by NNS vote, on someone else's schedule. This job
+# watches for it so the promised launch email is sent because the fact
+# changed, not because somebody happened to look.
+#
+# It only ever OPENS AN ISSUE. It does not deploy, email, or touch the
+# product — a scheduled job able to act on the money path unattended is a
+# worse risk than a late launch announcement.
+
+on:
+  schedule:
+    # Every 6 hours. The underlying fact changes at most once, ever, and a few
+    # hours' delay costs nothing; polling harder just burns minutes.
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install watcher deps
+        run: npm install --prefix scripts/ckbat-watch
+
+      # If this step fails, the job fails loudly and GitHub notifies the repo
+      # owner. Deliberate: a failed check is NOT "BAT still isn't listed", and
+      # must never be allowed to look like it.
+      - name: Query the ckERC-20 minter
+        id: check
+        run: node scripts/ckbat-watch/check.mjs
+
+      - name: Open the launch issue
+        if: steps.check.outputs.supported == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LEDGER: ${{ steps.check.outputs.ledger }}
+          SYMBOL: ${{ steps.check.outputs.symbol }}
+        run: |
+          set -euo pipefail
+
+          # Idempotent: this job keeps running every 6 hours after the flip,
+          # so without this guard it would file an issue every 6 hours
+          # forever.
+          existing=$(gh issue list --label ckbat-live --state open --json number --jq 'length')
+          if [ "$existing" != "0" ]; then
+            echo "An open ckbat-live issue already exists — nothing to do."
+            exit 0
+          fi
+
+          gh label create ckbat-live \
+            --description "DFINITY's minter has listed BAT" \
+            --color B60205 2>/dev/null || true
+
+          # Body kept in a template file rather than a heredoc inside YAML:
+          # backticks and ${...} in the text would otherwise be at the mercy
+          # of two layers of quoting.
+          export DETECTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          envsubst < .github/ckbat-live-issue.md > /tmp/ckbat-issue.md
+          cat /tmp/ckbat-issue.md
+
+          gh issue create \
+            --label ckbat-live \
+            --title "ckBAT is live on the minter — open BAT intake" \
+            --body-file /tmp/ckbat-issue.md

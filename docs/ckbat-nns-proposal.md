@@ -1,15 +1,14 @@
 # Proposal: Add ckBAT (Basic Attention Token) to the ckERC20 ledger suite
 
 **Status:** DRAFT — for Anthony to review, put under his own name, and post
-to the DFINITY forum before any NNS proposal is submitted. Nothing in this
-document has been posted anywhere.
+to the DFINITY forum. Nothing in this document has been posted anywhere.
 
-**Sourcing note (2026-07-31):** the facts below were checked against live
-sources — the ckERC20 minter's own dashboard, DFINITY's docs, and GitHub —
-not written from memory alone. Section 8 lists exactly what was verified,
-what was corrected from an earlier draft, and what still can't be confirmed
-because the forum itself blocks automated access (a 403 on every fetch
-attempt) and has to be read by a human.
+**Sourcing note (2026-07-31):** this draft is built on a full read of the
+real precedent — the ckOCT thread on forum.dfinity.org, all 39 posts, read
+directly (with Anthony's help getting past the forum's login wall, which
+blocks automated fetching entirely). Section 8 lists exactly what that
+thread confirmed, what it changed from an earlier draft of this document,
+and what's still open.
 
 ---
 
@@ -17,25 +16,16 @@ attempt) and has to be read by a human.
 
 We propose that the NNS deploy a ledger suite for **ckBAT**, the chain-key
 twin of Basic Attention Token (BAT), via the ckERC20 ledger suite
-orchestrator — the same mechanism that onboarded the eleven ckERC20 tokens
-live today (ckEURC, ckLINK, ckOCT, ckPEPE, ckSHIB, ckUNI, ckUSDC, ckUSDT,
-ckWBTC, ckWSTETH, ckXAUT — confirmed live against the minter's own dashboard
-on 2026-07-31; BAT is not among them). BAT is a top-100 ERC-20 with
-seven-plus years of mainnet history, issued by Brave Software and earned as
-advertising revenue by the Brave browser's tens of millions of monthly
-users. A live ICP application (minegold.defi) is already built against the
-ckERC20 minter and polls `get_minter_info` for BAT support on every visit;
-the day ckBAT exists, a consumer-scale on-ramp of recurring, real-income BAT
-flow onto the Internet Computer switches on with it.
-
-The closest precedent for this proposal isn't ckUNI or ckLINK (both shipped
-by DFINITY in the original batch) — it's **ckOCT**, which reached the minter
-through exactly this path: a community forum post
-(forum.dfinity.org/t/proposal-to-add-oct-as-a-new-ckerc20-token/32108)
-followed by an NNS proposal. That thread is the right model for the post
-below; it should be read directly before posting; DFINITY forum content
-resists automated fetching, so this is one thing that has to be checked by
-a human, not by this draft.
+orchestrator — the same mechanism that added the eleven ckERC20 tokens live
+today (confirmed against the minter's own dashboard, 2026-07-31): ckEURC,
+ckLINK, ckOCT, ckPEPE, ckSHIB, ckUNI, ckUSDC, ckUSDT, ckWBTC, ckWSTETH,
+ckXAUT. BAT is not among them. BAT is a top-100 ERC-20 with seven-plus years
+of mainnet history, issued by Brave Software and earned as advertising
+revenue by the Brave browser's tens of millions of monthly users. A live ICP
+application (minegold.defi) is already built against the ckERC20 minter and
+polls `get_minter_info` for BAT support on every visit; the day ckBAT
+exists, a consumer-scale on-ramp of recurring, real-income BAT flow onto the
+Internet Computer switches on with it.
 
 ## 2. Token facts
 
@@ -50,106 +40,139 @@ a human, not by this draft.
 | Issuer | Brave Software (the Brave browser, Brave Ads, Brave Rewards) |
 | Typical market rank | top-100 by capitalization; listed on every major venue |
 
-BAT is one of the oldest continuously-operating ERC-20s in existence, with
-deep spot liquidity on major centralized and decentralized venues, a Chainlink
-price feed on Ethereum mainnet, and none of the contract behaviors
-(fee-on-transfer, rebasing, upgradability games) that complicate chain-key
-twinning.
-
 *(Reviewer checklist before posting: re-verify the contract address against
-Etherscan and basicattentiontoken.org; confirm current market-cap rank; and
-re-read the ckOCT thread linked above in case the community's expectations
-have shifted since it was posted.)*
+Etherscan and basicattentiontoken.org, and re-verify current market rank —
+both cheap, both worth doing fresh right before posting.)*
 
-## 3. Why BAT, and why it benefits the Internet Computer
+## 3. The real precedent: ckOCT
 
-**A genuinely new user funnel, not a re-shuffle of existing DeFi.** Most
-ckERC20 candidates move existing DeFi liquidity between chains. BAT is
-different in kind: it is *earned income*. Millions of Brave Rewards users
-receive BAT every month for attention they already spend. Today that income
-mostly sits idle in custodial accounts or small wallets, because doing
-anything useful with $1–3/month of an ERC-20 is uneconomical on Ethereum.
-Chain-key BAT puts those flows one hop away from ICP's ~zero-fee ledgers —
-the only environment where using small recurring BAT income is actually
-economical. That is a story about ICP's fee model that no existing ck-token
-tells.
+The closest precedent for this proposal is **ckOCT**
+(forum.dfinity.org/t/proposal-to-add-oct-as-a-new-ckerc20-token/32108,
+Jun 2024) — not ckUNI or ckLINK, which DFINITY shipped in the original
+batch. ckOCT reached the minter through exactly the path this document
+proposes: a community forum post, iteration with reviewers, then an NNS
+proposal submitted by a community member. Reading the full 39-post thread
+changed several things about how this document is written — see section 8.
 
-**An application is already waiting.** minegold.defi — a live mainnet
-application built on the ckERC20 minter (it launched on ckUNI) — refines
-bridged ERC-20 assets into sGLDT, a 1:1 wrapper of Gold DAO's
-physically-backed GLDT. Its BAT intake is fully built and *truth-gated*: the
-UI reads `get_minter_info` from `sv3dd-oaaaa-aaaar-qacoa-cai` live and tells
-users BAT is not yet supported. This proposal is the unlock for a shipped
-product, not a speculative listing.
+**What actually happened, in order:**
 
-**Ecosystem fit.** ICP already hosts the destination assets (GLDT/sGLDT and
-the DEX venues they trade on). ckBAT completes an end-to-end consumer story
-that runs entirely on public, verifiable infrastructure: browser ad revenue
-→ chain-key bridge → gold-backed token — with every hop auditable on a
-public ledger.
+1. Omnity's founder (`toliuyi`) posted the case for ckOCT to the forum,
+   linking a technical proposal that had *already been submitted*.
+2. **CodeGov, an independent neuron-holder reviewer group, initially voted
+   to reject it** — not for a technical flaw, but because the proposal
+   arrived with no prior forum announcement and came from a proposer ID
+   that had never submitted anything before. Their own words: *"the
+   proposal came out of the blue without notice and there were too many
+   unknowns to be comfortable voting to adopt."* This is a sourced,
+   concrete case that skipping the forum-first step has a real cost, not
+   an inferred one.
+2. A DFINITY engineer (`Manu`) and a CodeGov reviewer (`Zane`) then worked
+   through the technical details in public — principally the
+   `git_commit_hash` argument, which had confused reviewers on the prior
+   ckLINK proposal too.
+3. A separate reviewer (`tiago89`) raised a **relevance bar**: *"I confess
+   I would still reject a non-top-20 coin"* absent a pre-approval Motion
+   proposal for new tokens generally. The proposer (`toliuyi`) pushed back
+   directly — *"Why top 20 and not top 100 or 1000?... Leave the business
+   value judgment to others"* — and no Motion-proposal requirement was
+   ever adopted. This is a live, unresolved opinion, not a rule, and BAT's
+   position is stronger here than OCT's was: BAT is a top-100 token with
+   an eight-year history and a household-name issuer (Brave), where OCT
+   was a recent rebrand of a much smaller project.
+4. The fee argument converged on a **guidance range of roughly $0.005–
+   $0.015 (0.5–1.5 cents)**, based on trailing average price to avoid
+   short-term volatility, explicitly adjustable later by a follow-up
+   proposal if the token's price moves a lot.
+5. `gregory-demay` (DFINITY) reviewed the final assembled proposal text
+   and replied: *"The proposal looks correct to me! Good luck with the
+   submission!"* — DFINITY's sign-off came from a team member responding
+   in the thread, not a separate formal approval step.
+6. **The community member (`juliansun`, not DFINITY) submitted the NNS
+   proposal directly**, using their own neuron. It was adopted as
+   **NNS proposal 130405** (confirmed via a linked dashboard URL in the
+   thread), reusing the exact orchestrator commit and ledger/index wasm
+   hashes from the immediately preceding ckERC20 proposal (ckPEPE, 130755)
+   — which itself reused them from ckUSDC (129750). Reusing an
+   already-verified wasm build, rather than pulling a fresh one, is the
+   pattern every proposal in this chain follows: it means reviewers verify
+   one build once, not once per token.
 
-**Precedent.** ckOCT shows the path works for a community-proposed token
-with a narrower user base than BAT's. What BAT lacked until now was an ICP
-application creating pull — not community support or technical fitness.
+**Why this matters for Anthony specifically:** step 6 is the important one.
+The proposal wasn't submitted by DFINITY or handed off to some other
+neuron-holder — it was submitted by a member of the community with a
+qualifying neuron. Anthony already holds one staked over six months. That
+means, after the forum round converges, **he can submit the actual NNS
+proposal himself** — this is not a step that has to be delegated.
 
 ## 4. What is being requested, mechanically
 
-Adding a token is a single NNS upgrade proposal targeting the **ledger
-suite orchestrator** (`vxkom-oyaaa-aaaar-qafda-cai`), which then spawns the
-ckBAT ledger, index canister and archive — no new code, only canister
-configuration. Per the orchestrator's own documentation, the proposal's
-install argument specifies, at minimum:
+A single NNS upgrade proposal targeting the ledger suite orchestrator
+(`vxkom-oyaaa-aaaar-qafda-cai`), spawning the ckBAT ledger, index canister
+and archive. Below is the argument shape, adapted directly from the ckOCT
+proposal actually submitted and adopted — same fields, same conventions,
+BAT's own values substituted:
 
-| Field | Value for BAT |
-|---|---|
-| `chain_id` | 1 (Ethereum mainnet) |
-| `address` | `0x0D8775F648430679A709E98d2b0Cb6250d2887EF` |
-| `decimals` | 18 — must match the value the contract's own `decimals()` returns |
-| `token_symbol` | `ckBAT` (ASCII, ≤20 chars, `ck` prefix — required format) |
-| `token_name` | Chain-key Basic Attention Token |
-| `transfer_fee` | per DFINITY guidance, ~$0.001–0.01 equivalent, ideally a power of 10 |
-| `token_logo` | a data URL (BAT's mark is freely available) |
-| `minting_account` / `fee_collector_account` | orchestrator-controlled, as for every other ckERC20 |
+```
+Target canister: vxkom-oyaaa-aaaar-qafda-cai
+Previous ledger suite orchestrator proposal: [the most recent ckERC20
+  addition at time of submission — reuse ITS git_commit_hash and wasm
+  hashes verbatim, exactly as ckOCT reused ckPEPE's]
 
-The ckUSDC listing (NNS proposal 129750) is the canonical technical example
-of this argument shape, though the orchestrator's syntax has since evolved
-in minor ways — worth a fresh diff against the current orchestrator source
-before anything is finalized.
+git fetch
+git checkout <same commit hash as the previous ckERC20 proposal>
+cd rs/ethereum/ledger-suite-orchestrator
+didc encode -d ledger_suite_orchestrator.did -t '(OrchestratorArg)' \
+  '(variant { AddErc20Arg = record {
+     contract = record {
+       chain_id = 1;
+       address = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF"
+     };
+     ledger_init_arg = record {
+       minting_account = record { owner = principal "sv3dd-oaaaa-aaaar-qacoa-cai" };
+       fee_collector_account = opt record {
+         owner = principal "sv3dd-oaaaa-aaaar-qacoa-cai";
+         subaccount = opt blob "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\0f\ee";
+       };
+       feature_flags = opt record { icrc2 = true };
+       decimals = opt 18;
+       max_memo_length = opt 80;
+       transfer_fee = <e18s equivalent of ~$0.005-0.015 at time of
+         submission — compute fresh, do not reuse OCT's literal number>;
+       token_symbol = "ckBAT";
+       token_name = "ckBAT";
+       token_logo = "data:image/svg+xml;base64,<BAT mark, base64-encoded>";
+       initial_balances = vec {};
+       maximum_number_of_accounts = null;
+       accounts_overflow_trim_quantity = null
+     };
+     git_commit_hash = "<same as above>";
+     ledger_compressed_wasm_hash = "<same as previous ckERC20 proposal>";
+     index_compressed_wasm_hash = "<same as previous ckERC20 proposal>";
+   }})'
+```
 
-Separately, the ckERC20 **minter** (`sv3dd-oaaaa-aaaar-qacoa-cai`) adds BAT
-to its supported-token list so deposits via the standard helper contract
-mint ckBAT 1:1 to the depositor's principal, and withdrawals burn back to
-Ethereum. No new trust assumptions: the same threshold-ECDSA custody, the
-same minter, the same helper contract users already rely on for every other
-ckERC20 asset.
+`sv3dd-oaaaa-aaaar-qacoa-cai` is the ckETH/ckERC20 minter — the same
+minting account and fee-collector subaccount convention every other
+ckERC20 token uses. The minter's own supported-token list separately needs
+BAT added so deposits mint ckBAT to the depositor's principal and
+withdrawals burn back to Ethereum; the thread doesn't show that step in
+detail, so confirm it's still bundled with the orchestrator proposal or
+handled separately before finalizing.
 
-**Who actually submits the NNS proposal.** This is worth flagging plainly:
-submitting the *forum post* costs nothing and needs no special standing —
-anyone can write it. Submitting the *NNS proposal itself* requires a neuron
-with a dissolve delay of at least six months, and a deposit is charged
-against that neuron's balance if the proposal is rejected. In practice
-(ckOCT's path), the forum post is what a non-neuron-holder does first; a
-DFINITY team member or another neuron-holder who agrees with it typically
-submits the technical proposal afterward. So the realistic sequence for
-Anthony is: post to the forum, make the case, and expect the technical
-proposal to be submitted by someone else if the case lands — not
-necessarily by minegold.defi directly, unless a suitably staked neuron is
-already in hand.
+**Before finalizing:** check the *current* `get_minter_info` list and the
+most recent forum ckERC20 addition — reuse whatever commit/wasm hashes that
+one used, not ckOCT's, which are almost two years old now.
 
 ## 5. Anticipated questions
 
-**"Is there enough liquidity to justify it?"** BAT's spot liquidity across
-major venues is deep and old; the Chainlink BAT/USD and BAT/ETH feeds have
-run for years. The relevant question for a ck-twin is redemption safety
-(can holders always exit to Ethereum mainnet), and that is a function of the
-minter's design, not of BAT's order books — which nonetheless comfortably
-exceed several already-listed ckERC20 tokens.
+**"Is there enough liquidity/relevance?"** Addressed directly in section 3
+— this exact question was raised on ckOCT by one reviewer, disputed by the
+proposer, and never became a formal bar. BAT is a stronger case than OCT
+was on this specific point.
 
-**"Who maintains demand after listing?"** At least one shipped application
-(minegold.defi) activates immediately, and its operator intends to run paid
-Brave Ads campaigns — reaching BAT earners inside the browser they earn in —
-denominated in BAT itself. Demand generation is aligned with the token's own
-user base rather than hoped-for.
+**"Who maintains demand after listing?"** minegold.defi activates
+immediately, and its operator intends to fund Brave Ads campaigns — paid in
+BAT — reaching BAT earners inside the browser they earn in.
 
 **"Why now?"** Brave's payout infrastructure is shifting toward
 self-custody. A standing, neutral, on-chain bridge for BAT positions ICP as
@@ -161,23 +184,24 @@ elsewhere.
 > **Title: Proposal to add ckBAT (Basic Attention Token) to the ckERC20 suite**
 >
 > I'd like to gauge community support for adding ckBAT via the ledger suite
-> orchestrator, following the same path as the recent ckOCT proposal.
+> orchestrator, following the same path as the ckOCT proposal
+> (forum.dfinity.org/t/proposal-to-add-oct-as-a-new-ckerc20-token/32108).
 >
 > BAT (`0x0D8775F648430679A709E98d2b0Cb6250d2887EF`, 18 decimals, deployed
 > 2017, fixed 1.5B supply) is the token Brave browser users earn as ad
 > revenue — recurring, real-income flows from one of the largest crypto
 > user bases in existence. Those flows are uneconomical to use on Ethereum
 > at their natural size ($1–3/month per user); on ICP's fee model they are
-> not. That makes ckBAT a genuinely new consumer funnel for the IC rather
-> than a reshuffling of existing DeFi liquidity.
+> not.
 >
-> There is a live mainnet application already built against the minter and
+> There's a live mainnet application already built against the minter and
 > truth-gated on `get_minter_info` BAT support (minegold.defi, which
 > refines ckERC20 assets into gold-backed sGLDT), so the listing activates
 > a shipped product on day one.
 >
-> Happy to put together the formal proposal if there's support — and to
-> hear objections I haven't considered.
+> I hold a neuron with the standing to submit the NNS proposal myself once
+> there's rough consensus on the parameters (fee range, wasm version to
+> reuse) — happy to iterate here first, the way the ckOCT thread did.
 
 ## 7. What we (minegold.defi) commit to alongside the listing
 
@@ -187,44 +211,45 @@ elsewhere.
 - Fund Brave Ads campaigns, paid in BAT, marketing the on-ramp to Brave
   Rewards users — demand generation for the ck-twin at our own cost.
 
-## 8. What was actually checked, and what wasn't
+## 8. What was verified, and how
 
-Honesty about sourcing, since a proposal built on unverified claims wastes
-the community's time:
+**Read directly, full thread (39/39 posts), via Anthony's own logged-in
+forum session** — the forum returns a login wall to every anonymous fetch
+attempt, so this required his browser access, not a workaround:
+- The complete ckOCT precedent as summarized in section 3: the initial
+  CodeGov rejection and its stated reason, the git_commit_hash discussion,
+  the unresolved "top 20" relevance objection and the proposer's rebuttal,
+  the fee-range convergence (~0.5–1.5 cents), DFINITY's sign-off, and —
+  critically — that the actual NNS proposal was submitted by a community
+  neuron-holder, not DFINITY.
+- The full, real `didc encode` argument text from the proposal that was
+  actually submitted and adopted, field-for-field.
+- The real adopted proposal number, 130405, and the wasm-reuse chain
+  (129750 → 130755 → 130405) — confirmed via dashboard links posted
+  directly in the thread, not reconstructed.
 
-**Verified live, this session:**
-- The full current ckERC20 supported-token list, fetched directly from the
-  minter's dashboard (`sv3dd-oaaaa-aaaar-qacoa-cai.raw.icp0.io/dashboard`) —
-  11 tokens, BAT not among them. This is independent of, and confirms, what
-  the minegold.defi app's own `get_minter_info` check already shows.
-- That ckOCT is a real, named, community-proposed precedent
-  (forum.dfinity.org/t/proposal-to-add-oct-as-a-new-ckerc20-token/32108) —
-  confirmed to exist via search and via DFINITY's own docs listing ckOCT as
-  supported; its full text could not be read (see below).
-- The AddErc20Arg field list and constraints (decimals must match the
-  contract, `ck`-prefixed symbol ≤20 ASCII chars, transfer-fee guidance,
-  data-URL logo) — from the ledger-suite-orchestrator's own README on
-  GitHub.
-- The neuron requirement to submit an NNS proposal (≥6-month dissolve
-  delay, a deposit at risk on rejection) — from DFINITY community
-  documentation on the proposal process generally.
+**Verified independently via the live minter dashboard**
+(`sv3dd-oaaaa-aaaar-qacoa-cai.raw.icp0.io/dashboard`), separate from the
+forum and from minegold.defi's own UI claim: the current 11-token
+supported list, BAT absent.
 
-**Corrected from an earlier draft of this document:** that draft asserted,
-as if it were a documented DFINITY rule, that a specific forum post must
-precede any technical steps. No primary source found in this session states
-that as a formal requirement — it's clearly standard *practice* (it's
-exactly how ckOCT went), so the advice to post first stands, but it's no
-longer presented as a rule this document verified.
+**Corrected from an earlier draft of this document:** that draft (a) cited
+ckUNI/ckLINK as precedent instead of the much closer ckOCT case; (b)
+asserted, without a source, that a forum post is a *documented DFINITY
+requirement* before any technical step — the thread shows it's not a
+formal rule, but skipping it got a real proposal rejected on a first pass,
+which is a stronger and more specific argument than the one originally
+made; (c) implied someone else typically submits the actual NNS proposal
+on a community member's behalf — the ckOCT precedent shows a community
+neuron-holder submitted directly, which is exactly Anthony's position.
 
-**Could not verify — needs a human on the forum:** the ckOCT thread's full
-content (what pushback it got, how long it took, what final proposal number
-resulted), and whether the current orchestrator's argument syntax has
-drifted from the ckUSDC example (129750) cited above. forum.dfinity.org
-returns 403 to automated fetches; someone will need to actually open the
-thread in a browser.
+**Still not independently confirmed:** whether the minter's supported-token
+list needs a separate action beyond the orchestrator proposal (the ckOCT
+thread doesn't cover that half explicitly), and whether the fee-range
+guidance from mid-2024 still reflects current thinking — worth a quick
+check of the most recent ckERC20 addition's thread before finalizing.
 
 ---
 
 *Prepared for Anthony (anthony@cafreso.com), minegold.defi / Banking.Brave,
-powered by CafresoDAO. Draft only — read the ckOCT thread directly and
-re-verify addresses before posting.*
+powered by CafresoDAO.*

@@ -118,60 +118,116 @@ proposal himself** — this is not a step that has to be delegated.
 
 ## 4. What is being requested, mechanically
 
-A single NNS upgrade proposal targeting the ledger suite orchestrator
-(`vxkom-oyaaa-aaaar-qafda-cai`), spawning the ckBAT ledger, index canister
-and archive. Every value below is filled in and verified as of 2026-07-31 —
-see "How these were verified" immediately after the payload.
+A single NNS proposal that upgrades the ledger suite orchestrator
+(`vxkom-oyaaa-aaaar-qafda-cai`) **to the wasm it is already running**, with
+an `AddErc20Arg` as the upgrade argument. On execution the orchestrator
+spawns the ckBAT ledger, index and archive, and notifies the minter.
 
+> ### ⚠️ The ckOCT-era argument shape is obsolete
+>
+> An earlier draft of this section reproduced the `AddErc20Arg` from the
+> 2024 ckOCT proposal. **That shape no longer compiles.** Attempting to
+> encode it fails immediately:
+>
+> ```
+> Error: type mismatch: opt 18 cannot be of type nat8
+> ```
+>
+> The interface has since been simplified. In the current
+> `ledger_suite_orchestrator.did`:
+>
+> - `AddErc20Arg` contains **only** `contract` and `ledger_init_arg`.
+>   `git_commit_hash`, `ledger_compressed_wasm_hash` and
+>   `index_compressed_wasm_hash` have **moved to `UpgradeArg`** and are
+>   *not* part of adding a token.
+> - `LedgerInitArg` is now just five fields: `transfer_fee : nat`,
+>   `decimals : nat8`, `token_symbol`, `token_name`, `token_logo`. The
+>   Candid comment states the rest — `minting_account`,
+>   `fee_collector_account`, `feature_flags`, `archive_options` — are "set
+>   by the orchestrator."
+>
+> This is the single strongest argument for encoding the payload before
+> posting rather than after: copying a two-year-old proposal verbatim, as
+> the reuse convention encourages, produces an argument that cannot be
+> built at all.
+
+**The actual payload** (verified by encoding it — see below):
+
+```candid
+(variant { AddErc20Arg = record {
+  contract = record {
+    chain_id = 1 : nat;
+    address = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF";
+  };
+  ledger_init_arg = record {
+    transfer_fee = 100_000_000_000_000_000 : nat;
+    decimals = 18 : nat8;
+    token_symbol = "ckBAT";
+    token_name = "ckBAT";
+    token_logo = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAwIDIwMDAiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgMTQwLjUpIj48cGF0aCBmaWxsPSIjNjYyZDkxIiBkPSJNMjAwMCAxNzE2LjY0IDEwMDQuNzkgMTE0Ni43OCAwIDE3MTkgMjAwMCAxNzE2LjY0eiIvPjxwYXRoIGZpbGw9IiM5ZTFmNjMiIGQ9Ik0xMDA1LjExIDAgMTAwNC43OSAxMTQ2Ljc4IDIwMDAgMTcxNi42NCAxMDA1LjExIDB6Ii8+PHBhdGggZmlsbD0iI2ZmNTAwMCIgZD0iTTAgMTcxOSAxMDA0Ljc5IDExNDYuNzggMTAwNS4xMSAwIDAgMTcxOXoiLz48cGF0aCBmaWxsPSIjZmZmIiBzdHJva2U9IiNmZjUwMDAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLXdpZHRoPSIyNSIgZD0ibTEwMDIuNzUgNjk1LjY3bC00MTAuODUgNjg2LjI1aDgyMy41NGwtNDEyLjY5LTY4Ni4yNXoiLz48L2c+PC9zdmc+";
+  };
+}})
 ```
-Target canister: vxkom-oyaaa-aaaar-qafda-cai
 
-git fetch
-git checkout cf41372e3d4dc1accfe2c09a7969f8bddc729dc1
-cd rs/ethereum/ledger-suite-orchestrator
+Encode it with:
+
+```bash
 didc encode -d ledger_suite_orchestrator.did -t '(OrchestratorArg)' \
-  '(variant { AddErc20Arg = record {
-     contract = record {
-       chain_id = 1;
-       address = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF"
-     };
-     ledger_init_arg = record {
-       minting_account = record { owner = principal "sv3dd-oaaaa-aaaar-qacoa-cai" };
-       fee_collector_account = opt record {
-         owner = principal "sv3dd-oaaaa-aaaar-qacoa-cai";
-         subaccount = opt blob "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\0f\ee";
-       };
-       feature_flags = opt record { icrc2 = true };
-       decimals = opt 18;
-       max_memo_length = opt 80;
-       transfer_fee = 100_000_000_000_000_000;
-       token_symbol = "ckBAT";
-       token_name = "ckBAT";
-       token_logo = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAwIDIwMDAiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgMTQwLjUpIj48cGF0aCBmaWxsPSIjNjYyZDkxIiBkPSJNMjAwMCAxNzE2LjY0IDEwMDQuNzkgMTE0Ni43OCAwIDE3MTkgMjAwMCAxNzE2LjY0eiIvPjxwYXRoIGZpbGw9IiM5ZTFmNjMiIGQ9Ik0xMDA1LjExIDAgMTAwNC43OSAxMTQ2Ljc4IDIwMDAgMTcxNi42NCAxMDA1LjExIDB6Ii8+PHBhdGggZmlsbD0iI2ZmNTAwMCIgZD0iTTAgMTcxOSAxMDA0Ljc5IDExNDYuNzggMTAwNS4xMSAwIDAgMTcxOXoiLz48cGF0aCBmaWxsPSIjZmZmIiBzdHJva2U9IiNmZjUwMDAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLXdpZHRoPSIyNSIgZD0ibTEwMDIuNzUgNjk1LjY3bC00MTAuODUgNjg2LjI1aDgyMy41NGwtNDEyLjY5LTY4Ni4yNXoiLz48L2c+PC9zdmc+";
-       initial_balances = vec {};
-       maximum_number_of_accounts = null;
-       accounts_overflow_trim_quantity = null
-     };
-     git_commit_hash = "cf41372e3d4dc1accfe2c09a7969f8bddc729dc1";
-     ledger_compressed_wasm_hash = "390e22377640748f5a63fc35d50680d27a05d3e9a05c1c25c4061cacebda4c56";
-     index_compressed_wasm_hash = "b9f248fed399250f17bd3c00386c251bdff5479001bedde341aeccc632a74253";
-   }})' | xxd -r -p > args.bin
+  "$(cat arg.did)" | xxd -r -p > args.bin
 ```
 
-### How these were verified
+**Encoded result (reproducible):**
 
-**`git_commit_hash`** — read from the *running* orchestrator's own canister
-metadata, not from a forum post:
+| | |
+|---|---|
+| `args.bin` size | 967 bytes |
+| `args.bin` SHA-256 | `3f2e92c566b562f7791b6706b3c564e3e51488500f98d5c5bf7fdfaa8a755206` |
+| Target canister | `vxkom-oyaaa-aaaar-qafda-cai` |
+| Orchestrator wasm | `b7294354c6ad8d0466894204471155d47e80af468fbca4759baa64c7c77ca65a` (unchanged — same module already running) |
+
+The payload was round-tripped back through `didc decode` and matches the
+source exactly, so the bytes above are confirmed to be what the NNS would
+execute — not merely what was typed.
+
+### How every value was verified
+
+The four artefacts below form a closed chain: the commit identifies the
+wasms, and the wasms reproduce what mainnet is actually running.
+
+**1. The commit** — read from the running orchestrator's own metadata, not
+from any forum post:
 
 ```bash
 dfx canister --network ic metadata vxkom-oyaaa-aaaar-qafda-cai git_commit_id
 # → cf41372e3d4dc1accfe2c09a7969f8bddc729dc1
 ```
 
-**The two wasm hashes** — the orchestrator publishes the suite version it
-currently installs, and the official README's download URL reproduces it
-byte-for-byte at that commit. Both sides were checked and they match
-exactly:
+**2. The orchestrator wasm at that commit reproduces the live module hash
+byte-for-byte** — this is what proves the commit is genuinely the running
+code:
+
+```bash
+dfx canister --network ic info vxkom-oyaaa-aaaar-qafda-cai
+# Module hash: 0xb7294354c6ad8d0466894204471155d47e80af468fbca4759baa64c7c77ca65a
+
+curl -sO "https://download.dfinity.systems/ic/cf41372e3d4dc1accfe2c09a7969f8bddc729dc1/canisters/ic-ledger-suite-orchestrator-canister.wasm.gz"
+shasum -a 256 ic-ledger-suite-orchestrator-canister.wasm.gz
+# → b7294354c6ad8d0466894204471155d47e80af468fbca4759baa64c7c77ca65a   ✓ identical
+```
+
+**3. The `.did` used for encoding is the canister's own interface** — the
+file from GitHub at that commit is byte-identical to the Candid embedded in
+the live canister, so the payload was encoded against the real interface:
+
+```bash
+dfx canister --network ic metadata vxkom-oyaaa-aaaar-qafda-cai candid:service > from-canister.did
+curl -sL -o from-github.did "https://raw.githubusercontent.com/dfinity/ic/cf41372e3d4dc1accfe2c09a7969f8bddc729dc1/rs/ethereum/ledger-suite-orchestrator/ledger_suite_orchestrator.did"
+diff from-github.did from-canister.did   # → no differences
+```
+
+**4. The ledger suite version the new canisters will run** — not a proposal
+argument any more, but reviewers will still want it. The orchestrator
+publishes it, and it reproduces from the same commit:
 
 ```bash
 dfx canister --network ic call vxkom-oyaaa-aaaar-qafda-cai get_orchestrator_info '()' --query
@@ -399,6 +455,20 @@ which is a stronger and more specific argument than the one originally
 made; (c) implied someone else typically submits the actual NNS proposal
 on a community member's behalf — the ckOCT precedent shows a community
 neuron-holder submitted directly, which is exactly Anthony's position.
+
+**Caught by actually encoding the payload (the most important check):** the
+`AddErc20Arg` shape inherited from the 2024 ckOCT proposal is obsolete and
+will not encode. `git_commit_hash` and the wasm hashes have moved to
+`UpgradeArg`; `LedgerInitArg` lost six of its eleven fields. Had this
+document been posted with the ckOCT-derived payload — exactly what the
+"reuse the previous proposal" convention encourages — the first reviewer to
+run `didc encode` would have found it broken. See the callout in section 4.
+
+**The full artefact chain, verified end to end:** commit `cf41372e` →
+orchestrator wasm `b7294354…` = the live module hash; the same commit's
+`.did` = the canister's embedded `candid:service`, byte-identical; the same
+commit's ledger/index/archive wasms = the orchestrator's registered
+`ledger_suite_version`. Each link independently reproducible.
 
 **Both previously-open questions are now closed:**
 - *Fee guidance* — the current orchestrator README rule

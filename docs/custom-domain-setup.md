@@ -35,13 +35,58 @@ Banking.Brave), but it is not live and never was.
 
 ## Step 1 — DNS records (must be done at the registrar; I can't do this)
 
-Three records, mirroring how `cafreso.com` is already configured:
+### ⚠️ The Namecheap Host-field trap — this already happened once
+
+Namecheap's **Host** field takes the name *relative to the zone*, and it
+appends `.cafreso.com` automatically. Typing the full FQDN produces records
+at a doubled name that silently does nothing:
+
+```bash
+# What a first attempt actually created:
+dig +short @dns1.registrar-servers.com minegold.cafreso.com.cafreso.com CNAME
+# → icp1.io.          ← correct value, wrong NAME
+dig +short @dns1.registrar-servers.com minegold.cafreso.com CNAME
+# → (nothing)         ← what the boundary node looks for
+```
+
+The values were all correct; only the record names were wrong. Registration
+failed with:
+
+```json
+{"error_type":"canister_id_not_resolved"}
+```
+
+**Enter these in the Host column — subdomain only, no `.cafreso.com`:**
+
+| Type | Host (what you type) | Value |
+|---|---|---|
+| `CNAME` | `minegold` | `icp1.io` |
+| `TXT` | `_canister-id.minegold` | `cqyto-tiaaa-aaaau-agppa-cai` |
+| `CNAME` | `_acme-challenge.minegold` | `_acme-challenge.minegold.cafreso.com.icp2.io` |
+
+Note the asymmetry that makes this confusing: the **Host** is relative
+(`_acme-challenge.minegold`) but the **Value** contains the full FQDN with
+`.icp2.io` appended (`_acme-challenge.minegold.cafreso.com.icp2.io`). That
+is correct — don't "fix" the value to match the host.
+
+Resulting fully-qualified records:
 
 | Type | Name | Value |
 |---|---|---|
 | `CNAME` | `minegold.cafreso.com` | `icp1.io` |
 | `TXT` | `_canister-id.minegold.cafreso.com` | `cqyto-tiaaa-aaaau-agppa-cai` |
 | `CNAME` | `_acme-challenge.minegold.cafreso.com` | `_acme-challenge.minegold.cafreso.com.icp2.io` |
+
+### ⚠️ Copy the shape from `cafreso.com`, never the values from `ai.cafreso.com`
+
+`ai.cafreso.com`'s `_canister-id` TXT is **wrong** — it reads
+`dqcmv-zqaaa-aaaab-agp2a-cai` (the apex canister) when `ai.cafreso.com` is
+actually served by `v4tdv-riaaa-aaaab-agtfa-cai`, confirmed by the
+`x-ic-canister-id` response header. It isn't breaking anything today because
+the boundary node cached the correct mapping at registration time, but if
+that domain is ever re-registered or re-validated it would re-point
+`ai.cafreso.com` at the wrong site. It looks like a copy-paste of the apex
+record. **Worth fixing separately** — and worth not propagating.
 
 The existing `cafreso.com` records to copy the pattern from:
 

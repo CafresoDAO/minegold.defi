@@ -21,12 +21,32 @@
     },
     "ignore": false
   },
+  // ⚠️ THIS BLOCK IS CURRENTLY INERT AND NO CSP IS SERVED IN PRODUCTION.
+  //
+  // `.ic-assets.json5` is a dfx-CLIENT feature. This canister is deployed via
+  // scripts/asset-sync/sync.mjs (@dfinity/assets) because dfx cannot upgrade
+  // it — and that path sets contentType ONLY, never headers. Verified:
+  //   curl -sI https://cqyto-tiaaa-aaaau-agppa-cai.icp0.io/ | grep -i content-security
+  //   → nothing. Only strict-transport-security (added by the gateway).
+  //
+  // So this is dead config. It is kept, and kept CORRECT, because the day
+  // someone teaches sync.mjs to set headers (or migrates to dfx), a wrong
+  // connect-src here would silently break deposit confirmation with no error
+  // beyond a console message.
+  //
+  // connect-src below was corrected on 2026-08-01: it listed rpc.ankr.com,
+  // which appears only in a stale comment in src/lib/eth.ts, and omitted all
+  // SIX Ethereum RPC hosts the app actually uses (src/lib/eth.ts:43-48 —
+  // viem `fallback` transports serving ETH balance reads, allowance checks,
+  // eth_getTransactionReceipt polling and treasury balanceOf). Had the CSP
+  // ever gone live as written, every one of those calls would have been
+  // blocked.
   {
     "match": "**/*",
     "security_policy": "standard",
     "disable_security_policy_warning": true,
     "headers": {
-      "Content-Security-Policy": "default-src 'self'; connect-src 'self' https://icp0.io https://*.icp0.io https://icp-api.io https://identity.ic0.app https://*.ic0.app https://api.coingecko.com https://api.geckoterminal.com https://rpc.ankr.com https://*.etherscan.io; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://unpkg.com https://fonts.gstatic.com data:; img-src 'self' data: https:; frame-src 'self' https://identity.ic0.app https://*.ic0.app; frame-ancestors 'none';"
+      "Content-Security-Policy": "default-src 'self'; connect-src 'self' https://icp0.io https://*.icp0.io https://icp-api.io https://identity.ic0.app https://*.ic0.app https://api.coingecko.com https://api.geckoterminal.com https://*.etherscan.io https://ethereum-mainnet.wallet.brave.com https://eth.llamarpc.com https://ethereum-rpc.publicnode.com https://eth-mainnet.public.blastapi.io https://eth.merkle.io https://rpc.flashbots.net; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://unpkg.com https://fonts.gstatic.com data:; img-src 'self' data: https:; frame-src 'self' https://identity.ic0.app https://*.ic0.app; frame-ancestors 'none';"
     }
   }
 ]

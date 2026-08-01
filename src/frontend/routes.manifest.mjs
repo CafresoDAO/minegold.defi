@@ -11,12 +11,23 @@
  * FOREVER. Do not unify them — that "cleanup" would strand every user's
  * balance (see the warning block in auth.tsx).
  */
-export const SITE_ORIGIN = "https://banking.cafreso.com";
+/* This is minegold.defi's own domain, NOT banking.cafreso.com. It previously
+ * pointed at banking.cafreso.com, which has never resolved — so every
+ * canonical and og:url the app emitted pointed at a dead host. It also
+ * re-conflated the two brands: Banking.Brave is the institution,
+ * minegold.defi is an application under it, and the app's canonical URL
+ * should be its own.
+ *
+ * NOTE: minegold.cafreso.com is pending boundary-node registration. Until
+ * `curl -sI https://minegold.cafreso.com` returns 200, canonical/og:url
+ * still point somewhere unresolvable — no worse than before, but don't
+ * announce links until it's live. See docs/custom-domain-setup.md. */
+export const SITE_ORIGIN = "https://minegold.cafreso.com";
 
 /** Where OG IMAGES are fetched from. Crawlers fetch og:image at unfurl time,
  *  so it must be an origin that resolves TODAY — the raw canister URL —
  *  even while og:url/canonical point at the (not-yet-live) custom domain.
- *  Flip this to SITE_ORIGIN once banking.cafreso.com DNS is verified. */
+ *  Flip this to SITE_ORIGIN once minegold.cafreso.com DNS is verified. */
 export const OG_ASSET_ORIGIN = "https://cqyto-tiaaa-aaaau-agppa-cai.icp0.io";
 
 /** Shared OG image (1200×630). Route-specific cards can override later. */

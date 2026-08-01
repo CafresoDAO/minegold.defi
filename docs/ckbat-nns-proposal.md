@@ -26,9 +26,11 @@ twin of Basic Attention Token (BAT), via the ckERC20 ledger suite
 orchestrator — the same mechanism that added the eleven ckERC20 tokens live
 today (confirmed against the minter's own dashboard, 2026-07-31): ckEURC,
 ckLINK, ckOCT, ckPEPE, ckSHIB, ckUNI, ckUSDC, ckUSDT, ckWBTC, ckWSTETH,
-ckXAUT. BAT is not among them. BAT is a top-100 ERC-20 with seven-plus years
-of mainnet history, issued by Brave Software and earned as advertising
-revenue by the Brave browser's tens of millions of monthly users. A live ICP
+ckXAUT. BAT is not among them. BAT is an ERC-20 with nine years of mainnet
+history, issued by Brave Software and earned as advertising revenue by the
+Brave browser's tens of millions of monthly users. It ranks **#257 by market
+capitalisation (~$98M, ~$10.3M daily volume)** — mid-tier, and the case for
+it rests on its transfer pattern rather than its size. A live ICP
 application (minegold.defi) is already built against the ckERC20 minter and
 polls `get_minter_info` for BAT support on every visit; the day ckBAT
 exists, a consumer-scale on-ramp of recurring, real-income BAT flow onto the
@@ -45,7 +47,8 @@ Internet Computer switches on with it.
 | Deployed | May 2017 |
 | Supply | 1.5 billion BAT, fixed |
 | Issuer | Brave Software (the Brave browser, Brave Ads, Brave Rewards) |
-| Typical market rank | top-100 by capitalization; listed on every major venue |
+| Market rank | **#257** (~$98M cap, ~$10.3M 24h volume), 2026-08-01 |
+| Other chains | Solana mint holds ~1.64M BAT — **~0.11%** of supply |
 
 *Verified on-chain 2026-07-31 by `eth_call` against the contract above via a
 public Ethereum RPC: `symbol()` → `BAT`, `decimals()` → 18, `name()` →
@@ -84,10 +87,16 @@ changed several things about how this document is written — see section 8.
    proposal for new tokens generally. The proposer (`toliuyi`) pushed back
    directly — *"Why top 20 and not top 100 or 1000?... Leave the business
    value judgment to others"* — and no Motion-proposal requirement was
-   ever adopted. This is a live, unresolved opinion, not a rule, and BAT's
-   position is stronger here than OCT's was: BAT is a top-100 token with
-   an eight-year history and a household-name issuer (Brave), where OCT
-   was a recent rebrand of a much smaller project.
+   ever adopted. This is a live, unresolved opinion, not a rule.
+
+   **Do not answer it by claiming BAT is a large token — it isn't.** An
+   earlier draft of this document asserted BAT was "top-100"; it is #257.
+   That claim would have been refuted in one click and would have cost
+   more credibility than the objection itself. BAT's genuine advantages
+   over OCT are a nine-year mainnet history, a household-name issuer, real
+   liquidity (~10% of cap traded daily), and a use case — recurring
+   sub-$5 payouts — that chain-key tokens are uniquely suited to serve.
+   Argue the transfer pattern, concede the market cap.
 4. The fee argument converged on a **guidance range of roughly $0.005–
    $0.015 (0.5–1.5 cents)**, based on trailing average price to avoid
    short-term volatility, explicitly adjustable later by a follow-up

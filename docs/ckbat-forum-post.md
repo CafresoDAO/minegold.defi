@@ -23,29 +23,53 @@ to do the work.
 
 ## Why BAT
 
-BAT is what Brave browser users earn as advertising revenue. That makes it
-unusual among ERC-20s: the flows are **recurring, small, and tied to real
-income** rather than to trading. It's also a mature asset — deployed May
-2017, fixed 1.5B supply, no fee-on-transfer, no rebasing, no admin mint
-since the ICO, and a top-100 market cap throughout.
+**Let me lead with the weakest part of my own case, because you'll check it
+anyway:** BAT is currently ranked **#257 by market cap** (~$98M). It is not
+a top-20 or even top-100 token today, and I'm not going to pretend
+otherwise. It sat in the top 30 during the 2021 cycle and has fallen a long
+way since.
 
-The economics are the argument. A typical Brave Rewards payout is on the
+So I'm not arguing this on size. I'm arguing it on **use case**, which I
+think is the more relevant bar for chain-key tokens.
+
+BAT is what Brave browser users earn as advertising revenue. That makes the
+flows structurally unlike most ERC-20s: **recurring, small, and tied to real
+income** rather than to trading. A typical Brave Rewards payout is on the
 order of $1–3/month. On Ethereum that is uneconomical to move — the fee
-often exceeds the payout. On ICP it is trivially economical. This is
-precisely the asset class chain-key tokens exist to serve, and it comes with
-a large, non-crypto-native user base attached.
+routinely exceeds the payout, so the balance simply sits there. On ICP it is
+trivially economical.
 
-I'm not neutral here and should say so plainly: I operate
-[minegold.defi](https://minegold.defi), a live mainnet application that
-refines ckERC20 assets into a gold-backed token. It is already built against
-the ckERC20 minter and polls `get_minter_info` for BAT support on every page
-load, so the listing activates a shipped product on day one rather than a
-promise. I'd also intend to fund Brave Ads campaigns — paid in BAT —
-marketing the on-ramp to Brave Rewards users, i.e. demand generation for the
-ck-twin at my own cost.
+That's the argument in one line: **chain-key tokens exist precisely to make
+small, recurring transfers viable, and BAT is one of the few ERC-20s whose
+core use case is small, recurring transfers.** A large market cap isn't what
+makes a token worth bridging; an unserved transfer pattern is.
 
-But the case shouldn't rest on my app. If someone else builds the better BAT
-on-ramp, the listing was still correct.
+Two facts that speak to whether it's a *live* asset rather than a dead one,
+both checkable right now:
+
+- **24h volume ~$10.3M against a ~$98M market cap** — roughly 10% turnover
+  daily. That is healthy liquidity, not a ghost token.
+- **Fixed supply, verified on-chain.** `totalSupply()` on the ERC-20 returns
+  exactly `1,500,000,000` — matching the documented cap, with no
+  fee-on-transfer and no rebasing.
+
+### My interest in this, stated plainly
+
+I operate **minegold.defi**, a live mainnet application that refines ckERC20
+assets into a gold-backed token —
+[`cqyto-tiaaa-aaaau-agppa-cai`](https://cqyto-tiaaa-aaaau-agppa-cai.icp0.io)
+(inspect it on the
+[dashboard](https://dashboard.internetcomputer.org/canister/cqyto-tiaaa-aaaau-agppa-cai)).
+It already runs against the ckERC20 minter and polls `get_minter_info` for
+BAT support on every page load, so a listing activates shipped code rather
+than a roadmap item. I'd also intend to fund Brave Ads campaigns — paid in
+BAT — marketing the on-ramp to Brave Rewards users, which is demand
+generation for the ck-twin at my own cost.
+
+That's a real conflict of interest and you should weigh it. But the case
+shouldn't rest on my app: if someone else builds the better BAT on-ramp, the
+listing was still correct, and I'd rather be voted down on the merits than
+adopted on my say-so.
 
 ## Token facts
 
@@ -57,9 +81,54 @@ on-ramp, the listing was still correct.
 | Deployed | May 2017 |
 | Supply | 1.5 billion, fixed |
 | Issuer | Brave Software |
+| Market cap rank | #257 (~$98M) |
+| 24h volume | ~$10.3M |
 
 Contract verified by `eth_call`: `symbol()` → `BAT`, `decimals()` → 18,
-`name()` → `Basic Attention Token`.
+`name()` → `Basic Attention Token`, `totalSupply()` → `1500000000` ×10¹⁸.
+
+## "Isn't Brave moving BAT to Solana?"
+
+Partly, yes — and I'd rather raise this myself than have it raised in reply.
+Brave's newer self-custody Rewards payouts settle BAT on Solana, and BAT is
+deployed on seven chains today. If you know that, you should be asking why
+the *Ethereum* token is the one worth bridging.
+
+Here's the on-chain answer:
+
+| Chain | BAT supply | Share |
+|---|---|---|
+| **Ethereum (canonical issuance)** | 1,500,000,000 | 100% of issuance |
+| Solana (bridged/wrapped) | ~1,639,750 | **~0.11%** |
+
+```bash
+# Ethereum — the full supply is minted here
+cast call 0x0D8775F648430679A709E98d2b0Cb6250d2887EF "totalSupply()(uint256)"
+# → 1500000000000000000000000000
+
+# Solana — the wrapped mint
+curl -s -X POST https://api.mainnet-beta.solana.com -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"getTokenSupply","params":["EPeUFDgHRxs9xxEPVaL6kfGQvCon7jmAWKVUHuux1Tpz"]}'
+# → uiAmount ≈ 1,639,750
+```
+
+Roughly **one BAT in a thousand** is on Solana. Ethereum remains where the
+asset is actually issued and held, where every major exchange withdraws to
+by default, and where years of accumulated Rewards balances already sit. The
+Solana deployment is new and, so far, small.
+
+Three honest caveats:
+
+1. **That share may grow.** If Brave's self-custody payouts scale, more BAT
+   ends up on Solana over time. I'm proposing based on where the float is
+   today, not forecasting where it lands.
+2. **This isn't exclusive.** If ICP's Solana integration reaches SPL tokens,
+   an SPL-based BAT twin could be added later. Adding the ERC-20 now doesn't
+   foreclose that — and ckERC20 infrastructure exists today, while SPL
+   support does not.
+3. **I'm not claiming Brave payouts land on Ethereum.** Increasingly they
+   don't. The addressable population is BAT holders on Ethereum — which, per
+   the table above, is very nearly all of them.
 
 ## The proposal payload
 
@@ -181,6 +250,11 @@ arguments is otherwise good advice, and this is a quiet way for it to break.
    after adoption the orchestrator immediately spawns the ledger, index and
    archive and notifies the minter, so there's no correcting a parameter
    without a second proposal.
+4. **Whether #257 is disqualifying.** I've made the use-case argument above
+   and I think it's the right frame, but if the consensus is that there's a
+   market-cap floor for ckERC20 additions, I'd genuinely rather hear that
+   stated as a general rule than have it applied case-by-case. It would be
+   useful for everyone proposing after me.
 
 Thanks for reading. I'll hold off submitting for at least a week, longer if
 discussion is active.

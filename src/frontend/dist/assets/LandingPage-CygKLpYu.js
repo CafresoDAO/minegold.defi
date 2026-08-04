@@ -1,5 +1,6 @@
-import { r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, T as ThemeToggle, y as ChevronRight, J as JOURNEY } from "./index-CkQl0tYQ.js";
-import { f as fetchCkBatStatus, A as ArrowRight } from "./ckMinter--R090JR0.js";
+import { r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, J as IncidentBanner, T as ThemeToggle, y as ChevronRight, K as JOURNEY } from "./index-CL-HWEUf.js";
+import { f as fetchCkBatStatus } from "./ckMinter-DA8G8ehC.js";
+import { A as ArrowRight } from "./arrow-right-j6j4Yybf.js";
 function Reveal({
   children,
   delayMs = 0,
@@ -290,7 +291,8 @@ function FAQ() {
 function LandingPage({
   onOpenRefinery,
   onOpenBrave,
-  onOpenProof
+  onOpenProof,
+  onNavigatePath
 }) {
   const [bat, setBat] = reactExports.useState(null);
   const [sticky, setSticky] = reactExports.useState(false);
@@ -317,6 +319,7 @@ function LandingPage({
       className: "min-h-screen",
       style: { background: "var(--bb-bg)", color: "var(--bb-text)" },
       children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(IncidentBanner, { onNavigatePath }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "div",
           {
@@ -626,6 +629,24 @@ function LandingPage({
               className: "border-t pt-6 pb-24 text-[11px] leading-relaxed",
               style: { borderColor: "var(--bb-border)", color: "var(--bb-text-dim)" },
               children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px]", children: [
+                  ["How it works", "/docs/how-it-works"],
+                  ["Risks & limitations", "/docs/risks"],
+                  ["How the rate is made", "/docs/rate-methodology"],
+                  ["Redeem & recovery", "/docs/redeem-and-recovery"],
+                  ["Status & incidents", "/status"]
+                ].map(([label, path]) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "button",
+                  {
+                    type: "button",
+                    "data-ocid": `landing.footer${path.replace(/\//g, ".")}`,
+                    onClick: () => onNavigatePath(path),
+                    className: "min-h-[32px] font-semibold underline underline-offset-2",
+                    style: { color: "var(--bb-brand)" },
+                    children: label
+                  },
+                  path
+                )) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mb-2", children: [
                   "Refinery backend",
                   " ",

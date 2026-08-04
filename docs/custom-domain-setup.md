@@ -122,6 +122,54 @@ curl -s https://cqyto-tiaaa-aaaau-agppa-cai.icp0.io/.well-known/ic-domains
 
 ## Step 3 — register with the boundary node
 
+> ### 🚧 BLOCKED as of 2026-08-04 — and not on our side
+>
+> **Steps 1 and 2 are complete and verified.** All three DNS records resolve
+> correctly at the authoritative nameserver *and* at 1.1.1.1 and 8.8.8.8, and
+> the canister serves `/.well-known/ic-domains` listing the domain. There is
+> nothing left to fix here.
+>
+> The registration API itself rejects every request:
+>
+> ```
+> HTTP 400
+> {"error_type":"canister_id_not_resolved",
+>  "description":"The gateway couldn't determine the destination canister for this request…"}
+> ```
+>
+> **Why this is not a DNS or config problem — the evidence:**
+>
+> - A bare `GET https://icp0.io/registrations`, with no domain in the request
+>   at all, returns the *same* error. It fails before our domain is ever
+>   evaluated.
+> - Identical response from `icp0.io`, `icp-api.io`, `ic0.app` and
+>   `boundary.ic0.app`, for both POST and GET.
+> - The request reaches a genuine ICP boundary node — valid certificate,
+>   `x-request-id` and the standard IC CORS headers come back. It is being
+>   *rejected*, not dropped.
+> - Pinning `icp0.io` to a public-resolver IP with `--resolve` changes
+>   nothing, so it is not local DNS interference.
+>
+> `canister_id_not_resolved` is the gateway's generic "I can't map this
+> request to a canister" error. Getting it on `/registrations` suggests that
+> path is no longer special-cased on the edge that answers us — i.e. the API
+> moved or changed. Re-check DFINITY's current custom-domain docs and the
+> forum before assuming anything in this file is still the right call.
+>
+> **A red herring worth not chasing twice:** `icp0.io` resolves to a
+> different IP here (`209.34.235.18`) than at 1.1.1.1 (`63.251.162.11`) or
+> 8.8.8.8 (`23.142.184.129`), and the first is also what `cafreso.com`
+> resolves to. That looks like DNS hijacking and is not — `cafreso.com` is
+> itself ICP-hosted, so it shares boundary-node IPs, and these are ordinary
+> anycast/GeoDNS differences. Pinning the IP was tested and made no
+> difference.
+>
+> **Meanwhile:** the app was deployed with `SITE_ORIGIN` still set to
+> `https://minegold.cafreso.com`, so `canonical` and `og:url` point at a host
+> that does not resolve yet. Deliberate — it avoids a second full deploy and
+> becomes correct the moment registration succeeds. Retry Step 3 periodically;
+> nothing else needs doing when it works.
+
 ```bash
 curl -sX POST -H 'Content-Type: application/json' \
   -d '{"name":"minegold.cafreso.com"}' \

@@ -1,15 +1,4 @@
-import { c as createLucideIcon, K as HttpAgent, M as Actor } from "./index-CkQl0tYQ.js";
-/**
- * @license lucide-react v0.511.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
-];
-const ArrowRight = createLucideIcon("arrow-right", __iconNode);
+import { M as HttpAgent, N as Actor } from "./index-CL-HWEUf.js";
 const CK_MINTER_CANISTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai";
 const BAT_ERC20_ADDRESS = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF";
 const minterIDL = ({ IDL }) => {
@@ -66,7 +55,6 @@ async function fetchCkBatStatus() {
   }
 }
 export {
-  ArrowRight as A,
   BAT_ERC20_ADDRESS as B,
   CK_MINTER_CANISTER_ID as C,
   fetchCkBatStatus as f

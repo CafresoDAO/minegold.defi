@@ -1,4 +1,4 @@
-import { c as createLucideIcon, r as reactExports, j as jsxRuntimeExports, Q as StatusPill, $ as fmtAmount, I as ExternalLink, a0 as ledgerUrl } from "./index-CkQl0tYQ.js";
+import { c as createLucideIcon, r as reactExports, j as jsxRuntimeExports, U as StatusPill, a6 as fmtAmount, I as ExternalLink, a7 as ledgerUrl } from "./index-CL-HWEUf.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -134,5 +134,6 @@ function ReceiptBlock({
   );
 }
 export {
+  Link2 as L,
   ReceiptBlock as R
 };

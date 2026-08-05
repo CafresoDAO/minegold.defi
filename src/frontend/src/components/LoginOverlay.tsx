@@ -1,12 +1,10 @@
 import { GoldCTA } from "./ui/GoldCTA";
 import { JOURNEY } from "../lib/journey";
+import { MinegoldMark } from "./ui/MinegoldMark";
 
 type Props = {
   isLoggingIn: boolean;
   onLogin: () => void;
-  /** OISY wallet sign-in (ICRC-34 delegation) — approved once in the
-   *  wallet, then the session behaves exactly like an II session. */
-  onLoginOisy: () => void;
   /** Escape hatch back to the public landing page. Provided whenever the
    *  user reached this gate by choice (I6: `/` is a landing page now, not a
    *  wall) — a full-screen gate with no way out is a trap, and browser Back
@@ -14,25 +12,25 @@ type Props = {
   onBack?: () => void;
 };
 
-/** Full-screen sign-in gate shown while there is no authenticated user. */
-export function LoginOverlay({ isLoggingIn, onLogin, onLoginOisy, onBack }: Props) {
+/**
+ * Full-screen sign-in gate.
+ *
+ * ONE button on purpose. An earlier revision offered "Create or open your
+ * vault" beside "Continue with OISY wallet", which implied two different
+ * destinations for what is one vault — and OISY could not actually back the
+ * promise (see auth.tsx: OISY has no dApp delegation, so a wallet session
+ * would prompt on every balance poll). Until a wallet can hold a session,
+ * this screen states one door and names it.
+ */
+export function LoginOverlay({ isLoggingIn, onLogin, onBack }: Props) {
   return (
     <div
       data-ocid="login.modal"
       className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4"
     >
       <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-8 text-center shadow-2xl">
-        {/* Brand mark: stacked gold ingots — geometric, no illustration. */}
         <div className="w-20 h-20 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-3xl mx-auto flex items-center justify-center mb-6 shadow-lg shadow-yellow-500/30">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            {/* bottom pair */}
-            <path d="M4.5 30.5 L7.5 23 H17 L20 30.5 Z" fill="#3B2400" />
-            <path d="M20.5 30.5 L23.5 23 H33 L36 30.5 Z" fill="#4A2E00" />
-            {/* top ingot */}
-            <path d="M12.5 20 L15.5 12.5 H25 L28 20 Z" fill="#5C3A00" />
-            {/* shine on the top ingot */}
-            <path d="M16.5 14.5 H23.5" stroke="rgba(255,255,255,0.55)" strokeWidth="1.6" strokeLinecap="round" />
-          </svg>
+          <MinegoldMark size={40} />
         </div>
         <h1 className="t-display text-white mb-1" style={{ fontSize: "clamp(2rem, 1.6rem + 2vw, 2.75rem)" }}>
           minegold<span className="text-yellow-400">.defi</span>
@@ -86,23 +84,12 @@ export function LoginOverlay({ isLoggingIn, onLogin, onLoginOisy, onBack }: Prop
           }
           trailingIcon={null}
         >
-          {isLoggingIn ? "Opening your vault…" : "Create or open your vault"}
+          {isLoggingIn ? "Signing in…" : "Sign in"}
         </GoldCTA>
-        {/* OISY — secondary door, same vault. One wallet approval at
-            connect; after that the session is as silent as II. */}
-        <button
-          type="button"
-          data-ocid="login.oisy_button"
-          onClick={onLoginOisy}
-          disabled={isLoggingIn}
-          className="mt-2.5 inline-flex w-full min-h-[44px] items-center justify-center gap-2 rounded-2xl border border-zinc-700 bg-zinc-800/60 text-sm font-bold text-zinc-100 hover:bg-zinc-800 disabled:opacity-50"
-        >
-          Continue with OISY wallet
-        </button>
         <p className="mt-3 text-[11px] text-zinc-500">
-          Your vault is an <span className="text-zinc-300 font-semibold">Internet
-          Identity</span> passkey, or your <span className="text-zinc-300 font-semibold">OISY</span> wallet
-          — whichever you sign in with.
+          Opens <span className="text-zinc-300 font-semibold">Internet
+          Identity</span> — sign in with Face&nbsp;ID, a fingerprint, or a
+          security key. First time? It creates your vault in the same step.
         </p>
         {onBack && (
           <button

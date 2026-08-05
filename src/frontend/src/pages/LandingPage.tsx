@@ -389,6 +389,16 @@ export function LandingPage({
                 {label}
               </button>
             ))}
+            <a
+              href="https://github.com/CafresoDAO/minegold.defi"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-ocid="landing.footer.source"
+              className="min-h-[32px] font-semibold underline underline-offset-2"
+              style={{ color: "var(--bb-brand)" }}
+            >
+              Source on GitHub
+            </a>
           </nav>
           <p className="mb-6 text-center">
             Refinery backend{" "}

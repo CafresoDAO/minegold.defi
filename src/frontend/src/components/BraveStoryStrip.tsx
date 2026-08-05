@@ -1,4 +1,5 @@
-import { Pickaxe, X } from "lucide-react";
+import { X } from "lucide-react";
+import { MinegoldMark } from "./ui/MinegoldMark";
 import { useEffect, useState } from "react";
 import { fetchCkBatStatus, type CkBatStatus } from "../lib/ckMinter";
 
@@ -74,7 +75,7 @@ export function BraveStoryStrip({ onOpenBraveSoon }: Props) {
 
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-yellow-500/15 border border-yellow-500/30 flex items-center justify-center shrink-0">
-          <Pickaxe size={18} className="text-yellow-400" />
+          <MinegoldMark size={20} />
         </div>
         <div className="min-w-0">
           <h3 className="font-black text-white text-base sm:text-lg leading-snug">

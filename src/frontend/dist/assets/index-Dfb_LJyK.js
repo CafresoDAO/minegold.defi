@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-D9Or7js0.js","assets/button-Bi9r0pdz.js","assets/LandingPage-JHZ6B5h4.js","assets/ckMinter-BG0j-j0s.js","assets/arrow-right-CcVc8Kyp.js","assets/MinegoldBraveSoon-06_ZU73j.js","assets/arrow-left-84sTGc_F.js","assets/TransactionHistoryPage-Qu4BZROb.js","assets/ReceiptBlock-ColpSR4E.js","assets/ReceiptPage-D7MixnvL.js","assets/DocsPage-BlUz-sA6.js","assets/markdown-D5Urscps.js","assets/StatusPage-DsI4kQqb.js","assets/SharedReceiptPage-D44Sg7jz.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-BdcOqrUS.js","assets/button-BlGdvUCp.js","assets/LandingPage-BMw2ytIE.js","assets/ckMinter-Dc8CUEeC.js","assets/arrow-right-1PJWC54Z.js","assets/MinegoldBraveSoon-CzFZWnIP.js","assets/arrow-left-Bf0Qqjra.js","assets/TransactionHistoryPage-BvelNsuT.js","assets/ReceiptBlock-DMDHvSHN.js","assets/ReceiptPage-Bag55iKQ.js","assets/DocsPage-DGYvf5CY.js","assets/markdown-2cnCMo2x.js","assets/StatusPage-DgG4RwH5.js","assets/SharedReceiptPage-DkaCl3pz.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -26912,7 +26912,6 @@ function mergeLoginOptions(loginOptions, otherLoginOptions) {
   };
 }
 const II_URL = "https://identity.ic0.app";
-const OISY_URL = "https://oisy.com/sign";
 const DAYS_30_NS = BigInt(30) * BigInt(24) * BigInt(60) * BigInt(60) * BigInt(1e9);
 const II_DERIVATION_ORIGIN = "https://cqyto-tiaaa-aaaau-agppa-cai.icp0.io";
 if (!/^https:\/\/[a-z0-9-]+\.icp0\.io$/.test(II_DERIVATION_ORIGIN)) {
@@ -26921,32 +26920,10 @@ if (!/^https:\/\/[a-z0-9-]+\.icp0\.io$/.test(II_DERIVATION_ORIGIN)) {
 const IS_LOCAL_DEV = /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
 const AUTH_EPOCH = "2026-07-derivation-origin-pin";
 const EPOCH_KEY = "minegold.auth_epoch";
-const OISY_SESSION_KEY = "minegold.oisy_session";
 const Ctx = reactExports.createContext(null);
-function restoreOisySession() {
-  try {
-    const raw = localStorage.getItem(OISY_SESSION_KEY);
-    if (!raw) return null;
-    const stored = JSON.parse(raw);
-    const sessionKey = Ed25519KeyIdentity.fromJSON(JSON.stringify(stored.key));
-    const chain2 = DelegationChain.fromJSON(JSON.stringify(stored.chain));
-    if (!isDelegationValid(chain2)) {
-      localStorage.removeItem(OISY_SESSION_KEY);
-      return null;
-    }
-    return DelegationIdentity.fromDelegation(sessionKey, chain2);
-  } catch {
-    try {
-      localStorage.removeItem(OISY_SESSION_KEY);
-    } catch {
-    }
-    return null;
-  }
-}
 function InternetIdentityProvider({ children }) {
   const [authClient, setAuthClient] = reactExports.useState(null);
   const [identity, setIdentity] = reactExports.useState(void 0);
-  const [walletKind, setWalletKind] = reactExports.useState(void 0);
   const [loginStatus, setLoginStatus] = reactExports.useState("initializing");
   const [loginError, setLoginError] = reactExports.useState(void 0);
   reactExports.useEffect(() => {
@@ -26963,7 +26940,6 @@ function InternetIdentityProvider({ children }) {
       if (stale) {
         await client2.logout();
         try {
-          localStorage.removeItem(OISY_SESSION_KEY);
           localStorage.setItem(EPOCH_KEY, AUTH_EPOCH);
         } catch {
         }
@@ -26973,13 +26949,6 @@ function InternetIdentityProvider({ children }) {
       if (await client2.isAuthenticated()) {
         if (cancelled) return;
         setIdentity(client2.getIdentity());
-        setWalletKind("ii");
-      } else {
-        const oisy = restoreOisySession();
-        if (oisy && !cancelled) {
-          setIdentity(oisy);
-          setWalletKind("oisy");
-        }
       }
       if (!cancelled) setLoginStatus("idle");
     }).catch((err) => {
@@ -27009,7 +26978,6 @@ function InternetIdentityProvider({ children }) {
       maxTimeToLive: DAYS_30_NS,
       onSuccess: () => {
         setIdentity(authClient.getIdentity());
-        setWalletKind("ii");
         setLoginStatus("success");
       },
       onError: (err) => {
@@ -27019,89 +26987,17 @@ function InternetIdentityProvider({ children }) {
       }
     });
   }, [authClient]);
-  const loginOisy = reactExports.useCallback(() => {
-    setLoginStatus("logging-in");
-    setLoginError(void 0);
-    void (async () => {
-      try {
-        const [{ Signer }, { PostMessageTransport }] = await Promise.all([
-          __vitePreload(() => import("./index-yGePJcjJ.js"), true ? [] : void 0),
-          __vitePreload(() => import("./index-BI2ef7nq.js"), true ? [] : void 0)
-        ]);
-        const transport = new PostMessageTransport({
-          url: OISY_URL,
-          windowOpenerFeatures: "width=440,height=680"
-        });
-        const signer = new Signer({
-          transport,
-          // ICRC-95: pin principal derivation to the canonical origin (see
-          // the derivation-origin block at the top of this file). Local dev
-          // is not whitelisted, so it falls back to per-origin principals —
-          // same tradeoff the II path makes.
-          ...IS_LOCAL_DEV ? {} : { derivationOrigin: II_DERIVATION_ORIGIN }
-        });
-        try {
-          const sessionKey = Ed25519KeyIdentity.generate();
-          const chainV5 = await signer.requestDelegation({
-            // v3 public key object is structurally compatible with the v5
-            // PublicKey interface (toDer()); nominal types differ.
-            publicKey: sessionKey.getPublicKey(),
-            maxTimeToLive: DAYS_30_NS
-          });
-          const chain2 = DelegationChain.fromJSON(
-            JSON.stringify(chainV5.toJSON())
-          );
-          const oisyIdentity = DelegationIdentity.fromDelegation(
-            sessionKey,
-            chain2
-          );
-          try {
-            localStorage.setItem(
-              OISY_SESSION_KEY,
-              JSON.stringify({
-                key: sessionKey.toJSON(),
-                chain: chain2.toJSON()
-              })
-            );
-          } catch {
-          }
-          setIdentity(oisyIdentity);
-          setWalletKind("oisy");
-          setLoginStatus("success");
-        } finally {
-          signer.closeChannel();
-        }
-      } catch (err) {
-        console.error("OISY login failed:", err);
-        setLoginError(err instanceof Error ? err : new Error(String(err)));
-        setLoginStatus("loginError");
-      }
-    })();
-  }, []);
   const clear = reactExports.useCallback(() => {
-    try {
-      localStorage.removeItem(OISY_SESSION_KEY);
-    } catch {
-    }
-    if (!authClient) {
-      setIdentity(void 0);
-      setWalletKind(void 0);
-      setLoginStatus("idle");
-      setLoginError(void 0);
-      return;
-    }
+    if (!authClient) return;
     void authClient.logout().then(() => {
       setIdentity(void 0);
-      setWalletKind(void 0);
       setLoginStatus("idle");
       setLoginError(void 0);
     });
   }, [authClient]);
   const value = {
     identity,
-    walletKind,
     login,
-    loginOisy,
     clear,
     loginStatus,
     isInitializing: loginStatus === "initializing",
@@ -33687,7 +33583,7 @@ async function call(client2, args) {
   } catch (err) {
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-BSeum6qo.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-B22HSgCt.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -46701,19 +46597,45 @@ const JOURNEY = [
   { n: 3, title: "Deposit", sub: "two taps in your wallet; Ethereum confirms in ~3 min" },
   { n: 4, title: "Gold", sub: "sGLDT lands in your vault — withdraw any time" }
 ];
-function LoginOverlay({ isLoggingIn, onLogin, onLoginOisy, onBack }) {
+function MinegoldMark({
+  size: size2 = 40,
+  className
+}) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "svg",
+    {
+      width: size2,
+      height: size2,
+      viewBox: "0 0 40 40",
+      fill: "none",
+      xmlns: "http://www.w3.org/2000/svg",
+      "aria-hidden": "true",
+      className,
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M4.5 30.5 L7.5 23 H17 L20 30.5 Z", fill: "#3B2400" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M20.5 30.5 L23.5 23 H33 L36 30.5 Z", fill: "#4A2E00" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12.5 20 L15.5 12.5 H25 L28 20 Z", fill: "#5C3A00" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "path",
+          {
+            d: "M16.5 14.5 H23.5",
+            stroke: "rgba(255,255,255,0.55)",
+            strokeWidth: "1.6",
+            strokeLinecap: "round"
+          }
+        )
+      ]
+    }
+  );
+}
+function LoginOverlay({ isLoggingIn, onLogin, onBack }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
       "data-ocid": "login.modal",
       className: "fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4",
       children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-8 text-center shadow-2xl", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-20 h-20 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-3xl mx-auto flex items-center justify-center mb-6 shadow-lg shadow-yellow-500/30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "40", height: "40", viewBox: "0 0 40 40", fill: "none", xmlns: "http://www.w3.org/2000/svg", "aria-hidden": "true", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M4.5 30.5 L7.5 23 H17 L20 30.5 Z", fill: "#3B2400" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M20.5 30.5 L23.5 23 H33 L36 30.5 Z", fill: "#4A2E00" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12.5 20 L15.5 12.5 H25 L28 20 Z", fill: "#5C3A00" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M16.5 14.5 H23.5", stroke: "rgba(255,255,255,0.55)", strokeWidth: "1.6", strokeLinecap: "round" })
-        ] }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-20 h-20 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-3xl mx-auto flex items-center justify-center mb-6 shadow-lg shadow-yellow-500/30", children: /* @__PURE__ */ jsxRuntimeExports.jsx(MinegoldMark, { size: 40 }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: "t-display text-white mb-1", style: { fontSize: "clamp(2rem, 1.6rem + 2vw, 2.75rem)" }, children: [
           "minegold",
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400", children: ".defi" })
@@ -46763,26 +46685,13 @@ function LoginOverlay({ isLoggingIn, onLogin, onLoginOisy, onBack }) {
               )
             ),
             trailingIcon: null,
-            children: isLoggingIn ? "Opening your vault…" : "Create or open your vault"
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            type: "button",
-            "data-ocid": "login.oisy_button",
-            onClick: onLoginOisy,
-            disabled: isLoggingIn,
-            className: "mt-2.5 inline-flex w-full min-h-[44px] items-center justify-center gap-2 rounded-2xl border border-zinc-700 bg-zinc-800/60 text-sm font-bold text-zinc-100 hover:bg-zinc-800 disabled:opacity-50",
-            children: "Continue with OISY wallet"
+            children: isLoggingIn ? "Signing in…" : "Sign in"
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-3 text-[11px] text-zinc-500", children: [
-          "Your vault is an ",
+          "Opens ",
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Internet Identity" }),
-          " passkey, or your ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "OISY" }),
-          " wallet — whichever you sign in with."
+          " — sign in with Face ID, a fingerprint, or a security key. First time? It creates your vault in the same step."
         ] }),
         onBack && /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
@@ -49725,7 +49634,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DNSW_NpP.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-alh0AJ--.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49756,7 +49665,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DNSW_NpP.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-alh0AJ--.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49780,7 +49689,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DNSW_NpP.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-alh0AJ--.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -50951,13 +50860,7 @@ function NavBar({
           onClick: onHome,
           "aria-label": "minegold.defi home",
           children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-9 h-9 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-900/30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "18", height: "18", viewBox: "0 0 20 20", fill: "none", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M3 17 L15 4", stroke: "#3B1F00", strokeWidth: "2.5", strokeLinecap: "square" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "12", y: "2", width: "7", height: "3", rx: "0.5", fill: "white", opacity: "0.95" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M18 1 L20 3 L18 5 L16 3 Z", fill: "white", opacity: "0.85" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 5 L10 7 L12 7 Z", fill: "white", opacity: "0.7" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "4", cy: "16", r: "1.5", fill: "#FFD700", opacity: "0.9" })
-            ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-9 h-9 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-900/30", children: /* @__PURE__ */ jsxRuntimeExports.jsx(MinegoldMark, { size: 18 }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-base sm:text-lg font-bold tracking-tight", children: [
               "minegold",
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-yellow-400", children: ".defi" })
@@ -52826,33 +52729,33 @@ function usePathRoute() {
   return [match.route, navigate, match.params];
 }
 const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-D9Or7js0.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+  () => __vitePreload(() => import("./AdminPage-BdcOqrUS.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
 );
 const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-BuJYaMwE.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+  () => __vitePreload(() => import("./BankingBraveHome-BgiF9B-q.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
 );
 const LandingPage = reactExports.lazy(
-  () => __vitePreload(() => import("./LandingPage-JHZ6B5h4.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
+  () => __vitePreload(() => import("./LandingPage-BMw2ytIE.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
 );
 const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-06_ZU73j.js"), true ? __vite__mapDeps([5,3,6,4]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+  () => __vitePreload(() => import("./MinegoldBraveSoon-CzFZWnIP.js"), true ? __vite__mapDeps([5,3,6,4]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
 );
 const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-Qu4BZROb.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./TransactionHistoryPage-BvelNsuT.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
     default: m2.TransactionHistoryPage
   }))
 );
 const ReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./ReceiptPage-D7MixnvL.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
+  () => __vitePreload(() => import("./ReceiptPage-Bag55iKQ.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
 );
 const DocsPage = reactExports.lazy(
-  () => __vitePreload(() => import("./DocsPage-BlUz-sA6.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
+  () => __vitePreload(() => import("./DocsPage-DGYvf5CY.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
 );
 const StatusPage = reactExports.lazy(
-  () => __vitePreload(() => import("./StatusPage-DsI4kQqb.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
+  () => __vitePreload(() => import("./StatusPage-DgG4RwH5.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
 );
 const SharedReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./SharedReceiptPage-D44Sg7jz.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./SharedReceiptPage-DkaCl3pz.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
     default: m2.SharedReceiptPage
   }))
 );
@@ -53048,7 +52951,6 @@ function App() {
   const {
     identity,
     login: iiLogin,
-    loginOisy,
     clear: iiClear,
     isLoggingIn: iiIsLoggingIn
   } = useInternetIdentity();
@@ -54567,7 +54469,6 @@ function App() {
       {
         isLoggingIn,
         onLogin: handleLogin,
-        onLoginOisy: loginOisy,
         onBack: enteredRefinery ? () => setEnteredRefinery(false) : void 0
       }
     ),
@@ -55004,7 +54905,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   /* @__PURE__ */ jsxRuntimeExports.jsx(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxRuntimeExports.jsx(InternetIdentityProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) }) })
 );
 export {
-  fetchShareToken as $,
+  cva as $,
   ShieldCheck as A,
   TrendingUp as B,
   CircleAlert as C,
@@ -55017,56 +54918,55 @@ export {
   IncidentBanner as J,
   JOURNEY as K,
   LoaderCircle as L,
-  HttpAgent as M,
-  Actor as N,
-  useLedger as O,
+  MinegoldMark as M,
+  HttpAgent as N,
+  Actor as O,
   Principal$1 as P,
-  ArrowRightLeft as Q,
+  useLedger as Q,
   React2 as R,
   Send as S,
   ThemeToggle as T,
-  StatusPill as U,
-  ChevronUp as V,
+  ArrowRightLeft as U,
+  StatusPill as V,
   Wallet as W,
-  ChevronDown as X,
-  ArrowDownToLine as Y,
-  ArrowUpFromLine as Z,
-  cva as _,
+  ChevronUp as X,
+  ChevronDown as Y,
+  ArrowDownToLine as Z,
+  ArrowUpFromLine as _,
   cn as a,
-  shareUrl as a0,
-  Check as a1,
-  X as a2,
-  unpublishReceipt as a3,
-  publishReceipt as a4,
-  findEntry as a5,
-  fmtAmount as a6,
-  ledgerUrl as a7,
-  TriangleAlert as a8,
-  fetchPublicReceipt as a9,
-  formatTimestamp as aa,
-  SGLDT_LEDGER_ID as ab,
-  DelegationChain as ac,
-  Delegation as ad,
-  encode$4 as ae,
-  Text as af,
-  isV3ResponseBody as ag,
-  DelegationIdentity as ah,
-  isDelegationValid as ai,
-  AuthClient as aj,
-  useQueryClient as ak,
-  useQuery as al,
-  BaseError$1 as am,
-  getUrl as an,
-  stringify$1 as ao,
-  decodeErrorResult as ap,
-  isAddressEqual as aq,
-  localBatchGatewayUrl as ar,
-  localBatchGatewayRequest as as,
-  call as at,
-  concat$1 as au,
-  encodeAbiParameters as av,
-  HttpRequestError as aw,
-  isHex as ax,
+  fetchShareToken as a0,
+  shareUrl as a1,
+  Check as a2,
+  X as a3,
+  unpublishReceipt as a4,
+  publishReceipt as a5,
+  findEntry as a6,
+  fmtAmount as a7,
+  ledgerUrl as a8,
+  TriangleAlert as a9,
+  fetchPublicReceipt as aa,
+  formatTimestamp as ab,
+  SGLDT_LEDGER_ID as ac,
+  encode$4 as ad,
+  Text as ae,
+  isV3ResponseBody as af,
+  DelegationIdentity as ag,
+  isDelegationValid as ah,
+  AuthClient as ai,
+  useQueryClient as aj,
+  useQuery as ak,
+  BaseError$1 as al,
+  getUrl as am,
+  stringify$1 as an,
+  decodeErrorResult as ao,
+  isAddressEqual as ap,
+  localBatchGatewayUrl as aq,
+  localBatchGatewayRequest as ar,
+  call as as,
+  concat$1 as at,
+  encodeAbiParameters as au,
+  HttpRequestError as av,
+  isHex as aw,
   React$2 as b,
   createLucideIcon as c,
   useIsAdmin as d,

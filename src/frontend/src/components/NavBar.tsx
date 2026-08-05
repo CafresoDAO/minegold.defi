@@ -1,6 +1,7 @@
 import { Clock, Coins, LogOut, MoreHorizontal, Settings, UserCircle2, XCircle } from "lucide-react";
 import { useState, type RefObject } from "react";
 import { ThemeToggle } from "./ThemeToggle";
+import { MinegoldMark } from "./ui/MinegoldMark";
 
 type NavUser = {
   principal: string;
@@ -102,13 +103,7 @@ export function NavBar({
             aria-label="minegold.defi home"
           >
             <div className="w-9 h-9 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-900/30">
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                <path d="M3 17 L15 4" stroke="#3B1F00" strokeWidth="2.5" strokeLinecap="square"/>
-                <rect x="12" y="2" width="7" height="3" rx="0.5" fill="white" opacity="0.95"/>
-                <path d="M18 1 L20 3 L18 5 L16 3 Z" fill="white" opacity="0.85"/>
-                <path d="M12 5 L10 7 L12 7 Z" fill="white" opacity="0.7"/>
-                <circle cx="4" cy="16" r="1.5" fill="#FFD700" opacity="0.9"/>
-              </svg>
+              <MinegoldMark size={18} />
             </div>
             <span className="text-base sm:text-lg font-bold tracking-tight">
               minegold<span className="text-yellow-400">.defi</span>

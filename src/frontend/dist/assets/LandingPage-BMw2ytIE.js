@@ -1,6 +1,6 @@
-import { r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, J as IncidentBanner, T as ThemeToggle, y as ChevronRight, K as JOURNEY } from "./index-Cnm2qphK.js";
-import { f as fetchCkBatStatus } from "./ckMinter-BG0j-j0s.js";
-import { A as ArrowRight } from "./arrow-right-CcVc8Kyp.js";
+import { r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, J as IncidentBanner, T as ThemeToggle, y as ChevronRight, K as JOURNEY } from "./index-Dfb_LJyK.js";
+import { f as fetchCkBatStatus } from "./ckMinter-Dc8CUEeC.js";
+import { A as ArrowRight } from "./arrow-right-1PJWC54Z.js";
 function Reveal({
   children,
   delayMs = 0,
@@ -629,24 +629,38 @@ function LandingPage({
               className: "border-t pt-6 pb-24 text-[11px] leading-relaxed",
               style: { borderColor: "var(--bb-border)", color: "var(--bb-text-dim)" },
               children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px]", children: [
-                  ["How it works", "/docs/how-it-works"],
-                  ["Risks & limitations", "/docs/risks"],
-                  ["How the rate is made", "/docs/rate-methodology"],
-                  ["Redeem & recovery", "/docs/redeem-and-recovery"],
-                  ["Status & incidents", "/status"]
-                ].map(([label, path]) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "button",
-                  {
-                    type: "button",
-                    "data-ocid": `landing.footer${path.replace(/\//g, ".")}`,
-                    onClick: () => onNavigatePath(path),
-                    className: "min-h-[32px] font-semibold underline underline-offset-2",
-                    style: { color: "var(--bb-brand)" },
-                    children: label
-                  },
-                  path
-                )) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: "mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px]", children: [
+                  [
+                    ["How it works", "/docs/how-it-works"],
+                    ["Risks & limitations", "/docs/risks"],
+                    ["How the rate is made", "/docs/rate-methodology"],
+                    ["Redeem & recovery", "/docs/redeem-and-recovery"],
+                    ["Status & incidents", "/status"]
+                  ].map(([label, path]) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "button",
+                    {
+                      type: "button",
+                      "data-ocid": `landing.footer${path.replace(/\//g, ".")}`,
+                      onClick: () => onNavigatePath(path),
+                      className: "min-h-[32px] font-semibold underline underline-offset-2",
+                      style: { color: "var(--bb-brand)" },
+                      children: label
+                    },
+                    path
+                  )),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "a",
+                    {
+                      href: "https://github.com/CafresoDAO/minegold.defi",
+                      target: "_blank",
+                      rel: "noopener noreferrer",
+                      "data-ocid": "landing.footer.source",
+                      className: "min-h-[32px] font-semibold underline underline-offset-2",
+                      style: { color: "var(--bb-brand)" },
+                      children: "Source on GitHub"
+                    }
+                  )
+                ] }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mb-6 text-center", children: [
                   "Refinery backend",
                   " ",

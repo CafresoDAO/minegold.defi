@@ -1,10 +1,4 @@
 import { AuthClient } from "@dfinity/auth-client";
-import {
-  DelegationChain,
-  DelegationIdentity,
-  Ed25519KeyIdentity,
-  isDelegationValid,
-} from "@dfinity/identity";
 import type { Identity } from "@icp-sdk/core/agent";
 import {
   createContext,
@@ -16,7 +10,6 @@ import {
 } from "react";
 
 const II_URL = "https://identity.ic0.app";
-const OISY_URL = "https://oisy.com/sign";
 const DAYS_30_NS = BigInt(30) * BigInt(24) * BigInt(60) * BigInt(60) * BigInt(1_000_000_000);
 
 /**
@@ -59,31 +52,31 @@ const AUTH_EPOCH = "2026-07-derivation-origin-pin";
 const EPOCH_KEY = "minegold.auth_epoch";
 
 /**
- * OISY (ICRC-34 relying-party delegation) session storage. II sessions are
- * persisted by AuthClient in IndexedDB; OISY sessions we persist ourselves:
- * a browser-held session key plus the delegation chain OISY signed for it.
- * Same trust model as II — the wallet approves ONCE at connect time, then
- * queries and calls sign silently until the chain expires (30 days).
+ * WHY THERE IS NO "SIGN IN WITH OISY" HERE — checked 2026-08-05.
  *
- * PRINCIPAL PINNING (the same hazard the II block above documents): the
- * Signer is created with `derivationOrigin` = the canonical canister origin,
- * sent as `icrc95DerivationOrigin`. OISY validates it against the SAME
- * /.well-known/ii-alternative-origins file II uses — already deployed. A
- * login from minegold.cafreso.com, the raw canister origin, or a future
- * minegold.brave therefore derives the SAME principal. Do not remove.
+ * OISY is a wallet, not an identity provider. Its docs state it plainly:
+ * "OISY requires user approval for every sensitive action (due to no dApp
+ * delegation)". It implements ICRC-25/27/21/49 — NOT ICRC-34, the
+ * delegation standard that would let a dapp hold a session.
+ *
+ * Without a delegation, every authenticated call goes through ICRC-49 and
+ * pops a wallet approval. This app's reads are all caller-scoped
+ * (getMyTransactions, getCallerUserProfile, getBalance) and polled on a
+ * 60s timer — so a wallet session would mean an approval popup every
+ * minute. That is not a rough edge; it is unusable.
+ *
+ * The real unlock is a BACKEND change: principal-parameter query methods
+ * (getTransactionsOf(principal) etc.) so reads can run on an anonymous
+ * agent and the wallet is only invoked for actual money movement — which
+ * is exactly what OISY is designed for. Until then, II is the only door.
+ * Do not re-add an OISY button without that backend work.
  */
-const OISY_SESSION_KEY = "minegold.oisy_session";
-
-type WalletKind = "ii" | "oisy";
 
 type LoginStatus = "initializing" | "idle" | "logging-in" | "success" | "loginError";
 
 interface AuthContextValue {
   identity?: Identity;
-  /** Which wallet produced `identity` — undefined when signed out. */
-  walletKind?: WalletKind;
   login: () => void;
-  loginOisy: () => void;
   clear: () => void;
   loginStatus: LoginStatus;
   isInitializing: boolean;
@@ -96,33 +89,9 @@ interface AuthContextValue {
 
 const Ctx = createContext<AuthContextValue | null>(null);
 
-/** Restore a persisted OISY session, or null if absent/expired/corrupt. */
-function restoreOisySession(): DelegationIdentity | null {
-  try {
-    const raw = localStorage.getItem(OISY_SESSION_KEY);
-    if (!raw) return null;
-    const stored = JSON.parse(raw) as { key: unknown; chain: unknown };
-    const sessionKey = Ed25519KeyIdentity.fromJSON(JSON.stringify(stored.key));
-    const chain = DelegationChain.fromJSON(JSON.stringify(stored.chain));
-    if (!isDelegationValid(chain)) {
-      localStorage.removeItem(OISY_SESSION_KEY);
-      return null;
-    }
-    return DelegationIdentity.fromDelegation(sessionKey, chain);
-  } catch {
-    try {
-      localStorage.removeItem(OISY_SESSION_KEY);
-    } catch {
-      /* ignore */
-    }
-    return null;
-  }
-}
-
 export function InternetIdentityProvider({ children }: { children: ReactNode }) {
   const [authClient, setAuthClient] = useState<AuthClient | null>(null);
   const [identity, setIdentity] = useState<Identity | undefined>(undefined);
-  const [walletKind, setWalletKind] = useState<WalletKind | undefined>(undefined);
   const [loginStatus, setLoginStatus] = useState<LoginStatus>("initializing");
   const [loginError, setLoginError] = useState<Error | undefined>(undefined);
 
@@ -144,9 +113,6 @@ export function InternetIdentityProvider({ children }: { children: ReactNode }) 
         if (stale) {
           await client.logout();
           try {
-            // Epoch purge covers OISY sessions too — a delegation minted
-            // under older derivation semantics must not hydrate either.
-            localStorage.removeItem(OISY_SESSION_KEY);
             localStorage.setItem(EPOCH_KEY, AUTH_EPOCH);
           } catch {
             /* ignore */
@@ -157,14 +123,6 @@ export function InternetIdentityProvider({ children }: { children: ReactNode }) 
         if (await client.isAuthenticated()) {
           if (cancelled) return;
           setIdentity(client.getIdentity());
-          setWalletKind("ii");
-        } else {
-          // No II session — try a persisted OISY delegation instead.
-          const oisy = restoreOisySession();
-          if (oisy && !cancelled) {
-            setIdentity(oisy);
-            setWalletKind("oisy");
-          }
         }
         if (!cancelled) setLoginStatus("idle");
       })
@@ -196,7 +154,6 @@ export function InternetIdentityProvider({ children }: { children: ReactNode }) 
       maxTimeToLive: DAYS_30_NS,
       onSuccess: () => {
         setIdentity(authClient.getIdentity());
-        setWalletKind("ii");
         setLoginStatus("success");
       },
       onError: (err) => {
@@ -207,97 +164,10 @@ export function InternetIdentityProvider({ children }: { children: ReactNode }) 
     });
   }, [authClient]);
 
-  /**
-   * OISY sign-in via the ICRC-25/29 signer standard + ICRC-34 delegation.
-   *
-   * Why delegation and not SignerAgent: SignerAgent upgrades EVERY query to
-   * a wallet-approved call. This app's dashboard polls balances and receipts
-   * continuously — that would be an approval popup per refresh. A relying-
-   * party delegation is approved once and then behaves exactly like an II
-   * session: silent queries, silent calls, 30-day expiry.
-   *
-   * The signer lib (v5) sits on @icp-sdk/core v5 while this app is on v4 —
-   * the DelegationChain crosses that seam BY VALUE (toJSON → fromJSON), the
-   * one pattern that is safe across agent-js majors.
-   */
-  const loginOisy = useCallback(() => {
-    setLoginStatus("logging-in");
-    setLoginError(undefined);
-    void (async () => {
-      try {
-        const [{ Signer }, { PostMessageTransport }] = await Promise.all([
-          import("@icp-sdk/signer"),
-          import("@icp-sdk/signer/web"),
-        ]);
-        const transport = new PostMessageTransport({
-          url: OISY_URL,
-          windowOpenerFeatures: "width=440,height=680",
-        });
-        const signer = new Signer({
-          transport,
-          // ICRC-95: pin principal derivation to the canonical origin (see
-          // the derivation-origin block at the top of this file). Local dev
-          // is not whitelisted, so it falls back to per-origin principals —
-          // same tradeoff the II path makes.
-          ...(IS_LOCAL_DEV ? {} : { derivationOrigin: II_DERIVATION_ORIGIN }),
-        });
-        try {
-          const sessionKey = Ed25519KeyIdentity.generate();
-          const chainV5 = await signer.requestDelegation({
-            // v3 public key object is structurally compatible with the v5
-            // PublicKey interface (toDer()); nominal types differ.
-            publicKey: sessionKey.getPublicKey() as never,
-            maxTimeToLive: DAYS_30_NS,
-          });
-          // Cross the v5→v3 seam by value.
-          const chain = DelegationChain.fromJSON(
-            JSON.stringify(chainV5.toJSON()),
-          );
-          const oisyIdentity = DelegationIdentity.fromDelegation(
-            sessionKey,
-            chain,
-          );
-          try {
-            localStorage.setItem(
-              OISY_SESSION_KEY,
-              JSON.stringify({
-                key: sessionKey.toJSON(),
-                chain: chain.toJSON(),
-              }),
-            );
-          } catch {
-            /* storage unavailable — session just won't survive reload */
-          }
-          setIdentity(oisyIdentity);
-          setWalletKind("oisy");
-          setLoginStatus("success");
-        } finally {
-          signer.closeChannel();
-        }
-      } catch (err) {
-        console.error("OISY login failed:", err);
-        setLoginError(err instanceof Error ? err : new Error(String(err)));
-        setLoginStatus("loginError");
-      }
-    })();
-  }, []);
-
   const clear = useCallback(() => {
-    try {
-      localStorage.removeItem(OISY_SESSION_KEY);
-    } catch {
-      /* ignore */
-    }
-    if (!authClient) {
-      setIdentity(undefined);
-      setWalletKind(undefined);
-      setLoginStatus("idle");
-      setLoginError(undefined);
-      return;
-    }
+    if (!authClient) return;
     void authClient.logout().then(() => {
       setIdentity(undefined);
-      setWalletKind(undefined);
       setLoginStatus("idle");
       setLoginError(undefined);
     });
@@ -305,9 +175,7 @@ export function InternetIdentityProvider({ children }: { children: ReactNode }) 
 
   const value: AuthContextValue = {
     identity,
-    walletKind,
     login,
-    loginOisy,
     clear,
     loginStatus,
     isInitializing: loginStatus === "initializing",

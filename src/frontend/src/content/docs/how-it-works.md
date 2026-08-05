@@ -1,13 +1,27 @@
 # How it works
 
-minegold.defi takes a token you already hold on Ethereum and converts it into
-sGLDT — a token backed, through two wrappers, by physical gold in a Swiss
-vault. This page explains every step of that path, including the parts that
-are other people's infrastructure rather than ours.
+## TL;DR
 
-If you only read one other page, make it [Risks & limitations](/docs/risks).
+**You give it a crypto token. It gives you back a token that represents real
+gold in a vault. You can swap back whenever you want.**
 
-## The short version
+- **What you put in:** UNI (an Ethereum token). BAT later, if DFINITY lists it.
+- **What you get out:** sGLDT — each unit backed by 0.01 g of real gold held
+  in an audited Swiss vault.
+- **How long:** about three minutes, most of it Ethereum confirming.
+- **Who holds your money:** *nobody.* Not us. Your tokens sit in your own
+  account on public ledgers the whole time, and the swap either completes or
+  refunds you automatically.
+- **Can you get out:** yes, any time, back to ckUNI — and there are two other
+  exits that don't involve us at all.
+- **The catch:** this code is **unaudited** and **one person** runs the
+  treasury. Read [Risks & limitations](/docs/risks) before using real money.
+
+There is no account with us, no password, and no support desk that can freeze
+or restore anything. That's the trade: nobody can seize it, and nobody can
+rescue it either.
+
+## The four steps
 
 1. You sign in with a passkey. That creates your **vault** — an account only
    your device's biometrics can open.
@@ -15,8 +29,8 @@ If you only read one other page, make it [Risks & limitations](/docs/risks).
 3. You deposit. Two signatures in your wallet, then Ethereum confirms.
 4. sGLDT lands in your vault. You can withdraw it back to ckUNI at any time.
 
-Four steps, about three minutes — most of which is Ethereum confirming, not
-us doing anything.
+Everything below is the same story with the details filled in — including the
+parts that are other people's infrastructure rather than ours.
 
 ## The long version
 
@@ -115,6 +129,25 @@ each claim with `dfx canister info` without asking us anything.
   which you can revoke at [revoke.cash](https://revoke.cash) at any time.
 - It never quotes you a price it can't honour: the rate is read from the
   canister, and the swap either settles at that rate or refunds.
+
+## Read the code
+
+Everything described on this page is open source:
+
+**[github.com/CafresoDAO/minegold.defi](https://github.com/CafresoDAO/minegold.defi)**
+
+The parts worth reading first:
+
+| Path | What it is |
+|---|---|
+| `src/backend/main.mo` | The refinery. Every swap, refund and treasury movement. |
+| `src/frontend/src/lib/refineMath.ts` | The conversion arithmetic, including the e8/e18 handling. |
+| `src/frontend/src/lib/eth.ts` | Everything this app does on Ethereum. |
+| `CHANGELOG.md` / `INCIDENTS.md` | Published verbatim at [/status](/status). |
+
+Reading the code is the strongest form of the verification this whole product
+argues for — stronger than anything we can tell you about ourselves. If you
+find a problem, the contact address is on [Risks & limitations](/docs/risks).
 
 ## Next
 

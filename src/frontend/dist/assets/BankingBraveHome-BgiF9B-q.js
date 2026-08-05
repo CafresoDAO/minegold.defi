@@ -1,4 +1,4 @@
-import { j as jsxRuntimeExports, T as ThemeToggle, y as ChevronRight, z as Clock, A as ShieldCheck, B as TrendingUp, D as Lock } from "./index-Cnm2qphK.js";
+import { j as jsxRuntimeExports, T as ThemeToggle, M as MinegoldMark, y as ChevronRight, z as Clock, A as ShieldCheck, B as TrendingUp, D as Lock } from "./index-Dfb_LJyK.js";
 function BankingBraveHome({
   onOpenMinegoldUni,
   onOpenMinegoldBrave
@@ -73,13 +73,7 @@ function BankingBraveHome({
                   color: "var(--bb-text)"
                 },
                 children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-4", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-400 flex items-center justify-center shrink-0 shadow-lg shadow-yellow-500/20", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "24", height: "24", viewBox: "0 0 40 40", fill: "none", "aria-hidden": true, children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M6 34 L30 8", stroke: "#3B1F00", strokeWidth: "5", strokeLinecap: "square" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M6 34 L30 8", stroke: "#7B4513", strokeWidth: "3", strokeLinecap: "square" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "24", y: "4", width: "14", height: "6", rx: "1", fill: "#FFFFF0" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M36 2 L40 6 L36 10 L32 6 Z", fill: "#F0F0F0" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "8", cy: "32", r: "3", fill: "#FFD700", opacity: "0.9" })
-                  ] }) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-400 flex items-center justify-center shrink-0 shadow-lg shadow-yellow-500/20", children: /* @__PURE__ */ jsxRuntimeExports.jsx(MinegoldMark, { size: 24 }) }),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-1", children: [
                       /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-lg font-black", children: [

@@ -1,5 +1,6 @@
 import { ChevronRight, Clock, Lock, ShieldCheck, TrendingUp } from "lucide-react";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { MinegoldMark } from "../components/ui/MinegoldMark";
 
 interface BankingBraveHomeProps {
   onOpenMinegoldUni: () => void;
@@ -101,13 +102,7 @@ export function BankingBraveHome({
             >
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-400 flex items-center justify-center shrink-0 shadow-lg shadow-yellow-500/20">
-                  <svg width="24" height="24" viewBox="0 0 40 40" fill="none" aria-hidden>
-                    <path d="M6 34 L30 8" stroke="#3B1F00" strokeWidth="5" strokeLinecap="square" />
-                    <path d="M6 34 L30 8" stroke="#7B4513" strokeWidth="3" strokeLinecap="square" />
-                    <rect x="24" y="4" width="14" height="6" rx="1" fill="#FFFFF0" />
-                    <path d="M36 2 L40 6 L36 10 L32 6 Z" fill="#F0F0F0" />
-                    <circle cx="8" cy="32" r="3" fill="#FFD700" opacity="0.9" />
-                  </svg>
+                  <MinegoldMark size={24} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">

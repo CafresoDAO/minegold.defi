@@ -36,6 +36,20 @@ Dates are ISO. Newest first.
   out of cycles mid-deploy and the site was briefly empty. Details in the
   incident log alongside this page.
 
+### Corrected the same day
+
+- **The OISY sign-in shipped earlier today was removed.** It could not work:
+  OISY has no dApp delegation (it implements ICRC-25/27/21/49, not ICRC-34),
+  so a wallet session would have prompted for approval on every balance
+  poll — roughly once a minute. It was shipped without a real end-to-end
+  test against the wallet, which is how a broken door reached the sign-in
+  screen. The sign-in gate is now one button that says what it does.
+  The research and the actual build order are written up in
+  `docs/oisy-integration.md`; the next step there is using OISY as the
+  **Ethereum** wallet over WalletConnect, which does work today.
+- **How it works** now opens with a plain-language TL;DR and links the
+  source repository.
+
 ## 2026-07-31 — Shareable receipts, and an incident banner
 
 *Backend built and verified; not yet deployed.*

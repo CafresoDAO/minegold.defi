@@ -13,14 +13,12 @@ type Props = {
 };
 
 /**
- * Full-screen sign-in gate.
- *
- * ONE button on purpose. An earlier revision offered "Create or open your
- * vault" beside "Continue with OISY wallet", which implied two different
- * destinations for what is one vault — and OISY could not actually back the
- * promise (see auth.tsx: OISY has no dApp delegation, so a wallet session
- * would prompt on every balance poll). Until a wallet can hold a session,
- * this screen states one door and names it.
+ * Full-screen sign-in gate. The button opens <SignInChooser/> rather than
+ * logging straight into Internet Identity — see that component for why
+ * OISY is shown but disabled there instead of offered as a second button
+ * here: an earlier revision offered "Create or open your vault" beside
+ * "Continue with OISY wallet" as if they were equivalent, and OISY couldn't
+ * back that promise (no ICRC-34 delegation — see docs/oisy-integration.md).
  */
 export function LoginOverlay({ isLoggingIn, onLogin, onBack }: Props) {
   return (
@@ -87,9 +85,9 @@ export function LoginOverlay({ isLoggingIn, onLogin, onBack }: Props) {
           {isLoggingIn ? "Signing in…" : "Sign in"}
         </GoldCTA>
         <p className="mt-3 text-[11px] text-zinc-500">
-          Opens <span className="text-zinc-300 font-semibold">Internet
-          Identity</span> — sign in with Face&nbsp;ID, a fingerprint, or a
-          security key. First time? It creates your vault in the same step.
+          Face&nbsp;ID, a fingerprint, or a security key via{" "}
+          <span className="text-zinc-300 font-semibold">Internet Identity</span>.
+          First time? It creates your vault in the same step.
         </p>
         {onBack && (
           <button

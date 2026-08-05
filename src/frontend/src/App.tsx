@@ -1,11 +1,5 @@
 import { useInternetIdentity } from "./auth";
-import {
-  ethCall,
-  getWalletClient,
-  mainnet,
-  publicClient,
-  type Hash,
-} from "./lib/eth";
+import { ethCall, getWalletClient, type Hash } from "./lib/eth";
 import {
   encodeCkErc20Deposit,
   encodeERC20Allowance,
@@ -74,6 +68,12 @@ import {
 } from "./hooks/useQueries";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { routeFromPath, usePathRoute } from "./hooks/usePathRoute";
+import { usePrices } from "./hooks/usePrices";
+import { useGasEstimate } from "./hooks/useGasEstimate";
+import {
+  TREASURY_ETH_ADDRESS,
+  useTreasuryEthUniBalance,
+} from "./hooks/useTreasuryEthUniBalance";
 
 // Secondary pages are code-split out of the money-path bundle. The operator
 // console in particular has no business shipping to every visitor.
@@ -133,7 +133,6 @@ import {
   getInjected,
   isIOS,
   isMobile,
-  isValidHex,
   type MiningPhase,
   pollReceipt,
   PUBLIC_ETH_RPC_ENDPOINTS,
@@ -198,7 +197,9 @@ export default function App() {
   // Modal closes itself when ethAddress flips truthy — see the open prop
   // passed to <ConnectWalletModal /> near the bottom of the tree.
   const [connectModalOpen, setConnectModalOpen] = useState(false);
-  const [liveRate, setLiveRate] = useState(0);
+  // Live USD prices + the derived UNI/sGLDT display rate — see hooks/usePrices
+  // for the live → cached → none degradation ladder.
+  const { uniPrice, sgldtPrice, ethPrice, liveRate, priceWarning } = usePrices();
   // ── Routing ──────────────────────────────────────────────────────────
   // Real (hash) URLs replace the old localStorage view-switch + booleans.
   // BRAND DECISION: the refinery IS the product, so #/ lands on it; the
@@ -237,9 +238,6 @@ export default function App() {
   const [actorTimedOut, setActorTimedOut] = useState(false);
   const [copiedPrincipal, setCopiedPrincipal] = useState(false);
   const [copiedEthAddress, setCopiedEthAddress] = useState(false);
-  const [uniPrice, setUniPrice] = useState<number | null>(null);
-  const [sgldtPrice, setSgldtPrice] = useState<number | null>(null);
-  const [ethPrice, setEthPrice] = useState<number | null>(null);
   // Poll-session epoch. Cancel paths bump it; each startAutoPolling claims a
   // fresh epoch and its ticks bail when the epoch has moved on. Unlike the old
   // boolean latch, a bump can never leak into a FUTURE session — the next
@@ -695,95 +693,14 @@ export default function App() {
     refreshTreasury();
   }, [refreshTreasury]);
 
-  // ETH-side UNI balance for the treasury deposit address — queried via a multi-endpoint
-  // RPC fallback chain so it works for all visitors without a wallet connection
-  const TREASURY_ETH_ADDRESS = "0x22582083361bf06579BbfFcC1138D3fc986B91FF";
-  const [treasuryEthUniBalance, setTreasuryEthUniBalance] = useState<
-    string | null
-  >(null);
-  const [treasuryEthUniLoading, setTreasuryEthUniLoading] = useState(true);
-  // Flag: true when all RPC endpoints failed — show "—" instead of "0.0000"
-  const [treasuryEthUniUnavailable, setTreasuryEthUniUnavailable] =
-    useState(false);
-  useEffect(() => {
-    let cancelled = false;
-
-    // Same ranking as PUBLIC_ETH_RPC_ENDPOINTS — Brave first (first-party
-    // infra, never Shields-blocked), then the anonymous-friendly tier.
-    const RPC_ENDPOINTS = [
-      "https://ethereum-mainnet.wallet.brave.com/",
-      "https://eth.llamarpc.com",
-      "https://ethereum-rpc.publicnode.com",
-      "https://eth-mainnet.public.blastapi.io",
-    ];
-
-    const fetchTreasuryUniBalance = async () => {
-      // balanceOf(address) call data — address padded to 32 bytes (24 zero nibbles + 40 nibble address)
-      const callData = `0x70a08231000000000000000000000000${TREASURY_ETH_ADDRESS.replace("0x", "").toLowerCase()}`;
-
-      let successfulRead = false;
-
-      // Try each public RPC endpoint in order with a 5-second per-endpoint timeout
-      for (const endpoint of RPC_ENDPOINTS) {
-        if (cancelled) return;
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 5_000);
-          const response = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              jsonrpc: "2.0",
-              method: "eth_call",
-              params: [{ to: UNI_CONTRACT_ADDRESS, data: callData }, "latest"],
-              id: 1,
-            }),
-            signal: controller.signal,
-          });
-          clearTimeout(timeoutId);
-          if (cancelled) return;
-          if (!response.ok) continue;
-          const json = await response.json();
-          const hex: string = json?.result ?? "";
-          // A valid 32-byte response is a non-empty hex string
-          if (!isValidHex(hex) || hex === "0x") continue;
-          const raw = BigInt(hex);
-          successfulRead = true;
-          if (!cancelled) {
-            setTreasuryEthUniBalance((Number(raw) / 1e18).toFixed(4));
-            setTreasuryEthUniLoading(false);
-            setTreasuryEthUniUnavailable(false);
-          }
-          return;
-        } catch {
-          // Timeout, network error, or parse failure — try next endpoint
-        }
-      }
-
-      // All endpoints exhausted
-      if (!cancelled) {
-        setTreasuryEthUniLoading(false);
-        if (!successfulRead) {
-          // All network calls failed — show unavailable indicator
-          setTreasuryEthUniUnavailable(true);
-          setTreasuryEthUniBalance(null);
-        }
-        // If successfulRead but never returned, it means every valid result was "0x"
-        // which means genuine zero or malformed — show 0.0000
-        if (successfulRead) {
-          setTreasuryEthUniBalance("0.0000");
-          setTreasuryEthUniUnavailable(false);
-        }
-      }
-    };
-
-    fetchTreasuryUniBalance();
-    const id = setInterval(fetchTreasuryUniBalance, 30_000);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
-  }, []);
+  // ETH-side UNI balance for the treasury deposit address — read via a
+  // multi-endpoint public-RPC chain so it resolves for every visitor, with
+  // no wallet and no sign-in. See hooks/useTreasuryEthUniBalance.
+  const {
+    balance: treasuryEthUniBalance,
+    loading: treasuryEthUniLoading,
+    unavailable: treasuryEthUniUnavailable,
+  } = useTreasuryEthUniBalance();
 
   // sGLDT balance via backend query
   const { data: sgldtBalanceRaw } = useUserSGLDTBalance(user?.principal);
@@ -1096,45 +1013,14 @@ export default function App() {
   const minReceivedDisplay =
     estimatedGold > 0 ? `${(estimatedGold * 0.98).toFixed(5)} sGLDT` : null;
 
-  // ── Real gas estimate (replaces the old hardcoded "~0.002 ETH" chip) ────
-  // approve (~55k) + helper deposit (~200k) at the live gas price, with a
-  // safety ceiling. Unused gas is refunded by the EVM, so overestimating
-  // costs nothing; underestimating strands the user mid-flow.
-  const [gasEstimateEth, setGasEstimateEth] = useState<number | null>(null);
-  useEffect(() => {
-    if (!ethAddress) {
-      setGasEstimateEth(null);
-      return;
-    }
-    let cancelled = false;
-    const refresh = async () => {
-      try {
-        const gasPrice = await publicClient.getGasPrice();
-        const totalGas = 260_000n; // approve + deposit ceiling
-        if (!cancelled) setGasEstimateEth(Number(totalGas * gasPrice) / 1e18);
-      } catch {
-        // RPC hiccup — keep the previous estimate (or null → "estimating…")
-      }
-    };
-    void refresh();
-    const t = setInterval(() => void refresh(), 90_000);
-    return () => {
-      cancelled = true;
-      clearInterval(t);
-    };
-  }, [ethAddress]);
-  const gasEstimate =
-    gasEstimateEth != null
-      ? `~${gasEstimateEth.toFixed(4)} ETH${
-          ethPrice ? ` ($${(gasEstimateEth * ethPrice).toFixed(2)})` : ""
-        }`
-      : null;
-  const gasShortfall =
-    gasEstimateEth != null &&
-    ethBalance != null &&
-    Number.parseFloat(ethBalance) < gasEstimateEth
-      ? `Needs ~${gasEstimateEth.toFixed(4)} ETH for gas — you have ${ethBalance} ETH.`
-      : null;
+  // Live gas estimate for the two-transaction deposit flow — see
+  // hooks/useGasEstimate. Replaced a hardcoded chip that went stale every
+  // time mainnet gas moved.
+  const { gasEstimateEth, gasEstimate, gasShortfall } = useGasEstimate(
+    ethAddress,
+    ethPrice,
+    ethBalance,
+  );
   const isActive =
     phase === "awaiting_deposit" ||
     phase === "wallet_confirming" ||
@@ -1173,121 +1059,6 @@ export default function App() {
         : null,
     );
     setBalanceRefreshing(false);
-  }, []);
-
-  const [priceWarning, setPriceWarning] = useState<string | null>(null);
-
-  // Fetch live prices every 60 seconds
-  useEffect(() => {
-    let cancelled = false;
-    const fetchPrices = async () => {
-      try {
-        // Fetch UNI + ETH from CoinGecko and sGLDT from the GeckoTerminal pool
-        // on ICPSwap (sGLDT / ICP pair). Base token of that pool is sGLDT.
-        const [cgRes, gtRes] = await Promise.all([
-          fetch(
-            "https://api.coingecko.com/api/v3/simple/price?ids=uniswap%2Cethereum&vs_currencies=usd",
-          ),
-          fetch(
-            "https://api.geckoterminal.com/api/v2/networks/icp/pools/jedlb-haaaa-aaaar-qbrma-cai",
-          ),
-        ]);
-        if (cancelled) return;
-
-        let fetchedUniPrice: number | null = null;
-        let fetchedSgldtPrice: number | null = null;
-        let fetchedEthPrice: number | null = null;
-
-        if (cgRes.ok) {
-          const d = await cgRes.json();
-          if (d?.uniswap?.usd) {
-            fetchedUniPrice = Number(d.uniswap.usd);
-            setUniPrice(fetchedUniPrice);
-          }
-          if (d?.ethereum?.usd) {
-            fetchedEthPrice = Number(d.ethereum.usd);
-            setEthPrice(fetchedEthPrice);
-          }
-        }
-
-        if (gtRes.ok) {
-          const gt = await gtRes.json();
-          const basePrice = Number(gt?.data?.attributes?.base_token_price_usd);
-          if (Number.isFinite(basePrice) && basePrice > 0) {
-            fetchedSgldtPrice = basePrice;
-            setSgldtPrice(fetchedSgldtPrice);
-          }
-        }
-
-        if (fetchedUniPrice && fetchedSgldtPrice && fetchedSgldtPrice > 0) {
-          setLiveRate(fetchedUniPrice / fetchedSgldtPrice);
-          try {
-            localStorage.setItem(
-              "minegold_last_prices",
-              JSON.stringify({
-                uniPrice: fetchedUniPrice,
-                sgldtPrice: fetchedSgldtPrice,
-                ethPrice: fetchedEthPrice ?? 2500,
-                timestamp: Date.now(),
-              }),
-            );
-          } catch {
-            // localStorage may be unavailable
-          }
-          setPriceWarning(null);
-          return;
-        }
-      } catch {
-        // fall through to cache/default
-      }
-
-      if (cancelled) return;
-
-      // Live fetch failed — try localStorage cache
-      try {
-        const raw = localStorage.getItem("minegold_last_prices");
-        if (raw) {
-          const cached = JSON.parse(raw) as {
-            uniPrice: number;
-            sgldtPrice: number;
-            ethPrice: number;
-            timestamp: number;
-          };
-          if (cached.uniPrice > 0 && cached.sgldtPrice > 0) {
-            setUniPrice(cached.uniPrice);
-            setSgldtPrice(cached.sgldtPrice);
-            setEthPrice(cached.ethPrice ?? 2500);
-            setLiveRate(cached.uniPrice / cached.sgldtPrice);
-            const ageHours = (Date.now() - cached.timestamp) / (1000 * 60 * 60);
-            if (ageHours > 24) {
-              setPriceWarning(
-                "Using cached prices — live feed unavailable (>24h old)",
-              );
-            } else {
-              setPriceWarning("Using cached prices — live feed unavailable");
-            }
-            return;
-          }
-        }
-      } catch {
-        // ignore
-      }
-
-      // No cache AND live fetch failed — we cannot sign an honest rate hint
-      // from nothing. Leave prices null so downstream code disables the swap
-      // button instead of silently sending a stale/guessed rate that would
-      // either fall outside the canister's ±50% band (underpaying the user)
-      // or cause the payout to settle at a stale on-chain rate.
-      setPriceWarning(
-        "Live exchange rate unavailable. Check your connection or wallet's content filters (Brave Shields blocks some price APIs) and retry.",
-      );
-    };
-    fetchPrices();
-    const id = setInterval(fetchPrices, 60_000);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
   }, []);
 
   // Refresh ETH + UNI balances every 60 seconds when wallet is connected

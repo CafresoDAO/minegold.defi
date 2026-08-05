@@ -93,7 +93,8 @@ actor Self {
   var _minterInitAttempts : Nat = 0;
   // ckUNIMinter: kept for upgrade compatibility. The previous version stored an actor reference
   // here as a stable variable. We restore it with the same type so the upgrade succeeds,
-  // then ignore its value — the minter is accessed via transient let ckUNIMinterV1/V2 instead.
+  // then ignore its value — the minter is reached through the transient `ckErc20Minter`
+  // binding below. (This comment used to name `ckUNIMinterV1/V2`, which never existed.)
   var ckUNIMinter : actor {
     get_deposit_address : shared { owner : Principal; subaccount : ?Blob } -> async Text;
   } = actor ("nbsys-saaaa-aaaar-qaaga-cai");
@@ -276,8 +277,9 @@ actor Self {
   // variable: widening its type is an upgrade-incompatible change, and Motoko
   // will not implicitly drop it either. Declaring the richer interface
   // transiently sidesteps both — a canister id is a constant, so there is
-  // nothing here worth persisting. (Mirrors the existing ckUNIMinter V1/V2
-  // split.) Future ledger-interface growth should extend THIS binding.
+  // nothing here worth persisting. (Same split as the persistent `ckUNIMinter`
+  // var and the transient `ckErc20Minter` binding.) Future ledger-interface
+  // growth should extend THIS binding.
   transient let ckUNILedgerV2 : actor {
     icrc1_fee : () -> async Nat;
     icrc1_balance_of : (ICRC1Account) -> async Nat;

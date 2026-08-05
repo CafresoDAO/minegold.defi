@@ -26,6 +26,20 @@ args = [
   "--implicit-package=core",
   "-no-check-ir",
   "-E=M0236,M0235,M0223,M0237",
+  # M0198 = "unused identifier". Suppressed globally, and this is deliberate:
+  # ~9 stable vars (sGLDTTreasuryBalance, batPoolBalance, bridgeRequests,
+  # sGLDTRequests, cachedBatPrice, cachedSGldtPrice, ckUNIMinter, ...) are dead
+  # in the code but still present in the LIVE canister's stable signature —
+  # see `stable var` entries in src/backend/dist/backend.most.
+  #
+  # Do NOT "clean these up". Motoko matches stable variables BY NAME, so
+  # renaming one to `_name` to silence the warning drops it from the signature
+  # and discards that state on the next upgrade of a canister holding real
+  # funds. Deleting them has the same effect.
+  #
+  # The cost of the global flag is that genuine unused-identifier warnings are
+  # hidden too. Accepted knowingly: the alternative is a per-identifier
+  # suppression that does not exist for stable vars in moc 1.3.0.
   "-A=M0198"
 ]
 

@@ -22,7 +22,23 @@ sGLDT back to ckUNI at the same rate source that priced your deposit.
 - Current treasury ckUNI is published live on [/proof](/proof)
 
 From ckUNI you can withdraw to Ethereum through DFINITY's minter, the same
-infrastructure that brought it in.
+infrastructure that brought it in. **That last leg has a cost we don't
+control and should state plainly:**
+
+- The minter pays the Ethereum gas for your withdrawal by **burning ckETH**,
+  not by taking a cut of your ckUNI. If you arrived here by depositing UNI,
+  you have **no ckETH**, and the withdrawal will fail until you acquire some.
+- You can see this in the minter's own interface: `withdraw_erc20` returns
+  `CkEthLedgerError` when it "could not burn the required amount of ckETH to
+  pay for the transaction fees."
+- Acquiring ckETH is a separate step on a DEX or exchange. We don't sell it
+  to you and we don't do this conversion for you.
+
+This is a real friction on the exit, so it belongs on the page about exits
+rather than in a support conversation after you've hit it. Exits 2 and 3
+below have no such requirement — **neither one needs ckETH, an Ethereum
+transaction, or gas of any kind.** If your goal is simply to stop holding
+sGLDT, they are the cheaper doors.
 
 ### 2. Unwrap to GLDT at sVault — no involvement from us
 

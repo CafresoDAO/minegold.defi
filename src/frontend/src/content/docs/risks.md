@@ -92,6 +92,18 @@ either fails, holding sGLDT is not a claim on us that we could honour.
 - **Gas is yours.** Deposits require ETH for gas. On a small deposit, gas can
   be a large fraction of the value. The app refuses to start a swap it can
   see you can't afford, but it cannot make Ethereum cheap.
+- **Going back to Ethereum needs ckETH, which we don't give you.** Taking
+  ckUNI out to an Ethereum address burns ckETH for gas at DFINITY's minter.
+  Someone who only ever deposited UNI won't hold any, so that specific leg
+  requires a separate purchase. Detailed, with the two exits that avoid it
+  entirely, in [Redeem & recovery](/docs/redeem-and-recovery).
+- **The operator's own ckUNI→Ethereum tool is switched off.** `adminDissolveCkUNI`
+  in the backend refuses to move funds: an earlier version sent ckUNI to the
+  minter without the approval flow the minter actually requires, which would
+  have stranded it. Rather than leave a method that loses money, it returns an
+  error and treasury withdrawals to Ethereum are done by hand. This constrains
+  *our* treasury management, not your exits — the three routes out on
+  [Redeem & recovery](/docs/redeem-and-recovery) don't go through it.
 - **Minimums exist because fees do.** 0.005 UNI to deposit, 0.1 sGLDT to
   withdraw. Below those, ledger fees eat the transaction.
 - **Stranded swaps require a human.** If a swap fails *and* its refund fails,

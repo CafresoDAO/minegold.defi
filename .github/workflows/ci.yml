@@ -1,0 +1,54 @@
+name: ci
+
+# Runs the money-path unit tests and a typecheck on every push and PR.
+#
+# The point is that anyone reading this repo can see these ran, and see them
+# fail when they should — a test suite whose results only exist on the
+# maintainer's laptop asks for the same trust the rest of this project
+# spends its time trying not to require.
+#
+# Read-only by design: no secrets, no deploy, no canister calls. Shipping to
+# mainnet stays a deliberate human act (scripts/upgrade-backend.sh, which
+# demands a typed confirmation).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    name: frontend — typecheck + tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: src/frontend/package-lock.json
+
+      # `npm ci` installs exactly the lockfile — the same tree a reviewer
+      # gets when they clone. `npm install` could silently resolve something
+      # newer and make CI pass against code nobody else is running.
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      # A build failure is a real failure: the deployed artifact is built
+      # from this exact command.
+      - name: Build
+        run: npm run build

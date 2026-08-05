@@ -247,8 +247,17 @@ export async function readHexViaWallet(method: string, params: unknown[], label:
   }
 }
 
-/** Safe BigInt hex parse. Returns null if the string isn't parseable. */
+/** Safe BigInt hex parse. Returns null if the string isn't parseable.
+ *
+ *  The empty string is explicitly rejected: `BigInt("")` is `0n` in JS, so
+ *  without this guard an empty/absent RPC response would render as a
+ *  confirmed zero balance rather than an unknown one. Claiming someone
+ *  holds nothing because the network hiccuped is the more alarming
+ *  direction to be wrong in — same reason the treasury read shows "—"
+ *  rather than "0.0000" when every endpoint fails. `"0x"` is different:
+ *  that IS a real zero-result shape from some endpoints, so it maps to 0n. */
 export function parseHexBigInt(hex: string): bigint | null {
+  if (hex.trim() === "") return null;
   try {
     return BigInt(hex === "0x" || hex === "0X" ? "0x0" : hex);
   } catch {

@@ -70,10 +70,10 @@ export function LandingPage({
     bat === null
       ? "checking DFINITY's minter…"
       : bat.supported
-        ? "BAT is listed on the chain-key minter — BAT intake can open"
+        ? "BAT is listed — intake can open"
         : bat.error
           ? "minter status check unavailable"
-          : "BAT not yet listed by DFINITY's minter — checked live just now";
+          : "BAT not yet listed — checked live just now";
 
   return (
     <div
@@ -127,13 +127,9 @@ export function LandingPage({
             className="mt-4 max-w-2xl text-[15px] leading-relaxed"
             style={{ color: "var(--bb-text-muted)" }}
           >
-            minegold.defi bridges an ERC-20 token from Ethereum onto ICP and
-            refines it into{" "}
-            <strong style={{ color: "var(--gold-500)" }}>sGLDT</strong> — a 1:1
-            wrapper of Gold DAO&apos;s GLDT, each token backed by 0.01&nbsp;g of
-            LBMA-sourced physical gold held in audited Swiss vaults. The entire
-            refinery is a canister: no server, no company holding your funds,
-            and an exit path that works the same day you arrive.
+            Turn an ERC-20 token into{" "}
+            <strong style={{ color: "var(--gold-500)" }}>sGLDT</strong> —
+            physical gold, 1:1. No company holding your funds. Exit anytime.
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -204,17 +200,17 @@ export function LandingPage({
               {
                 accent: "var(--royal-400)",
                 kicker: "Bridge",
-                body: "DFINITY's chain-key minter moves your ERC-20 onto ICP and credits it to your own account — not to ours.",
+                body: "DFINITY's chain-key minter moves your token onto ICP, straight to your own account.",
               },
               {
                 accent: "var(--gold-500)",
                 kicker: "Refine",
-                body: "One atomic swap converts it to sGLDT at the canister's own on-chain rate. A failed swap refunds you automatically.",
+                body: "One swap converts it to sGLDT at the canister's on-chain rate. Failed swaps refund automatically.",
               },
               {
                 accent: "var(--trust-verified)",
                 kicker: "Hold or exit",
-                body: "The gold sits in a vault only your passkey opens. Redeem back to ckUNI whenever you want.",
+                body: "Your gold sits in a vault only your passkey opens. Redeem to ckUNI anytime.",
               },
             ].map((b, i) => (
               <div
@@ -290,8 +286,8 @@ export function LandingPage({
             ))}
           </ol>
           <p className="mt-3 text-[12px]" style={{ color: "var(--bb-text-dim)" }}>
-            The wait in step 3 is Ethereum&apos;s, not ours — 12 blocks. You can
-            close the tab; the payout happens on-chain either way.
+            The wait in step 3 is Ethereum&apos;s — 12 blocks. Close the tab if
+            you want; the payout still lands on-chain.
           </p>
         </Reveal>
 
@@ -320,8 +316,7 @@ export function LandingPage({
                   className="mt-1 text-[12px] leading-relaxed"
                   style={{ color: "var(--bb-text-muted)" }}
                 >
-                  UNI → ckUNI → sGLDT. The path that works on mainnet today,
-                  and the one the application is being proven on.
+                  UNI → ckUNI → sGLDT. Live on mainnet today.
                 </dd>
               </div>
               <div>
@@ -333,9 +328,8 @@ export function LandingPage({
                   className="mt-1 text-[12px] leading-relaxed"
                   style={{ color: "var(--bb-text-muted)" }}
                 >
-                  Opens if and when DFINITY&apos;s chain-key minter lists BAT.
-                  The status chip above reads that list live, on every visit —
-                  it is not a promise we control.{" "}
+                  Opens if DFINITY&apos;s minter lists BAT. The status chip
+                  above checks live, every visit.{" "}
                   <button
                     type="button"
                     onClick={onOpenBrave}
@@ -355,9 +349,8 @@ export function LandingPage({
                   className="mt-1 text-[12px] leading-relaxed"
                   style={{ color: "var(--bb-text-muted)" }}
                 >
-                  The domain this application will move to. Until then it runs
-                  at its canister address — which keeps working afterwards
-                  regardless.
+                  Where this app will move. Its canister address keeps
+                  working either way.
                 </dd>
               </div>
             </dl>
@@ -397,7 +390,7 @@ export function LandingPage({
               </button>
             ))}
           </nav>
-          <p className="mb-2">
+          <p className="mb-6 text-center">
             Refinery backend{" "}
             <span className="font-mono">c626g-iyaaa-aaaau-agpoa-cai</span> ·
             frontend{" "}
@@ -414,16 +407,18 @@ export function LandingPage({
             </a>
           </p>
           {/* Ecosystem attribution — Banking.Brave is a separate product that
-              this one belongs to, not this page's brand. */}
-          <p className="flex flex-wrap items-center gap-1.5">
+              this one belongs to, not this page's brand. Larger seal here on
+              purpose: this is the one place on the page that should read as
+              "who's behind this," not a footnote. */}
+          <p className="flex flex-col items-center gap-2 text-center">
             <img
               src="/brand/icon-512.png"
-              alt=""
-              width={16}
-              height={16}
+              alt="Banking.Brave"
+              width={48}
+              height={48}
               className="rounded-full"
             />
-            minegold.defi is part of the Banking.Brave ecosystem, powered by
+            minegold.defi is a product of Banking.Brave, powered by
             CafresoDAO.
           </p>
         </footer>

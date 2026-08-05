@@ -11,6 +11,31 @@ Dates are ISO. Newest first.
 
 ---
 
+## 2026-08-05 — minegold.cafreso.com is live, OISY sign-in, and a leaner face
+
+- **The app now lives at [minegold.cafreso.com](https://minegold.cafreso.com).**
+  Registration had been blocked for days with an unexplained error; the cause
+  turned out to be that DFINITY replaced the custom-domains API (the old
+  `icp0.io/registrations` endpoint was retired 2025-12-01 and now fails with
+  a misleading error). Registered through the new `icp.net` service. The
+  canister origin keeps working, and **existing principals are unaffected** —
+  principal derivation stays pinned to the canonical canister origin.
+- **OISY wallet sign-in.** Second door next to Internet Identity, using the
+  ICRC-25/29 signer standard with an ICRC-34 delegation — the wallet approves
+  once at connect, then the session is as silent as an II session (no
+  per-read popups). Principal derivation is pinned to the same canonical
+  origin via ICRC-95, so the same OISY user gets the same vault on every
+  domain this app is served from. New sign-ins only; nothing changes for
+  existing II users.
+- **Less copy everywhere.** Landing page and sign-in gate rewritten to say
+  the same things in fewer words. The proof band's live figures, canister
+  list, and "what we can't promise" section are unchanged on purpose.
+- **The sign-in screen now uses the official Internet Computer mark** and a
+  proper brand icon instead of hand-drawn approximations.
+- **Availability incident during today's deploy** — the frontend canister ran
+  out of cycles mid-deploy and the site was briefly empty. Details in the
+  incident log alongside this page.
+
 ## 2026-07-31 — Shareable receipts, and an incident banner
 
 *Backend built and verified; not yet deployed.*

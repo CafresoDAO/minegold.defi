@@ -1,7 +1,7 @@
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-import { ac as encode, ad as Text, ae as isV3ResponseBody, M as HttpAgent, r as reactExports, af as DelegationIdentity, ag as isDelegationValid, ah as AuthClient, ai as useQueryClient, aj as useQuery } from "./index-CL-HWEUf.js";
+import { ae as encode, af as Text, ag as isV3ResponseBody, M as HttpAgent, r as reactExports, ah as DelegationIdentity, ai as isDelegationValid, aj as AuthClient, ak as useQueryClient, al as useQuery } from "./index-Cnm2qphK.js";
 class ExternalBlob {
   constructor(directURL, blob) {
     __publicField(this, "_blob");

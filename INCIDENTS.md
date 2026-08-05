@@ -33,11 +33,23 @@ sound handled; describing the actual impact does not.
 
 ---
 
-## No incidents recorded
+## 2026-08-05 — Frontend briefly served nothing during a deploy
+**Status:** resolved
+**Impact:** availability only — the web app was unreachable for roughly
+2–3 minutes. No user funds were touched; the backend, both ledgers, and all
+balances were unaffected throughout. Anyone loading the site in that window
+got a blank response.
+**Detected:** the deploy itself failed mid-run (operator was watching).
 
-There have been no incidents affecting user funds, availability, or display
-accuracy since this log was opened on 2026-07-31.
+The frontend canister ran out of cycles *during* an asset deploy. The sync
+script deletes stale assets before uploading replacements; the deletions
+had gone through when the canister started rejecting writes, so the site
+was briefly empty rather than stale. Topped the canister up (now ~8 months
+of runway at current burn) and re-ran the deploy; all assets verified back
+online.
 
-This section is published *as* a statement — an empty incident log that
-nobody can see is indistinguishable from one that is being suppressed. When
-the first entry lands, this notice is replaced by it.
+What changes so it doesn't recur: cycles balances were not being monitored
+on any Cafreso canister — this is now scheduled tooling, not a manual
+habit. Longer term the sync script should refuse to start (and especially
+refuse to delete) when the canister's cycle balance can't absorb the whole
+deploy.

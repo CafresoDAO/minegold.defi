@@ -34,9 +34,7 @@ export function ProofBand({ onOpenProof }: { onOpenProof: () => void }) {
         className="mt-1 mb-5 text-sm max-w-2xl"
         style={{ color: "var(--bb-text-muted)" }}
       >
-        Don&apos;t take our word for any of this. These are live reads from
-        public ledgers, and the canisters behind them are linked below —
-        including the ones we don&apos;t control.
+        Live reads from public ledgers — don&apos;t take our word for it.
       </p>
 
       {/* Live figures */}

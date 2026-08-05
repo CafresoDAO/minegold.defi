@@ -558,6 +558,7 @@ export default function App() {
   const {
     identity,
     login: iiLogin,
+    loginOisy,
     clear: iiClear,
     isLoggingIn: iiIsLoggingIn,
   } = useInternetIdentity();
@@ -2818,6 +2819,7 @@ export default function App() {
         <LoginOverlay
           isLoggingIn={isLoggingIn}
           onLogin={handleLogin}
+          onLoginOisy={loginOisy}
           onBack={
             enteredRefinery ? () => setEnteredRefinery(false) : undefined
           }

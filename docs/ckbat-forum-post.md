@@ -57,8 +57,8 @@ both checkable right now:
 
 I operate **minegold.defi**, a live mainnet application that refines ckERC20
 assets into a gold-backed token —
-[`cqyto-tiaaa-aaaau-agppa-cai`](https://cqyto-tiaaa-aaaau-agppa-cai.icp0.io)
-(inspect it on the
+[minegold.cafreso.com](https://minegold.cafreso.com), served from canister
+`cqyto-tiaaa-aaaau-agppa-cai` (inspect it on the
 [dashboard](https://dashboard.internetcomputer.org/canister/cqyto-tiaaa-aaaau-agppa-cai)).
 It already runs against the ckERC20 minter and polls `get_minter_info` for
 BAT support on every page load, so a listing activates shipped code rather

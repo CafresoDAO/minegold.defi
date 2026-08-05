@@ -1,6 +1,6 @@
-import { r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, J as IncidentBanner, T as ThemeToggle, y as ChevronRight, K as JOURNEY } from "./index-CL-HWEUf.js";
-import { f as fetchCkBatStatus } from "./ckMinter-DA8G8ehC.js";
-import { A as ArrowRight } from "./arrow-right-j6j4Yybf.js";
+import { r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, J as IncidentBanner, T as ThemeToggle, y as ChevronRight, K as JOURNEY } from "./index-Cnm2qphK.js";
+import { f as fetchCkBatStatus } from "./ckMinter-BG0j-j0s.js";
+import { A as ArrowRight } from "./arrow-right-CcVc8Kyp.js";
 function Reveal({
   children,
   delayMs = 0,
@@ -62,7 +62,7 @@ function ProofBand({ onOpenProof }) {
           {
             className: "mt-1 mb-5 text-sm max-w-2xl",
             style: { color: "var(--bb-text-muted)" },
-            children: "Don't take our word for any of this. These are live reads from public ledgers, and the canisters behind them are linked below — including the ones we don't control."
+            children: "Live reads from public ledgers — don't take our word for it."
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5", children: [
@@ -311,7 +311,7 @@ function LandingPage({
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-  const batChip = bat === null ? "checking DFINITY's minter…" : bat.supported ? "BAT is listed on the chain-key minter — BAT intake can open" : bat.error ? "minter status check unavailable" : "BAT not yet listed by DFINITY's minter — checked live just now";
+  const batChip = bat === null ? "checking DFINITY's minter…" : bat.supported ? "BAT is listed — intake can open" : bat.error ? "minter status check unavailable" : "BAT not yet listed — checked live just now";
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
@@ -371,10 +371,10 @@ function LandingPage({
                 className: "mt-4 max-w-2xl text-[15px] leading-relaxed",
                 style: { color: "var(--bb-text-muted)" },
                 children: [
-                  "minegold.defi bridges an ERC-20 token from Ethereum onto ICP and refines it into",
+                  "Turn an ERC-20 token into",
                   " ",
                   /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { style: { color: "var(--gold-500)" }, children: "sGLDT" }),
-                  " — a 1:1 wrapper of Gold DAO's GLDT, each token backed by 0.01 g of LBMA-sourced physical gold held in audited Swiss vaults. The entire refinery is a canister: no server, no company holding your funds, and an exit path that works the same day you arrive."
+                  " — physical gold, 1:1. No company holding your funds. Exit anytime."
                 ]
               }
             ),
@@ -459,17 +459,17 @@ function LandingPage({
             {
               accent: "var(--royal-400)",
               kicker: "Bridge",
-              body: "DFINITY's chain-key minter moves your ERC-20 onto ICP and credits it to your own account — not to ours."
+              body: "DFINITY's chain-key minter moves your token onto ICP, straight to your own account."
             },
             {
               accent: "var(--gold-500)",
               kicker: "Refine",
-              body: "One atomic swap converts it to sGLDT at the canister's own on-chain rate. A failed swap refunds you automatically."
+              body: "One swap converts it to sGLDT at the canister's on-chain rate. Failed swaps refund automatically."
             },
             {
               accent: "var(--trust-verified)",
               kicker: "Hold or exit",
-              body: "The gold sits in a vault only your passkey opens. Redeem back to ckUNI whenever you want."
+              body: "Your gold sits in a vault only your passkey opens. Redeem to ckUNI anytime."
             }
           ].map((b, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "div",
@@ -549,7 +549,7 @@ function LandingPage({
               },
               s.n
             )) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-3 text-[12px]", style: { color: "var(--bb-text-dim)" }, children: "The wait in step 3 is Ethereum's, not ours — 12 blocks. You can close the tab; the payout happens on-chain either way." })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-3 text-[12px]", style: { color: "var(--bb-text-dim)" }, children: "The wait in step 3 is Ethereum's — 12 blocks. Close the tab if you want; the payout still lands on-chain." })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(Reveal, { className: "mb-16", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -577,7 +577,7 @@ function LandingPage({
                       {
                         className: "mt-1 text-[12px] leading-relaxed",
                         style: { color: "var(--bb-text-muted)" },
-                        children: "UNI → ckUNI → sGLDT. The path that works on mainnet today, and the one the application is being proven on."
+                        children: "UNI → ckUNI → sGLDT. Live on mainnet today."
                       }
                     )
                   ] }),
@@ -590,7 +590,7 @@ function LandingPage({
                         className: "mt-1 text-[12px] leading-relaxed",
                         style: { color: "var(--bb-text-muted)" },
                         children: [
-                          "Opens if and when DFINITY's chain-key minter lists BAT. The status chip above reads that list live, on every visit — it is not a promise we control.",
+                          "Opens if DFINITY's minter lists BAT. The status chip above checks live, every visit.",
                           " ",
                           /* @__PURE__ */ jsxRuntimeExports.jsx(
                             "button",
@@ -614,7 +614,7 @@ function LandingPage({
                       {
                         className: "mt-1 text-[12px] leading-relaxed",
                         style: { color: "var(--bb-text-muted)" },
-                        children: "The domain this application will move to. Until then it runs at its canister address — which keeps working afterwards regardless."
+                        children: "Where this app will move. Its canister address keeps working either way."
                       }
                     )
                   ] })
@@ -647,7 +647,7 @@ function LandingPage({
                   },
                   path
                 )) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mb-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mb-6 text-center", children: [
                   "Refinery backend",
                   " ",
                   /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono", children: "c626g-iyaaa-aaaau-agpoa-cai" }),
@@ -668,18 +668,18 @@ function LandingPage({
                     }
                   )
                 ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "flex flex-wrap items-center gap-1.5", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "flex flex-col items-center gap-2 text-center", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx(
                     "img",
                     {
                       src: "/brand/icon-512.png",
-                      alt: "",
-                      width: 16,
-                      height: 16,
+                      alt: "Banking.Brave",
+                      width: 48,
+                      height: 48,
                       className: "rounded-full"
                     }
                   ),
-                  "minegold.defi is part of the Banking.Brave ecosystem, powered by CafresoDAO."
+                  "minegold.defi is a product of Banking.Brave, powered by CafresoDAO."
                 ] })
               ]
             }

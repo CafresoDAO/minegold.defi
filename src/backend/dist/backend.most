@@ -197,6 +197,7 @@ actor {
       get_deposit_address :
         shared {owner : Principal; subaccount : ?Blob} -> async Text
     };
+  stable var etherscanApiKey : Text;
   stable var incidentNotice : ?IncidentNotice__855114307;
   stable var lastUniUsdPriceE8 : Nat;
   stable var lastXRCError : Text;

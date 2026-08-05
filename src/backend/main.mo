@@ -69,6 +69,13 @@ actor Self {
   var nextUNIDepositId = 1;
   var sGLDTTreasuryBalance : Nat = 0; // kept for upgrade compatibility
   var batPoolBalance : Nat = 0;
+
+  /// Etherscan API key, admin-set post-deploy via `setEtherscanApiKey`.
+  /// NOT a literal on purpose: this repo is open source, and a key baked
+  /// into the source would be published the moment the repo is. Empty
+  /// until an admin sets it — every call site below degrades to "pending"
+  /// rather than trapping when it's unset, so a fresh deploy still boots.
+  var etherscanApiKey : Text = "";
   // UNI exchange rate: sGLDT per UNI in 1e8 precision (default 238000000 = 2.38 sGLDT per UNI)
   var uniExchangeRate : Nat = 238_000_000;
   // Cached on-chain balances — updated by refreshTreasuryBalances() (an update call).
@@ -894,6 +901,23 @@ actor Self {
     isAdmin(caller);
   };
 
+  /// Admin-only: set the Etherscan API key used to verify Ethereum
+  /// deposits and read wallet balances. Not readable back by design — see
+  /// `etherscanApiKeySet` for a yes/no check that doesn't expose the value.
+  public shared ({ caller }) func setEtherscanApiKey(key : Text) : async Bool {
+    if (not isAdmin(caller)) { return false };
+    etherscanApiKey := key;
+    true;
+  };
+
+  /// Whether an Etherscan key is configured, without exposing it. A fresh
+  /// deploy starts with this false — every Etherscan call site degrades to
+  /// "pending" rather than trapping, but ETH balance reads and deposit
+  /// verification won't complete until an admin sets a real key.
+  public query func etherscanApiKeySet() : async Bool {
+    etherscanApiKey != "";
+  };
+
   /// Returns the cached on-chain sGLDT balance held by the treasury principal (c626g-iyaaa-aaaau-agpoa-cai).
   /// Used by the treasury banner at the top of the page.
   /// This is a query so it works for unauthenticated (anonymous) callers.
@@ -1577,7 +1601,7 @@ actor Self {
       "https://api.etherscan.io/v2/api?chainid=1&module=account&action=txlist"
         # "&address=" # ethAddress
         # "&sort=desc&page=1&offset=10"
-        # "&apikey=***REMOVED-ETHERSCAN-KEY***";
+        # "&apikey=" # etherscanApiKey;
     let body = try {
       await _httpGetBounded(url, 32768);
     } catch (_) { return #apiError("Etherscan unreachable — retry in a moment") };
@@ -2362,7 +2386,7 @@ actor Self {
       // call now. V2 requires chainid=1 as a query param for mainnet.
       "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getTransactionByHash&txhash="
         # txHash
-        # "&apikey=***REMOVED-ETHERSCAN-KEY***";
+        # "&apikey=" # etherscanApiKey;
     let body = try {
       await _httpGetBounded(url, 32768);
     } catch (_) { return "pending" };
@@ -2533,7 +2557,7 @@ actor Self {
       "https://api.etherscan.io/v2/api?chainid=1&module=account&action=balance"
         # "&address=" # ethAddress
         # "&tag=latest"
-        # "&apikey=***REMOVED-ETHERSCAN-KEY***";
+        # "&apikey=" # etherscanApiKey;
     let body = try {
       await _httpGetBounded(url, 2048);
     } catch (_) { Runtime.trap("ETH balance fetch failed: network error") };
@@ -2586,13 +2610,13 @@ actor Self {
       "https://api.etherscan.io/v2/api?chainid=1&module=account&action=balance"
         # "&address=" # ethAddress
         # "&tag=latest"
-        # "&apikey=***REMOVED-ETHERSCAN-KEY***";
+        # "&apikey=" # etherscanApiKey;
     let uniUrl =
       "https://api.etherscan.io/v2/api?chainid=1&module=account&action=tokenbalance"
         # "&contractaddress=0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
         # "&address=" # ethAddress
         # "&tag=latest"
-        # "&apikey=***REMOVED-ETHERSCAN-KEY***";
+        # "&apikey=" # etherscanApiKey;
     let ethBody = try {
       await _httpGetBounded(ethUrl, 2048);
     } catch (_) { "" };
@@ -2633,7 +2657,7 @@ actor Self {
         # "&contractaddress=0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
         # "&address=" # ethAddress
         # "&tag=latest"
-        # "&apikey=***REMOVED-ETHERSCAN-KEY***";
+        # "&apikey=" # etherscanApiKey;
     let body = try {
       await _httpGetBounded(url, 32768);
     } catch (_) { Runtime.trap("UNI balance fetch failed: network error") };
@@ -2712,7 +2736,7 @@ actor Self {
 
     // Build Etherscan API URL using free-tier key
     // V2 API — v1 endpoint returns NOTOK since April 2026 migration.
-    let etherscanUrl = "https://api.etherscan.io/v2/api?chainid=1&module=transaction&action=gettxreceiptstatus&txhash=" # request.txHash # "&apikey=***REMOVED-ETHERSCAN-KEY***";
+    let etherscanUrl = "https://api.etherscan.io/v2/api?chainid=1&module=transaction&action=gettxreceiptstatus&txhash=" # request.txHash # "&apikey=" # etherscanApiKey;
 
     // Make HTTP outcall to Etherscan (gettxreceiptstatus)
     let responseBody = try {
@@ -2853,7 +2877,7 @@ actor Self {
     // Primary call returned pending/ambiguous — try secondary check via eth_getTransactionByHash.
     // If blockNumber is non-null, the transaction has been mined (confirmed).
     // V2 API required as of Apr 2026.
-    let fallbackUrl = "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getTransactionByHash&txhash=" # request.txHash # "&apikey=***REMOVED-ETHERSCAN-KEY***";
+    let fallbackUrl = "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getTransactionByHash&txhash=" # request.txHash # "&apikey=" # etherscanApiKey;
     let fallbackBody = try {
       await _httpGetBounded(fallbackUrl, 16384);
     } catch (_) {

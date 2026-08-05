@@ -227,6 +227,11 @@ service : {
   /// the fee, and whether the transfer would succeed with the current balance.
   /// Admin-only.
   diagnosePayoutAbility: (depositId: nat) -> (text);
+  /// Whether an Etherscan key is configured, without exposing it. A fresh
+  /// deploy starts with this false — every Etherscan call site degrades to
+  /// "pending" rather than trapping, but ETH balance reads and deposit
+  /// verification won't complete until an admin sets a real key.
+  etherscanApiKeySet: () -> (bool) query;
   getAllUNIDeposits: () -> (vec UniDepositRequest) query;
   getCallerUserProfile: () -> (opt UserProfile) query;
   getCallerUserRole: () -> (UserRole) query;
@@ -534,6 +539,10 @@ service : {
                                         err: text;
                                         ok: text;
                                       });
+  /// Admin-only: set the Etherscan API key used to verify Ethereum
+  /// deposits and read wallet balances. Not readable back by design — see
+  /// `etherscanApiKeySet` for a yes/no check that doesn't expose the value.
+  setEtherscanApiKey: (key: text) -> (bool);
   /// Admin-only. Pass null to clear.
   setIncidentNotice: (message: opt text, url: opt text) ->
    (variant {

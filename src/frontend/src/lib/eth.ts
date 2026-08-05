@@ -136,55 +136,6 @@ export function formatWei(value: bigint, decimals: number, precision = 4): strin
   return `${whole.toString()}.${fractionStr}`;
 }
 
-/** When a mobile wallet signs a tx but drops the hash on the way back to the
- * dApp (viem returns [] / null), we can recover the hash by asking Etherscan
- * for the latest tx from the user's address to a specific contract. The
- * signed tx is typically broadcast within 1-3 s, so a few polls find it. */
-export async function findLatestUserTxTo(
-  userAddress: string,
-  toContract: string,
-  options: { timeoutMs?: number; pollMs?: number } = {},
-): Promise<Hash | null> {
-  const timeoutMs = options.timeoutMs ?? 45_000;
-  const pollMs = options.pollMs ?? 3_000;
-  const deadline = Date.now() + timeoutMs;
-  const user = userAddress.toLowerCase();
-  const target = toContract.toLowerCase();
-  const API_KEY = "***REMOVED-ETHERSCAN-KEY***"; // shared free-tier key already used by backend
-
-  while (Date.now() < deadline) {
-    try {
-      // Etherscan migrated to v2 API (April 2026) — the v1 endpoint now
-      // returns "NOTOK — switch to v2" for every call. v2 requires chainid.
-      const url =
-        `https://api.etherscan.io/v2/api?chainid=1&module=account&action=txlist` +
-        `&address=${user}&sort=desc&page=1&offset=5&apikey=${API_KEY}`;
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5_000);
-      const res = await fetch(url, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        const json = await res.json();
-        if (json?.status === "1" && Array.isArray(json.result)) {
-          // Find the newest tx targeting the helper contract
-          const match = json.result.find(
-            (tx: { to?: string; hash?: string; timeStamp?: string }) =>
-              typeof tx.to === "string" &&
-              tx.to.toLowerCase() === target &&
-              typeof tx.hash === "string" &&
-              /^0x[a-fA-F0-9]{64}$/.test(tx.hash),
-          );
-          if (match?.hash) return match.hash as Hash;
-        }
-      }
-    } catch {
-      // network/CORS — try again
-    }
-    await new Promise((r) => setTimeout(r, pollMs));
-  }
-  return null;
-}
-
 /**
  * RPC-based tx-hash recovery for mobile — runs entirely against the public
  * Ethereum RPCs we already use for reads (Cloudflare, LlamaRPC, Ankr,

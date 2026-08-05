@@ -142,8 +142,16 @@ The parts worth reading first:
 |---|---|
 | `src/backend/main.mo` | The refinery. Every swap, refund and treasury movement. |
 | `src/frontend/src/lib/refineMath.ts` | The conversion arithmetic, including the e8/e18 handling. |
-| `src/frontend/src/lib/eth.ts` | Everything this app does on Ethereum. |
+| `src/frontend/src/lib/erc20.ts` | The Ethereum calldata this app asks your wallet to sign. |
+| `src/frontend/src/lib/eth.ts` | Everything else this app does on Ethereum. |
+| `src/frontend/src/lib/*.test.ts` | The money-path tests — start here to check our work. |
 | `CHANGELOG.md` / `INCIDENTS.md` | Published verbatim at [/status](/status). |
+
+The arithmetic that moves money is unit-tested, and those tests run on every
+push (`.github/workflows/ci.yml`) — you can see them pass or fail in the
+repository's Actions tab rather than taking our word for it. That is not the
+same thing as an audit, and we don't claim it is: **this code remains
+unaudited.**
 
 Reading the code is the strongest form of the verification this whole product
 argues for — stronger than anything we can tell you about ourselves. If you

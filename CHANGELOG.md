@@ -11,6 +11,33 @@ Dates are ISO. Newest first.
 
 ---
 
+## 2026-08-05 — Tests on the money path, and a secret removed from the source
+
+- **The arithmetic that moves money is now unit-tested** — 48 tests over the
+  refine fee boundaries, the Ethereum calldata encoders (every selector
+  pinned to its real keccak256 value), and balance formatting. They run on
+  every push via a public CI workflow, so the results are visible in the
+  repository rather than only on a laptop. **This is not an audit and is not
+  claimed as one; the code remains unaudited.**
+- **Writing those tests found a real defect, now fixed.** Parsing an empty
+  Ethereum RPC response returned zero rather than "unknown", because
+  `BigInt("")` is `0n` in JavaScript. A dropped response would have rendered
+  as a *confirmed* zero balance. It now reads as unknown — the same rule the
+  treasury display already followed by showing "—" instead of "0.0000".
+- **An API key was removed from the source and from the git history.** The
+  Etherscan key used to verify Ethereum deposits was hardcoded — in the
+  backend and, worse, in a frontend file that shipped to every visitor. It is
+  now set by an admin after deploy and is not readable back. The old value was
+  purged from all 46 commits before this repository was made public.
+- **Removed a dependency that no longer had a caller** (`@icp-sdk/signer`,
+  left behind by the reverted OISY sign-in). It was also the only reason the
+  install needed a peer-dependency override, so that override is gone too and
+  dependencies now resolve strictly. Production dependencies audit clean.
+- **Sign-in is now a chooser.** One "Sign in" button opens a picker with
+  Internet Identity and OISY. OISY is listed and labelled *coming soon* with
+  the actual reason, rather than hidden or wired to something that doesn't
+  work — see the correction below.
+
 ## 2026-08-05 — minegold.cafreso.com is live, OISY sign-in, and a leaner face
 
 - **The app now lives at [minegold.cafreso.com](https://minegold.cafreso.com).**

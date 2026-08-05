@@ -69,6 +69,8 @@ import {
 import { ThemeToggle } from "./components/ThemeToggle";
 import { routeFromPath, usePathRoute } from "./hooks/usePathRoute";
 import { usePrices } from "./hooks/usePrices";
+import { useMiningSteps } from "./hooks/useMiningSteps";
+import { useEthWallet } from "./hooks/useEthWallet";
 import { useGasEstimate } from "./hooks/useGasEstimate";
 import {
   TREASURY_ETH_ADDRESS,
@@ -121,22 +123,10 @@ const PageFallback = () => (
 // component body. See that file for why it's separate from ./lib/eth.ts
 // (the viem-backed client).
 import {
-  type BalanceDiagnostic,
   CKERC20_HELPER_CONTRACT,
   CKUNI_LEDGER_CANISTER_ID,
-  type EthProvider,
-  type EthWindow,
   estimateGasOrFallback,
-  fetchEthBalanceRaw,
-  fetchUniBalanceRaw,
-  format18,
-  getInjected,
-  isIOS,
-  isMobile,
   type MiningPhase,
-  pollReceipt,
-  PUBLIC_ETH_RPC_ENDPOINTS,
-  publicRpcCall,
   TREASURY_PRINCIPAL,
   UNI_CONTRACT_ADDRESS,
 } from "./lib/ethRaw";
@@ -167,7 +157,22 @@ export default function App() {
   // to credit ckUNI, then approve + refine into sGLDT. See useRefineFlow.
   const refineFlow = useRefineFlow(identity);
 
-  const [ethAddress, setEthAddress] = useState<string | null>(null);
+  // The user's Ethereum wallet: address, balances, and the connect flow.
+  // All the mobile-wallet defensiveness lives in hooks/useEthWallet.
+  const {
+    ethAddress,
+    ethBalance,
+    uniBalance,
+    ethBalanceDiag,
+    uniBalanceDiag,
+    balanceRefreshing,
+    refreshBalances,
+    walletConnectionError,
+    setWalletConnectionError,
+    walletConnectLog,
+    connectEthereumWallet,
+    resetWallet,
+  } = useEthWallet();
   // First-run = this browser has never completed a refine. Gates the
   // unlimited-approval opt-in and seeds a sensible starter amount.
   const [firstRun, setFirstRun] = useState<boolean>(() => {
@@ -189,11 +194,6 @@ export default function App() {
   const [phase, setPhase] = useState<MiningPhase>("idle");
   const [statusMsg, setStatusMsg] = useState("");
   const [sgldtReleased, setSgldtReleased] = useState<string | null>(null);
-  const [uniBalance, setUniBalance] = useState<string | null>(null);
-  const [ethBalance, setEthBalance] = useState<string | null>(null);
-  const [walletConnectionError, setWalletConnectionError] = useState<
-    string | null
-  >(null);
   // Modal closes itself when ethAddress flips truthy — see the open prop
   // passed to <ConnectWalletModal /> near the bottom of the tree.
   const [connectModalOpen, setConnectModalOpen] = useState(false);
@@ -276,56 +276,13 @@ export default function App() {
   );
   // Auto-polling state: tracks the attempt count shown below the mining animation
   const [pollAttempt, setPollAttempt] = useState(0);
-  // ── Persistent mining timeline ─────────────────────────────────────────
-  // Visible step tracker during the mining flow — persisted to localStorage
-  // with per-step timestamps so it survives tab reloads / mobile tab kills.
-  // Users can reopen the timeline to see exactly where a flow got stuck,
-  // which cuts remote-debugging in half (we no longer have to ask "what was
-  // the last thing you saw?").
-  type MiningStep = {
-    id: string;
-    label: string;
-    status: "pending" | "active" | "done" | "error";
-    detail?: string;
-    startedAt: number;
-    updatedAt: number;
-  };
-  const MINING_STEPS_KEY = `minegold_steps_${_principalSlug}`;
-  const MINING_STEPS_TTL_MS = 24 * 60 * 60_000; // drop timelines older than 24h
-
-  // Hydrated from localStorage after auth resolves — see the hydration effect
-  // near the TX_HASH_KEY block.
-  const [miningSteps, setMiningSteps] = useState<MiningStep[]>([]);
-  const persistMiningSteps = useCallback((next: MiningStep[]) => {
-    try {
-      if (next.length === 0) localStorage.removeItem(MINING_STEPS_KEY);
-      else localStorage.setItem(MINING_STEPS_KEY, JSON.stringify(next));
-    } catch { /* localStorage unavailable */ }
-  }, [MINING_STEPS_KEY]);
-
-  const updateStep = useCallback(
-    (id: string, label: string, status: "pending" | "active" | "done" | "error", detail?: string) => {
-      setMiningSteps((prev) => {
-        const now = Date.now();
-        const existing = prev.find((s) => s.id === id);
-        let next: MiningStep[];
-        if (existing) {
-          next = prev.map((s) =>
-            s.id === id ? { ...s, label, status, detail, updatedAt: now } : s,
-          );
-        } else {
-          next = [...prev, { id, label, status, detail, startedAt: now, updatedAt: now }];
-        }
-        persistMiningSteps(next);
-        return next;
-      });
-    },
-    [persistMiningSteps],
-  );
-  const resetSteps = useCallback(() => {
-    setMiningSteps([]);
-    persistMiningSteps([]);
-  }, [persistMiningSteps]);
+  // Visible step tracker for a refine — persisted per-principal, hydrated
+  // with a 24h expiry. See hooks/useMiningSteps.
+  const {
+    steps: miningSteps,
+    updateStep,
+    resetSteps,
+  } = useMiningSteps(_principalSlug);
   // Interval ref for the 3-second auto-polling loop
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
     null,
@@ -842,20 +799,8 @@ export default function App() {
       const storedHash = localStorage.getItem(`minegold_tx_hash_${slug}`);
       if (storedHash) setCurrentTxHashState(storedHash);
     } catch { /* localStorage unavailable */ }
-    try {
-      const raw = localStorage.getItem(`minegold_steps_${slug}`);
-      if (raw) {
-        const parsed = JSON.parse(raw) as MiningStep[];
-        if (Array.isArray(parsed)) {
-          const newest = parsed.reduce((n, s) => Math.max(n, s.updatedAt ?? 0), 0);
-          if (newest && Date.now() - newest > MINING_STEPS_TTL_MS) {
-            localStorage.removeItem(`minegold_steps_${slug}`);
-          } else {
-            setMiningSteps(parsed);
-          }
-        }
-      }
-    } catch { /* localStorage unavailable */ }
+    // The mining timeline hydrates itself in useMiningSteps, alongside its
+    // own writes and expiry rule.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -1028,47 +973,6 @@ export default function App() {
     phase === "ckuni_minting" ||
     phase === "releasing_sgldt";
 
-  // Per-token diagnostics + last-known source (for the collapsible panel).
-  const [ethBalanceDiag, setEthBalanceDiag] = useState<BalanceDiagnostic<string> | null>(null);
-  const [uniBalanceDiag, setUniBalanceDiag] = useState<BalanceDiagnostic<string> | null>(null);
-  const [balanceRefreshing, setBalanceRefreshing] = useState(false);
-
-  // Balance fetch — PARALLEL race of native-ETH paths only.
-  //
-  // Previously a SERIAL wallet → RPC fallback; this was the root cause of
-  // "balance never loads on mobile" — on iOS Brave the wallet's injected
-  // request can silently hang (response dropped but no rejection), blocking
-  // the RPC fallback indefinitely.
-  //
-  // fetchEthBalanceRaw / fetchUniBalanceRaw (defined at module scope) race
-  // both paths in parallel with 6s per-path hard timeouts. Whichever
-  // returns first wins; if both fail we surface that plainly.
-  const refreshBalances = useCallback(async (address: string) => {
-    setBalanceRefreshing(true);
-    const [ethDiag, uniDiag] = await Promise.all([
-      fetchEthBalanceRaw(address),
-      fetchUniBalanceRaw(address),
-    ]);
-    if (ethDiag.value !== null) setEthBalance(ethDiag.value);
-    if (uniDiag.value !== null) setUniBalance(uniDiag.value);
-    setEthBalanceDiag(ethDiag);
-    setUniBalanceDiag(uniDiag);
-    setWalletConnectionError(
-      ethDiag.value === null && uniDiag.value === null
-        ? "Can't read balance. Check your wallet is unlocked on Ethereum mainnet and your network allows reads to ethereum-mainnet.wallet.brave.com / eth.llamarpc.com."
-        : null,
-    );
-    setBalanceRefreshing(false);
-  }, []);
-
-  // Refresh ETH + UNI balances every 60 seconds when wallet is connected
-  useEffect(() => {
-    if (!ethAddress) return;
-    refreshBalances(ethAddress);
-    const id = setInterval(() => refreshBalances(ethAddress), 60_000);
-    return () => clearInterval(id);
-  }, [ethAddress, refreshBalances]);
-
   const [signInChooserOpen, setSignInChooserOpen] = useState(false);
   const handleLogin = () => {
     setSignInChooserOpen(true);
@@ -1078,350 +982,13 @@ export default function App() {
     iiLogin();
   };
 
-  // On-screen diagnostics for Connect Wallet. Appended to as each step runs so
-  // mobile users see exactly what's happening without opening a dev console.
-  const [walletConnectLog, setWalletConnectLog] = useState<string[]>([]);
-  const appendWalletLog = useCallback((line: string) => {
-    console.log(`[connectWallet] ${line}`);
-    setWalletConnectLog((prev) => [...prev.slice(-9), `${new Date().toLocaleTimeString()} ${line}`]);
-  }, []);
-
-  // Silent probe: return an already-authorized account if the wallet is
-  // already connected (no prompt). Used for both auto-connect on mount and
-  // as a fallback when `eth_requestAccounts` returns nothing on mobile.
-  const probeExistingAccount = useCallback(
-    async (provider: EthProvider | undefined | null): Promise<string | null> => {
-      if (!provider) return null;
-      try {
-        const result = (await provider.request({ method: "eth_accounts" })) as unknown;
-        const addrRe = /^0x[a-fA-F0-9]{40}$/;
-        if (Array.isArray(result)) {
-          const first = result
-            .map((a) => (typeof a === "string" ? a.trim() : ""))
-            .find((a) => addrRe.test(a));
-          if (first) return first;
-        }
-      } catch {
-        // ignore
-      }
-      return null;
-    },
-    [],
-  );
-
-  // EIP-6963 provider discovery — reliable on Brave's in-app wallet browser
-  // and on any EIP-6963-compliant wallet. The provider announces itself via
-  // an event we can listen for. We stash the discovered provider for later
-  // use by connectEthereumWallet.
-  const eip6963ProviderRef = useRef<EthProvider | null>(null);
-  useEffect(() => {
-    const handleAnnounce = (e: Event) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const detail = (e as any).detail;
-      if (detail?.provider && !eip6963ProviderRef.current) {
-        console.log("[eip6963] provider announced:", detail.info);
-        eip6963ProviderRef.current = detail.provider as EthProvider;
-      }
-    };
-    window.addEventListener("eip6963:announceProvider", handleAnnounce);
-    window.dispatchEvent(new Event("eip6963:requestProvider"));
-    return () => {
-      window.removeEventListener("eip6963:announceProvider", handleAnnounce);
-    };
-  }, []);
-
-  // Listen for the wallet's `accountsChanged` event — when the user approves
-  // access in the wallet app (even if the original request call hung), this
-  // fires with the new accounts and we can pick them up.
-  useEffect(() => {
-    const win = window as unknown as { ethereum?: EthWindow };
-    const eth = win.ethereum;
-    if (!eth) return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const anyEth = eth as any;
-    if (typeof anyEth.on !== "function") return;
-    const handler = (accounts: unknown) => {
-      if (Array.isArray(accounts) && accounts.length > 0 && typeof accounts[0] === "string") {
-        const addr = accounts[0] as string;
-        if (/^0x[a-fA-F0-9]{40}$/.test(addr)) {
-          console.log("[accountsChanged] picked up", addr);
-          setEthAddress(addr);
-          refreshBalances(addr);
-        }
-      }
-    };
-    anyEth.on("accountsChanged", handler);
-    return () => {
-      if (typeof anyEth.removeListener === "function") {
-        anyEth.removeListener("accountsChanged", handler);
-      }
-    };
-  }, [refreshBalances]);
-
-  // Auto-connect on page load if the wallet was previously authorized.
-  useEffect(() => {
-    if (ethAddress) return;
-    const win = window as unknown as { ethereum?: EthWindow };
-    const eth = win.ethereum;
-    if (!eth) return;
-    let cancelled = false;
-    (async () => {
-      // Small delay so the mobile provider is fully injected
-      for (let i = 0; i < 10; i++) {
-        await new Promise((r) => setTimeout(r, 200));
-        if ((window as unknown as { ethereum?: EthWindow }).ethereum) break;
-      }
-      if (cancelled) return;
-      const currentEth = (window as unknown as { ethereum?: EthWindow }).ethereum;
-      if (!currentEth) return;
-      let provider: EthProvider = currentEth;
-      if (currentEth.providers && currentEth.providers.length > 0) {
-        const brave = currentEth.providers.find((p) => p.isBraveWallet === true);
-        if (brave) provider = brave;
-      }
-      const wasPending =
-        (() => { try { return localStorage.getItem("bb_wallet_connect_pending") === "1"; } catch { return false; } })();
-      const probeTries = wasPending ? 15 : 3;
-      for (let i = 0; i < probeTries && !cancelled; i++) {
-        const existing = await probeExistingAccount(provider);
-        if (cancelled) return;
-        if (existing) {
-          console.log("[auto-connect] found existing account:", existing);
-          try { localStorage.removeItem("bb_wallet_connect_pending"); } catch { /* noop */ }
-          setEthAddress(existing);
-          refreshBalances(existing);
-          return;
-        }
-        if (i < probeTries - 1) await new Promise((r) => setTimeout(r, 2000));
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [ethAddress, probeExistingAccount, refreshBalances]);
-
-  const connectEthereumWallet = async () => {
-    setWalletConnectLog([]);
-    appendWalletLog("Connect clicked");
-    try { localStorage.setItem("bb_wallet_connect_pending", "1"); } catch { /* noop */ }
-    const win = window as unknown as {
-      ethereum?: EthWindow;
-      braveEthereum?: EthProvider;
-    };
-    let eth = win.ethereum;
-    // Diagnostic: what's present on the window?
-    appendWalletLog(
-      `Probes: window.ethereum=${!!win.ethereum} braveEthereum=${!!win.braveEthereum}`,
-    );
-    if (eth) {
-      appendWalletLog(
-        `ethereum flags: isBraveWallet=${!!eth.isBraveWallet} providers=${
-          eth.providers ? eth.providers.length : 0
-        }`,
-      );
-    }
-    if (!eth) {
-      // Mobile may inject window.ethereum slightly after page load — poll for up to 2s
-      if (isMobile) {
-        for (let i = 0; i < 10; i++) {
-          await new Promise((r) => setTimeout(r, 200));
-          eth = (window as unknown as { ethereum?: EthWindow }).ethereum;
-          if (eth) break;
-        }
-      }
-      if (!eth) {
-        try { localStorage.removeItem("bb_wallet_connect_pending"); } catch { /* noop */ }
-        if (isIOS) {
-          // iOS Safari/Brave do not inject window.ethereum in regular tabs.
-          // The Brave Wallet app has its own in-app browser — direct the user there.
-          setWalletConnectionError(
-            "iOS doesn't inject Web3 into regular browser tabs. Open the Brave Wallet app, tap the compass/browser tab, and navigate to this page from inside it. (MetaMask and Trust Wallet also have in-app browsers that work.)",
-          );
-        } else if (isMobile) {
-          setWalletConnectionError(
-            "No Web3 wallet detected. Open this page from inside your wallet app's built-in browser (Brave Wallet, MetaMask, Trust, Rainbow all have one).",
-          );
-        } else {
-          setWalletConnectionError(
-            "Please install Brave Wallet, MetaMask, or a compatible Web3 wallet browser extension, then refresh.",
-          );
-        }
-        return;
-      }
-    }
-    // Use the raw provider directly — on mobile Brave, viem's requestAddresses
-    // triggers auxiliary eth_chainId calls that can hang on the injected-bridge
-    // side. A plain eth_requestAccounts is the most compatible path. If the
-    // user has multiple wallets injected, prefer the Brave sub-provider.
-    let provider: EthProvider = eth;
-    if (eth.providers && eth.providers.length > 0) {
-      const brave = eth.providers.find((p) => p.isBraveWallet === true);
-      if (brave) provider = brave;
-    } else if (eth.isBraveWallet === true) {
-      provider = eth;
-    }
-    try {
-      // Per current mobile-Brave research (2025): wallet_requestPermissions
-      // silently no-ops in mobile Brave's regular tabs. Use eth_requestAccounts
-      // as the primary method — it's the one that CAN work in the in-app
-      // Brave Wallet browser, and the only method MetaMask-mobile / Rainbow /
-      // Trust Wallet consistently implement.
-      appendWalletLog(
-        `Calling eth_requestAccounts${provider.isBraveWallet ? " (Brave sub-provider)" : ""}`,
-      );
-
-      // Race eth_requestAccounts against a parallel eth_accounts poll. On
-      // mobile Brave, the wallet app opens the signer UI, the user approves,
-      // but the eth_requestAccounts promise sometimes never resolves — the
-      // dApp then hangs forever. By polling read-only eth_accounts alongside,
-      // whichever returns the address first wins. This is the same pattern
-      // we use during tx signing.
-      const requestPromise = provider
-        .request({ method: "eth_requestAccounts" })
-        .catch((err) => {
-          // User rejection propagates; other errors we absorb and let polling
-          // do its work.
-          const code = (err as { code?: number })?.code;
-          if (code === 4001) throw err;
-          appendWalletLog(`eth_requestAccounts rejected: ${String(err).slice(0, 80)}`);
-          return null as unknown;
-        });
-
-      // Parallel poll — starts after 3s (give the wallet a head start on happy path)
-      const pollPromise = (async () => {
-        await new Promise((r) => setTimeout(r, isMobile ? 3000 : 8000));
-        for (let i = 0; i < 12; i++) {
-          const addr = await probeExistingAccount(provider);
-          if (addr) {
-            appendWalletLog(`Parallel poll found addr (attempt ${i + 1})`);
-            return [addr] as unknown;
-          }
-          await new Promise((r) => setTimeout(r, 2500));
-        }
-        return null as unknown;
-      })();
-
-      const accounts = await Promise.race([requestPromise, pollPromise]);
-      appendWalletLog(
-        `Got response: ${JSON.stringify(accounts)?.slice(0, 80) ?? String(accounts)}`,
-      );
-
-      // Defensive address extraction — mobile bridges return odd shapes.
-      let addr: string | null = null;
-      const addrRe = /^0x[a-fA-F0-9]{40}$/;
-      if (Array.isArray(accounts)) {
-        const first = accounts
-          .map((a) => (typeof a === "string" ? a.trim() : ""))
-          .find((a) => addrRe.test(a));
-        if (first) addr = first;
-      } else if (typeof accounts === "string") {
-        const trimmed = accounts.trim();
-        if (addrRe.test(trimmed)) addr = trimmed;
-        else {
-          // Try to fish an address out of any wrapping
-          const m = trimmed.match(/0x[a-fA-F0-9]{40}/);
-          if (m) addr = m[0];
-        }
-      } else if (accounts && typeof accounts === "object") {
-        // Some bridges wrap in { result: [...] } or { accounts: [...] }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const anyAccounts = accounts as any;
-        const candidate = anyAccounts.result ?? anyAccounts.accounts ?? anyAccounts[0];
-        if (Array.isArray(candidate)) {
-          const first = candidate
-            .map((a: unknown) => (typeof a === "string" ? a.trim() : ""))
-            .find((a: string) => addrRe.test(a));
-          if (first) addr = first;
-        } else if (typeof candidate === "string" && addrRe.test(candidate.trim())) {
-          addr = candidate.trim();
-        }
-      }
-
-      // If the prompt returned nothing usable, the wallet may have approved
-      // silently. Poll eth_accounts (read-only, no prompt) to recover the
-      // address. This handles the mobile Brave case where the wallet app
-      // opens, user approves, returns to browser, but the response payload
-      // never makes it back to our promise.
-      if (!addr) {
-        appendWalletLog("No address in response — polling eth_accounts…");
-        for (let i = 0; i < 10 && !addr; i++) {
-          await new Promise((r) => setTimeout(r, 2000));
-          addr = await probeExistingAccount(provider);
-          if (addr) {
-            appendWalletLog(`Recovered address (attempt ${i + 1}): ${addr.slice(0, 10)}…`);
-            break;
-          }
-          appendWalletLog(`Still waiting (${i + 1}/10)…`);
-        }
-      }
-      if (!addr) {
-        appendWalletLog("FAILED — no address after all polls");
-        try { localStorage.removeItem("bb_wallet_connect_pending"); } catch { /* noop */ }
-        if (isIOS) {
-          setWalletConnectionError(
-            "No account returned. Make sure you've opened this page inside the Brave Wallet app's browser (not regular Brave), your wallet is unlocked, and an account is selected.",
-          );
-        } else if (isMobile) {
-          setWalletConnectionError(
-            "Wallet didn't return an account. Open this page from inside your wallet's in-app browser, make sure the wallet is unlocked with an account selected, then try again.",
-          );
-        } else {
-          setWalletConnectionError(
-            "Wallet didn't return an account. Make sure your wallet is unlocked and has at least one account selected, then try again.",
-          );
-        }
-        return;
-      }
-      appendWalletLog(`Connected: ${addr.slice(0, 10)}…`);
-      try { localStorage.removeItem("bb_wallet_connect_pending"); } catch { /* noop */ }
-      setEthAddress(addr);
-      const delay = isMobile ? 1000 : 500;
-      await new Promise((r) => setTimeout(r, delay));
-      await refreshBalances(addr);
-    } catch (error) {
-      const code = (error as { code?: number })?.code;
-      if (code === 4001) {
-        appendWalletLog("Rejected by user");
-        try { localStorage.removeItem("bb_wallet_connect_pending"); } catch { /* noop */ }
-        return;
-      }
-      appendWalletLog(
-        `Error: ${error instanceof Error ? error.message : String(error)}`.slice(0, 120),
-      );
-      console.error("[connectWallet] error:", error);
-      // Don't alert right away — poll first in case the wallet approved anyway
-      appendWalletLog("Polling eth_accounts after error…");
-      let addr: string | null = null;
-      for (let i = 0; i < 10 && !addr; i++) {
-        await new Promise((r) => setTimeout(r, 2000));
-        addr = await probeExistingAccount(provider);
-        if (addr) {
-          appendWalletLog(`Recovered after error (attempt ${i + 1}): ${addr.slice(0, 10)}…`);
-          break;
-        }
-      }
-      if (addr) {
-        try { localStorage.removeItem("bb_wallet_connect_pending"); } catch { /* noop */ }
-        setEthAddress(addr);
-        await refreshBalances(addr);
-        return;
-      }
-      try { localStorage.removeItem("bb_wallet_connect_pending"); } catch { /* noop */ }
-      setWalletConnectionError(
-        `Wallet connection failed: ${error instanceof Error ? error.message : String(error)}`,
-      );
-    }
-  };
-
   const handleLogout = () => {
     stopPolling();
     pollEpochRef.current += 1;
     refineFlow.reset();
     clearRefineWatch(_principalSlug);
     iiClear();
-    setEthAddress(null);
-    setEthBalance(null);
-    setUniBalance(null);
+    resetWallet();
     setPhase("idle");
     setSgldtReleased(null);
     // Signing out returns to the public landing page, not to a sign-in wall.

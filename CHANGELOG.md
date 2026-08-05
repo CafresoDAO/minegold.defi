@@ -11,6 +11,40 @@ Dates are ISO. Newest first.
 
 ---
 
+## 2026-08-05 — The Etherscan oracle is gone from the backend
+
+*Backend built and verified; not yet deployed.*
+
+- **Deleted every Ethereum-oracle path from the refinery — 1,132 lines,
+  roughly a quarter of the backend.**
+  Nine public methods are removed: `submitUNIDeposit`, `verifyEthTransaction`,
+  `autoFinalizeUNIDeposit`, `getWalletBalances`, `getEthBalanceOnchain`,
+  `getUniBalanceOnchain`, `setEtherscanApiKey`, `etherscanApiKeySet` and
+  `transform`. With them go the HTTP outcalls, the API key they used, and the
+  hand-rolled JSON and hex parsing that read their responses.
+- **This removes a route to the treasury, which is the reason to do it.**
+  `verifyEthTransaction` could mark a deposit confirmed and release sGLDT on
+  the strength of one centralised API's answer, parsed by substring matching.
+  It is no longer possible for anything off-chain to authorise a payout.
+- **Nothing was using it.** The live deposit path has been `refineCkUNI` since
+  the minter-attribution switch: DFINITY's ckERC-20 minter credits ckUNI to
+  **your own principal** under chain-key consensus, and refining is a pure
+  ICP-side swap. The deleted methods served the older treasury-attribution
+  flow, whose own verifier had been rejecting every deposit made since that
+  switch. The deposit-record table on mainnet is empty, so no record, and no
+  user, depended on any of this.
+- **The stable signature is byte-for-byte unchanged**, so the upgrade cannot
+  disturb stored state. Ten now-dead stable variables are deliberately kept:
+  Motoko refuses to discard a stable variable implicitly, and dropping them
+  needs an explicit migration function — a separate change that should not
+  ride along with a deletion. One of them still holds the old Etherscan key
+  in canister memory, unreachable by any code; that migration will clear it.
+- **We considered replacing Etherscan with the ICP EVM RPC canister and
+  decided against it.** It works — a test call returned the treasury's UNI
+  balance, 0.53, in agreement across three providers — but it would have been
+  a multi-provider oracle bolted onto code nothing calls, and weaker than the
+  chain-key consensus the live path already relies on.
+
 ## 2026-08-05 — Tests on the money path, and a secret removed from the source
 
 - **The arithmetic that moves money is now unit-tested** — 48 tests over the

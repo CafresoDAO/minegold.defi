@@ -1,14 +1,3 @@
-type http_request_result = 
- record {
-   body: blob;
-   headers: vec http_header;
-   status: nat;
- };
-type http_header = 
- record {
-   name: text;
-   value: text;
- };
 type UserRole = 
  variant {
    admin;
@@ -66,17 +55,6 @@ type TxRecord =
    tokenSymbol: text;
    txType: TxType;
  };
-type TransformationOutput = 
- record {
-   body: blob;
-   headers: vec http_header;
-   status: nat;
- };
-type TransformationInput = 
- record {
-   context: blob;
-   response: http_request_result;
- };
 type Time = int;
 type RefineStatus = 
  variant {
@@ -133,20 +111,6 @@ type IncidentNotice =
    sinceNs: Time;
    url: opt text;
  };
-type AutoFinalizeResult = 
- variant {
-   alreadyExists: record {
-                    requestId: nat;
-                    status: text;
-                    txHash: text;
-                  };
-   apiError: text;
-   noDepositFound: text;
-   ok: record {
-         requestId: nat;
-         txHash: text;
-       };
- };
 service : {
   _initializeAccessControl: () -> ();
   /// Admin-only: add a transaction record on behalf of any user (e.g. for manual entries).
@@ -202,36 +166,11 @@ service : {
   /// Admin transfers sGLDT from this canister's treasury to any principal via ICRC-1.
   adminTransferSGLDT: (to: principal, amount: nat) -> (text);
   assignCallerUserRole: (user: principal, role: UserRole) -> ();
-  /// Find the user's most recent UNI deposit tx to the ckERC-20 helper AND
-  /// submit it for verification + payout — all in one call. This is the
-  /// reliable finalize path for mobile users whose frontend never captured
-  /// the deposit tx hash: they click one button after signing, and the
-  /// backend discovers the tx from their on-chain history.
-  /// 
-  /// Flow:
-  ///   1. Etherscan V2 txlist for `ethAddress`, newest first, last ~10 txs
-  ///   2. Find the newest one where: to == helper, input starts with
-  ///      deposit() selector, UNI is the token, amount matches uniAmountE8
-  ///   3. If found, create a UniDepositRequest (or return the existing one
-  ///      if we've already seen this hash) and kick off verifyAndPayUNIDeposit
-  ///   4. Return a result variant so the frontend can show the right UI
-  /// 
-  /// Only the caller's own ethAddress is scanned — we use `caller` as the
-  /// record submitter, so whoever invokes this gets credited. To prevent
-  /// front-running, the _verifyDepositCalldata check later re-validates
-  /// `tx.from == ethAddress`.
-  autoFinalizeUNIDeposit: (ethAddress: text, uniAmountE8: nat, rateHint:
-   opt nat) -> (AutoFinalizeResult);
   /// Diagnoses payout ability for a specific deposit — returns a human-readable summary.
   /// Shows the treasury sGLDT balance, exact amount required for this deposit,
   /// the fee, and whether the transfer would succeed with the current balance.
   /// Admin-only.
   diagnosePayoutAbility: (depositId: nat) -> (text);
-  /// Whether an Etherscan key is configured, without exposing it. A fresh
-  /// deploy starts with this false — every Etherscan call site degrades to
-  /// "pending" rather than trapping, but ETH balance reads and deposit
-  /// verification won't complete until an admin sets a real key.
-  etherscanApiKeySet: () -> (bool) query;
   getAllUNIDeposits: () -> (vec UniDepositRequest) query;
   getCallerUserProfile: () -> (opt UserProfile) query;
   getCallerUserRole: () -> (UserRole) query;
@@ -264,14 +203,6 @@ service : {
       status: text;
       txHash: text;
     }) query;
-  /// Canister-side ETH balance read. Uses Etherscan V2 account/balance which
-  /// is a plain GET — CORS-free from canister HTTP outcalls. Primary purpose:
-  /// give the frontend a reliable balance path on mobile browsers where
-  /// public RPC fetches are blocked by Brave Shields / CORS / network, AND
-  /// where window.ethereum isn't injected in regular tabs. Returns Nat of
-  /// wei (18 decimals) on success, traps on network failure so the frontend
-  /// can fall back to other paths. */
-  getEthBalanceOnchain: (ethAddress: text) -> (nat);
   /// PUBLIC. null = nothing being reported right now.
   getIncidentNotice: () -> (opt IncidentNotice) query;
   /// Public query — returns the cached treasury Ethereum deposit address for the ERC-20 minter.
@@ -400,10 +331,6 @@ service : {
       sGLDTBalance: nat;
     }) query;
   getUNIExchangeRate: () -> (nat) query;
-  /// Canister-side UNI (ERC-20) balance read. Same rationale as
-  /// getEthBalanceOnchain — reliable mobile path via HTTPS outcall. Returns
-  /// Nat of UNI in wei (18 decimals, ERC-20 standard).
-  getUniBalanceOnchain: (ethAddress: text) -> (nat);
   getUserProfile: (user: principal) -> (opt UserProfile) query;
   /// Public query: returns the sGLDT ICRC-1 balance for any given principal (their own ICP account).
   /// No admin restriction — users can check their own balance.
@@ -414,11 +341,6 @@ service : {
   /// adminGetUserTransactions. This variant is kept for candid compatibility.)
   getUserTransactions: (user: principal) -> (vec TxRecord) query;
   getUserUNIDeposits: (user: principal) -> (vec UniDepositRequest) query;
-  getWalletBalances: (ethAddress: text) ->
-   (record {
-      ethWei: nat;
-      uniWei: nat;
-    });
   /// Admin-only: Calls the ICP ERC-20 minter to derive the treasury's fixed Ethereum
   /// deposit address and caches it on-chain. Only needs to be called once (or to refresh).
   /// All users will send UNI to this same address; the minter automatically converts
@@ -498,9 +420,10 @@ service : {
   /// (c) required only that the named principal hold ≥1 ckUNI wei (~free) and
   /// (d) never pulled or burned that ckUNI. Any principal could call it in a loop
   /// with an arbitrary uniAmount to drain the sGLDT treasury. Removed entirely —
-  /// the legitimate deposit flow goes through submitUNIDeposit →
-  /// verifyEthTransaction → verifyAndPayUNIDeposit, which now on-chain-verifies
-  /// the deposit before paying out.
+  /// the legitimate deposit flow is now refineCkUNI: the ckERC-20 minter
+  /// credits ckUNI to the user's own principal under chain-key consensus, and
+  /// refining pulls it via icrc2_transfer_from. (This note used to name
+  /// submitUNIDeposit → verifyEthTransaction; both were deleted 2026-08-05.)
   /// Allows a user to reset their own stuck mining phase (e.g. after a 20-minute timeout).
   /// This method only affects the UNI deposit state — it does NOT refund any tokens.
   /// Any #processing deposit belonging to the caller is reverted to #confirmed so the
@@ -512,10 +435,10 @@ service : {
                                          });
   /// Retries the sGLDT payout for a deposit that is in #confirmed or #failed status.
   /// 
-  /// This is what the "Keep Checking" button should call. Unlike verifyEthTransaction,
-  /// which only reads the current status, this method actually re-attempts the ICRC-1
-  /// sGLDT transfer. Use this to resolve deposits that are stuck in #confirmed because
-  /// a previous verifyAndPayUNIDeposit call trapped or failed silently.
+  /// This is what the "Keep Checking" button calls: it re-attempts the ICRC-1
+  /// sGLDT transfer, rather than only reading status. Use it to resolve deposits
+  /// stuck in #confirmed because a previous verifyAndPayUNIDeposit call trapped
+  /// or failed silently.
   /// 
   /// IMPORTANT: This function NEVER traps. All outcomes are returned as descriptive Text.
   ///   - If already paid:   "already_paid: <amount> sGLDT released to <principal>"
@@ -539,10 +462,6 @@ service : {
                                         err: text;
                                         ok: text;
                                       });
-  /// Admin-only: set the Etherscan API key used to verify Ethereum
-  /// deposits and read wallet balances. Not readable back by design — see
-  /// `etherscanApiKeySet` for a yes/no check that doesn't expose the value.
-  setEtherscanApiKey: (key: text) -> (bool);
   /// Admin-only. Pass null to clear.
   setIncidentNotice: (message: opt text, url: opt text) ->
    (variant {
@@ -560,41 +479,20 @@ service : {
   /// reading, without the jump guard (an explicit admin action re-anchors).
   setSGLDTUsdPrice: (priceE8: nat) -> ();
   setUNIExchangeRate: (rate: nat) -> ();
-  /// Records a UNI deposit after the frontend has confirmed the ETH transaction on-chain.
-  /// 
-  /// Trust model: The frontend is responsible for confirming the ETH transaction via
-  /// eth_getTransactionReceipt (using the connected Brave wallet) before calling this function.
-  /// The backend trusts the frontend-submitted txHash, ethAddress, and uniAmount because:
-  ///   1. The admin reviews and calls verifyAndPayUNIDeposit to release sGLDT.
-  ///   2. A malicious user submitting a fake txHash would only create a pending record;
-  ///      no sGLDT is released until the admin (or automated flow) explicitly approves it.
-  ///   3. No Etherscan API key is required — ETH-side verification is client-side.
-  /// 
-  /// Security:
-  ///   - txHash must be in the valid Ethereum format: "0x" followed by exactly 64 hex characters.
-  ///   - Duplicate txHash submissions are rejected to prevent double-deposit attacks.
-  /// 
-  /// rateHint: Optional live exchange rate from the frontend (1e8 precision, e.g. 238_000_000 = 2.38 sGLDT/UNI).
-  ///           When provided and > 0, this rate is locked for this deposit so the user receives
-  ///           exactly what they saw on screen. Falls back to uniExchangeRate if null or 0.
-  ///           This eliminates the need for a separate syncLiveExchangeRate call from the frontend.
-  submitUNIDeposit: (ethAddress: text, uniAmount: nat, txHash: text,
-   rateHint: opt nat) -> (nat);
   /// Syncs the live market exchange rate from the frontend (CoinGecko) to the backend.
   /// ADMIN-ONLY: Only the admin principal may update the global exchange rate.
-  /// Regular users should pass the live rate via submitUNIDeposit's rateHint parameter
-  /// so the rate is locked per-deposit without mutating the global state.
+  /// Regular users pass the live rate via refineCkUNI's rateHint parameter so the
+  /// rate is locked per-refine without mutating the global state.
   /// Rate is in 1e8 precision (e.g. 238_000_000 = 2.38 sGLDT per UNI).
   syncLiveExchangeRate: (newRate: nat) -> (variant {
                                              err: text;
                                              ok;
                                            });
-  transform: (input: TransformationInput) -> (TransformationOutput) query;
-  /// Direct payout trigger — bypasses Etherscan re-check and immediately attempts
-  /// the sGLDT ICRC-1 transfer for a deposit that is in #confirmed or #failed status.
+  /// Direct payout trigger — immediately attempts the sGLDT ICRC-1 transfer for
+  /// a deposit that is in #confirmed or #failed status.
   /// 
-  /// Use this when: the ETH transaction is confirmed but sGLDT was not released, and
-  /// you want to force a payout retry without waiting for the next Etherscan poll cycle.
+  /// Use this when: sGLDT was not released for an already-confirmed record and
+  /// you want to force a retry without waiting for the next 30 s sweep.
   /// 
   /// Only the original depositor or admin may call this.
   /// NEVER traps — all outcomes returned as descriptive Text.
@@ -607,9 +505,10 @@ service : {
                                                      });
   /// Releases sGLDT from the treasury to the depositing user via ICRC-1 transfer.
   /// 
-  /// Trust model: The frontend confirms the ETH transaction before calling submitUNIDeposit,
-  /// so by the time this function is called the deposit is already #confirmed. No Etherscan
-  /// HTTP outcall is needed — ETH verification happens client-side.
+  /// Only reachable for deposit records created before the minter-attribution
+  /// switch; nothing creates new ones. It pays out a record that is already
+  /// #confirmed and performs no Ethereum verification of its own — the code
+  /// that did (verifyEthTransaction, via Etherscan) was deleted 2026-08-05.
   /// 
   /// Race condition protection: Before the async ICRC-1 transfer, the deposit status is
   /// atomically set to #processing. Any concurrent call will see #processing and be rejected,
@@ -618,17 +517,6 @@ service : {
   /// IMPORTANT: This function NEVER traps. All errors are returned as descriptive Text.
   /// On any failure the deposit reverts to #confirmed so the user can retry via Keep Checking.
   verifyAndPayUNIDeposit: (requestId: nat) -> (text);
-  /// Verifies an ETH transaction on Etherscan and auto-releases sGLDT if confirmed.
-  /// 
-  /// Steps:
-  ///   1. Looks up the deposit by requestId.
-  ///   2. Makes an HTTP GET to the Etherscan API (gettxreceiptstatus endpoint).
-  ///   3. If status=1 (success), marks the deposit #confirmed and calls verifyAndPayUNIDeposit.
-  ///   4. Returns "confirmed_and_paid", "pending", "failed", or an error message.
-  /// 
-  /// Any authenticated caller may verify their own deposit. Admin may verify any deposit.
-  /// Returns "pending" on Etherscan timeout or API error so the frontend can retry safely.
-  verifyEthTransaction: (requestId: nat) -> (text);
   /// Diagnostic: returns the caller's principal + every admin check result.
   /// Helps debug "not admin" errors from the UI.
   whoAmI: () ->

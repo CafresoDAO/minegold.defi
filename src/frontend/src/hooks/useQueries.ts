@@ -59,29 +59,10 @@ const icrc1LedgerIDL = ({ IDL }: { IDL: any }) => {
   });
 };
 
-// ── Direct deposit IDL (bypasses bindgen wrapper) ────────────────────────────
-
-const directDepositIDL = ({ IDL }: { IDL: any }) => {
-  const AutoFinalizeResult = IDL.Variant({
-    ok: IDL.Record({ requestId: IDL.Nat, txHash: IDL.Text }),
-    alreadyExists: IDL.Record({ requestId: IDL.Nat, txHash: IDL.Text, status: IDL.Text }),
-    noDepositFound: IDL.Text,
-    apiError: IDL.Text,
-  });
-  return IDL.Service({
-    submitUNIDeposit: IDL.Func(
-      [IDL.Text, IDL.Nat, IDL.Text, IDL.Opt(IDL.Nat)],
-      [IDL.Nat],
-      [],
-    ),
-    verifyEthTransaction: IDL.Func([IDL.Nat], [IDL.Text], []),
-    autoFinalizeUNIDeposit: IDL.Func(
-      [IDL.Text, IDL.Nat, IDL.Opt(IDL.Nat)],
-      [AutoFinalizeResult],
-      [],
-    ),
-  });
-};
+// (directDepositIDL deleted 2026-08-05. It declared submitUNIDeposit,
+//  verifyEthTransaction and autoFinalizeUNIDeposit — all three removed from
+//  the backend with the Etherscan surface. It had already stopped being used
+//  to build an actor; only a comment still referred to it.)
 
 /** ICRC-2 approve, used to let the refinery canister pull the user's ckUNI. */
 const icrc2ApproveIDL = ({ IDL }: { IDL: any }) => {
@@ -840,15 +821,16 @@ async function queryIcrc1Balance(canisterId: string): Promise<bigint> {
 }
 
 // ── Direct deposit calls ─────────────────────────────────────────────────────
-
-/** Direct submitUNIDeposit — registers the deposit with the backend; the
- *  backend sweeper takes it from there (verify on Ethereum, then pay out).
- *  Returns the backend's deposit request ID. */
-// (directSubmitUNIDeposit / autoFinalizeUNIDeposit are deleted: they fed the
-// treasury-attribution recovery flows, whose backend verifier rejects every
-// deposit made since the minter-attribution switch. verifyEthTransaction in
-// directDepositIDL stays — useRetryUNIDepositPayout still drives payouts for
-// PRE-EXISTING deposit records via the UnclaimedDepositsBanner.)
+//
+// There are none left. directSubmitUNIDeposit / autoFinalizeUNIDeposit went
+// first: they fed the treasury-attribution recovery flows, whose verifier
+// rejected every deposit made after the minter-attribution switch. The backend
+// methods behind them — and verifyEthTransaction with them — were deleted on
+// 2026-08-05.
+//
+// The live deposit path is refineCkUNI: the ckERC-20 minter credits ckUNI to
+// the user's own principal under chain-key consensus, and refining is a pure
+// ICP-side swap with no Ethereum read anywhere in it.
 
 // ── Direct admin calls ───────────────────────────────────────────────────────
 
@@ -1024,7 +1006,12 @@ export function useRetryUNIDepositPayout() {
   return useMutation<string, Error, bigint>({
     mutationFn: async (requestId: bigint) => {
       if (!actor) throw new Error("Not connected");
-      const result = await actor.verifyEthTransaction(requestId);
+      // retryUNIDepositPayout, not verifyEthTransaction: the latter was deleted
+      // with the rest of the Etherscan surface. It re-checked the deposit on
+      // Ethereum before paying, which this button never needed — a record only
+      // reaches this banner once it is already #confirmed, and retrying the
+      // sGLDT payout is the whole job.
+      const result = await actor.retryUNIDepositPayout(requestId);
       return typeof result === "string" ? result : String(result);
     },
     onSuccess: () => {

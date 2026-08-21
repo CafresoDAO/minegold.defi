@@ -317,10 +317,16 @@ service : {
   /// from and how fresh the on-chain oracle reading is.
   getRateStatus: () ->
    (record {
+      appliedNs: int;
       autoSyncSeconds: nat;
+      isFresh: bool;
       lastError: text;
       lastSyncNs: int;
+      maxAgeNs: int;
+      medianUniUsdE8: nat;
       rate: nat;
+      sampleWindow: nat;
+      samples: vec nat;
       sgldtUsdE8: nat;
       uniUsdE8: nat;
     }) query;

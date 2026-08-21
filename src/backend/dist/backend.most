@@ -173,6 +173,7 @@ actor {
   stable SGLDT_DEFAULT_PRICE : Nat;
   stable TREASURY_PRINCIPAL : Principal;
   stable UNI_CONTRACT_ADDRESS_LOWER : Text;
+  stable UNI_RATE_MAX_AGE_NS : Int;
   stable XRC_AUTO_SYNC_SECONDS : Nat;
   stable XRC_CALL_CYCLES : Nat;
   stable XRC_MIN_SYNC_GAP_NS : Int;
@@ -277,6 +278,8 @@ actor {
       var size : Nat__490723111
     };
   stable var uniExchangeRate : Nat;
+  stable var uniRateAppliedNs : Int;
+  stable var uniUsdSamples : [Nat];
   stable userProfiles :
     {
       var root : Node__46230540<Principal, UserProfile__491224006>;

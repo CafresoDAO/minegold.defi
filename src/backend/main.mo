@@ -236,27 +236,46 @@ actor Self {
     Nat64.fromIntWrap(anchored);
   };
 
-  /// Clamp a caller-supplied exchange-rate hint to a tight band around the
-  /// canister's own rate. The hint exists only to capture small live-market
-  /// drift between the frontend's CoinGecko read and the admin-synced rate;
-  /// anything outside ±2% falls back to the canister rate. (The previous
-  /// ±50% band let any depositor pay themselves 50% extra.)
-  func _clampRateHint(rateHint : ?Nat) : Nat {
+  /// Settlement rate for a quoted trade.
+  ///
+  /// A trade ALWAYS settles at the canister's own rate. The caller's hint is
+  /// a slippage bound, not a price: if the canister's rate has moved more
+  /// than ±2% from what the user was quoted, the trade is REFUSED rather
+  /// than silently settled at a different number.
+  ///
+  /// This used to work the other way — a hint inside the band *became* the
+  /// settlement price. That was a treasury drain, not a rounding detail.
+  /// refineCkUNI pays out more at a HIGH rate (sgldt = amount * rate) while
+  /// redeemSGLDT pays out more at a LOW one (ckuni = amount / rate), and both
+  /// read the same uniExchangeRate through the same clamp. So a caller could
+  /// hint +2% on the way in, -2% on the way out, and round-trip the pair for
+  /// 1.02/0.98 ≈ +4.08% per cycle — compounding, uncapped, no market movement
+  /// required and no admin compromise needed. Roughly 7x in fifty loops.
+  ///
+  /// The fix is to take the price out of the caller's hands entirely. A quote
+  /// is now something the canister can honour or refuse, never something the
+  /// caller can steer. The user protection the hint was added for survives:
+  /// "the price you saw is the price you get, or the trade does not happen".
+  func _settleRate(rateHint : ?Nat, current : Nat) : { #ok : Nat; #moved : Nat } {
     switch (rateHint) {
       case (?hint) {
-        if (hint == 0 or uniExchangeRate == 0) {
-          uniExchangeRate
-        } else {
-          let band = uniExchangeRate / 50; // 2%
-          if (hint > uniExchangeRate + band or hint < uniExchangeRate - band) {
-            uniExchangeRate
-          } else {
-            hint
-          }
-        }
+        if (hint == 0 or current == 0) { #ok(current) } else {
+          let band = current / 50; // 2%
+          if (hint > current + band or hint < current - band) {
+            #moved(current);
+          } else { #ok(current) };
+        };
       };
-      case null { uniExchangeRate };
+      case null { #ok(current) };
     };
+  };
+
+  /// Shared copy for the refusal above, so all three trade paths phrase a
+  /// moved market identically.
+  func _movedMsg(asset : Text, current : Nat) : Text {
+    "The " # asset # " price moved more than 2% since your quote (the rate is now "
+    # current.toText()
+    # "). Nothing was taken from your account — retry for a fresh quote.";
   };
 
 
@@ -394,6 +413,37 @@ actor Self {
   var lastXRCSyncNs : Int = 0;
   var lastXRCError : Text = "";
 
+  /// Rolling window of raw UNI/USD readings (e8), newest first — the UNI
+  /// counterpart to batUsdSamples.
+  var uniUsdSamples : [Nat] = [];
+
+  /// When uniExchangeRate was last applied from a believed reading. Same
+  /// semantics as batRateAppliedNs: a failed sync or a jump-guard rejection
+  /// does NOT refresh it.
+  var uniRateAppliedNs : Int = 0;
+
+  /// Staleness cutoff for the UNI leg, matching the BAT leg's six hours.
+  let UNI_RATE_MAX_AGE_NS : Int = 21_600_000_000_000;
+
+  /// Freshness for the UNI leg.
+  ///
+  /// The `uniRateAppliedNs == 0` fallback is an upgrade bootstrap, and it is
+  /// deliberate. This guard ships onto a canister whose UNI intake is already
+  /// open and taking money; the new stable var arrives as 0, which would read
+  /// as "infinitely stale" and slam a live money path shut between the
+  /// upgrade and the first post-upgrade sync. Falling back to lastXRCSyncNs
+  /// — which is already populated and, right now, fresh — carries the intake
+  /// across that gap. The next successful sync stamps the real value and the
+  /// fallback stops mattering, so the weaker "last attempted" semantics apply
+  /// for one sync interval and never again.
+  func _uniRateIsFresh() : Bool {
+    let anchor = if (uniRateAppliedNs > 0) { uniRateAppliedNs } else {
+      lastXRCSyncNs;
+    };
+    uniExchangeRate > 0 and anchor > 0
+    and (Time.now() - anchor) <= UNI_RATE_MAX_AGE_NS;
+  };
+
   /// How many XRC readings we keep and take the median of before believing a
   /// price. The XRC already aggregates across many exchanges under IC
   /// consensus, so a single reading is not cheap to forge — but it is one
@@ -452,8 +502,17 @@ actor Self {
           };
           lastUniUsdPriceE8 := uniUsdE8;
           lastXRCError := "";
+          uniUsdSamples := _pushSample(uniUsdSamples, uniUsdE8);
+          // Unlike the BAT leg, the UNI intake is already open and taking
+          // money, so it must NOT close for the hours it takes a fresh window
+          // to fill. Use the median once there is one; until then keep using
+          // the latest reading, which is exactly the pre-existing behaviour.
+          // Strictly better from the first sync, disruptive on none of them.
+          let priceE8 = if (uniUsdSamples.size() >= RATE_SAMPLE_WINDOW) {
+            _median(uniUsdSamples);
+          } else { uniUsdE8 };
           if (sgldtUsdPriceE8 > 0) {
-            let newRate = uniUsdE8 * 100_000_000 / sgldtUsdPriceE8;
+            let newRate = priceE8 * 100_000_000 / sgldtUsdPriceE8;
             if (newRate == 0) {
               lastXRCError := "Computed rate rounds to zero — check sGLDT USD price";
             } else if (
@@ -462,6 +521,7 @@ actor Self {
               lastXRCError := "Jump guard: XRC-derived rate " # newRate.toText() # " deviates >30% from current " # uniExchangeRate.toText() # "; not applied";
             } else {
               uniExchangeRate := newRate;
+              uniRateAppliedNs := Time.now();
             };
           };
         };
@@ -2078,11 +2138,23 @@ actor Self {
     if (not isAuthenticatedUser(caller)) {
       return #err("Sign in with Internet Identity before refining.");
     };
+    // Same rule as the ckBAT leg: a price we stopped being able to refresh is
+    // not a price we should pay against.
+    if (not _uniRateIsFresh()) {
+      return #err(
+        "ckUNI refining is paused — the UNI price feed has not updated in over "
+        # (UNI_RATE_MAX_AGE_NS / 3_600_000_000_000).toText()
+        # " hours. Your ckUNI has not been touched. Try again shortly."
+      );
+    };
     if (amount < MIN_REFINE_CKUNI) {
       return #err("Amount too small. Minimum refine is 0.001 ckUNI.");
     };
 
-    let rate = _clampRateHint(rateHint);
+    let rate = switch (_settleRate(rateHint, uniExchangeRate)) {
+      case (#ok(r)) { r };
+      case (#moved(r)) { return #err(_movedMsg("UNI", r)) };
+    };
     let sgldtAmount = _sgldtForCkUNI(amount, rate);
     if (sgldtAmount == 0) {
       return #err("Calculated payout is zero — check the exchange rate.");
@@ -2431,22 +2503,8 @@ actor Self {
     (ckbatAmount * rate) / 1_000_000_000_000_000_000;
   };
 
-  /// Rate-hint clamp for the BAT leg — mirrors _clampRateHint, 2% band.
-  func _clampBatRateHint(rateHint : ?Nat) : Nat {
-    switch (rateHint) {
-      case (?hint) {
-        if (hint == 0 or batExchangeRate == 0) {
-          batExchangeRate;
-        } else {
-          let band = batExchangeRate / 50; // 2%
-          if (hint > batExchangeRate + band or hint < batExchangeRate - band) {
-            batExchangeRate;
-          } else { hint };
-        };
-      };
-      case null { batExchangeRate };
-    };
-  };
+  // _clampBatRateHint was deleted along with _clampRateHint: both let the
+  // caller's hint become the settlement price. See _settleRate.
 
   /// Admin-set sGLDT-per-BAT rate. Also re-anchors the XRC jump guard, same as
   /// setUNIExchangeRate does for the UNI leg.
@@ -2540,7 +2598,10 @@ actor Self {
       return #err("Amount too small. Minimum refine is 1 ckBAT.");
     };
 
-    let rate = _clampBatRateHint(rateHint);
+    let rate = switch (_settleRate(rateHint, batExchangeRate)) {
+      case (#ok(r)) { r };
+      case (#moved(r)) { return #err(_movedMsg("BAT", r)) };
+    };
     let sgldtAmount = _sgldtForCkBAT(amount, rate);
     if (sgldtAmount == 0) {
       return #err("Calculated payout is zero — check the exchange rate.");
@@ -3203,7 +3264,10 @@ actor Self {
       return #err("Amount too small. Minimum redeem is 0.1 sGLDT.");
     };
 
-    let rate = _clampRateHint(rateHint);
+    let rate = switch (_settleRate(rateHint, uniExchangeRate)) {
+      case (#ok(r)) { r };
+      case (#moved(r)) { return #err(_movedMsg("UNI", r)) };
+    };
     if (rate == 0) {
       return #err("Exchange rate unavailable — try again shortly.");
     };
@@ -3594,6 +3658,12 @@ actor Self {
     lastSyncNs : Int;
     lastError : Text;
     autoSyncSeconds : Nat;
+    medianUniUsdE8 : Nat;
+    samples : [Nat];
+    sampleWindow : Nat;
+    appliedNs : Int;
+    maxAgeNs : Int;
+    isFresh : Bool;
   } {
     {
       rate = uniExchangeRate;
@@ -3602,6 +3672,12 @@ actor Self {
       lastSyncNs = lastXRCSyncNs;
       lastError = lastXRCError;
       autoSyncSeconds = XRC_AUTO_SYNC_SECONDS;
+      medianUniUsdE8 = _median(uniUsdSamples);
+      samples = uniUsdSamples;
+      sampleWindow = RATE_SAMPLE_WINDOW;
+      appliedNs = uniRateAppliedNs;
+      maxAgeNs = UNI_RATE_MAX_AGE_NS;
+      isFresh = _uniRateIsFresh();
     };
   };
 
@@ -3630,7 +3706,7 @@ actor Self {
     sgldtUsdPriceE8 := priceE8;
     if (priceE8 > 0 and lastUniUsdPriceE8 > 0) {
       let newRate = lastUniUsdPriceE8 * 100_000_000 / priceE8;
-      if (newRate > 0) { uniExchangeRate := newRate };
+      if (newRate > 0) { uniExchangeRate := newRate; uniRateAppliedNs := Time.now() };
     };
   };
 
@@ -3642,6 +3718,9 @@ actor Self {
       Runtime.trap("Invalid rate: must be greater than 0");
     };
     uniExchangeRate := rate;
+    // An admin re-anchor is a fresh rate — otherwise a manual recovery after
+    // an oracle outage would set a number the staleness guard then refuses.
+    uniRateAppliedNs := Time.now();
   };
 
   /// Syncs the live exchange rate from the frontend CoinGecko feed to the backend.
@@ -3656,6 +3735,7 @@ actor Self {
       Runtime.trap("Invalid rate: must be greater than 0");
     };
     uniExchangeRate := newRate;
+    uniRateAppliedNs := Time.now();
   };
 
   /// Syncs the live market exchange rate from the frontend (CoinGecko) to the backend.
@@ -3671,6 +3751,7 @@ actor Self {
       return #err("Invalid rate: must be greater than 0");
     };
     uniExchangeRate := newRate;
+    uniRateAppliedNs := Time.now();
     #ok;
   };
 

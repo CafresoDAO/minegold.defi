@@ -75,6 +75,7 @@ actor Self {
   // Exposed via public shared query funcs so anonymous/unauthenticated callers can read them.
   var cachedSgldtTreasuryBalance : Nat = 0;
   var cachedCkUNITreasuryBalance : Nat = 0;
+  var cachedCkBATTreasuryBalance : Nat = 0;
   // When the two balances above were last pulled from the ledgers (ns since
   // epoch, 0 = never). Lets /proof age-stamp the figures instead of passing
   // cached values off as live.
@@ -301,6 +302,21 @@ actor Self {
     icrc2_allowance : (ICRC2AllowanceArgs) -> async ICRC2Allowance;
   } = actor ("i2s4q-syaaa-aaaan-qz4sq-cai");
 
+  // ckBAT (j7x7x-syaaa-aaaar-qcbea-cai), the ckERC-20 twin of BAT
+  // (0x0D8775F648430679A709E98d2b0Cb6250d2887EF). 18 decimals like ckUNI, but
+  // a 0.1 ckBAT transfer fee — 100x ckUNI's — which the refine path's minimum
+  // and refund logic account for. Declared here beside the other ledgers, not
+  // down in the ckBAT refine section, because _periodicRefreshBalances reads
+  // it and the top-level timer registration for that helper runs earlier in
+  // actor-body order.
+  transient let ckBATLedgerV2 : actor {
+    icrc1_fee : () -> async Nat;
+    icrc1_balance_of : (ICRC1Account) -> async Nat;
+    icrc1_transfer : (ICRC1TransferArgs) -> async ICRC1TransferResult;
+    icrc2_transfer_from : (ICRC2TransferFromArgs) -> async ICRC2TransferFromResult;
+    icrc2_allowance : (ICRC2AllowanceArgs) -> async ICRC2Allowance;
+  } = actor ("j7x7x-syaaa-aaaar-qcbea-cai");
+
   // ckERC-20 Minter Canister (sv3dd-oaaaa-aaaar-qacoa-cai) — DFINITY chain-key bridge.
   // The minter exposes get_minter_info() which returns the ERC-20 helper contract address
   // that users interact with on Ethereum to deposit UNI and receive ckUNI.
@@ -422,6 +438,39 @@ actor Self {
           };
         };
         case (#Err(e)) { lastXRCError := debug_show (e) };
+      };
+
+      // BAT/USD leg. Deliberately after the UNI leg and independently guarded:
+      // a BAT oracle failure must not stop the UNI rate from syncing, and vice
+      // versa. Same ±30% jump guard, and the same rule that a rate is only
+      // applied once sGLDT has a USD reference to divide by.
+      let batResult = await (with cycles = XRC_CALL_CYCLES) xrc.get_exchange_rate({
+        base_asset = { symbol = "BAT"; _1213757496_ = #Cryptocurrency };
+        quote_asset = { symbol = "USD"; _1213757496_ = #FiatCurrency };
+        timestamp = null;
+      });
+      switch (batResult) {
+        case (#Ok(r)) {
+          let batUsdE8 = _xrcRateToE8(r.rate, r.metadata.decimals);
+          if (batUsdE8 > 0) {
+            lastBatUsdPriceE8 := batUsdE8;
+            if (sgldtUsdPriceE8 > 0) {
+              let newBatRate = batUsdE8 * 100_000_000 / sgldtUsdPriceE8;
+              if (newBatRate == 0) {
+                lastXRCError := "Computed ckBAT rate rounds to zero — check sGLDT USD price";
+              } else if (
+                batExchangeRate > 0 and (newBatRate * 10 > batExchangeRate * 13 or newBatRate * 13 < batExchangeRate * 10)
+              ) {
+                lastXRCError := "Jump guard: XRC-derived ckBAT rate " # newBatRate.toText() # " deviates >30% from current " # batExchangeRate.toText() # "; not applied";
+              } else {
+                // First good reading also opens the ckBAT leg, which starts
+                // closed at rate 0 rather than at a guessed number.
+                batExchangeRate := newBatRate;
+              };
+            };
+          };
+        };
+        case (#Err(_)) {};
       };
     } catch (e) { lastXRCError := e.message() };
   };
@@ -934,11 +983,13 @@ actor Self {
     // Extra field is candid-safe: old clients decode records by width
     // subtyping and simply drop it. 0 = the cache has never been warmed.
     cachedAtNs : Int;
+    ckBATBalance : Nat;
   } {
     {
       sgldtBalance = cachedSgldtTreasuryBalance;
       ckUNIBalance = cachedCkUNITreasuryBalance;
       cachedAtNs = treasuryBalancesCachedAt;
+      ckBATBalance = cachedCkBATTreasuryBalance;
     };
   };
 
@@ -953,6 +1004,11 @@ actor Self {
     let ckUNIBal = await ckUNILedger.icrc1_balance_of(treasuryAccount);
     cachedSgldtTreasuryBalance := sgldtBal;
     cachedCkUNITreasuryBalance := ckUNIBal;
+    // ckBAT is caught separately: a failure on the newest ledger must not
+    // stop the two established balances above from being cached.
+    try {
+      cachedCkBATTreasuryBalance := await ckBATLedgerV2.icrc1_balance_of(treasuryAccount);
+    } catch (_) {};
     treasuryBalancesCachedAt := Time.now();
   };
 
@@ -1215,6 +1271,10 @@ actor Self {
     try {
       let ckUNIBal = await ckUNILedger.icrc1_balance_of(treasuryAccount);
       cachedCkUNITreasuryBalance := ckUNIBal;
+    } catch (_) {};
+    try {
+      let ckBATBal = await ckBATLedgerV2.icrc1_balance_of(treasuryAccount);
+      cachedCkBATTreasuryBalance := ckBATBal;
     } catch (_) {};
     // Re-schedule itself
     ignore Timer.setTimer<system>(#seconds 60, _periodicRefreshBalances);
@@ -2253,6 +2313,394 @@ actor Self {
     };
   };
 
+  // =======================================================
+  // DIRECT REFINE — ckBAT → sGLDT
+  // =======================================================
+  //
+  // Same shape as the ckUNI path above: the chain-key minter has already
+  // verified the Ethereum deposit under consensus, so holding ckBAT IS the
+  // proof and there is no oracle here either. Kept as a parallel path rather
+  // than generalising refineCkUNI because `refines` is a persistent Map whose
+  // value type cannot change across an upgrade — a new asset gets a new map.
+  //
+  // The one thing that genuinely differs from ckUNI is the ledger fee.
+  // ckBAT charges 0.1 ckBAT per transfer (1e17); ckUNI charges 0.001 (1e15).
+  // That is 100x, so MIN_REFINE_CKUNI's "minimum == one fee" rule would leave
+  // a refund unable to cover its own fee here. The BAT minimum is set to 10x
+  // the fee instead, which keeps a failed payout refundable.
+
+  type BatRefineRecord = {
+    id : Nat;
+    user : Principal;
+    ckbatAmount : Nat; // e18, as pulled from the user
+    sgldtPaid : Nat; // e8s
+    rate : Nat; // 1e8-precision sGLDT per BAT used for this refine
+    status : RefineStatus; // identical lifecycle to the ckUNI leg
+    timestamp : Time.Time;
+    pullBlock : ?Nat;
+    payBlock : ?Nat;
+    errorMsg : ?Text;
+  };
+
+  let batRefines = Map.empty<Nat, BatRefineRecord>();
+  var nextBatRefineId : Nat = 0;
+
+  /// sGLDT (e8s) per whole BAT, 1e8 precision. Same convention as
+  /// uniExchangeRate. Seeded at 0 so the refinery refuses ckBAT refines until
+  /// an admin or the XRC sync has established a real rate — paying out against
+  /// a guessed rate would be worse than being closed.
+  var batExchangeRate : Nat = 0;
+  var lastBatUsdPriceE8 : Nat = 0;
+
+  /// Smallest ckBAT refine we accept: 1 ckBAT in e18, ten times the ledger's
+  /// 0.1 ckBAT fee. Below this a failed payout could not be refunded cleanly.
+  let MIN_REFINE_CKBAT : Nat = 1_000_000_000_000_000_000;
+
+  func _sgldtForCkBAT(ckbatAmount : Nat, rate : Nat) : Nat {
+    (ckbatAmount * rate) / 1_000_000_000_000_000_000;
+  };
+
+  /// Rate-hint clamp for the BAT leg — mirrors _clampRateHint, 2% band.
+  func _clampBatRateHint(rateHint : ?Nat) : Nat {
+    switch (rateHint) {
+      case (?hint) {
+        if (hint == 0 or batExchangeRate == 0) {
+          batExchangeRate;
+        } else {
+          let band = batExchangeRate / 50; // 2%
+          if (hint > batExchangeRate + band or hint < batExchangeRate - band) {
+            batExchangeRate;
+          } else { hint };
+        };
+      };
+      case null { batExchangeRate };
+    };
+  };
+
+  /// Admin-set sGLDT-per-BAT rate. Also re-anchors the XRC jump guard, same as
+  /// setUNIExchangeRate does for the UNI leg.
+  public shared ({ caller }) func setBATExchangeRate(rate : Nat) : async Text {
+    if (not isAdmin(caller)) { return "error: admin only" };
+    if (rate == 0) { return "error: rate must be > 0" };
+    batExchangeRate := rate;
+    "ok: ckBAT rate set to " # rate.toText();
+  };
+
+  /// The UI polls this to know when the minter has credited the user and
+  /// whether an icrc2_approve step is still outstanding.
+  public shared ({ caller }) func getMyCkBATPosition() : async {
+    balance : Nat;
+    allowance : Nat;
+    minRefine : Nat;
+    rate : Nat;
+    fee : Nat;
+  } {
+    let fee = try { await ckBATLedgerV2.icrc1_fee() } catch (_) { 100_000_000_000_000_000 };
+    if (caller.isAnonymous()) {
+      return { balance = 0; allowance = 0; minRefine = MIN_REFINE_CKBAT; rate = batExchangeRate; fee };
+    };
+    let me = Principal.fromActor(Self);
+    let bal = try {
+      await ckBATLedgerV2.icrc1_balance_of({ owner = caller; subaccount = null });
+    } catch (_) { 0 };
+    let allow = try {
+      let a = await ckBATLedgerV2.icrc2_allowance({
+        account = { owner = caller; subaccount = null };
+        spender = { owner = me; subaccount = null };
+      });
+      a.allowance;
+    } catch (_) { 0 };
+    { balance = bal; allowance = allow; minRefine = MIN_REFINE_CKBAT; rate = batExchangeRate; fee };
+  };
+
+  /// Refine ckBAT the caller already holds into sGLDT. Prerequisites and
+  /// failure handling are identical to refineCkUNI — see its doc comment.
+  public shared ({ caller }) func refineCkBAT(amount : Nat, rateHint : ?Nat) : async {
+    #ok : { refineId : Nat; sgldtPaid : Nat; rate : Nat; blockIndex : Nat };
+    #err : Text;
+  } {
+    if (not isAuthenticatedUser(caller)) {
+      return #err("Sign in with Internet Identity before refining.");
+    };
+    if (batExchangeRate == 0) {
+      return #err("ckBAT refining is not open yet — no exchange rate has been set.");
+    };
+    if (amount < MIN_REFINE_CKBAT) {
+      return #err("Amount too small. Minimum refine is 1 ckBAT.");
+    };
+
+    let rate = _clampBatRateHint(rateHint);
+    let sgldtAmount = _sgldtForCkBAT(amount, rate);
+    if (sgldtAmount == 0) {
+      return #err("Calculated payout is zero — check the exchange rate.");
+    };
+
+    let me = Principal.fromActor(Self);
+
+    // ── Step 1: pull the ckBAT from the user into the treasury ──
+    let pullResult = try {
+      await ckBATLedgerV2.icrc2_transfer_from({
+        spender_subaccount = null;
+        from = { owner = caller; subaccount = null };
+        to = { owner = me; subaccount = null };
+        amount = amount;
+        fee = null;
+        memo = null;
+        created_at_time = null;
+      });
+    } catch (e) {
+      return #err("Could not reach the ckBAT ledger: " # e.message());
+    };
+
+    let pullBlock = switch (pullResult) {
+      case (#Ok(b)) { b };
+      case (#Err(#InsufficientAllowance { allowance })) {
+        return #err(
+          "Approval too small. Approve at least " # amount.toText()
+          # " ckBAT (current allowance: " # allowance.toText() # ")."
+        );
+      };
+      case (#Err(#InsufficientFunds { balance })) {
+        return #err(
+          "Not enough ckBAT. Your balance is " # balance.toText()
+          # " but " # amount.toText() # " was requested. If you just deposited on "
+          # "Ethereum, the chain-key minter needs ~12 block confirmations."
+        );
+      };
+      case (#Err(#BadFee { expected_fee })) {
+        return #err("ckBAT ledger fee mismatch; expected " # expected_fee.toText() # ". Try again.");
+      };
+      case (#Err(#TemporarilyUnavailable)) {
+        return #err("ckBAT ledger temporarily unavailable. Try again shortly.");
+      };
+      case (#Err(#GenericError { message; error_code })) {
+        return #err("ckBAT transfer failed (" # error_code.toText() # "): " # message);
+      };
+      case (#Err(_)) {
+        return #err("ckBAT transfer was rejected by the ledger.");
+      };
+    };
+
+    // The ckBAT is ours from here on. Every path below must either pay the
+    // user or return their funds.
+    nextBatRefineId += 1;
+    let refineId = nextBatRefineId;
+    let startedAt = Time.now();
+    batRefines.add(
+      refineId,
+      {
+        id = refineId;
+        user = caller;
+        ckbatAmount = amount;
+        sgldtPaid = 0;
+        rate = rate;
+        status = #pulled;
+        timestamp = startedAt;
+        pullBlock = ?pullBlock;
+        payBlock = null;
+        errorMsg = null;
+      },
+    );
+
+    _recordTx(
+      caller,
+      {
+        id = _nextTxId();
+        txType = #Mint;
+        amount = amount;
+        tokenSymbol = "ckBAT";
+        status = #Completed;
+        timestamp = startedAt;
+        ethTxHash = null;
+        icpBlockIndex = ?pullBlock;
+        errorMsg = null;
+        description = "ckBAT received by the refinery: " # amount.toText() # " e18. Block: " # pullBlock.toText();
+      },
+    );
+
+    // ── Step 2: pay the sGLDT ──
+    let sgldtFee = try { await sgldtLedger.icrc1_fee() } catch (_) { 10_000 };
+    let payResult = try {
+      await sgldtLedger.icrc1_transfer({
+        from_subaccount = null;
+        to = { owner = caller; subaccount = null };
+        amount = sgldtAmount;
+        fee = ?sgldtFee;
+        memo = ?_depositMemo(refineId);
+        created_at_time = ?_dedupCreatedAt(startedAt);
+      });
+    } catch (e) {
+      #Err(#GenericError { error_code = 0; message = e.message() });
+    };
+
+    switch (payResult) {
+      case (#Ok(payBlock)) {
+        batRefines.add(
+          refineId,
+          {
+            id = refineId;
+            user = caller;
+            ckbatAmount = amount;
+            sgldtPaid = sgldtAmount;
+            rate = rate;
+            status = #paid;
+            timestamp = startedAt;
+            pullBlock = ?pullBlock;
+            payBlock = ?payBlock;
+            errorMsg = null;
+          },
+        );
+        _recordTx(
+          caller,
+          {
+            id = _nextTxId();
+            txType = #Refine;
+            amount = sgldtAmount;
+            tokenSymbol = "sGLDT";
+            status = #Completed;
+            timestamp = Time.now();
+            ethTxHash = null;
+            icpBlockIndex = ?payBlock;
+            errorMsg = null;
+            description = "sGLDT released from treasury: " # sgldtAmount.toText() # " e8s. Block: " # payBlock.toText();
+          },
+        );
+        try { ignore await refreshTreasuryBalances() } catch (_) {};
+        #ok({ refineId = refineId; sgldtPaid = sgldtAmount; rate = rate; blockIndex = payBlock });
+      };
+      case (#Err(payErr)) {
+        let reason = switch (payErr) {
+          case (#InsufficientFunds { balance }) {
+            "The refinery is out of sGLDT (treasury holds " # balance.toText()
+            # " e8s, needed " # sgldtAmount.toText() # " e8s)";
+          };
+          case (#GenericError { message; error_code }) {
+            "sGLDT ledger error " # error_code.toText() # ": " # message;
+          };
+          case (#TemporarilyUnavailable) { "The sGLDT ledger is temporarily unavailable" };
+          case (#BadFee { expected_fee }) { "sGLDT fee mismatch, expected " # expected_fee.toText() };
+          case (_) { "The sGLDT transfer was rejected by the ledger" };
+        };
+        await _refundCkBAT(refineId, caller, amount, rate, startedAt, pullBlock, reason);
+      };
+    };
+  };
+
+  /// Return pulled ckBAT after a failed sGLDT payout. Mirrors _refundCkUNI.
+  func _refundCkBAT(
+    refineId : Nat,
+    user : Principal,
+    amount : Nat,
+    rate : Nat,
+    startedAt : Time.Time,
+    pullBlock : Nat,
+    reason : Text,
+  ) : async { #ok : { refineId : Nat; sgldtPaid : Nat; rate : Nat; blockIndex : Nat }; #err : Text } {
+    let ckFee = try { await ckBATLedgerV2.icrc1_fee() } catch (_) { 0 };
+
+    func markStranded(detail : Text) {
+      batRefines.add(
+        refineId,
+        {
+          id = refineId;
+          user = user;
+          ckbatAmount = amount;
+          sgldtPaid = 0;
+          rate = rate;
+          status = #stranded;
+          timestamp = startedAt;
+          pullBlock = ?pullBlock;
+          payBlock = null;
+          errorMsg = ?(reason # " | refund failed: " # detail);
+        },
+      );
+      _recordTx(
+        user,
+        {
+          id = _nextTxId();
+          txType = #Refine;
+          amount = amount;
+          tokenSymbol = "ckBAT";
+          status = #Held;
+          timestamp = Time.now();
+          ethTxHash = null;
+          icpBlockIndex = null;
+          errorMsg = ?(reason # " | refund failed: " # detail);
+          description = "Refine failed and the ckBAT refund did not go through. Refine #" # refineId.toText() # " is held for admin resolution.";
+        },
+      );
+    };
+
+    if (amount <= ckFee) {
+      markStranded("amount is below the ckBAT transfer fee");
+      return #err(reason # ". Your ckBAT could not be auto-refunded (below the ledger fee) — refine #" # refineId.toText() # " has been flagged for support.");
+    };
+
+    let refundAmount = amount - ckFee;
+    let refundResult = try {
+      await ckBATLedgerV2.icrc1_transfer({
+        from_subaccount = null;
+        to = { owner = user; subaccount = null };
+        amount = refundAmount;
+        fee = ?ckFee;
+        memo = ?_depositMemo(refineId);
+        created_at_time = ?_dedupCreatedAt(startedAt);
+      });
+    } catch (e) {
+      #Err(#GenericError { error_code = 0; message = e.message() });
+    };
+
+    switch (refundResult) {
+      case (#Ok(_) or #Err(#Duplicate(_))) {
+        batRefines.add(
+          refineId,
+          {
+            id = refineId;
+            user = user;
+            ckbatAmount = amount;
+            sgldtPaid = 0;
+            rate = rate;
+            status = #refunded;
+            timestamp = startedAt;
+            pullBlock = ?pullBlock;
+            payBlock = null;
+            errorMsg = ?reason;
+          },
+        );
+        _recordTx(
+          user,
+          {
+            id = _nextTxId();
+            txType = #Refund;
+            amount = refundAmount;
+            tokenSymbol = "ckBAT";
+            status = #Completed;
+            timestamp = Time.now();
+            ethTxHash = null;
+            icpBlockIndex = null;
+            errorMsg = ?reason;
+            description = "Refine could not complete; " # refundAmount.toText() # " e18 ckBAT was refunded to your account.";
+          },
+        );
+        #err(reason # ". Your ckBAT has been refunded — you can try again once the treasury is topped up.");
+      };
+      case (#Err(refundErr)) {
+        markStranded(debug_show (refundErr));
+        #err(reason # ". Automatic refund also failed — refine #" # refineId.toText() # " has been flagged for support with your funds recorded.");
+      };
+    };
+  };
+
+  /// The caller's own ckBAT refine history, newest-first.
+  public query ({ caller }) func getMyBatRefines() : async [BatRefineRecord] {
+    let out = List.empty<BatRefineRecord>();
+    for ((_, r) in batRefines.entries()) {
+      if (r.user == caller) { out.add(r) };
+    };
+    let arr = out.toArray();
+    arr.sort(func(a : BatRefineRecord, b : BatRefineRecord) : Order.Order { Int.compare(b.timestamp, a.timestamp) });
+  };
+
   /// The caller's own refine history, newest-first.
   public query ({ caller }) func getMyRefines() : async [RefineRecord] {
     let out = List.empty<RefineRecord>();
@@ -2268,19 +2716,43 @@ actor Self {
   /// manual resolution). Counts only — the records themselves stay admin-gated
   /// because they carry principals and amounts. Publishing the count (even at
   /// 0) is deliberate: "nothing is silently dropped" must be checkable.
+  /// `strandedRefines` counts BOTH legs (ckUNI and ckBAT) so the headline
+  /// transparency number can never under-report; `strandedBatRefines` breaks
+  /// out the ckBAT share of it. Adding a field is safe for older frontends —
+  /// candid ignores record fields the client IDL doesn't declare, and the
+  /// failure mode we care about is the reverse (client declares a field the
+  /// canister stopped returning).
   public query func getStrandedCounts() : async {
     strandedRefines : Nat;
     strandedRedeems : Nat;
+    strandedBatRefines : Nat;
   } {
     var rf : Nat = 0;
     var rd : Nat = 0;
+    var rb : Nat = 0;
     for ((_, r) in refines.entries()) {
       switch (r.status) { case (#stranded) { rf += 1 }; case (_) {} };
+    };
+    for ((_, r) in batRefines.entries()) {
+      switch (r.status) { case (#stranded) { rb += 1 }; case (_) {} };
     };
     for ((_, r) in redeems.entries()) {
       switch (r.status) { case (#stranded) { rd += 1 }; case (_) {} };
     };
-    { strandedRefines = rf; strandedRedeems = rd };
+    { strandedRefines = rf + rb; strandedRedeems = rd; strandedBatRefines = rb };
+  };
+
+  /// Admin view: every ckBAT refine that ended #stranded.
+  public query ({ caller }) func getStrandedBatRefines() : async [BatRefineRecord] {
+    if (not isAdmin(caller)) { return [] };
+    let out = List.empty<BatRefineRecord>();
+    for ((_, r) in batRefines.entries()) {
+      switch (r.status) {
+        case (#stranded) { out.add(r) };
+        case (_) {};
+      };
+    };
+    out.toArray();
   };
 
   /// Admin view: every refine that ended #stranded and needs manual resolution.
@@ -3111,4 +3583,17 @@ actor Self {
 
   // First XRC rate sync 20 s after deploy; self-reschedules hourly.
   ignore Timer.setTimer<system>(#seconds 20, _periodicRateSync);
+
+  // The IC clears every scheduled timer on code upgrade, and the top-level
+  // setTimer calls above only run on first install — never on upgrade. Without
+  // this hook, one `dfx deploy` silently kills the balance refresh, the
+  // automatic payout sweeper (the thing that pays users who closed their
+  // browser), and the hourly XRC rate sync until someone notices and calls the
+  // manual fallbacks. Same failure mode that killed cycles-monitor's refresh
+  // loop; fixed there 2026-08 with this exact pattern.
+  system func postupgrade() {
+    ignore Timer.setTimer<system>(#seconds 5, _periodicRefreshBalances);
+    ignore Timer.setTimer<system>(#seconds 10, _sweepConfirmedDeposits);
+    ignore Timer.setTimer<system>(#seconds 20, _periodicRateSync);
+  };
 };

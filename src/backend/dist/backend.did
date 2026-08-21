@@ -111,6 +111,19 @@ type IncidentNotice =
    sinceNs: Time;
    url: opt text;
  };
+type BatRefineRecord = 
+ record {
+   ckbatAmount: nat;
+   errorMsg: opt text;
+   id: nat;
+   payBlock: opt nat;
+   pullBlock: opt nat;
+   rate: nat;
+   sgldtPaid: nat;
+   status: RefineStatus;
+   timestamp: Time;
+   user: principal;
+ };
 service : {
   _initializeAccessControl: () -> ();
   /// Admin-only: add a transaction record on behalf of any user (e.g. for manual entries).
@@ -220,6 +233,18 @@ service : {
           status: text;
           txHash: text;
         }) query;
+  /// The caller's own ckBAT refine history, newest-first.
+  getMyBatRefines: () -> (vec BatRefineRecord) query;
+  /// The UI polls this to know when the minter has credited the user and
+  /// whether an icrc2_approve step is still outstanding.
+  getMyCkBATPosition: () ->
+   (record {
+      allowance: nat;
+      balance: nat;
+      fee: nat;
+      minRefine: nat;
+      rate: nat;
+    });
   /// Read the caller's ckUNI balance and the allowance they have granted this
   /// canister. The UI polls this to decide when the bridge has completed (the
   /// minter credited them) and whether an approve step is still needed.
@@ -296,13 +321,22 @@ service : {
   /// This is a query so it works for unauthenticated (anonymous) callers.
   /// Call refreshTreasuryBalances() to update the cache from the ledger.
   getSGLDTTreasuryBalance: () -> (nat) query;
+  /// Admin view: every ckBAT refine that ended #stranded.
+  getStrandedBatRefines: () -> (vec BatRefineRecord) query;
   /// PUBLIC transparency counter for /proof: how many refines and redeems are
   /// currently held as #stranded (swap failed AND auto-refund failed, awaiting
   /// manual resolution). Counts only — the records themselves stay admin-gated
   /// because they carry principals and amounts. Publishing the count (even at
   /// 0) is deliberate: "nothing is silently dropped" must be checkable.
+  /// `strandedRefines` counts BOTH legs (ckUNI and ckBAT) so the headline
+  /// transparency number can never under-report; `strandedBatRefines` breaks
+  /// out the ckBAT share of it. Adding a field is safe for older frontends —
+  /// candid ignores record fields the client IDL doesn't declare, and the
+  /// failure mode we care about is the reverse (client declares a field the
+  /// canister stopped returning).
   getStrandedCounts: () ->
    (record {
+      strandedBatRefines: nat;
       strandedRedeems: nat;
       strandedRefines: nat;
     }) query;
@@ -316,6 +350,7 @@ service : {
   getTreasuryICRC1Balances: () ->
    (record {
       cachedAtNs: int;
+      ckBATBalance: nat;
       ckUNIBalance: nat;
       sgldtBalance: nat;
     }) query;
@@ -369,6 +404,18 @@ service : {
             ckuniPaid: nat;
             rate: nat;
             redeemId: nat;
+          };
+    });
+  /// Refine ckBAT the caller already holds into sGLDT. Prerequisites and
+  /// failure handling are identical to refineCkUNI — see its doc comment.
+  refineCkBAT: (amount: nat, rateHint: opt nat) ->
+   (variant {
+      err: text;
+      ok: record {
+            blockIndex: nat;
+            rate: nat;
+            refineId: nat;
+            sgldtPaid: nat;
           };
     });
   /// Refine ckUNI the caller already holds into sGLDT.
@@ -462,6 +509,9 @@ service : {
                                         err: text;
                                         ok: text;
                                       });
+  /// Admin-set sGLDT-per-BAT rate. Also re-anchors the XRC jump guard, same as
+  /// setUNIExchangeRate does for the UNI leg.
+  setBATExchangeRate: (rate: nat) -> (text);
   /// Admin-only. Pass null to clear.
   setIncidentNotice: (message: opt text, url: opt text) ->
    (variant {

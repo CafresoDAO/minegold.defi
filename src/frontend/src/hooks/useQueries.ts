@@ -1,10 +1,10 @@
-import { useInternetIdentity } from "../auth";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { Principal as DfinityPrincipal } from "@dfinity/principal";
 import type { Principal } from "@icp-sdk/core/principal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useBackendActor } from "./useBackendActor";
+import { useInternetIdentity } from "../auth";
 import { CKBAT_ASSET } from "../lib/refineAssets";
+import { useBackendActor } from "./useBackendActor";
 
 // ── Canister constants ───────────────────────────────────────────────────────
 
@@ -377,10 +377,16 @@ export function useProofSnapshot(open: boolean) {
         actor.getStrandedCounts(),
       ]);
       if (balancesR.status === "rejected") {
-        console.warn("[proof] treasury balances unavailable:", balancesR.reason);
+        console.warn(
+          "[proof] treasury balances unavailable:",
+          balancesR.reason,
+        );
       }
       if (readinessR.status === "rejected") {
-        console.warn("[proof] payout readiness unavailable:", readinessR.reason);
+        console.warn(
+          "[proof] payout readiness unavailable:",
+          readinessR.reason,
+        );
       }
       if (strandedR.status === "rejected") {
         console.warn("[proof] stranded counts unavailable:", strandedR.reason);
@@ -397,9 +403,11 @@ export function useProofSnapshot(open: boolean) {
         readiness:
           readinessR.status === "fulfilled"
             ? {
-                treasurySGLDTLive: readinessR.value.treasurySGLDTBalance as bigint,
+                treasurySGLDTLive: readinessR.value
+                  .treasurySGLDTBalance as bigint,
                 pendingDeposits: readinessR.value.pendingDeposits as bigint,
-                estimatedSGLDTNeeded: readinessR.value.estimatedSGLDTNeeded as bigint,
+                estimatedSGLDTNeeded: readinessR.value
+                  .estimatedSGLDTNeeded as bigint,
               }
             : null,
         stranded:
@@ -495,26 +503,30 @@ export function useStrandedQueue(identity: unknown, enabled: boolean) {
         actor.getStrandedRedeems(),
       ])) as [any[], any[]];
       const rows: StrandedEntry[] = [
-        ...refines.map((r): StrandedEntry => ({
-          kind: "refine",
-          id: r.id as bigint,
-          user: (r.user as { toText(): string }).toText(),
-          pulled: `${(Number(r.ckuniAmount) / 1e18).toFixed(6)} ckUNI`,
-          owed: `${((Number(r.ckuniAmount) / 1e18) * (Number(r.rate) / 1e8)).toFixed(4)} sGLDT`,
-          timestampNs: r.timestamp as bigint,
-          pullBlock: optNat(r.pullBlock),
-          errorMsg: optText(r.errorMsg),
-        })),
-        ...redeems.map((r): StrandedEntry => ({
-          kind: "redeem",
-          id: r.id as bigint,
-          user: (r.user as { toText(): string }).toText(),
-          pulled: `${(Number(r.sgldtAmount) / 1e8).toFixed(4)} sGLDT`,
-          owed: `${((Number(r.sgldtAmount) / 1e8) / Math.max(1e-9, Number(r.rate) / 1e8)).toFixed(6)} ckUNI`,
-          timestampNs: r.timestamp as bigint,
-          pullBlock: optNat(r.pullBlock),
-          errorMsg: optText(r.errorMsg),
-        })),
+        ...refines.map(
+          (r): StrandedEntry => ({
+            kind: "refine",
+            id: r.id as bigint,
+            user: (r.user as { toText(): string }).toText(),
+            pulled: `${(Number(r.ckuniAmount) / 1e18).toFixed(6)} ckUNI`,
+            owed: `${((Number(r.ckuniAmount) / 1e18) * (Number(r.rate) / 1e8)).toFixed(4)} sGLDT`,
+            timestampNs: r.timestamp as bigint,
+            pullBlock: optNat(r.pullBlock),
+            errorMsg: optText(r.errorMsg),
+          }),
+        ),
+        ...redeems.map(
+          (r): StrandedEntry => ({
+            kind: "redeem",
+            id: r.id as bigint,
+            user: (r.user as { toText(): string }).toText(),
+            pulled: `${(Number(r.sgldtAmount) / 1e8).toFixed(4)} sGLDT`,
+            owed: `${(Number(r.sgldtAmount) / 1e8 / Math.max(1e-9, Number(r.rate) / 1e8)).toFixed(6)} ckUNI`,
+            timestampNs: r.timestamp as bigint,
+            pullBlock: optNat(r.pullBlock),
+            errorMsg: optText(r.errorMsg),
+          }),
+        ),
       ];
       return rows.sort((a, b) => (a.timestampNs < b.timestampNs ? 1 : -1));
     },
@@ -604,7 +616,10 @@ export async function approveCkUNIForRefinery(opts: {
     };
   }
   if ("TemporarilyUnavailable" in err) {
-    return { ok: false, error: "ckUNI ledger temporarily unavailable. Try again." };
+    return {
+      ok: false,
+      error: "ckUNI ledger temporarily unavailable. Try again.",
+    };
   }
   if ("GenericError" in err) {
     return {
@@ -616,7 +631,13 @@ export async function approveCkUNIForRefinery(opts: {
 }
 
 export type RefineOutcome =
-  | { ok: true; refineId: bigint; sgldtPaid: bigint; rate: bigint; blockIndex: bigint }
+  | {
+      ok: true;
+      refineId: bigint;
+      sgldtPaid: bigint;
+      rate: bigint;
+      blockIndex: bigint;
+    }
   | { ok: false; error: string };
 
 /** Swap ckUNI the user already holds for sGLDT. Requires a prior
@@ -725,7 +746,10 @@ export async function approveSGLDTForRedeem(opts: {
     };
   }
   if ("TemporarilyUnavailable" in err) {
-    return { ok: false, error: "sGLDT ledger temporarily unavailable. Try again." };
+    return {
+      ok: false,
+      error: "sGLDT ledger temporarily unavailable. Try again.",
+    };
   }
   if ("GenericError" in err) {
     return {
@@ -737,7 +761,13 @@ export async function approveSGLDTForRedeem(opts: {
 }
 
 export type RedeemOutcome =
-  | { ok: true; redeemId: bigint; ckuniPaid: bigint; rate: bigint; blockIndex: bigint }
+  | {
+      ok: true;
+      redeemId: bigint;
+      ckuniPaid: bigint;
+      rate: bigint;
+      blockIndex: bigint;
+    }
   | { ok: false; error: string };
 
 /** Swap sGLDT back into ckUNI at the oracle rate. Requires a prior
@@ -853,7 +883,10 @@ export async function directWhoAmI(identity: unknown): Promise<{
 }
 
 /** Direct adminGrantAdmin — promotes a principal to admin. */
-export async function directAdminGrantAdmin(identity: unknown, newAdminText: string): Promise<string> {
+export async function directAdminGrantAdmin(
+  identity: unknown,
+  newAdminText: string,
+): Promise<string> {
   const actor = await directActor(directAdminIDL, { identity });
   const newAdminPrincipal = DfinityPrincipal.fromText(newAdminText.trim());
   return (await actor.adminGrantAdmin(newAdminPrincipal)) as string;
@@ -907,16 +940,25 @@ export async function icrc1TransferFromCaller(opts: {
   if ("Ok" in result) return { ok: true, blockIndex: result.Ok as bigint };
   const err = result.Err;
   if ("InsufficientFunds" in err) {
-    return { ok: false, error: `Insufficient balance: ${err.InsufficientFunds.balance}` };
+    return {
+      ok: false,
+      error: `Insufficient balance: ${err.InsufficientFunds.balance}`,
+    };
   }
   if ("BadFee" in err) {
-    return { ok: false, error: `Bad fee. Ledger expected: ${err.BadFee.expected_fee}` };
+    return {
+      ok: false,
+      error: `Bad fee. Ledger expected: ${err.BadFee.expected_fee}`,
+    };
   }
   if ("TemporarilyUnavailable" in err) {
     return { ok: false, error: "Ledger temporarily unavailable. Try again." };
   }
   if ("GenericError" in err) {
-    return { ok: false, error: `GenericError ${err.GenericError.error_code}: ${err.GenericError.message}` };
+    return {
+      ok: false,
+      error: `GenericError ${err.GenericError.error_code}: ${err.GenericError.message}`,
+    };
   }
   return { ok: false, error: `Transfer error: ${JSON.stringify(err)}` };
 }
@@ -1507,10 +1549,16 @@ export async function approveCkBATForRefinery(opts: {
     };
   }
   if ("AllowanceChanged" in err) {
-    return { ok: false, error: "Your ckBAT allowance changed mid-flight. Try again." };
+    return {
+      ok: false,
+      error: "Your ckBAT allowance changed mid-flight. Try again.",
+    };
   }
   if ("TemporarilyUnavailable" in err) {
-    return { ok: false, error: "ckBAT ledger temporarily unavailable. Try again." };
+    return {
+      ok: false,
+      error: "ckBAT ledger temporarily unavailable. Try again.",
+    };
   }
   if ("GenericError" in err) {
     return {
@@ -1541,4 +1589,55 @@ export async function refineCkBAT(opts: {
     };
   }
   return { ok: false, error: result.err as string };
+}
+
+/** Rate provenance for the ckBAT leg. Anonymous-callable — it is the same
+ *  data the /proof page publishes. */
+const batRateStatusIDL = ({ IDL }: { IDL: any }) =>
+  IDL.Service({
+    getBatRateStatus: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          rate: IDL.Nat,
+          settleableRate: IDL.Nat,
+          batUsdE8: IDL.Nat,
+          medianBatUsdE8: IDL.Nat,
+          samples: IDL.Vec(IDL.Nat),
+          sampleWindow: IDL.Nat,
+          appliedNs: IDL.Int,
+          maxAgeNs: IDL.Int,
+          isFresh: IDL.Bool,
+        }),
+      ],
+      ["query"],
+    ),
+  });
+
+export type BatRateStatus = {
+  /** Last rate the oracle applied, fresh or not. */
+  rate: bigint;
+  /** What the refinery will actually settle against — 0 when stale. */
+  settleableRate: bigint;
+  batUsdE8: bigint;
+  medianBatUsdE8: bigint;
+  samples: bigint[];
+  sampleWindow: bigint;
+  appliedNs: bigint;
+  maxAgeNs: bigint;
+  isFresh: boolean;
+};
+
+/** Why the ckBAT intake is closed, when it is. The panel needs this to tell
+ *  "we have never had a price" apart from "the feed went quiet an hour ago" —
+ *  both surface as rate 0, and they mean very different things to a user
+ *  deciding whether to wait. */
+export async function fetchBatRateStatus(): Promise<BatRateStatus | null> {
+  try {
+    const actor = await directActor(batRateStatusIDL, { identity: null });
+    return (await actor.getBatRateStatus()) as BatRateStatus;
+  } catch (err) {
+    console.warn("[refine] ckBAT rate status fetch failed:", err);
+    return null;
+  }
 }

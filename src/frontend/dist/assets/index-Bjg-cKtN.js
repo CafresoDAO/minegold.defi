@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-BN42L9m1.js","assets/button-CPQUQL-f.js","assets/LandingPage-Bu72_hjg.js","assets/ckMinter-BLU_n7f3.js","assets/arrow-right-Cq1viCDs.js","assets/MinegoldBraveSoon-BCbhqBFD.js","assets/arrow-left-Bd9vsqS8.js","assets/TransactionHistoryPage-BZec2W34.js","assets/ReceiptBlock-CcIqOwWj.js","assets/ReceiptPage-Jer4UFkw.js","assets/DocsPage-Bc6NRkl3.js","assets/markdown-BjOrAo3E.js","assets/StatusPage-B6hYFXJb.js","assets/SharedReceiptPage-CwIORIX2.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-BAu5dvT5.js","assets/button-D4MErjxl.js","assets/LandingPage-jG1cE6lQ.js","assets/ckMinter-_XlZDtDX.js","assets/arrow-right-C3gCc_UG.js","assets/MinegoldBraveSoon-DBnEENzB.js","assets/arrow-left-eyBJWMOW.js","assets/TransactionHistoryPage-B8pXaU56.js","assets/ReceiptBlock-B9GHFQ0J.js","assets/ReceiptPage-DJNlrIfR.js","assets/DocsPage-BjYcrgnS.js","assets/markdown-BlSSoNW2.js","assets/StatusPage-C8GA8fXI.js","assets/SharedReceiptPage-Brg9cpQI.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -33990,7 +33990,7 @@ async function call(client2, args) {
       throw err;
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-ymMVW4BS.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-yOrCV_rC.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -48079,6 +48079,30 @@ function ActionQueue({
     )
   ] });
 }
+const CKBAT_ASSET = {
+  id: "ckBAT",
+  symbol: "ckBAT",
+  originSymbol: "BAT",
+  ledgerCanisterId: "j7x7x-syaaa-aaaar-qcbea-cai",
+  erc20Address: "0x0D8775F648430679A709E98d2b0Cb6250d2887EF",
+  decimals: 18,
+  feeFallback: 100000000000000000n,
+  // 1 ckBAT — ten times the ledger fee. At ckUNI's "minimum == one fee" rule
+  // a failed payout here could not cover its own refund transfer.
+  minRefineFallback: 1000000000000000000n,
+  minRefineLabel: "1 ckBAT"
+};
+function formatAssetAmount(amount, asset, places = 4) {
+  const divisor = 10 ** asset.decimals;
+  return (Number(amount) / divisor).toFixed(places);
+}
+function parseAssetAmount(input, asset) {
+  const trimmed = input.trim();
+  if (!trimmed || !/^\d*\.?\d*$/.test(trimmed)) return 0n;
+  const [whole = "0", frac = ""] = trimmed.split(".");
+  const padded = (frac + "0".repeat(asset.decimals)).slice(0, asset.decimals);
+  return BigInt(whole || "0") * 10n ** BigInt(asset.decimals) + BigInt(padded || "0");
+}
 const TxStatus$2 = Variant({
   "Failed": Null,
   "Confirmed": Null,
@@ -50128,30 +50152,6 @@ function useBackendActor() {
     isFetching: actorQuery.isFetching
   };
 }
-const CKBAT_ASSET = {
-  id: "ckBAT",
-  symbol: "ckBAT",
-  originSymbol: "BAT",
-  ledgerCanisterId: "j7x7x-syaaa-aaaar-qcbea-cai",
-  erc20Address: "0x0D8775F648430679A709E98d2b0Cb6250d2887EF",
-  decimals: 18,
-  feeFallback: 100000000000000000n,
-  // 1 ckBAT — ten times the ledger fee. At ckUNI's "minimum == one fee" rule
-  // a failed payout here could not cover its own refund transfer.
-  minRefineFallback: 1000000000000000000n,
-  minRefineLabel: "1 ckBAT"
-};
-function formatAssetAmount(amount, asset, places = 4) {
-  const divisor = 10 ** asset.decimals;
-  return (Number(amount) / divisor).toFixed(places);
-}
-function parseAssetAmount(input, asset) {
-  const trimmed = input.trim();
-  if (!trimmed || !/^\d*\.?\d*$/.test(trimmed)) return 0n;
-  const [whole = "0", frac = ""] = trimmed.split(".");
-  const padded = (frac + "0".repeat(asset.decimals)).slice(0, asset.decimals);
-  return BigInt(whole || "0") * 10n ** BigInt(asset.decimals) + BigInt(padded || "0");
-}
 const BACKEND_CANISTER_ID$1 = "c626g-iyaaa-aaaau-agpoa-cai";
 const TREASURY_PRINCIPAL = BACKEND_CANISTER_ID$1;
 const SGLDT_CANISTER_ID = "i2s4q-syaaa-aaaan-qz4sq-cai";
@@ -50418,10 +50418,16 @@ function useProofSnapshot(open) {
         actor.getStrandedCounts()
       ]);
       if (balancesR.status === "rejected") {
-        console.warn("[proof] treasury balances unavailable:", balancesR.reason);
+        console.warn(
+          "[proof] treasury balances unavailable:",
+          balancesR.reason
+        );
       }
       if (readinessR.status === "rejected") {
-        console.warn("[proof] payout readiness unavailable:", readinessR.reason);
+        console.warn(
+          "[proof] payout readiness unavailable:",
+          readinessR.reason
+        );
       }
       if (strandedR.status === "rejected") {
         console.warn("[proof] stranded counts unavailable:", strandedR.reason);
@@ -50501,26 +50507,30 @@ function useStrandedQueue(identity, enabled) {
         actor.getStrandedRedeems()
       ]);
       const rows = [
-        ...refines.map((r2) => ({
-          kind: "refine",
-          id: r2.id,
-          user: r2.user.toText(),
-          pulled: `${(Number(r2.ckuniAmount) / 1e18).toFixed(6)} ckUNI`,
-          owed: `${(Number(r2.ckuniAmount) / 1e18 * (Number(r2.rate) / 1e8)).toFixed(4)} sGLDT`,
-          timestampNs: r2.timestamp,
-          pullBlock: optNat(r2.pullBlock),
-          errorMsg: optText(r2.errorMsg)
-        })),
-        ...redeems.map((r2) => ({
-          kind: "redeem",
-          id: r2.id,
-          user: r2.user.toText(),
-          pulled: `${(Number(r2.sgldtAmount) / 1e8).toFixed(4)} sGLDT`,
-          owed: `${(Number(r2.sgldtAmount) / 1e8 / Math.max(1e-9, Number(r2.rate) / 1e8)).toFixed(6)} ckUNI`,
-          timestampNs: r2.timestamp,
-          pullBlock: optNat(r2.pullBlock),
-          errorMsg: optText(r2.errorMsg)
-        }))
+        ...refines.map(
+          (r2) => ({
+            kind: "refine",
+            id: r2.id,
+            user: r2.user.toText(),
+            pulled: `${(Number(r2.ckuniAmount) / 1e18).toFixed(6)} ckUNI`,
+            owed: `${(Number(r2.ckuniAmount) / 1e18 * (Number(r2.rate) / 1e8)).toFixed(4)} sGLDT`,
+            timestampNs: r2.timestamp,
+            pullBlock: optNat(r2.pullBlock),
+            errorMsg: optText(r2.errorMsg)
+          })
+        ),
+        ...redeems.map(
+          (r2) => ({
+            kind: "redeem",
+            id: r2.id,
+            user: r2.user.toText(),
+            pulled: `${(Number(r2.sgldtAmount) / 1e8).toFixed(4)} sGLDT`,
+            owed: `${(Number(r2.sgldtAmount) / 1e8 / Math.max(1e-9, Number(r2.rate) / 1e8)).toFixed(6)} ckUNI`,
+            timestampNs: r2.timestamp,
+            pullBlock: optNat(r2.pullBlock),
+            errorMsg: optText(r2.errorMsg)
+          })
+        )
       ];
       return rows.sort((a2, b2) => a2.timestampNs < b2.timestampNs ? 1 : -1);
     },
@@ -50584,7 +50594,10 @@ async function approveCkUNIForRefinery(opts) {
     };
   }
   if ("TemporarilyUnavailable" in err) {
-    return { ok: false, error: "ckUNI ledger temporarily unavailable. Try again." };
+    return {
+      ok: false,
+      error: "ckUNI ledger temporarily unavailable. Try again."
+    };
   }
   if ("GenericError" in err) {
     return {
@@ -50673,7 +50686,10 @@ async function approveSGLDTForRedeem(opts) {
     };
   }
   if ("TemporarilyUnavailable" in err) {
-    return { ok: false, error: "sGLDT ledger temporarily unavailable. Try again." };
+    return {
+      ok: false,
+      error: "sGLDT ledger temporarily unavailable. Try again."
+    };
   }
   if ("GenericError" in err) {
     return {
@@ -50779,16 +50795,25 @@ async function icrc1TransferFromCaller(opts) {
   if ("Ok" in result) return { ok: true, blockIndex: result.Ok };
   const err = result.Err;
   if ("InsufficientFunds" in err) {
-    return { ok: false, error: `Insufficient balance: ${err.InsufficientFunds.balance}` };
+    return {
+      ok: false,
+      error: `Insufficient balance: ${err.InsufficientFunds.balance}`
+    };
   }
   if ("BadFee" in err) {
-    return { ok: false, error: `Bad fee. Ledger expected: ${err.BadFee.expected_fee}` };
+    return {
+      ok: false,
+      error: `Bad fee. Ledger expected: ${err.BadFee.expected_fee}`
+    };
   }
   if ("TemporarilyUnavailable" in err) {
     return { ok: false, error: "Ledger temporarily unavailable. Try again." };
   }
   if ("GenericError" in err) {
-    return { ok: false, error: `GenericError ${err.GenericError.error_code}: ${err.GenericError.message}` };
+    return {
+      ok: false,
+      error: `GenericError ${err.GenericError.error_code}: ${err.GenericError.message}`
+    };
   }
   return { ok: false, error: `Transfer error: ${JSON.stringify(err)}` };
 }
@@ -50905,7 +50930,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DF2d8mxQ.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BcPac2G7.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -50936,7 +50961,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DF2d8mxQ.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BcPac2G7.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -50960,7 +50985,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DF2d8mxQ.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BcPac2G7.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -51243,10 +51268,16 @@ async function approveCkBATForRefinery(opts) {
     };
   }
   if ("AllowanceChanged" in err) {
-    return { ok: false, error: "Your ckBAT allowance changed mid-flight. Try again." };
+    return {
+      ok: false,
+      error: "Your ckBAT allowance changed mid-flight. Try again."
+    };
   }
   if ("TemporarilyUnavailable" in err) {
-    return { ok: false, error: "ckBAT ledger temporarily unavailable. Try again." };
+    return {
+      ok: false,
+      error: "ckBAT ledger temporarily unavailable. Try again."
+    };
   }
   if ("GenericError" in err) {
     return {
@@ -51270,6 +51301,34 @@ async function refineCkBAT(opts) {
     };
   }
   return { ok: false, error: result.err };
+}
+const batRateStatusIDL = ({ IDL: IDL2 }) => IDL2.Service({
+  getBatRateStatus: IDL2.Func(
+    [],
+    [
+      IDL2.Record({
+        rate: IDL2.Nat,
+        settleableRate: IDL2.Nat,
+        batUsdE8: IDL2.Nat,
+        medianBatUsdE8: IDL2.Nat,
+        samples: IDL2.Vec(IDL2.Nat),
+        sampleWindow: IDL2.Nat,
+        appliedNs: IDL2.Int,
+        maxAgeNs: IDL2.Int,
+        isFresh: IDL2.Bool
+      })
+    ],
+    ["query"]
+  )
+});
+async function fetchBatRateStatus() {
+  try {
+    const actor = await directActor(batRateStatusIDL, { identity: null });
+    return await actor.getBatRateStatus();
+  } catch (err) {
+    console.warn("[refine] ckBAT rate status fetch failed:", err);
+    return null;
+  }
 }
 const DOT = {
   verified: "var(--trust-verified)",
@@ -54895,33 +54954,33 @@ function useTreasuryEthUniBalance() {
   return { balance, loading, unavailable };
 }
 const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-BN42L9m1.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+  () => __vitePreload(() => import("./AdminPage-BAu5dvT5.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
 );
 const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-CYsBEtlH.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+  () => __vitePreload(() => import("./BankingBraveHome-CS9zqCLy.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
 );
 const LandingPage = reactExports.lazy(
-  () => __vitePreload(() => import("./LandingPage-Bu72_hjg.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
+  () => __vitePreload(() => import("./LandingPage-jG1cE6lQ.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
 );
 const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-BCbhqBFD.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+  () => __vitePreload(() => import("./MinegoldBraveSoon-DBnEENzB.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
 );
 const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-BZec2W34.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./TransactionHistoryPage-B8pXaU56.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
     default: m2.TransactionHistoryPage
   }))
 );
 const ReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./ReceiptPage-Jer4UFkw.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
+  () => __vitePreload(() => import("./ReceiptPage-DJNlrIfR.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
 );
 const DocsPage = reactExports.lazy(
-  () => __vitePreload(() => import("./DocsPage-Bc6NRkl3.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
+  () => __vitePreload(() => import("./DocsPage-BjYcrgnS.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
 );
 const StatusPage = reactExports.lazy(
-  () => __vitePreload(() => import("./StatusPage-B6hYFXJb.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
+  () => __vitePreload(() => import("./StatusPage-C8GA8fXI.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
 );
 const SharedReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./SharedReceiptPage-CwIORIX2.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./SharedReceiptPage-Brg9cpQI.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
     default: m2.SharedReceiptPage
   }))
 );
@@ -56384,7 +56443,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   /* @__PURE__ */ jsxRuntimeExports.jsx(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxRuntimeExports.jsx(InternetIdentityProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) }) })
 );
 export {
-  Actor as $,
+  HttpAgent as $,
   ShieldCheck as A,
   TrendingUp as B,
   CircleAlert as C,
@@ -56410,52 +56469,53 @@ export {
   Wallet as W,
   approveCkBATForRefinery as X,
   refineCkBAT as Y,
-  parseAssetAmount as Z,
-  HttpAgent as _,
+  fetchBatRateStatus as Z,
+  parseAssetAmount as _,
   cn as a,
-  useLedger as a0,
-  ArrowRightLeft as a1,
-  StatusPill as a2,
-  ChevronUp as a3,
-  ChevronDown as a4,
-  ArrowDownToLine as a5,
-  ArrowUpFromLine as a6,
-  cva as a7,
-  fetchShareToken as a8,
-  shareUrl as a9,
-  call as aA,
-  concat$1 as aB,
-  encodeAbiParameters as aC,
-  getAbortError as aD,
-  isAbortError as aE,
-  HttpRequestError as aF,
-  isHex as aG,
-  Check as aa,
-  X as ab,
-  unpublishReceipt as ac,
-  publishReceipt as ad,
-  findEntry as ae,
-  fmtAmount as af,
-  ledgerUrl as ag,
-  TriangleAlert as ah,
-  fetchPublicReceipt as ai,
-  formatTimestamp as aj,
-  SGLDT_LEDGER_ID as ak,
-  encode$4 as al,
-  Text as am,
-  isV3ResponseBody as an,
-  DelegationIdentity as ao,
-  isDelegationValid as ap,
-  AuthClient as aq,
-  useQueryClient as ar,
-  useQuery as as,
-  BaseError$1 as at,
-  getUrl as au,
-  stringify$1 as av,
-  decodeErrorResult as aw,
-  isAddressEqual as ax,
-  localBatchGatewayUrl as ay,
-  localBatchGatewayRequest as az,
+  Actor as a0,
+  useLedger as a1,
+  ArrowRightLeft as a2,
+  StatusPill as a3,
+  ChevronUp as a4,
+  ChevronDown as a5,
+  ArrowDownToLine as a6,
+  ArrowUpFromLine as a7,
+  cva as a8,
+  fetchShareToken as a9,
+  localBatchGatewayRequest as aA,
+  call as aB,
+  concat$1 as aC,
+  encodeAbiParameters as aD,
+  getAbortError as aE,
+  isAbortError as aF,
+  HttpRequestError as aG,
+  isHex as aH,
+  shareUrl as aa,
+  Check as ab,
+  X as ac,
+  unpublishReceipt as ad,
+  publishReceipt as ae,
+  findEntry as af,
+  fmtAmount as ag,
+  ledgerUrl as ah,
+  TriangleAlert as ai,
+  fetchPublicReceipt as aj,
+  formatTimestamp as ak,
+  SGLDT_LEDGER_ID as al,
+  encode$4 as am,
+  Text as an,
+  isV3ResponseBody as ao,
+  DelegationIdentity as ap,
+  isDelegationValid as aq,
+  AuthClient as ar,
+  useQueryClient as as,
+  useQuery as at,
+  BaseError$1 as au,
+  getUrl as av,
+  stringify$1 as aw,
+  decodeErrorResult as ax,
+  isAddressEqual as ay,
+  localBatchGatewayUrl as az,
   reactDomExports as b,
   createLucideIcon as c,
   useIsAdmin as d,

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useBatRefineFlow } from "../hooks/useBatRefineFlow";
+import { type BatRateStatus, fetchBatRateStatus } from "../hooks/useQueries";
 import { DASHBOARD } from "../lib/canisters";
 import {
   CKBAT_ASSET,
@@ -40,12 +41,19 @@ export function BatIntakePanel({ identity, onSignIn }: BatIntakePanelProps) {
     useBatRefineFlow(identity);
   const [amountText, setAmountText] = useState("");
   const [loadingPosition, setLoadingPosition] = useState(false);
+  const [rateStatus, setRateStatus] = useState<BatRateStatus | null>(null);
 
   useEffect(() => {
     if (!identity) return;
     setLoadingPosition(true);
     void refreshPosition().finally(() => setLoadingPosition(false));
   }, [identity, refreshPosition]);
+
+  // Anonymous query — runs signed out too, so the closed-state copy can be
+  // specific before anyone has logged in.
+  useEffect(() => {
+    void fetchBatRateStatus().then(setRateStatus);
+  }, []);
 
   const fee = position?.fee ?? CKBAT_ASSET.feeFallback;
   const minRefine = position?.minRefine ?? CKBAT_ASSET.minRefineFallback;
@@ -158,17 +166,31 @@ export function BatIntakePanel({ identity, onSignIn }: BatIntakePanelProps) {
   if (!loadingPosition && position && !intakeOpen) {
     return (
       <Card>
-        <Label>BAT intake · opening</Label>
-        <p className="mt-1 text-sm font-bold">Waiting on the first rate</p>
+        <Label>BAT intake · {rateStatus?.rate ? "paused" : "opening"}</Label>
+        <p className="mt-1 text-sm font-bold">
+          {rateStatus?.rate
+            ? "Price feed has gone quiet"
+            : "Waiting on the first rate"}
+        </p>
         <p
           className="mt-1 text-[12px] leading-relaxed"
           style={{ color: "var(--bb-text-muted)" }}
         >
-          ckBAT is listed by the minter and the refinery accepts it, but no
-          BAT/USD rate has been established yet. The refinery refuses to settle
-          until it has one rather than pay out against a guessed number — so the
-          door is closed for minutes, not weeks. Your ckBAT is untouched.
+          {rateStatus?.rate
+            ? `The refinery last confirmed a BAT price more than ${rateStatus.maxAgeNs / 3_600_000_000_000n} hours ago and will not settle against a number that old. It reopens on its own as soon as the oracle reports again.`
+            : "ckBAT is listed by the minter and the refinery accepts it, but no BAT/USD rate has been established yet. The refinery refuses to settle until it has one rather than pay out against a guessed number."}{" "}
+          Your ckBAT is untouched.
         </p>
+        {rateStatus && !rateStatus.rate && (
+          <p
+            className="mt-2 text-[11px] tabular-nums"
+            style={{ color: "var(--bb-text-dim)" }}
+          >
+            {rateStatus.samples.length}/{String(rateStatus.sampleWindow)} price
+            samples collected — the rate is the median of the window, so the
+            door opens once it is full.
+          </p>
+        )}
       </Card>
     );
   }

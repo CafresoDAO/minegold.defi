@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { computeRefineAmounts } from "./refineMath";
 import {
   CKBAT_ASSET,
   CKUNI_ASSET,
   formatAssetAmount,
   parseAssetAmount,
 } from "./refineAssets";
+import { computeRefineAmounts } from "./refineMath";
 
 describe("parseAssetAmount", () => {
   it("parses whole tokens", () => {
@@ -15,7 +15,9 @@ describe("parseAssetAmount", () => {
 
   it("parses fractions without float drift", () => {
     expect(parseAssetAmount("0.1", CKBAT_ASSET)).toBe(100_000_000_000_000_000n);
-    expect(parseAssetAmount("1.5", CKBAT_ASSET)).toBe(1_500_000_000_000_000_000n);
+    expect(parseAssetAmount("1.5", CKBAT_ASSET)).toBe(
+      1_500_000_000_000_000_000n,
+    );
   });
 
   it("keeps precision on values a double could not hold exactly", () => {

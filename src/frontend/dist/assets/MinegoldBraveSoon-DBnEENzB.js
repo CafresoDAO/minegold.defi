@@ -1,7 +1,7 @@
-import { c as createLucideIcon, r as reactExports, N as fetchMyCkBATPosition, O as fetchCkBATFee, Q as computeRefineAmounts, U as formatAssetAmount, V as CKBAT_ASSET, X as approveCkBATForRefinery, Y as refineCkBAT, Z as parseAssetAmount, j as jsxRuntimeExports, s as CircleCheck, H as DASHBOARD, I as ExternalLink, g as RefreshCw, L as LoaderCircle, T as ThemeToggle } from "./index-DHI22Byt.js";
-import { A as ArrowRight } from "./arrow-right-Cq1viCDs.js";
-import { f as fetchCkBatStatus, C as CK_MINTER_CANISTER_ID, B as BAT_ERC20_ADDRESS } from "./ckMinter-BLU_n7f3.js";
-import { A as ArrowLeft } from "./arrow-left-Bd9vsqS8.js";
+import { c as createLucideIcon, r as reactExports, N as fetchMyCkBATPosition, O as fetchCkBATFee, Q as computeRefineAmounts, U as formatAssetAmount, V as CKBAT_ASSET, X as approveCkBATForRefinery, Y as refineCkBAT, Z as fetchBatRateStatus, _ as parseAssetAmount, j as jsxRuntimeExports, s as CircleCheck, H as DASHBOARD, I as ExternalLink, g as RefreshCw, L as LoaderCircle, T as ThemeToggle } from "./index-Bjg-cKtN.js";
+import { A as ArrowRight } from "./arrow-right-C3gCc_UG.js";
+import { f as fetchCkBatStatus, C as CK_MINTER_CANISTER_ID, B as BAT_ERC20_ADDRESS } from "./ckMinter-_XlZDtDX.js";
+import { A as ArrowLeft } from "./arrow-left-eyBJWMOW.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -112,11 +112,15 @@ function BatIntakePanel({ identity, onSignIn }) {
   const { state, position, busy, refineNow, refreshPosition, reset } = useBatRefineFlow(identity);
   const [amountText, setAmountText] = reactExports.useState("");
   const [loadingPosition, setLoadingPosition] = reactExports.useState(false);
+  const [rateStatus, setRateStatus] = reactExports.useState(null);
   reactExports.useEffect(() => {
     if (!identity) return;
     setLoadingPosition(true);
     void refreshPosition().finally(() => setLoadingPosition(false));
   }, [identity, refreshPosition]);
+  reactExports.useEffect(() => {
+    void fetchBatRateStatus().then(setRateStatus);
+  }, []);
   const fee = (position == null ? void 0 : position.fee) ?? CKBAT_ASSET.feeFallback;
   const minRefine = (position == null ? void 0 : position.minRefine) ?? CKBAT_ASSET.minRefineFallback;
   const balance = (position == null ? void 0 : position.balance) ?? 0n;
@@ -228,14 +232,34 @@ function BatIntakePanel({ identity, onSignIn }) {
   }
   if (!loadingPosition && position && !intakeOpen) {
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "BAT intake · opening" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm font-bold", children: "Waiting on the first rate" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Label, { children: [
+        "BAT intake · ",
+        (rateStatus == null ? void 0 : rateStatus.rate) ? "paused" : "opening"
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm font-bold", children: (rateStatus == null ? void 0 : rateStatus.rate) ? "Price feed has gone quiet" : "Waiting on the first rate" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "p",
         {
           className: "mt-1 text-[12px] leading-relaxed",
           style: { color: "var(--bb-text-muted)" },
-          children: "ckBAT is listed by the minter and the refinery accepts it, but no BAT/USD rate has been established yet. The refinery refuses to settle until it has one rather than pay out against a guessed number — so the door is closed for minutes, not weeks. Your ckBAT is untouched."
+          children: [
+            (rateStatus == null ? void 0 : rateStatus.rate) ? `The refinery last confirmed a BAT price more than ${rateStatus.maxAgeNs / 3600000000000n} hours ago and will not settle against a number that old. It reopens on its own as soon as the oracle reports again.` : "ckBAT is listed by the minter and the refinery accepts it, but no BAT/USD rate has been established yet. The refinery refuses to settle until it has one rather than pay out against a guessed number.",
+            " ",
+            "Your ckBAT is untouched."
+          ]
+        }
+      ),
+      rateStatus && !rateStatus.rate && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "p",
+        {
+          className: "mt-2 text-[11px] tabular-nums",
+          style: { color: "var(--bb-text-dim)" },
+          children: [
+            rateStatus.samples.length,
+            "/",
+            String(rateStatus.sampleWindow),
+            " price samples collected — the rate is the median of the window, so the door opens once it is full."
+          ]
         }
       )
     ] });

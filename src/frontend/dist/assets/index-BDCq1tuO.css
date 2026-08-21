@@ -3043,6 +3043,9 @@ video {
 .running {
   animation-play-state: running;
 }
+.paused {
+  animation-play-state: paused;
+}
 
 /* ═════════════════════════════════════════════════════════════════════════
    TYPE (I3) — self-hosted, latin subset, variable axes.

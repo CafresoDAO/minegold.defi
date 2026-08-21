@@ -185,6 +185,22 @@ service : {
   /// Admin-only.
   diagnosePayoutAbility: (depositId: nat) -> (text);
   getAllUNIDeposits: () -> (vec UniDepositRequest) query;
+  /// Rate provenance for the ckBAT leg, mirroring getRateStatus for UNI.
+  /// Public and unauthenticated on purpose — the /proof page publishes it, and
+  /// "here is the price we will pay you and when we last believed it" is
+  /// exactly the claim a user should be able to check without an account.
+  getBatRateStatus: () ->
+   (record {
+      appliedNs: int;
+      batUsdE8: nat;
+      isFresh: bool;
+      maxAgeNs: int;
+      medianBatUsdE8: nat;
+      rate: nat;
+      sampleWindow: nat;
+      samples: vec nat;
+      settleableRate: nat;
+    }) query;
   getCallerUserProfile: () -> (opt UserProfile) query;
   getCallerUserRole: () -> (UserRole) query;
   getCanisterPrincipal: () -> (principal) query;

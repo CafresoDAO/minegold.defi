@@ -394,6 +394,34 @@ actor Self {
   var lastXRCSyncNs : Int = 0;
   var lastXRCError : Text = "";
 
+  /// How many XRC readings we keep and take the median of before believing a
+  /// price. The XRC already aggregates across many exchanges under IC
+  /// consensus, so a single reading is not cheap to forge — but it is one
+  /// reading. A median over N sequential samples means an attacker has to hold
+  /// a forged price across ceil(N/2) separate hourly syncs to move our rate at
+  /// all, instead of landing one lucky sample. Odd, so the median is a real
+  /// observed sample rather than the mean of two.
+  let RATE_SAMPLE_WINDOW : Nat = 5;
+
+  /// Newest-first. Trimmed to RATE_SAMPLE_WINDOW on every push.
+  func _pushSample(samples : [Nat], x : Nat) : [Nat] {
+    let next = [x].concat(samples);
+    if (next.size() <= RATE_SAMPLE_WINDOW) { next } else {
+      next.sliceToArray(0, RATE_SAMPLE_WINDOW);
+    };
+  };
+
+  /// Median of a sample window. 0 for an empty window, which every caller
+  /// treats as "no price yet" rather than "price is zero".
+  func _median(xs : [Nat]) : Nat {
+    let n = xs.size();
+    if (n == 0) { return 0 };
+    let sorted = xs.sort();
+    if (n % 2 == 1) { sorted[n / 2] } else {
+      (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
+    };
+  };
+
   func _xrcRateToE8(rate : Nat64, decimals : Nat32) : Nat {
     let r = rate.toNat();
     let d = decimals.toNat();
@@ -454,8 +482,18 @@ actor Self {
           let batUsdE8 = _xrcRateToE8(r.rate, r.metadata.decimals);
           if (batUsdE8 > 0) {
             lastBatUsdPriceE8 := batUsdE8;
-            if (sgldtUsdPriceE8 > 0) {
-              let newBatRate = batUsdE8 * 100_000_000 / sgldtUsdPriceE8;
+            batUsdSamples := _pushSample(batUsdSamples, batUsdE8);
+            // Settle on the median of the window, not on this reading. Until
+            // the window is full we have no median worth trusting, so the
+            // intake stays closed rather than opening on one or two samples.
+            let medianUsdE8 = if (batUsdSamples.size() < RATE_SAMPLE_WINDOW) { 0 } else {
+              _median(batUsdSamples);
+            };
+            if (medianUsdE8 == 0) {
+              lastXRCError := "ckBAT rate warming up: " # batUsdSamples.size().toText()
+              # "/" # RATE_SAMPLE_WINDOW.toText() # " BAT/USD samples collected";
+            } else if (sgldtUsdPriceE8 > 0) {
+              let newBatRate = medianUsdE8 * 100_000_000 / sgldtUsdPriceE8;
               if (newBatRate == 0) {
                 lastXRCError := "Computed ckBAT rate rounds to zero — check sGLDT USD price";
               } else if (
@@ -463,9 +501,12 @@ actor Self {
               ) {
                 lastXRCError := "Jump guard: XRC-derived ckBAT rate " # newBatRate.toText() # " deviates >30% from current " # batExchangeRate.toText() # "; not applied";
               } else {
-                // First good reading also opens the ckBAT leg, which starts
-                // closed at rate 0 rather than at a guessed number.
+                // First good median also opens the ckBAT leg, which starts
+                // closed at rate 0 rather than at a guessed number. Stamping
+                // the time here — and only here — is what makes the staleness
+                // guard mean "we last believed a price", not "we last tried".
                 batExchangeRate := newBatRate;
+                batRateAppliedNs := Time.now();
               };
             };
           };
@@ -2352,6 +2393,36 @@ actor Self {
   var batExchangeRate : Nat = 0;
   var lastBatUsdPriceE8 : Nat = 0;
 
+  /// Rolling window of raw BAT/USD readings (e8), newest first. The rate we
+  /// settle against is derived from the MEDIAN of this window, never from the
+  /// single most recent reading.
+  var batUsdSamples : [Nat] = [];
+
+  /// When batExchangeRate was last actually updated from a median — not when
+  /// a sync was last attempted. A sync that fails, or whose reading the jump
+  /// guard rejects, deliberately does NOT refresh this.
+  var batRateAppliedNs : Int = 0;
+
+  /// Refuse to settle a ckBAT refine against a rate older than this. The
+  /// refinery pays real sGLDT against this number, so a stalled oracle has to
+  /// close the intake rather than keep honouring a price the world has moved
+  /// away from. Six hours = six missed hourly syncs; a transient XRC outage
+  /// rides through, a dead timer chain does not.
+  let BAT_RATE_MAX_AGE_NS : Int = 21_600_000_000_000;
+
+  /// True when batExchangeRate is both set and fresh enough to pay against.
+  func _batRateIsFresh() : Bool {
+    batExchangeRate > 0 and batRateAppliedNs > 0
+    and (Time.now() - batRateAppliedNs) <= BAT_RATE_MAX_AGE_NS;
+  };
+
+  /// The rate as the outside world should see it: a stale rate reads as 0,
+  /// which every caller — UI and refineCkBAT alike — already treats as
+  /// "intake closed". One definition of open, used everywhere.
+  func _settleableBatRate() : Nat {
+    if (_batRateIsFresh()) { batExchangeRate } else { 0 };
+  };
+
   /// Smallest ckBAT refine we accept: 1 ckBAT in e18, ten times the ledger's
   /// 0.1 ckBAT fee. Below this a failed payout could not be refunded cleanly.
   let MIN_REFINE_CKBAT : Nat = 1_000_000_000_000_000_000;
@@ -2383,6 +2454,9 @@ actor Self {
     if (not isAdmin(caller)) { return "error: admin only" };
     if (rate == 0) { return "error: rate must be > 0" };
     batExchangeRate := rate;
+    // An admin-set rate is a fresh rate — otherwise a manual re-anchor after
+    // an oracle outage would set a number the staleness guard then refuses.
+    batRateAppliedNs := Time.now();
     "ok: ckBAT rate set to " # rate.toText();
   };
 
@@ -2397,7 +2471,7 @@ actor Self {
   } {
     let fee = try { await ckBATLedgerV2.icrc1_fee() } catch (_) { 100_000_000_000_000_000 };
     if (caller.isAnonymous()) {
-      return { balance = 0; allowance = 0; minRefine = MIN_REFINE_CKBAT; rate = batExchangeRate; fee };
+      return { balance = 0; allowance = 0; minRefine = MIN_REFINE_CKBAT; rate = _settleableBatRate(); fee };
     };
     let me = Principal.fromActor(Self);
     let bal = try {
@@ -2410,7 +2484,35 @@ actor Self {
       });
       a.allowance;
     } catch (_) { 0 };
-    { balance = bal; allowance = allow; minRefine = MIN_REFINE_CKBAT; rate = batExchangeRate; fee };
+    { balance = bal; allowance = allow; minRefine = MIN_REFINE_CKBAT; rate = _settleableBatRate(); fee };
+  };
+
+  /// Rate provenance for the ckBAT leg, mirroring getRateStatus for UNI.
+  /// Public and unauthenticated on purpose — the /proof page publishes it, and
+  /// "here is the price we will pay you and when we last believed it" is
+  /// exactly the claim a user should be able to check without an account.
+  public query func getBatRateStatus() : async {
+    rate : Nat;
+    settleableRate : Nat;
+    batUsdE8 : Nat;
+    medianBatUsdE8 : Nat;
+    samples : [Nat];
+    sampleWindow : Nat;
+    appliedNs : Int;
+    maxAgeNs : Int;
+    isFresh : Bool;
+  } {
+    {
+      rate = batExchangeRate;
+      settleableRate = _settleableBatRate();
+      batUsdE8 = lastBatUsdPriceE8;
+      medianBatUsdE8 = _median(batUsdSamples);
+      samples = batUsdSamples;
+      sampleWindow = RATE_SAMPLE_WINDOW;
+      appliedNs = batRateAppliedNs;
+      maxAgeNs = BAT_RATE_MAX_AGE_NS;
+      isFresh = _batRateIsFresh();
+    };
   };
 
   /// Refine ckBAT the caller already holds into sGLDT. Prerequisites and
@@ -2424,6 +2526,15 @@ actor Self {
     };
     if (batExchangeRate == 0) {
       return #err("ckBAT refining is not open yet — no exchange rate has been set.");
+    };
+    // A rate we stopped being able to refresh is not a rate we should pay
+    // against. This closes the intake rather than settling on a stale number.
+    if (not _batRateIsFresh()) {
+      return #err(
+        "ckBAT refining is paused — the BAT price feed has not updated in over "
+        # (BAT_RATE_MAX_AGE_NS / 3_600_000_000_000).toText()
+        # " hours. Your ckBAT has not been touched. Try again shortly."
+      );
     };
     if (amount < MIN_REFINE_CKBAT) {
       return #err("Amount too small. Minimum refine is 1 ckBAT.");

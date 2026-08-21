@@ -22,10 +22,20 @@ audit, and we will not present it as though it were.
 
 ### 2. One person controls the treasury
 
-The refinery backend and the frontend canister have exactly **one
+The refinery backend and the frontend canister have exactly **one IC
 controller** — a single principal, published in full on [/proof](/proof).
 
-That person can upgrade the backend. Practically, that means the honest
+Two principals hold app-level **admin**, which is a separate and weaker
+permission: the controller principal above, and a second Internet Identity
+principal used to sign in to the admin screens
+(`rc62u-qypnw-bbkkp-d56wk-tnzaq-vwhi2-cqqay-q56hw-gsqbp-6wegl-jae`). Both
+belong to the same person. Admin can move treasury funds within the caps
+below, set the sGLDT reference price, and grant admin to others — so the
+second principal is worth naming rather than rounding down to "one key". It
+is disclosed here because "exactly one controller" is true of the IC
+controller and would have been misleading about admin.
+
+That controller can upgrade the backend. Practically, that means the honest
 statement is: *the protections described on this site are enforced by code
 that one person can change.* Time-locks, an SNS, or multi-party control would
 change that. None of them exist today.
@@ -49,8 +59,10 @@ The guardrails on this are real, but they are guardrails, not independence:
 
 - Oracle readings that jump **±30%** from the current rate are rejected
   outright; a genuine larger move requires a deliberate operator re-anchor.
-- Rate hints sent by the UI are clamped to **±2%** of the canister's own
-  rate, so a tampered frontend cannot move the price it settles at.
+- A swap always settles at **the canister's own rate**. The quote the UI
+  sends can only *refuse* the trade — if the canister's rate has moved more
+  than **±2%** from your quote, nothing happens and nothing is taken. A
+  tampered frontend cannot move the price it settles at.
 - Administrative transfers are capped at **500,000 sGLDT / 50 ckUNI** per
   transaction.
 
@@ -76,7 +88,7 @@ A failure in any of these breaks this product, and we could not fix it:
 |---|---|---|
 | ckERC-20 minter | DFINITY (NNS) | Deposits stop bridging |
 | ckUNI ledger | DFINITY (NNS) | Bridged funds inaccessible |
-| Exchange Rate Canister | DFINITY (NNS) | Rate goes stale; swaps gate off |
+| Exchange Rate Canister | DFINITY (NNS) | Rate goes stale; both intakes refuse to settle after 6h |
 | sGLDT ledger | sVault | Payouts and withdrawals halt |
 | GLDT / physical backing | Gold DAO | The gold claim itself |
 
@@ -125,8 +137,9 @@ one:
   mattering to you at that moment.
 - **We cannot lose your deposit in transit.** The bridge credits ckUNI to
   your own principal before we touch it. Closing the tab does not lose funds.
-- **We cannot quietly change your price.** The settlement rate comes from the
-  canister, with the UI clamped to ±2% of it.
+- **We cannot quietly change your price.** The settlement rate is always the
+  canister's own; the quote the UI sends can refuse a trade but never reprice
+  one.
 - **There is no leverage, lending, or yield scheme** operating on treasury
   assets. The [treasury policy](/proof) states this, and it was published
   before there was any pressure to have one.

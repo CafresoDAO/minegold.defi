@@ -1,7 +1,7 @@
-import { c as createLucideIcon, r as reactExports, N as fetchMyCkBATPosition, O as fetchCkBATFee, Q as computeRefineAmounts, U as formatAssetAmount, V as CKBAT_ASSET, X as approveCkBATForRefinery, Y as refineCkBAT, Z as fetchBatRateStatus, _ as parseAssetAmount, j as jsxRuntimeExports, s as CircleCheck, H as DASHBOARD, I as ExternalLink, g as RefreshCw, L as LoaderCircle, T as ThemeToggle } from "./index-Bjg-cKtN.js";
-import { A as ArrowRight } from "./arrow-right-C3gCc_UG.js";
-import { f as fetchCkBatStatus, C as CK_MINTER_CANISTER_ID, B as BAT_ERC20_ADDRESS } from "./ckMinter-_XlZDtDX.js";
-import { A as ArrowLeft } from "./arrow-left-eyBJWMOW.js";
+import { c as createLucideIcon, r as reactExports, N as fetchMyCkBATPosition, O as fetchCkBATFee, Q as computeRefineAmounts, U as formatAssetAmount, V as CKBAT_ASSET, X as approveCkBATForRefinery, Y as refineCkBAT, Z as fetchBatRateStatus, _ as parseAssetAmount, j as jsxRuntimeExports, s as CircleCheck, H as DASHBOARD, I as ExternalLink, g as RefreshCw, L as LoaderCircle, T as ThemeToggle } from "./index-BBE-iai4.js";
+import { A as ArrowRight } from "./arrow-right-C2fp01Tj.js";
+import { f as fetchCkBatStatus, C as CK_MINTER_CANISTER_ID, B as BAT_ERC20_ADDRESS } from "./ckMinter-DNa2DjEW.js";
+import { A as ArrowLeft } from "./arrow-left-BkFYacpR.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -113,11 +113,15 @@ function BatIntakePanel({ identity, onSignIn }) {
   const [amountText, setAmountText] = reactExports.useState("");
   const [loadingPosition, setLoadingPosition] = reactExports.useState(false);
   const [rateStatus, setRateStatus] = reactExports.useState(null);
+  const [positionFailed, setPositionFailed] = reactExports.useState(false);
+  const loadPosition = reactExports.useCallback(() => {
+    setLoadingPosition(true);
+    void refreshPosition().then((pos) => setPositionFailed(pos == null)).finally(() => setLoadingPosition(false));
+  }, [refreshPosition]);
   reactExports.useEffect(() => {
     if (!identity) return;
-    setLoadingPosition(true);
-    void refreshPosition().finally(() => setLoadingPosition(false));
-  }, [identity, refreshPosition]);
+    loadPosition();
+  }, [identity, loadPosition]);
   reactExports.useEffect(() => {
     void fetchBatRateStatus().then(setRateStatus);
   }, []);
@@ -146,7 +150,7 @@ function BatIntakePanel({ identity, onSignIn }) {
         {
           className: "mt-1 text-[12px] leading-relaxed",
           style: { color: "var(--bb-text-muted)" },
-          children: "Bring ckBAT you already hold and the refinery settles it into sGLDT in one atomic call — the same treasury, the same auto-refund, the same public proof page as the UNI intake."
+          children: "Bring ckBAT you already hold and the refinery settles it into sGLDT — the same treasury, the same guaranteed pay-or-refund, the same public proof page as the UNI intake."
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -204,7 +208,7 @@ function BatIntakePanel({ identity, onSignIn }) {
                 setAmountText("");
                 void refreshPosition();
               },
-              className: "inline-flex min-h-[40px] items-center gap-1.5 text-xs font-bold",
+              className: "inline-flex min-h-[44px] items-center gap-1.5 text-xs font-bold",
               style: { color: "var(--bb-brand)" },
               children: [
                 "Refine more ",
@@ -218,7 +222,7 @@ function BatIntakePanel({ identity, onSignIn }) {
               href: `${DASHBOARD}/${CKBAT_ASSET.ledgerCanisterId}`,
               target: "_blank",
               rel: "noopener noreferrer",
-              className: "inline-flex min-h-[40px] items-center gap-1.5 text-xs font-semibold",
+              className: "inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold",
               style: { color: "var(--bb-text-dim)" },
               children: [
                 "ckBAT ledger ",
@@ -229,6 +233,34 @@ function BatIntakePanel({ identity, onSignIn }) {
         ] })
       ] })
     ] }) });
+  }
+  if (!loadingPosition && positionFailed) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { children: "BAT intake" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-sm font-bold", children: "Couldn't read your balance" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "p",
+        {
+          className: "mt-1 text-[12px] leading-relaxed",
+          style: { color: "var(--bb-text-muted)" },
+          children: "The ckBAT ledger didn't answer, so we don't know what you hold — this is not the same as holding nothing, and nothing has been taken or changed. Your balance lives on the ledger, not with us."
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "button",
+        {
+          type: "button",
+          "data-ocid": "brave.intake.retry",
+          onClick: loadPosition,
+          className: "mt-4 inline-flex min-h-[48px] items-center gap-2 rounded-2xl px-5 text-sm font-bold",
+          style: { background: "var(--royal-700)", color: "#ffffff" },
+          children: [
+            "Try again ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 14 })
+          ]
+        }
+      )
+    ] });
   }
   if (!loadingPosition && position && !intakeOpen) {
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { children: [
@@ -272,18 +304,15 @@ function BatIntakePanel({ identity, onSignIn }) {
         {
           type: "button",
           "data-ocid": "brave.intake.refresh",
-          onClick: () => {
-            setLoadingPosition(true);
-            void refreshPosition().finally(() => setLoadingPosition(false));
-          },
+          onClick: loadPosition,
           disabled: loadingPosition || busy,
-          className: "inline-flex items-center gap-1 text-[10px] font-semibold disabled:opacity-40",
+          className: "inline-flex min-h-[44px] items-center gap-1.5 px-1 text-[11px] font-semibold disabled:opacity-40",
           style: { color: "var(--bb-text-dim)" },
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               RefreshCw,
               {
-                size: 10,
+                size: 12,
                 className: loadingPosition ? "animate-spin" : ""
               }
             ),
@@ -363,7 +392,7 @@ function BatIntakePanel({ identity, onSignIn }) {
               onChange: (e) => setAmountText(e.target.value),
               disabled: busy,
               placeholder: formatAssetAmount(minRefine, CKBAT_ASSET, 2),
-              className: "min-h-[48px] w-full rounded-2xl border px-4 font-mono text-sm outline-none disabled:opacity-50",
+              className: "min-h-[48px] w-full rounded-2xl border px-4 font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bb-brand)] focus-visible:ring-offset-[var(--bb-surface)] disabled:opacity-50",
               style: {
                 borderColor: "var(--bb-border)",
                 background: "var(--bb-bg)",

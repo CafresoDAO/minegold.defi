@@ -1,11 +1,11 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { ExternalLink, RefreshCw, ShieldCheck, XCircle } from "lucide-react";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import {
+  formatTokenAmount,
   refreshProofBalances,
   useProofSnapshot,
   useRateStatus,
-  formatTokenAmount,
 } from "../hooks/useQueries";
 import { CANISTERS, OPERATOR_CONTROLLER } from "../lib/canisters";
 import { CanisterRow } from "./trust/CanisterRow";
@@ -43,7 +43,12 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
 
   const syncAgeMin =
     rate && rate.lastSyncNs > 0n
-      ? Math.max(0, Math.round((Date.now() - Number(rate.lastSyncNs / 1_000_000n)) / 60_000))
+      ? Math.max(
+          0,
+          Math.round(
+            (Date.now() - Number(rate.lastSyncNs / 1_000_000n)) / 60_000,
+          ),
+        )
       : null;
 
   const doRefresh = async () => {
@@ -83,9 +88,7 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
             <ShieldCheck size={20} className="text-emerald-400" />
           </div>
           <div>
-            <h2 className="t-headline text-white">
-              Proof &amp; transparency
-            </h2>
+            <h2 className="t-headline text-white">Proof &amp; transparency</h2>
             <p className="text-[11px] text-zinc-500">
               Every number below is on-chain — verify it, don&apos;t trust it.
             </p>
@@ -94,9 +97,7 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
 
         {/* Live liquidity — age-stamped, refreshable */}
         <div className="flex items-center justify-between mb-2">
-          <p className="t-label text-zinc-500">
-            Treasury liquidity
-          </p>
+          <p className="t-label text-zinc-500">Treasury liquidity</p>
           <div className="flex items-center gap-2">
             <span className="text-[10px] text-zinc-500">
               {isLoading
@@ -123,19 +124,23 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
         </div>
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4">
-            <p className="t-label text-zinc-500 mb-1">
-              sGLDT (pays refines)
-            </p>
+            <p className="t-label text-zinc-500 mb-1">sGLDT (pays refines)</p>
             <p className="text-xl font-black text-yellow-400 tabular-nums">
-              {balances ? formatTokenAmount(balances.sgldtBalance) : isLoading ? "…" : "—"}
+              {balances
+                ? formatTokenAmount(balances.sgldtBalance)
+                : isLoading
+                  ? "…"
+                  : "—"}
             </p>
           </div>
           <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4">
-            <p className="t-label text-zinc-500 mb-1">
-              ckUNI (pays redeems)
-            </p>
+            <p className="t-label text-zinc-500 mb-1">ckUNI (pays redeems)</p>
             <p className="text-xl font-black text-blue-300 tabular-nums">
-              {balances ? formatTokenAmount(balances.ckUNIBalance, 18) : isLoading ? "…" : "—"}
+              {balances
+                ? formatTokenAmount(balances.ckUNIBalance, 18)
+                : isLoading
+                  ? "…"
+                  : "—"}
             </p>
           </div>
         </div>
@@ -144,9 +149,7 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
         <div className="grid grid-cols-2 gap-3 mb-5">
           <CoverageMeter readiness={readiness} loading={isLoading} />
           <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4">
-            <p className="t-label text-zinc-500 mb-1">
-              Held (stranded) swaps
-            </p>
+            <p className="t-label text-zinc-500 mb-1">Held (stranded) swaps</p>
             {strandedTotal == null ? (
               <p className="text-sm text-zinc-500">
                 {isLoading ? "…" : "Unavailable right now"}
@@ -171,9 +174,7 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
 
         {/* Rate provenance */}
         <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400">
-          <p className="t-label text-zinc-500 mb-1.5">
-            How the rate is made
-          </p>
+          <p className="t-label text-zinc-500 mb-1.5">How the rate is made</p>
           {rate ? (
             <>
               <p>
@@ -181,10 +182,14 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
                   1 UNI = {(Number(rate.rate) / 1e8).toFixed(4)} sGLDT
                 </span>{" "}
                 = UNI/USD from the XRC oracle (
-                {rate.uniUsdE8 > 0n ? `$${(Number(rate.uniUsdE8) / 1e8).toFixed(2)}` : "—"}
-                , synced {syncAgeMin != null ? `${syncAgeMin}m ago` : "—"}, hourly cadence)
-                ÷ an operator-set sGLDT/USD reference (
-                {rate.sgldtUsdE8 > 0n ? `$${(Number(rate.sgldtUsdE8) / 1e8).toFixed(3)}` : "not set — manual rate in effect"}
+                {rate.uniUsdE8 > 0n
+                  ? `$${(Number(rate.uniUsdE8) / 1e8).toFixed(2)}`
+                  : "—"}
+                , synced {syncAgeMin != null ? `${syncAgeMin}m ago` : "—"},
+                hourly cadence) ÷ an operator-set sGLDT/USD reference (
+                {rate.sgldtUsdE8 > 0n
+                  ? `$${(Number(rate.sgldtUsdE8) / 1e8).toFixed(3)}`
+                  : "not set — manual rate in effect"}
                 ).
               </p>
               {rate.lastError && (
@@ -195,9 +200,12 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
               <p className="mt-1.5 text-[11px] text-zinc-500">
                 Guardrails, with numbers: oracle readings that jump ±30% from
                 the current rate are rejected (a genuine larger move needs a
-                one-time operator re-anchor); rate hints sent by this UI are
-                clamped to ±2% of the canister&apos;s own rate; admin transfers
-                are capped at 500,000 sGLDT / 50 ckUNI per transaction.
+                one-time operator re-anchor); a swap always settles at the
+                canister&apos;s own rate, and the quote this UI sends only
+                refuses the trade if that rate has moved more than ±2%; both
+                intakes stop settling entirely if the price feed goes quiet for
+                6 hours; admin transfers are capped at 500,000 sGLDT / 50 ckUNI
+                per transaction.
               </p>
             </>
           ) : (
@@ -207,9 +215,7 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
 
         {/* What backs the gold */}
         <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400">
-          <p className="t-label text-zinc-500 mb-1.5">
-            What backs sGLDT
-          </p>
+          <p className="t-label text-zinc-500 mb-1.5">What backs sGLDT</p>
           <p>
             sGLDT is a 1:1 wrapper of{" "}
             <span className="text-zinc-200 font-semibold">GLDT</span> — Gold
@@ -265,11 +271,11 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
               <span className="text-zinc-300 font-semibold">
                 Inventory risk is the operator&apos;s, never yours.
               </span>{" "}
-              Deposited tokens become treasury inventory. If their price
-              falls, the treasury&apos;s capacity to buy the next batch of
-              sGLDT shrinks — visible in the coverage meter above — but no
-              settled balance is touched, and an unpayable deposit is
-              auto-refunded, never taken.
+              Deposited tokens become treasury inventory. If their price falls,
+              the treasury&apos;s capacity to buy the next batch of sGLDT
+              shrinks — visible in the coverage meter above — but no settled
+              balance is touched, and an unpayable deposit is auto-refunded,
+              never taken.
             </li>
             <li>
               <span className="text-zinc-300 font-semibold">Today (UNI):</span>{" "}
@@ -281,11 +287,11 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
               <span className="text-zinc-300 font-semibold">
                 Before BAT intake opens:
               </span>{" "}
-              a reserve-band rule will be published here — a stated cap on
-              held BAT, conversion above the cap, and an advertising budget
-              drawn from the reserve. It will appear on this page before the
-              first BAT deposit is accepted, so you can watch the policy
-              execute rather than take it on faith.
+              a reserve-band rule will be published here — a stated cap on held
+              BAT, conversion above the cap, and an advertising budget drawn
+              from the reserve. It will appear on this page before the first BAT
+              deposit is accepted, so you can watch the policy execute rather
+              than take it on faith.
             </li>
           </ul>
         </div>
@@ -297,8 +303,8 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
           </p>
           <ul className="list-disc pl-4 space-y-1">
             <li>
-              <span className="text-zinc-300 font-semibold">Unaudited.</span>{" "}
-              No third party has audited this code.
+              <span className="text-zinc-300 font-semibold">Unaudited.</span> No
+              third party has audited this code.
             </li>
             <li>
               <span className="text-zinc-300 font-semibold">
@@ -315,8 +321,8 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
             </li>
             <li>
               Swaps that fail even the refund are held as &quot;stranded&quot;
-              records for manual resolution — the live count is published
-              above; nothing is silently dropped.
+              records for manual resolution — the live count is published above;
+              nothing is silently dropped.
             </li>
             <li>
               sGLDT&apos;s peg is sVault&apos;s contract and GLDT&apos;s gold

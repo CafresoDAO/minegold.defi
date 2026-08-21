@@ -33,7 +33,12 @@ actor Self {
   let BAT_DEFAULT_PRICE = 300; // $3.00 in 2 decimal precision
   let SGLDT_DEFAULT_PRICE = 180_000; // $1,800.00
 
-  // Hardcoded admin principal — only this principal has admin access
+  // The operator's Internet Identity principal — the one the admin screens
+  // sign in as. NOT the canister's IC controller (that is DEPLOYER_PRINCIPAL
+  // below); this is app-level admin only. The comment here used to claim
+  // "only this principal has admin access", which was never true: both this
+  // and DEPLOYER_PRINCIPAL are granted #admin at init. Disclosed on
+  // /docs/risks rather than left as a discrepancy for a reader to find.
   let ADMIN_PRINCIPAL : Principal = Principal.fromText("rc62u-qypnw-bbkkp-d56wk-tnzaq-vwhi2-cqqay-q56hw-gsqbp-6wegl-jae");
 
   // The canister's sole controller (the dfx deploy identity). A controller
@@ -942,6 +947,10 @@ actor Self {
     treasurySGLDTBalance : Nat;
     pendingDeposits : Nat;
     estimatedSGLDTNeeded : Nat;
+    /// Swaps that ended #stranded: funds pulled, neither paid nor refunded,
+    /// awaiting manual release. The live flow's real outstanding obligation.
+    strandedCount : Nat;
+    strandedSGLDTOwed : Nat;
     treasuryPrincipal : Text;
   } {
     let treasuryBalance = await sgldtLedger.icrc1_balance_of({
@@ -976,10 +985,39 @@ actor Self {
       };
     };
 
+    // Stranded records are the LIVE flow's only form of outstanding
+    // obligation. The uniDeposits loop above walks a pipeline that nothing
+    // writes to any more (nothing calls nextUNIDepositId), so pendingDeposits
+    // is structurally always 0 — which made the /proof coverage meter a
+    // widget that could never show risk, on a page whose entire purpose is
+    // showing risk. These two fields are what that meter should read.
+    var strandedCount : Nat = 0;
+    var strandedOwed : Nat = 0;
+    for ((_, r) in refines.entries()) {
+      switch (r.status) {
+        case (#stranded) { strandedCount += 1; strandedOwed += r.sgldtPaid };
+        case (_) {};
+      };
+    };
+    for ((_, r) in batRefines.entries()) {
+      switch (r.status) {
+        case (#stranded) { strandedCount += 1; strandedOwed += r.sgldtPaid };
+        case (_) {};
+      };
+    };
+    for ((_, r) in redeems.entries()) {
+      switch (r.status) {
+        case (#stranded) { strandedCount += 1; strandedOwed += r.sgldtAmount };
+        case (_) {};
+      };
+    };
+
     {
       treasurySGLDTBalance = treasuryBalance;
       pendingDeposits = pendingCount;
       estimatedSGLDTNeeded = totalNeeded;
+      strandedCount = strandedCount;
+      strandedSGLDTOwed = strandedOwed;
       treasuryPrincipal = Principal.fromActor(Self).toText();
     };
   };

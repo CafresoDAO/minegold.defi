@@ -305,6 +305,8 @@ service : {
    (record {
       estimatedSGLDTNeeded: nat;
       pendingDeposits: nat;
+      strandedCount: nat;
+      strandedSGLDTOwed: nat;
       treasuryPrincipal: text;
       treasurySGLDTBalance: nat;
     });

@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-BAu5dvT5.js","assets/button-D4MErjxl.js","assets/LandingPage-jG1cE6lQ.js","assets/ckMinter-_XlZDtDX.js","assets/arrow-right-C3gCc_UG.js","assets/MinegoldBraveSoon-DBnEENzB.js","assets/arrow-left-eyBJWMOW.js","assets/TransactionHistoryPage-B8pXaU56.js","assets/ReceiptBlock-B9GHFQ0J.js","assets/ReceiptPage-DJNlrIfR.js","assets/DocsPage-BjYcrgnS.js","assets/markdown-BlSSoNW2.js","assets/StatusPage-C8GA8fXI.js","assets/SharedReceiptPage-Brg9cpQI.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-D7WtHpAM.js","assets/button-D2yCnfih.js","assets/LandingPage-DMXoLGKm.js","assets/ckMinter-DNa2DjEW.js","assets/arrow-right-C2fp01Tj.js","assets/MinegoldBraveSoon-QfgrJpiC.js","assets/arrow-left-BkFYacpR.js","assets/TransactionHistoryPage-DdNvlOxX.js","assets/ReceiptBlock-CsQc8xIx.js","assets/ReceiptPage-DLroC36P.js","assets/DocsPage-BFtgtj29.js","assets/markdown-CE3MQDuj.js","assets/StatusPage-OjCoiA2F.js","assets/SharedReceiptPage-0uBB7wdW.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -33990,7 +33990,7 @@ async function call(client2, args) {
       throw err;
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-yOrCV_rC.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-7MfQZyd2.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -50392,6 +50392,8 @@ const proofIDL = ({ IDL: IDL2 }) => IDL2.Service({
         treasurySGLDTBalance: IDL2.Nat,
         pendingDeposits: IDL2.Nat,
         estimatedSGLDTNeeded: IDL2.Nat,
+        strandedCount: IDL2.Nat,
+        strandedSGLDTOwed: IDL2.Nat,
         treasuryPrincipal: IDL2.Text
       })
     ],
@@ -50441,7 +50443,9 @@ function useProofSnapshot(open) {
         readiness: readinessR.status === "fulfilled" ? {
           treasurySGLDTLive: readinessR.value.treasurySGLDTBalance,
           pendingDeposits: readinessR.value.pendingDeposits,
-          estimatedSGLDTNeeded: readinessR.value.estimatedSGLDTNeeded
+          estimatedSGLDTNeeded: readinessR.value.estimatedSGLDTNeeded,
+          strandedCount: readinessR.value.strandedCount,
+          strandedSGLDTOwed: readinessR.value.strandedSGLDTOwed
         } : null,
         stranded: strandedR.status === "fulfilled" ? {
           refines: strandedR.value.strandedRefines,
@@ -50930,7 +50934,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BcPac2G7.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BqnTkFGH.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -50961,7 +50965,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BcPac2G7.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BqnTkFGH.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -50985,7 +50989,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BcPac2G7.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BqnTkFGH.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -51861,15 +51865,26 @@ function CoverageMeter({
   readiness,
   loading
 }) {
-  const coverage = readiness && readiness.estimatedSGLDTNeeded > 0n ? Number(readiness.treasurySGLDTLive) / Number(readiness.estimatedSGLDTNeeded) : null;
+  const owed = readiness ? readiness.strandedSGLDTOwed + readiness.estimatedSGLDTNeeded : 0n;
+  const obligations = readiness ? readiness.strandedCount + readiness.pendingDeposits : 0n;
+  const coverage = readiness && owed > 0n ? Number(readiness.treasurySGLDTLive) / Number(owed) : null;
+  const covered = (coverage ?? 0) >= 1;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label text-zinc-500 mb-1", children: "Refine coverage" }),
-    loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-500", children: "…" }) : !readiness ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-500", children: "Unavailable right now" }) : readiness.pendingDeposits === 0n ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-bold text-emerald-400", children: "No pending payouts owed" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label text-zinc-500 mb-1", children: "Settlement coverage" }),
+    loading ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-500", children: "…" }) : !readiness ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-zinc-500", children: "Unavailable right now" }) : obligations === 0n ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-bold text-emerald-400", children: "Nothing outstanding" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-500 mt-1 tabular-nums", children: [
+        "No swap is waiting on a payout or a refund.",
+        " ",
+        formatTokenAmount(readiness.treasurySGLDTLive),
+        " sGLDT in the treasury."
+      ] })
+    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "p",
         {
-          className: `text-sm font-bold ${(coverage ?? 0) >= 1 ? "text-emerald-400" : "text-amber-400"}`,
-          children: coverage != null ? `${Math.min(999, Math.round(coverage * 100))}% of owed payouts covered` : "—"
+          className: `text-sm font-bold ${covered ? "text-emerald-400" : "text-amber-400"}`,
+          children: coverage != null ? `${Math.min(999, Math.round(coverage * 100))}% of what we owe is covered` : "—"
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -51880,11 +51895,11 @@ function CoverageMeter({
           "aria-valuemin": 0,
           "aria-valuemax": 100,
           "aria-valuenow": coverage != null ? Math.min(100, Math.round(coverage * 100)) : 0,
-          "aria-label": "Share of owed payouts covered by live treasury sGLDT",
+          "aria-label": "Share of outstanding obligations covered by live treasury sGLDT",
           children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             "div",
             {
-              className: `h-full rounded-full ${(coverage ?? 0) >= 1 ? "bg-emerald-400" : "bg-amber-400"}`,
+              className: `h-full rounded-full ${covered ? "bg-emerald-400" : "bg-amber-400"}`,
               style: {
                 width: `${Math.min(100, Math.round((coverage ?? 0) * 100))}%`
               }
@@ -51892,15 +51907,16 @@ function CoverageMeter({
           )
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-500 mt-1", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-500 mt-1 tabular-nums", children: [
         formatTokenAmount(readiness.treasurySGLDTLive),
         " live vs",
         " ",
-        formatTokenAmount(readiness.estimatedSGLDTNeeded),
-        " owed across",
+        formatTokenAmount(owed),
+        " owed across ",
+        obligations.toString(),
         " ",
-        readiness.pendingDeposits.toString(),
-        " pending"
+        obligations === 1n ? "swap" : "swaps",
+        " awaiting release"
       ] })
     ] })
   ] });
@@ -51920,7 +51936,12 @@ function ProofPanel({ onClose, onNavigatePath }) {
   const { data: snap, isLoading, refetch, isFetching } = useProofSnapshot(true);
   const qc = useQueryClient();
   const [refreshing, setRefreshing] = reactExports.useState(false);
-  const syncAgeMin = rate && rate.lastSyncNs > 0n ? Math.max(0, Math.round((Date.now() - Number(rate.lastSyncNs / 1000000n)) / 6e4)) : null;
+  const syncAgeMin = rate && rate.lastSyncNs > 0n ? Math.max(
+    0,
+    Math.round(
+      (Date.now() - Number(rate.lastSyncNs / 1000000n)) / 6e4
+    )
+  ) : null;
   const doRefresh = async () => {
     setRefreshing(true);
     try {
@@ -52035,7 +52056,7 @@ function ProofPanel({ onClose, onNavigatePath }) {
               "Last oracle note: ",
               rate.lastError
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1.5 text-[11px] text-zinc-500", children: "Guardrails, with numbers: oracle readings that jump ±30% from the current rate are rejected (a genuine larger move needs a one-time operator re-anchor); rate hints sent by this UI are clamped to ±2% of the canister's own rate; admin transfers are capped at 500,000 sGLDT / 50 ckUNI per transaction." })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1.5 text-[11px] text-zinc-500", children: "Guardrails, with numbers: oracle readings that jump ±30% from the current rate are rejected (a genuine larger move needs a one-time operator re-anchor); a swap always settles at the canister's own rate, and the quote this UI sends only refuses the trade if that rate has moved more than ±2%; both intakes stop settling entirely if the price feed goes quiet for 6 hours; admin transfers are capped at 500,000 sGLDT / 50 ckUNI per transaction." })
           ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Loading rate status…" })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400", children: [
@@ -52103,8 +52124,7 @@ function ProofPanel({ onClose, onNavigatePath }) {
           /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc pl-4 space-y-1", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Unaudited." }),
-              " ",
-              "No third party has audited this code."
+              " No third party has audited this code."
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Single operator." }),
@@ -54954,33 +54974,33 @@ function useTreasuryEthUniBalance() {
   return { balance, loading, unavailable };
 }
 const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-BAu5dvT5.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+  () => __vitePreload(() => import("./AdminPage-D7WtHpAM.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
 );
 const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-CS9zqCLy.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+  () => __vitePreload(() => import("./BankingBraveHome-BOD8c0qc.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
 );
 const LandingPage = reactExports.lazy(
-  () => __vitePreload(() => import("./LandingPage-jG1cE6lQ.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
+  () => __vitePreload(() => import("./LandingPage-DMXoLGKm.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
 );
 const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-DBnEENzB.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+  () => __vitePreload(() => import("./MinegoldBraveSoon-QfgrJpiC.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
 );
 const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-B8pXaU56.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./TransactionHistoryPage-DdNvlOxX.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
     default: m2.TransactionHistoryPage
   }))
 );
 const ReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./ReceiptPage-DJNlrIfR.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
+  () => __vitePreload(() => import("./ReceiptPage-DLroC36P.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
 );
 const DocsPage = reactExports.lazy(
-  () => __vitePreload(() => import("./DocsPage-BjYcrgnS.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
+  () => __vitePreload(() => import("./DocsPage-BFtgtj29.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
 );
 const StatusPage = reactExports.lazy(
-  () => __vitePreload(() => import("./StatusPage-C8GA8fXI.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
+  () => __vitePreload(() => import("./StatusPage-OjCoiA2F.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
 );
 const SharedReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./SharedReceiptPage-Brg9cpQI.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./SharedReceiptPage-0uBB7wdW.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
     default: m2.SharedReceiptPage
   }))
 );

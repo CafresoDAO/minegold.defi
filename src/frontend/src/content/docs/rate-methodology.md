@@ -10,9 +10,9 @@ The live values — current rate, oracle price, sync age — are on
 ## The formula
 
 ```
-                UNI/USD  (Exchange Rate Canister, hourly)
-1 UNI  =  ─────────────────────────────────────────────────  sGLDT
-                sGLDT/USD  (operator-set reference)
+           median of 5 UNI/USD readings  (Exchange Rate Canister, hourly)
+1 UNI  =  ────────────────────────────────────────────────────────────────  sGLDT
+                     sGLDT/USD  (operator-set reference)
 
 
            median of 5 BAT/USD readings  (Exchange Rate Canister, hourly)
@@ -24,10 +24,11 @@ Both legs carry 1e8 precision. That is the entire calculation — there is no
 spread applied on top, no dynamic fee, and no hidden margin between the rate
 shown and the rate settled.
 
-The two intakes share a denominator and differ in one respect: **the BAT leg
-settles on a median, the UNI leg still settles on the latest reading.** That
-difference is described under the guardrails below, and it is a gap in the
-UNI leg rather than a feature of the BAT one.
+Both intakes share a denominator and both settle on a median. They differ
+only in what they do before a full window of readings exists: the BAT intake
+stays closed, the UNI intake keeps using the latest reading. That is because
+the UNI intake was already live when the median was added, and is explained
+under the guardrails below.
 
 ## Leg 1 — UNI/USD, from DFINITY's oracle
 
@@ -103,18 +104,34 @@ we last **tried** — a failed sync, or a reading the jump guard rejected, does
 not refresh it. Six hours rides through a transient oracle outage; a dead
 timer chain it does not.
 
-The UNI leg does **not** have this cutoff yet. Stated plainly because it is
-the same hole in the older intake, and listing it is more useful than
-quietly fixing one and implying both.
+The UNI leg now has the same six-hour cutoff. It arrived later than the BAT
+one, and it works slightly differently on purpose: the UNI intake was
+already open and taking money, so it keeps settling on the latest reading
+until a full sample window exists rather than closing itself while one
+fills. A safety change that takes a live money path offline to install
+itself is not a safety change.
 
-### ±2% — UI hint clamp
+### ±2% — quote bound (the trade refuses, it does not reprice)
 
-The frontend sends a rate hint with each swap so the price you saw is the
-price you get. The canister clamps that hint to **±2%** of its own rate.
+The frontend sends the rate you were quoted with each swap. If the canister's
+own rate has moved more than **±2%** away from that quote, the swap is
+**refused** and nothing is taken from your account. Within the band, the swap
+settles — always at **the canister's rate**, never at the number the client
+sent.
 
-This exists to answer a specific attack: if the frontend were compromised or
-replaced, it still could not make the backend settle at an arbitrary price.
-The canister is the authority; the UI is a suggestion within a narrow band.
+That distinction is the whole point, and it did not always work this way.
+The hint used to *become* the settlement price when it landed inside the
+band. Because refining pays out more at a high rate and redeeming pays out
+more at a low one, a caller could quote themselves +2% going in and -2%
+coming out and round-trip the pair for about +4% per cycle at the treasury's
+expense — no market movement, no compromised key, just two ordinary calls in
+a loop. It was found and closed in August 2026 before any user funds moved,
+and it is written up here rather than quietly patched because a page that
+only lists the guardrails that always worked is an advertisement, not a
+methodology.
+
+A quote is now something the canister can honour or refuse. It is not a
+price the caller can steer.
 
 ### 500,000 sGLDT / 50 ckUNI — admin transfer caps
 
@@ -142,12 +159,9 @@ page:
 
 1. **An independent sGLDT/USD source.** The clearest single improvement:
    removes the operator from the pricing path.
-2. **The median and the staleness cutoff on the UNI leg too.** The BAT
-   intake has both; the UNI intake has neither. That asymmetry is a
-   deployment order, not a judgement that UNI needs less.
-3. **A published re-anchor log.** Every operator re-anchor, with timestamp
+2. **A published re-anchor log.** Every operator re-anchor, with timestamp
    and reason, visible on /proof rather than inferable from rate history.
-4. **Time-locked rate parameters.** A delay between setting a reference and
+3. **Time-locked rate parameters.** A delay between setting a reference and
    it taking effect, so a change is observable before it settles anything.
 
 None of these exist today. They are the honest roadmap for this page, and

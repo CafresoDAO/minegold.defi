@@ -5,7 +5,7 @@ import {
   Loader2,
   RefreshCw,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useBatRefineFlow } from "../hooks/useBatRefineFlow";
 import { type BatRateStatus, fetchBatRateStatus } from "../hooks/useQueries";
 import { DASHBOARD } from "../lib/canisters";
@@ -43,11 +43,22 @@ export function BatIntakePanel({ identity, onSignIn }: BatIntakePanelProps) {
   const [loadingPosition, setLoadingPosition] = useState(false);
   const [rateStatus, setRateStatus] = useState<BatRateStatus | null>(null);
 
+  /** A position read that came back null — the query failed, which is NOT
+   *  the same as holding zero. Tracked separately because conflating them
+   *  tells a ckBAT holder they own nothing and should go bridge more. */
+  const [positionFailed, setPositionFailed] = useState(false);
+
+  const loadPosition = useCallback(() => {
+    setLoadingPosition(true);
+    void refreshPosition()
+      .then((pos) => setPositionFailed(pos == null))
+      .finally(() => setLoadingPosition(false));
+  }, [refreshPosition]);
+
   useEffect(() => {
     if (!identity) return;
-    setLoadingPosition(true);
-    void refreshPosition().finally(() => setLoadingPosition(false));
-  }, [identity, refreshPosition]);
+    loadPosition();
+  }, [identity, loadPosition]);
 
   // Anonymous query — runs signed out too, so the closed-state copy can be
   // specific before anyone has logged in.
@@ -94,9 +105,9 @@ export function BatIntakePanel({ identity, onSignIn }: BatIntakePanelProps) {
           className="mt-1 text-[12px] leading-relaxed"
           style={{ color: "var(--bb-text-muted)" }}
         >
-          Bring ckBAT you already hold and the refinery settles it into sGLDT in
-          one atomic call — the same treasury, the same auto-refund, the same
-          public proof page as the UNI intake.
+          Bring ckBAT you already hold and the refinery settles it into sGLDT —
+          the same treasury, the same guaranteed pay-or-refund, the same public
+          proof page as the UNI intake.
         </p>
         <button
           type="button"
@@ -141,7 +152,7 @@ export function BatIntakePanel({ identity, onSignIn }: BatIntakePanelProps) {
                   setAmountText("");
                   void refreshPosition();
                 }}
-                className="inline-flex min-h-[40px] items-center gap-1.5 text-xs font-bold"
+                className="inline-flex min-h-[44px] items-center gap-1.5 text-xs font-bold"
                 style={{ color: "var(--bb-brand)" }}
               >
                 Refine more <ArrowRight size={13} />
@@ -150,7 +161,7 @@ export function BatIntakePanel({ identity, onSignIn }: BatIntakePanelProps) {
                 href={`${DASHBOARD}/${CKBAT_ASSET.ledgerCanisterId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[40px] items-center gap-1.5 text-xs font-semibold"
+                className="inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold"
                 style={{ color: "var(--bb-text-dim)" }}
               >
                 ckBAT ledger <ExternalLink size={11} />
@@ -158,6 +169,38 @@ export function BatIntakePanel({ identity, onSignIn }: BatIntakePanelProps) {
             </div>
           </div>
         </div>
+      </Card>
+    );
+  }
+
+  // ── Could not read the position ───────────────────────────────────────────
+  // Deliberately its own state. Falling through to the panel below would
+  // render "You don't hold any ckBAT yet" and send someone who DOES hold
+  // ckBAT off to bridge more.
+  if (!loadingPosition && positionFailed) {
+    return (
+      <Card>
+        <Label>BAT intake</Label>
+        <p className="mt-1 text-sm font-bold">
+          Couldn&apos;t read your balance
+        </p>
+        <p
+          className="mt-1 text-[12px] leading-relaxed"
+          style={{ color: "var(--bb-text-muted)" }}
+        >
+          The ckBAT ledger didn&apos;t answer, so we don&apos;t know what you
+          hold — this is not the same as holding nothing, and nothing has been
+          taken or changed. Your balance lives on the ledger, not with us.
+        </p>
+        <button
+          type="button"
+          data-ocid="brave.intake.retry"
+          onClick={loadPosition}
+          className="mt-4 inline-flex min-h-[48px] items-center gap-2 rounded-2xl px-5 text-sm font-bold"
+          style={{ background: "var(--royal-700)", color: "#ffffff" }}
+        >
+          Try again <RefreshCw size={14} />
+        </button>
       </Card>
     );
   }
@@ -203,16 +246,13 @@ export function BatIntakePanel({ identity, onSignIn }: BatIntakePanelProps) {
         <button
           type="button"
           data-ocid="brave.intake.refresh"
-          onClick={() => {
-            setLoadingPosition(true);
-            void refreshPosition().finally(() => setLoadingPosition(false));
-          }}
+          onClick={loadPosition}
           disabled={loadingPosition || busy}
-          className="inline-flex items-center gap-1 text-[10px] font-semibold disabled:opacity-40"
+          className="inline-flex min-h-[44px] items-center gap-1.5 px-1 text-[11px] font-semibold disabled:opacity-40"
           style={{ color: "var(--bb-text-dim)" }}
         >
           <RefreshCw
-            size={10}
+            size={12}
             className={loadingPosition ? "animate-spin" : ""}
           />
           balance
@@ -280,7 +320,7 @@ export function BatIntakePanel({ identity, onSignIn }: BatIntakePanelProps) {
                 onChange={(e) => setAmountText(e.target.value)}
                 disabled={busy}
                 placeholder={formatAssetAmount(minRefine, CKBAT_ASSET, 2)}
-                className="min-h-[48px] w-full rounded-2xl border px-4 font-mono text-sm outline-none disabled:opacity-50"
+                className="min-h-[48px] w-full rounded-2xl border px-4 font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--bb-brand)] focus-visible:ring-offset-[var(--bb-surface)] disabled:opacity-50"
                 style={{
                   borderColor: "var(--bb-border)",
                   background: "var(--bb-bg)",

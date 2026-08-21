@@ -317,6 +317,8 @@ const proofIDL = ({ IDL }: { IDL: any }) =>
           treasurySGLDTBalance: IDL.Nat,
           pendingDeposits: IDL.Nat,
           estimatedSGLDTNeeded: IDL.Nat,
+          strandedCount: IDL.Nat,
+          strandedSGLDTOwed: IDL.Nat,
           treasuryPrincipal: IDL.Text,
         }),
       ],
@@ -337,11 +339,15 @@ export type ProofSnapshot = {
     /** ns since epoch the balances were read; 0n = never warmed. */
     cachedAtNs: bigint;
   } | null;
-  /** Live (not cached) sGLDT vs total owed across pending deposits. */
+  /** Live (not cached) sGLDT vs everything the refinery still owes. The
+   *  stranded* fields are the live flow's real obligations; pendingDeposits
+   *  belongs to the retired queued-deposit pipeline and is always 0. */
   readiness: {
     treasurySGLDTLive: bigint;
     pendingDeposits: bigint;
     estimatedSGLDTNeeded: bigint;
+    strandedCount: bigint;
+    strandedSGLDTOwed: bigint;
   } | null;
   stranded: { refines: bigint; redeems: bigint } | null;
 };
@@ -408,6 +414,8 @@ export function useProofSnapshot(open: boolean) {
                 pendingDeposits: readinessR.value.pendingDeposits as bigint,
                 estimatedSGLDTNeeded: readinessR.value
                   .estimatedSGLDTNeeded as bigint,
+                strandedCount: readinessR.value.strandedCount as bigint,
+                strandedSGLDTOwed: readinessR.value.strandedSGLDTOwed as bigint,
               }
             : null,
         stranded:

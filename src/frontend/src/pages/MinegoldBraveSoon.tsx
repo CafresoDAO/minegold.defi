@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight, ExternalLink, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { BatIntakePanel } from "../components/BatIntakePanel";
 import {
   fetchCkBatStatus,
   BAT_ERC20_ADDRESS,
@@ -11,6 +12,9 @@ import {
 interface MinegoldBraveSoonProps {
   onBack: () => void;
   onOpenUni: () => void;
+  /** II identity, or null when signed out. Drives the live intake panel. */
+  identity: unknown | null;
+  onSignIn: () => void;
 }
 
 const NOTIFY_EMAIL = "anthony@cafreso.com";
@@ -26,7 +30,12 @@ const NOTIFY_EMAIL = "anthony@cafreso.com";
  * minegold.brave is this application's future domain, not a sibling
  * product. The intake is just called what it is: BAT intake.)
  */
-export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps) {
+export function MinegoldBraveSoon({
+  onBack,
+  onOpenUni,
+  identity,
+  onSignIn,
+}: MinegoldBraveSoonProps) {
   const [status, setStatus] = useState<CkBatStatus | null>(null);
   const [checkedAt, setCheckedAt] = useState<Date | null>(null);
 
@@ -178,11 +187,13 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
             <p className="t-label mb-1" style={{ color: "var(--bb-text-dim)" }}>
               Working today
             </p>
-            <p className="text-sm font-bold">The same refinery, via UNI</p>
+            <p className="text-sm font-bold">
+              {live ? "The same refinery, via UNI" : "The same refinery, via UNI"}
+            </p>
             <p className="mt-1 text-[12px] leading-relaxed" style={{ color: "var(--bb-text-muted)" }}>
-              Every part of this machine except the BAT door is live on
-              mainnet — deposits, atomic settlement, withdrawals, the public
-              proof page. BAT intake reuses it unchanged.
+              {live
+                ? "BAT intake settles through the machine the UNI intake has been using on mainnet all along — same treasury, same atomic settlement, same auto-refund, same public proof page."
+                : "Every part of this machine except the BAT door is live on mainnet — deposits, atomic settlement, withdrawals, the public proof page. BAT intake reuses it unchanged."}
             </p>
             <button
               type="button"
@@ -212,26 +223,34 @@ export function MinegoldBraveSoon({ onBack, onOpenUni }: MinegoldBraveSoonProps)
           </div>
         </div>
 
-        {/* Waitlist — one message, stated as policy */}
-        <div
-          className="mt-4 rounded-3xl border p-6 text-center"
-          style={{ borderColor: "var(--bb-border)", background: "var(--bb-surface)" }}
-        >
-          <p className="text-sm font-bold mb-1">
-            {live ? "It's opening — watch your inbox" : "One message, at launch. No newsletter."}
-          </p>
-          <p className="mb-4 text-[12px]" style={{ color: "var(--bb-text-muted)" }}>
-            Ask to be told when BAT intake opens, and that is the only email
-            you will ever get from it.
-          </p>
-          <a
-            href={notifyHref}
-            data-ocid="brave.notify"
-            className="inline-flex min-h-[48px] items-center gap-2 rounded-2xl px-5 text-sm font-bold"
-            style={{ background: "var(--royal-700)", color: "#ffffff" }}
-          >
-            <Mail size={15} /> Notify me at launch
-          </a>
+        {/* Once the minter lists ckBAT this page stops being a status page and
+            starts being the intake. The waitlist only makes sense while there
+            is something to wait for. */}
+        <div className="mt-4">
+          {live ? (
+            <BatIntakePanel identity={identity} onSignIn={onSignIn} />
+          ) : (
+            <div
+              className="rounded-3xl border p-6 text-center"
+              style={{ borderColor: "var(--bb-border)", background: "var(--bb-surface)" }}
+            >
+              <p className="text-sm font-bold mb-1">
+                One message, at launch. No newsletter.
+              </p>
+              <p className="mb-4 text-[12px]" style={{ color: "var(--bb-text-muted)" }}>
+                Ask to be told when BAT intake opens, and that is the only email
+                you will ever get from it.
+              </p>
+              <a
+                href={notifyHref}
+                data-ocid="brave.notify"
+                className="inline-flex min-h-[48px] items-center gap-2 rounded-2xl px-5 text-sm font-bold"
+                style={{ background: "var(--royal-700)", color: "#ffffff" }}
+              >
+                <Mail size={15} /> Notify me at launch
+              </a>
+            </div>
+          )}
         </div>
 
         <footer

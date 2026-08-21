@@ -4,6 +4,7 @@ import { Principal as DfinityPrincipal } from "@dfinity/principal";
 import type { Principal } from "@icp-sdk/core/principal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useBackendActor } from "./useBackendActor";
+import { CKBAT_ASSET } from "../lib/refineAssets";
 
 // ── Canister constants ───────────────────────────────────────────────────────
 
@@ -1391,4 +1392,153 @@ export function useAdminDissolveCkUNI() {
       qc.invalidateQueries({ queryKey: ["directCkUNITreasuryBalance"] });
     },
   });
+}
+
+// ── ckBAT intake ─────────────────────────────────────────────────────────────
+//
+// The BAT leg of the refinery. Deliberately asset-parameterised rather than
+// copy-pasted from the ckUNI block above: the two paths differ only in which
+// ledger they talk to and a 100x fee, and a copy-paste is exactly how the fee
+// difference gets lost. See lib/refineAssets.ts for why that fee matters.
+
+const batRefineIDL = ({ IDL }: { IDL: any }) => {
+  const RefineOk = IDL.Record({
+    refineId: IDL.Nat,
+    sgldtPaid: IDL.Nat,
+    rate: IDL.Nat,
+    blockIndex: IDL.Nat,
+  });
+  return IDL.Service({
+    getMyCkBATPosition: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          balance: IDL.Nat,
+          allowance: IDL.Nat,
+          minRefine: IDL.Nat,
+          rate: IDL.Nat,
+          fee: IDL.Nat,
+        }),
+      ],
+      [],
+    ),
+    refineCkBAT: IDL.Func(
+      [IDL.Nat, IDL.Opt(IDL.Nat)],
+      [IDL.Variant({ ok: RefineOk, err: IDL.Text })],
+      [],
+    ),
+  });
+};
+
+export type CkBATPosition = {
+  balance: bigint;
+  allowance: bigint;
+  minRefine: bigint;
+  /** sGLDT per whole BAT, 1e8 precision. 0 means the intake is closed —
+   *  the backend refuses refineCkBAT until a rate is established. */
+  rate: bigint;
+  /** Live ckBAT ledger fee. Returned by the backend so the UI never has to
+   *  guess at the value the refund path will actually be charged. */
+  fee: bigint;
+};
+
+/** Read the caller's ckBAT balance, allowance, live fee, and the current
+ *  rate. `rate === 0n` is the signal that the intake is not open yet. */
+export async function fetchMyCkBATPosition(
+  identity: unknown,
+): Promise<CkBATPosition | null> {
+  try {
+    const actor = await directActor(batRefineIDL, { identity });
+    return (await actor.getMyCkBATPosition()) as CkBATPosition;
+  } catch (err) {
+    console.warn("[refine] ckBAT position fetch failed:", err);
+    return null;
+  }
+}
+
+/** ckBAT ledger fee (e18). Verified live 2026-08-21: 1e17 = 0.1 ckBAT,
+ *  one hundred times ckUNI's. */
+export const CKBAT_FEE_FALLBACK = 100_000_000_000_000_000n;
+let _ckbatFeeCache: bigint | null = null;
+
+export async function fetchCkBATFee(): Promise<bigint> {
+  if (_ckbatFeeCache !== null) return _ckbatFeeCache;
+  try {
+    const actor = Actor.createActor(icrc1LedgerIDL, {
+      agent: getAnonymousAgent(),
+      canisterId: CKBAT_ASSET.ledgerCanisterId,
+    }) as any;
+    _ckbatFeeCache = (await actor.icrc1_fee()) as bigint;
+    return _ckbatFeeCache;
+  } catch {
+    return CKBAT_FEE_FALLBACK;
+  }
+}
+
+/** Approve the refinery to pull ckBAT. Approves exactly `amount` — callers
+ *  add fee headroom (computeRefineAmounts). */
+export async function approveCkBATForRefinery(opts: {
+  identity: unknown;
+  amount: bigint;
+}): Promise<{ ok: true; blockIndex: bigint } | { ok: false; error: string }> {
+  const actor = await directActor(icrc2ApproveIDL, {
+    identity: opts.identity,
+    canisterId: CKBAT_ASSET.ledgerCanisterId,
+  });
+  const result = await actor.icrc2_approve({
+    from_subaccount: [],
+    spender: {
+      owner: DfinityPrincipal.fromText(BACKEND_CANISTER_ID),
+      subaccount: [],
+    },
+    amount: opts.amount,
+    expected_allowance: [],
+    expires_at: [],
+    fee: [],
+    memo: [],
+    created_at_time: [],
+  });
+  if ("Ok" in result) return { ok: true, blockIndex: result.Ok as bigint };
+  const err = result.Err;
+  if ("InsufficientFunds" in err) {
+    return {
+      ok: false,
+      error: `Not enough ckBAT to cover the 0.1 ckBAT approval fee (balance ${err.InsufficientFunds.balance}).`,
+    };
+  }
+  if ("AllowanceChanged" in err) {
+    return { ok: false, error: "Your ckBAT allowance changed mid-flight. Try again." };
+  }
+  if ("TemporarilyUnavailable" in err) {
+    return { ok: false, error: "ckBAT ledger temporarily unavailable. Try again." };
+  }
+  if ("GenericError" in err) {
+    return {
+      ok: false,
+      error: `Approve failed (${err.GenericError.error_code}): ${err.GenericError.message}`,
+    };
+  }
+  return { ok: false, error: `Approve failed: ${JSON.stringify(err)}` };
+}
+
+/** Swap ckBAT the user already holds for sGLDT. Requires a prior
+ *  approveCkBATForRefinery for at least `amount` + one fee. */
+export async function refineCkBAT(opts: {
+  identity: unknown;
+  amount: bigint;
+  rateHint: bigint | null;
+}): Promise<RefineOutcome> {
+  const actor = await directActor(batRefineIDL, { identity: opts.identity });
+  const rateOpt: [] | [bigint] = opts.rateHint == null ? [] : [opts.rateHint];
+  const result = await actor.refineCkBAT(opts.amount, rateOpt);
+  if ("ok" in result) {
+    return {
+      ok: true,
+      refineId: result.ok.refineId as bigint,
+      sgldtPaid: result.ok.sgldtPaid as bigint,
+      rate: result.ok.rate as bigint,
+      blockIndex: result.ok.blockIndex as bigint,
+    };
+  }
+  return { ok: false, error: result.err as string };
 }

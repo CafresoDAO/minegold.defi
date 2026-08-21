@@ -1,4 +1,4 @@
-import { al as BaseError, am as getUrl, an as stringify, ao as decodeErrorResult, ap as isAddressEqual, aq as localBatchGatewayUrl, ar as localBatchGatewayRequest, as as call, at as concat, au as encodeAbiParameters, av as HttpRequestError, aw as isHex } from "./index-Dfb_LJyK.js";
+import { at as BaseError, au as getUrl, av as stringify, aw as decodeErrorResult, ax as isAddressEqual, ay as localBatchGatewayUrl, az as localBatchGatewayRequest, aA as call, aB as concat, aC as encodeAbiParameters, aD as getAbortError, aE as isAbortError, aF as HttpRequestError, aG as isHex } from "./index-DHI22Byt.js";
 class OffchainLookupError extends BaseError {
   constructor({ callbackSelector, cause, data, extraData, sender, urls }) {
     var _a;
@@ -70,7 +70,8 @@ const offchainLookupAbiItem = {
     }
   ]
 };
-async function offchainLookup(client, { blockNumber, blockTag, data, to }) {
+async function offchainLookup(client, { blockNumber, blockTag, data, requestOptions, to }) {
+  var _a;
   const { args } = decodeErrorResult({
     data,
     abi: [offchainLookupAbiItem]
@@ -83,8 +84,8 @@ async function offchainLookup(client, { blockNumber, blockTag, data, to }) {
       throw new OffchainLookupSenderMismatchError({ sender, to });
     const result = urls.includes(localBatchGatewayUrl) ? await localBatchGatewayRequest({
       data: callData,
-      ccipRequest: ccipRequest_
-    }) : await ccipRequest_({ data: callData, sender, urls });
+      ccipRequest: (parameters) => ccipRequest_({ ...parameters, requestOptions })
+    }) : await ccipRequest_({ data: callData, requestOptions, sender, urls });
     const { data: data_ } = await call(client, {
       blockNumber,
       blockTag,
@@ -92,10 +93,15 @@ async function offchainLookup(client, { blockNumber, blockTag, data, to }) {
         callbackSelector,
         encodeAbiParameters([{ type: "bytes" }, { type: "bytes" }], [result, extraData])
       ]),
+      requestOptions,
       to
     });
     return data_;
   } catch (err) {
+    if ((_a = requestOptions == null ? void 0 : requestOptions.signal) == null ? void 0 : _a.aborted)
+      throw getAbortError(requestOptions.signal);
+    if (isAbortError(err))
+      throw err;
     throw new OffchainLookupError({
       callbackSelector,
       cause: err,
@@ -106,10 +112,12 @@ async function offchainLookup(client, { blockNumber, blockTag, data, to }) {
     });
   }
 }
-async function ccipRequest({ data, sender, urls }) {
-  var _a;
+async function ccipRequest({ data, requestOptions, sender, urls }) {
+  var _a, _b, _c;
   let error = new Error("An unknown error occurred.");
   for (let i = 0; i < urls.length; i++) {
+    if ((_a = requestOptions == null ? void 0 : requestOptions.signal) == null ? void 0 : _a.aborted)
+      throw getAbortError(requestOptions.signal);
     const url = urls[i];
     const method = url.includes("{data}") ? "GET" : "POST";
     const body = method === "POST" ? { data, sender } : void 0;
@@ -118,10 +126,11 @@ async function ccipRequest({ data, sender, urls }) {
       const response = await fetch(url.replace("{sender}", sender.toLowerCase()).replace("{data}", data), {
         body: JSON.stringify(body),
         headers,
-        method
+        method,
+        ...(requestOptions == null ? void 0 : requestOptions.signal) ? { signal: requestOptions.signal } : {}
       });
       let result;
-      if ((_a = response.headers.get("Content-Type")) == null ? void 0 : _a.startsWith("application/json")) {
+      if ((_b = response.headers.get("Content-Type")) == null ? void 0 : _b.startsWith("application/json")) {
         result = (await response.json()).data;
       } else {
         result = await response.text();
@@ -145,6 +154,10 @@ async function ccipRequest({ data, sender, urls }) {
       }
       return result;
     } catch (err) {
+      if ((_c = requestOptions == null ? void 0 : requestOptions.signal) == null ? void 0 : _c.aborted)
+        throw getAbortError(requestOptions.signal);
+      if (isAbortError(err))
+        throw err;
       error = new HttpRequestError({
         body,
         details: err.message,

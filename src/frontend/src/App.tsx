@@ -1734,7 +1734,12 @@ export default function App() {
   if (topView === "brave-soon") {
     return (
       <Suspense fallback={<PageFallback />}>
-        <MinegoldBraveSoon onBack={backToBankingBrave} onOpenUni={enterMinegoldUni} />
+        <MinegoldBraveSoon
+          onBack={backToBankingBrave}
+          onOpenUni={enterMinegoldUni}
+          identity={identity ?? null}
+          onSignIn={() => void iiLogin()}
+        />
       </Suspense>
     );
   }

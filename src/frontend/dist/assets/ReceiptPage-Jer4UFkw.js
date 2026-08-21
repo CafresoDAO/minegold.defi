@@ -1,6 +1,6 @@
-import { r as reactExports, a0 as fetchShareToken, j as jsxRuntimeExports, a1 as shareUrl, a2 as Check, q as Copy, L as LoaderCircle, a3 as X, a4 as unpublishReceipt, a5 as publishReceipt, u as useInternetIdentity, Q as useLedger, a6 as findEntry, A as ShieldCheck } from "./index-Dfb_LJyK.js";
-import { L as Link2, R as ReceiptBlock } from "./ReceiptBlock-DMDHvSHN.js";
-import { A as ArrowLeft } from "./arrow-left-Bf0Qqjra.js";
+import { r as reactExports, a8 as fetchShareToken, j as jsxRuntimeExports, a9 as shareUrl, aa as Check, q as Copy, L as LoaderCircle, ab as X, ac as unpublishReceipt, ad as publishReceipt, u as useInternetIdentity, a0 as useLedger, ae as findEntry, A as ShieldCheck } from "./index-DHI22Byt.js";
+import { L as Link2, R as ReceiptBlock } from "./ReceiptBlock-CcIqOwWj.js";
+import { A as ArrowLeft } from "./arrow-left-Bd9vsqS8.js";
 function ShareReceiptControl({
   entry,
   identity

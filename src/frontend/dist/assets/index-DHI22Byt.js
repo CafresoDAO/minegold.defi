@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-BdcOqrUS.js","assets/button-BlGdvUCp.js","assets/LandingPage-BMw2ytIE.js","assets/ckMinter-Dc8CUEeC.js","assets/arrow-right-1PJWC54Z.js","assets/MinegoldBraveSoon-CzFZWnIP.js","assets/arrow-left-Bf0Qqjra.js","assets/TransactionHistoryPage-BvelNsuT.js","assets/ReceiptBlock-DMDHvSHN.js","assets/ReceiptPage-Bag55iKQ.js","assets/DocsPage-DGYvf5CY.js","assets/markdown-2cnCMo2x.js","assets/StatusPage-DgG4RwH5.js","assets/SharedReceiptPage-DkaCl3pz.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-BN42L9m1.js","assets/button-CPQUQL-f.js","assets/LandingPage-Bu72_hjg.js","assets/ckMinter-BLU_n7f3.js","assets/arrow-right-Cq1viCDs.js","assets/MinegoldBraveSoon-BCbhqBFD.js","assets/arrow-left-Bd9vsqS8.js","assets/TransactionHistoryPage-BZec2W34.js","assets/ReceiptBlock-CcIqOwWj.js","assets/ReceiptPage-Jer4UFkw.js","assets/DocsPage-Bc6NRkl3.js","assets/markdown-BjOrAo3E.js","assets/StatusPage-B6hYFXJb.js","assets/SharedReceiptPage-CwIORIX2.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -18,7 +18,7 @@ var __privateWrapper = (obj, member, setter, getter) => ({
     return __privateGet(obj, member, getter);
   }
 });
-var _focused, _cleanup, _setup, _a2, _provider, _providerCalled, _b2, _online, _cleanup2, _setup2, _c, _gcTimeout, _d, _initialState, _revertState, _cache, _client, _retryer, _defaultOptions, _abortSignalConsumed, _Query_instances, isInitialPausedFetch_fn, dispatch_fn, _e, _client2, _currentQuery, _currentQueryInitialState, _currentResult, _currentResultState, _currentResultOptions, _currentThenable, _selectError, _selectFn, _selectResult, _lastQueryWithDefinedData, _staleTimeoutId, _refetchIntervalId, _currentRefetchInterval, _trackedProps, _QueryObserver_instances, executeFetch_fn, updateStaleTimeout_fn, computeRefetchInterval_fn, updateRefetchInterval_fn, updateTimers_fn, clearStaleTimeout_fn, clearRefetchInterval_fn, updateQuery_fn, notify_fn, _f, _client3, _observers, _mutationCache, _retryer2, _Mutation_instances, dispatch_fn2, _g, _mutations, _scopes, _mutationId, _h, _client4, _currentResult2, _currentMutation, _mutateOptions, _MutationObserver_instances, updateResult_fn, notify_fn2, _i, _queries, _j, _queryCache, _mutationCache2, _defaultOptions2, _queryDefaults, _mutationDefaults, _mountCount, _unsubscribeFocus, _unsubscribeOnline, _k, _disableTimeVerification, _agent, _inner, _expirationTime, _rawKey, _derKey, _l, _currentInterval, _randomizationFactor, _multiplier, _maxInterval, _startTime, _maxElapsedTime, _maxIterations, _date, _count, _rootKeyPromise, _shouldFetchRootKey, _timeDiffMsecs, _hasSyncedTime, _syncTimePromise, _shouldSyncTime, _identity, _fetch, _fetchOptions, _callOptions, _credentials, _retryTimes, _backoffStrategy, _maxIngressExpiryInMinutes, _HttpAgent_instances, maxIngressExpiryInMs_get, _queryPipeline, _updatePipeline, _subnetKeys, _verifyQuerySignatures, requestAndRetryQuery_fn, requestAndRetry_fn, _verifyQueryResponse, asyncGuard_fn, rootKeyGuard_fn, syncTimeGuard_fn, _rawKey2, _derKey2, _publicKey, _privateKey, _inner2, _delegation, _options;
+var _focused, _cleanup, _setup, _a2, _provider, _providerCalled, _b2, _online, _cleanup2, _setup2, _c, _gcTimeout, _d, _queryType, _initialState, _revertState, _cache, _client, _retryer, _defaultOptions, _abortSignalConsumed, _Query_instances, isInitialPausedFetch_fn, dispatch_fn, _e, _client2, _currentQuery, _currentQueryInitialState, _currentResult, _currentResultState, _currentResultOptions, _currentThenable, _selectError, _selectFn, _selectResult, _lastQueryWithDefinedData, _staleTimeoutId, _refetchIntervalId, _currentRefetchInterval, _trackedProps, _QueryObserver_instances, executeFetch_fn, updateStaleTimeout_fn, computeRefetchInterval_fn, updateRefetchInterval_fn, updateTimers_fn, clearStaleTimeout_fn, clearRefetchInterval_fn, updateQuery_fn, notify_fn, _f, _client3, _observers, _mutationCache, _retryer2, _Mutation_instances, dispatch_fn2, _g, _mutations, _scopes, _mutationId, _h, _client4, _currentResult2, _currentMutation, _mutateOptions, _MutationObserver_instances, updateResult_fn, notify_fn2, _i, _queries, _j, _queryCache, _mutationCache2, _defaultOptions2, _queryDefaults, _mutationDefaults, _mountCount, _unsubscribeFocus, _unsubscribeOnline, _k, _disableTimeVerification, _agent, _inner, _expirationTime, _rawKey, _derKey, _l, _currentInterval, _randomizationFactor, _multiplier, _maxInterval, _startTime, _maxElapsedTime, _maxIterations, _date, _count, _rootKeyPromise, _shouldFetchRootKey, _timeDiffMsecs, _hasSyncedTime, _syncTimePromise, _shouldSyncTime, _identity, _fetch, _fetchOptions, _callOptions, _credentials, _retryTimes, _backoffStrategy, _maxIngressExpiryInMinutes, _HttpAgent_instances, maxIngressExpiryInMs_get, _queryPipeline, _updatePipeline, _subnetKeys, _verifyQuerySignatures, requestAndRetryQuery_fn, requestAndRetry_fn, _verifyQueryResponse, asyncGuard_fn, rootKeyGuard_fn, syncTimeGuard_fn, _rawKey2, _derKey2, _publicKey, _privateKey, _inner2, _delegation, _options;
 function _mergeNamespaces(n, m2) {
   for (var i = 0; i < m2.length; i++) {
     const e = m2[i];
@@ -262,8 +262,8 @@ function timeUntilStale(updatedAt, staleTime) {
 function resolveStaleTime(staleTime, query) {
   return typeof staleTime === "function" ? staleTime(query) : staleTime;
 }
-function resolveEnabled(enabled, query) {
-  return typeof enabled === "function" ? enabled(query) : enabled;
+function resolveQueryBoolean(option, query) {
+  return typeof option === "function" ? option(query) : option;
 }
 function matchQuery(filters, query) {
   const {
@@ -332,7 +332,7 @@ function hashQueryKeyByOptions(queryKey, options) {
 function hashKey(queryKey) {
   return JSON.stringify(
     queryKey,
-    (_2, val) => isPlainObject(val) ? Object.keys(val).sort().reduce((result, key2) => {
+    (_2, val) => isPlainObject$1(val) ? Object.keys(val).sort().reduce((result, key2) => {
       result[key2] = val[key2];
       return result;
     }, {}) : val
@@ -346,7 +346,21 @@ function partialMatchKey(a2, b2) {
     return false;
   }
   if (a2 && b2 && typeof a2 === "object" && typeof b2 === "object") {
-    return Object.keys(b2).every((key2) => partialMatchKey(a2[key2], b2[key2]));
+    if (Array.isArray(a2) && Array.isArray(b2)) {
+      for (let i = 0; i < b2.length; i++) {
+        if (!partialMatchKey(a2[i], b2[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    const bKeys = Object.keys(b2);
+    for (const key2 of bKeys) {
+      if (!partialMatchKey(a2[key2], b2[key2])) {
+        return false;
+      }
+    }
+    return true;
   }
   return false;
 }
@@ -357,7 +371,7 @@ function replaceEqualDeep(a2, b2, depth = 0) {
   }
   if (depth > 500) return b2;
   const array = isPlainArray(a2) && isPlainArray(b2);
-  if (!array && !(isPlainObject(a2) && isPlainObject(b2))) return b2;
+  if (!array && !(isPlainObject$1(a2) && isPlainObject$1(b2))) return b2;
   const aItems = array ? a2 : Object.keys(a2);
   const aSize = aItems.length;
   const bItems = array ? b2 : Object.keys(b2);
@@ -397,11 +411,11 @@ function shallowEqualObjects(a2, b2) {
 function isPlainArray(value) {
   return Array.isArray(value) && value.length === Object.keys(value).length;
 }
-function isPlainObject(o) {
-  if (!hasObjectPrototype(o)) {
+function isPlainObject$1(o2) {
+  if (!hasObjectPrototype(o2)) {
     return false;
   }
-  const ctor = o.constructor;
+  const ctor = o2.constructor;
   if (ctor === void 0) {
     return true;
   }
@@ -412,13 +426,13 @@ function isPlainObject(o) {
   if (!prot.hasOwnProperty("isPrototypeOf")) {
     return false;
   }
-  if (Object.getPrototypeOf(o) !== Object.prototype) {
+  if (Object.getPrototypeOf(o2) !== Object.prototype) {
     return false;
   }
   return true;
 }
-function hasObjectPrototype(o) {
-  return Object.prototype.toString.call(o) === "[object Object]";
+function hasObjectPrototype(o2) {
+  return Object.prototype.toString.call(o2) === "[object Object]";
 }
 function sleep(timeout2) {
   return new Promise((resolve) => {
@@ -800,16 +814,120 @@ var Removable = (_d = class {
     );
   }
   clearGcTimeout() {
-    if (__privateGet(this, _gcTimeout)) {
+    if (__privateGet(this, _gcTimeout) !== void 0) {
       timeoutManager.clearTimeout(__privateGet(this, _gcTimeout));
       __privateSet(this, _gcTimeout, void 0);
     }
   }
 }, _gcTimeout = new WeakMap(), _d);
+function infiniteQueryBehavior(pages) {
+  return {
+    onFetch: (context, query) => {
+      var _a3, _b3, _c2, _d2, _e2;
+      const options = context.options;
+      const direction = (_c2 = (_b3 = (_a3 = context.fetchOptions) == null ? void 0 : _a3.meta) == null ? void 0 : _b3.fetchMore) == null ? void 0 : _c2.direction;
+      const oldPages = ((_d2 = context.state.data) == null ? void 0 : _d2.pages) || [];
+      const oldPageParams = ((_e2 = context.state.data) == null ? void 0 : _e2.pageParams) || [];
+      let result = { pages: [], pageParams: [] };
+      let currentPage = 0;
+      const fetchFn = async () => {
+        let cancelled = false;
+        const addSignalProperty = (object) => {
+          addConsumeAwareSignal(
+            object,
+            () => context.signal,
+            () => cancelled = true
+          );
+        };
+        const queryFn = ensureQueryFn(context.options, context.fetchOptions);
+        const fetchPage = async (data, param, previous) => {
+          if (cancelled) {
+            return Promise.reject(context.signal.reason);
+          }
+          if (param == null && data.pages.length) {
+            return Promise.resolve(data);
+          }
+          const createQueryFnContext = () => {
+            const queryFnContext2 = {
+              client: context.client,
+              queryKey: context.queryKey,
+              pageParam: param,
+              direction: previous ? "backward" : "forward",
+              meta: context.options.meta
+            };
+            addSignalProperty(queryFnContext2);
+            return queryFnContext2;
+          };
+          const queryFnContext = createQueryFnContext();
+          const page = await queryFn(queryFnContext);
+          const { maxPages } = context.options;
+          const addTo = previous ? addToStart : addToEnd;
+          return {
+            pages: addTo(data.pages, page, maxPages),
+            pageParams: addTo(data.pageParams, param, maxPages)
+          };
+        };
+        if (direction && oldPages.length) {
+          const previous = direction === "backward";
+          const pageParamFn = previous ? getPreviousPageParam : getNextPageParam;
+          const oldData = {
+            pages: oldPages,
+            pageParams: oldPageParams
+          };
+          const param = pageParamFn(options, oldData);
+          result = await fetchPage(oldData, param, previous);
+        } else {
+          const remainingPages = pages ?? oldPages.length;
+          do {
+            const param = currentPage === 0 ? oldPageParams[0] ?? options.initialPageParam : getNextPageParam(options, result);
+            if (currentPage > 0 && param == null) {
+              break;
+            }
+            result = await fetchPage(result, param);
+            currentPage++;
+          } while (currentPage < remainingPages);
+        }
+        return result;
+      };
+      if (context.options.persister) {
+        context.fetchFn = () => {
+          var _a4, _b4;
+          return (_b4 = (_a4 = context.options).persister) == null ? void 0 : _b4.call(
+            _a4,
+            fetchFn,
+            {
+              client: context.client,
+              queryKey: context.queryKey,
+              meta: context.options.meta,
+              signal: context.signal
+            },
+            query
+          );
+        };
+      } else {
+        context.fetchFn = fetchFn;
+      }
+    }
+  };
+}
+function getNextPageParam(options, { pages, pageParams }) {
+  const lastIndex = pages.length - 1;
+  return pages.length > 0 ? options.getNextPageParam(
+    pages[lastIndex],
+    pages,
+    pageParams[lastIndex],
+    pageParams
+  ) : void 0;
+}
+function getPreviousPageParam(options, { pages, pageParams }) {
+  var _a3;
+  return pages.length > 0 ? (_a3 = options.getPreviousPageParam) == null ? void 0 : _a3.call(options, pages[0], pages, pageParams[0], pageParams) : void 0;
+}
 var Query = (_e = class extends Removable {
   constructor(config) {
     super();
     __privateAdd(this, _Query_instances);
+    __privateAdd(this, _queryType);
     __privateAdd(this, _initialState);
     __privateAdd(this, _revertState);
     __privateAdd(this, _cache);
@@ -832,12 +950,18 @@ var Query = (_e = class extends Removable {
   get meta() {
     return this.options.meta;
   }
+  get queryType() {
+    return __privateGet(this, _queryType);
+  }
   get promise() {
     var _a3;
     return (_a3 = __privateGet(this, _retryer)) == null ? void 0 : _a3.promise;
   }
   setOptions(options) {
     this.options = { ...__privateGet(this, _defaultOptions), ...options };
+    if (options == null ? void 0 : options._type) {
+      __privateSet(this, _queryType, options._type);
+    }
     this.updateGcTime(this.options.gcTime);
     if (this.state && this.state.data === void 0) {
       const defaultState = getDefaultState$1(this.options);
@@ -864,8 +988,8 @@ var Query = (_e = class extends Removable {
     });
     return data;
   }
-  setState(state, setStateOptions) {
-    __privateMethod(this, _Query_instances, dispatch_fn).call(this, { type: "setState", state, setStateOptions });
+  setState(state) {
+    __privateMethod(this, _Query_instances, dispatch_fn).call(this, { type: "setState", state });
   }
   cancel(options) {
     var _a3, _b3;
@@ -886,7 +1010,7 @@ var Query = (_e = class extends Removable {
   }
   isActive() {
     return this.observers.some(
-      (observer) => resolveEnabled(observer.options.enabled, this) !== false
+      (observer) => resolveQueryBoolean(observer.options.enabled, this) !== false
     );
   }
   isDisabled() {
@@ -970,7 +1094,7 @@ var Query = (_e = class extends Removable {
     }
   }
   async fetch(options, fetchOptions) {
-    var _a3, _b3, _c2, _d2, _e2, _f2, _g2, _h2, _i2, _j2, _k2, _l2;
+    var _a3, _b3, _c2, _d2, _e2, _f2, _g2, _h2, _i2, _j2, _k2;
     if (this.state.fetchStatus !== "idle" && // If the promise in the retryer is already rejected, we have to definitely
     // re-start the fetch; there is a chance that the query is still in a
     // pending state when that happens
@@ -1036,10 +1160,13 @@ var Query = (_e = class extends Removable {
       return context2;
     };
     const context = createFetchContext();
-    (_b3 = this.options.behavior) == null ? void 0 : _b3.onFetch(context, this);
+    const behavior = __privateGet(this, _queryType) === "infinite" ? infiniteQueryBehavior(
+      this.options.pages
+    ) : this.options.behavior;
+    behavior == null ? void 0 : behavior.onFetch(context, this);
     __privateSet(this, _revertState, this.state);
-    if (this.state.fetchStatus === "idle" || this.state.fetchMeta !== ((_c2 = context.fetchOptions) == null ? void 0 : _c2.meta)) {
-      __privateMethod(this, _Query_instances, dispatch_fn).call(this, { type: "fetch", meta: (_d2 = context.fetchOptions) == null ? void 0 : _d2.meta });
+    if (this.state.fetchStatus === "idle" || this.state.fetchMeta !== ((_b3 = context.fetchOptions) == null ? void 0 : _b3.meta)) {
+      __privateMethod(this, _Query_instances, dispatch_fn).call(this, { type: "fetch", meta: (_c2 = context.fetchOptions) == null ? void 0 : _c2.meta });
     }
     __privateSet(this, _retryer, createRetryer({
       initialPromise: fetchOptions == null ? void 0 : fetchOptions.initialPromise,
@@ -1074,9 +1201,9 @@ var Query = (_e = class extends Removable {
         throw new Error(`${this.queryHash} data is undefined`);
       }
       this.setData(data);
-      (_f2 = (_e2 = __privateGet(this, _cache).config).onSuccess) == null ? void 0 : _f2.call(_e2, data, this);
-      (_h2 = (_g2 = __privateGet(this, _cache).config).onSettled) == null ? void 0 : _h2.call(
-        _g2,
+      (_e2 = (_d2 = __privateGet(this, _cache).config).onSuccess) == null ? void 0 : _e2.call(_d2, data, this);
+      (_g2 = (_f2 = __privateGet(this, _cache).config).onSettled) == null ? void 0 : _g2.call(
+        _f2,
         data,
         this.state.error,
         this
@@ -1097,13 +1224,13 @@ var Query = (_e = class extends Removable {
         type: "error",
         error
       });
-      (_j2 = (_i2 = __privateGet(this, _cache).config).onError) == null ? void 0 : _j2.call(
-        _i2,
+      (_i2 = (_h2 = __privateGet(this, _cache).config).onError) == null ? void 0 : _i2.call(
+        _h2,
         error,
         this
       );
-      (_l2 = (_k2 = __privateGet(this, _cache).config).onSettled) == null ? void 0 : _l2.call(
-        _k2,
+      (_k2 = (_j2 = __privateGet(this, _cache).config).onSettled) == null ? void 0 : _k2.call(
+        _j2,
         this.state.data,
         error,
         this
@@ -1113,7 +1240,7 @@ var Query = (_e = class extends Removable {
       this.scheduleGc();
     }
   }
-}, _initialState = new WeakMap(), _revertState = new WeakMap(), _cache = new WeakMap(), _client = new WeakMap(), _retryer = new WeakMap(), _defaultOptions = new WeakMap(), _abortSignalConsumed = new WeakMap(), _Query_instances = new WeakSet(), isInitialPausedFetch_fn = function() {
+}, _queryType = new WeakMap(), _initialState = new WeakMap(), _revertState = new WeakMap(), _cache = new WeakMap(), _client = new WeakMap(), _retryer = new WeakMap(), _defaultOptions = new WeakMap(), _abortSignalConsumed = new WeakMap(), _Query_instances = new WeakSet(), isInitialPausedFetch_fn = function() {
   return this.state.fetchStatus === "paused" && this.state.status === "pending";
 }, dispatch_fn = function(action) {
   const reducer = (state) => {
@@ -1298,7 +1425,7 @@ var QueryObserver = (_f = class extends Subscribable {
     const prevOptions = this.options;
     const prevQuery = __privateGet(this, _currentQuery);
     this.options = __privateGet(this, _client2).defaultQueryOptions(options);
-    if (this.options.enabled !== void 0 && typeof this.options.enabled !== "boolean" && typeof this.options.enabled !== "function" && typeof resolveEnabled(this.options.enabled, __privateGet(this, _currentQuery)) !== "boolean") {
+    if (this.options.enabled !== void 0 && typeof this.options.enabled !== "boolean" && typeof this.options.enabled !== "function" && typeof resolveQueryBoolean(this.options.enabled, __privateGet(this, _currentQuery)) !== "boolean") {
       throw new Error(
         "Expected enabled to be a boolean or a callback that returns a boolean"
       );
@@ -1322,11 +1449,11 @@ var QueryObserver = (_f = class extends Subscribable {
       __privateMethod(this, _QueryObserver_instances, executeFetch_fn).call(this);
     }
     this.updateResult();
-    if (mounted && (__privateGet(this, _currentQuery) !== prevQuery || resolveEnabled(this.options.enabled, __privateGet(this, _currentQuery)) !== resolveEnabled(prevOptions.enabled, __privateGet(this, _currentQuery)) || resolveStaleTime(this.options.staleTime, __privateGet(this, _currentQuery)) !== resolveStaleTime(prevOptions.staleTime, __privateGet(this, _currentQuery)))) {
+    if (mounted && (__privateGet(this, _currentQuery) !== prevQuery || resolveQueryBoolean(this.options.enabled, __privateGet(this, _currentQuery)) !== resolveQueryBoolean(prevOptions.enabled, __privateGet(this, _currentQuery)) || resolveStaleTime(this.options.staleTime, __privateGet(this, _currentQuery)) !== resolveStaleTime(prevOptions.staleTime, __privateGet(this, _currentQuery)))) {
       __privateMethod(this, _QueryObserver_instances, updateStaleTimeout_fn).call(this);
     }
     const nextRefetchInterval = __privateMethod(this, _QueryObserver_instances, computeRefetchInterval_fn).call(this);
-    if (mounted && (__privateGet(this, _currentQuery) !== prevQuery || resolveEnabled(this.options.enabled, __privateGet(this, _currentQuery)) !== resolveEnabled(prevOptions.enabled, __privateGet(this, _currentQuery)) || nextRefetchInterval !== __privateGet(this, _currentRefetchInterval))) {
+    if (mounted && (__privateGet(this, _currentQuery) !== prevQuery || resolveQueryBoolean(this.options.enabled, __privateGet(this, _currentQuery)) !== resolveQueryBoolean(prevOptions.enabled, __privateGet(this, _currentQuery)) || nextRefetchInterval !== __privateGet(this, _currentRefetchInterval))) {
       __privateMethod(this, _QueryObserver_instances, updateRefetchInterval_fn).call(this, nextRefetchInterval);
     }
   }
@@ -1490,7 +1617,7 @@ var QueryObserver = (_f = class extends Subscribable {
       isStale: isStale(query, options),
       refetch: this.refetch,
       promise: __privateGet(this, _currentThenable),
-      isEnabled: resolveEnabled(options.enabled, query) !== false
+      isEnabled: resolveQueryBoolean(options.enabled, query) !== false
     };
     const nextResult = result;
     if (this.options.experimental_prefetchInRender) {
@@ -1600,7 +1727,7 @@ var QueryObserver = (_f = class extends Subscribable {
 }, updateRefetchInterval_fn = function(nextInterval) {
   __privateMethod(this, _QueryObserver_instances, clearRefetchInterval_fn).call(this);
   __privateSet(this, _currentRefetchInterval, nextInterval);
-  if (environmentManager.isServer() || resolveEnabled(this.options.enabled, __privateGet(this, _currentQuery)) === false || !isValidTimeout(__privateGet(this, _currentRefetchInterval)) || __privateGet(this, _currentRefetchInterval) === 0) {
+  if (environmentManager.isServer() || resolveQueryBoolean(this.options.enabled, __privateGet(this, _currentQuery)) === false || !isValidTimeout(__privateGet(this, _currentRefetchInterval)) || __privateGet(this, _currentRefetchInterval) === 0) {
     return;
   }
   __privateSet(this, _refetchIntervalId, timeoutManager.setInterval(() => {
@@ -1612,12 +1739,12 @@ var QueryObserver = (_f = class extends Subscribable {
   __privateMethod(this, _QueryObserver_instances, updateStaleTimeout_fn).call(this);
   __privateMethod(this, _QueryObserver_instances, updateRefetchInterval_fn).call(this, __privateMethod(this, _QueryObserver_instances, computeRefetchInterval_fn).call(this));
 }, clearStaleTimeout_fn = function() {
-  if (__privateGet(this, _staleTimeoutId)) {
+  if (__privateGet(this, _staleTimeoutId) !== void 0) {
     timeoutManager.clearTimeout(__privateGet(this, _staleTimeoutId));
     __privateSet(this, _staleTimeoutId, void 0);
   }
 }, clearRefetchInterval_fn = function() {
-  if (__privateGet(this, _refetchIntervalId)) {
+  if (__privateGet(this, _refetchIntervalId) !== void 0) {
     timeoutManager.clearInterval(__privateGet(this, _refetchIntervalId));
     __privateSet(this, _refetchIntervalId, void 0);
   }
@@ -1647,132 +1774,29 @@ var QueryObserver = (_f = class extends Subscribable {
   });
 }, _f);
 function shouldLoadOnMount(query, options) {
-  return resolveEnabled(options.enabled, query) !== false && query.state.data === void 0 && !(query.state.status === "error" && options.retryOnMount === false);
+  return resolveQueryBoolean(options.enabled, query) !== false && query.state.data === void 0 && !(query.state.status === "error" && resolveQueryBoolean(options.retryOnMount, query) === false);
 }
 function shouldFetchOnMount(query, options) {
   return shouldLoadOnMount(query, options) || query.state.data !== void 0 && shouldFetchOn(query, options, options.refetchOnMount);
 }
 function shouldFetchOn(query, options, field) {
-  if (resolveEnabled(options.enabled, query) !== false && resolveStaleTime(options.staleTime, query) !== "static") {
+  if (resolveQueryBoolean(options.enabled, query) !== false && resolveStaleTime(options.staleTime, query) !== "static") {
     const value = typeof field === "function" ? field(query) : field;
     return value === "always" || value !== false && isStale(query, options);
   }
   return false;
 }
 function shouldFetchOptionally(query, prevQuery, options, prevOptions) {
-  return (query !== prevQuery || resolveEnabled(prevOptions.enabled, query) === false) && (!options.suspense || query.state.status !== "error") && isStale(query, options);
+  return (query !== prevQuery || resolveQueryBoolean(prevOptions.enabled, query) === false) && (!options.suspense || query.state.status !== "error") && isStale(query, options);
 }
 function isStale(query, options) {
-  return resolveEnabled(options.enabled, query) !== false && query.isStaleByTime(resolveStaleTime(options.staleTime, query));
+  return resolveQueryBoolean(options.enabled, query) !== false && query.isStaleByTime(resolveStaleTime(options.staleTime, query));
 }
 function shouldAssignObserverCurrentProperties(observer, optimisticResult) {
   if (!shallowEqualObjects(observer.getCurrentResult(), optimisticResult)) {
     return true;
   }
   return false;
-}
-function infiniteQueryBehavior(pages) {
-  return {
-    onFetch: (context, query) => {
-      var _a3, _b3, _c2, _d2, _e2;
-      const options = context.options;
-      const direction = (_c2 = (_b3 = (_a3 = context.fetchOptions) == null ? void 0 : _a3.meta) == null ? void 0 : _b3.fetchMore) == null ? void 0 : _c2.direction;
-      const oldPages = ((_d2 = context.state.data) == null ? void 0 : _d2.pages) || [];
-      const oldPageParams = ((_e2 = context.state.data) == null ? void 0 : _e2.pageParams) || [];
-      let result = { pages: [], pageParams: [] };
-      let currentPage = 0;
-      const fetchFn = async () => {
-        let cancelled = false;
-        const addSignalProperty = (object) => {
-          addConsumeAwareSignal(
-            object,
-            () => context.signal,
-            () => cancelled = true
-          );
-        };
-        const queryFn = ensureQueryFn(context.options, context.fetchOptions);
-        const fetchPage = async (data, param, previous) => {
-          if (cancelled) {
-            return Promise.reject();
-          }
-          if (param == null && data.pages.length) {
-            return Promise.resolve(data);
-          }
-          const createQueryFnContext = () => {
-            const queryFnContext2 = {
-              client: context.client,
-              queryKey: context.queryKey,
-              pageParam: param,
-              direction: previous ? "backward" : "forward",
-              meta: context.options.meta
-            };
-            addSignalProperty(queryFnContext2);
-            return queryFnContext2;
-          };
-          const queryFnContext = createQueryFnContext();
-          const page = await queryFn(queryFnContext);
-          const { maxPages } = context.options;
-          const addTo = previous ? addToStart : addToEnd;
-          return {
-            pages: addTo(data.pages, page, maxPages),
-            pageParams: addTo(data.pageParams, param, maxPages)
-          };
-        };
-        if (direction && oldPages.length) {
-          const previous = direction === "backward";
-          const pageParamFn = previous ? getPreviousPageParam : getNextPageParam;
-          const oldData = {
-            pages: oldPages,
-            pageParams: oldPageParams
-          };
-          const param = pageParamFn(options, oldData);
-          result = await fetchPage(oldData, param, previous);
-        } else {
-          const remainingPages = pages ?? oldPages.length;
-          do {
-            const param = currentPage === 0 ? oldPageParams[0] ?? options.initialPageParam : getNextPageParam(options, result);
-            if (currentPage > 0 && param == null) {
-              break;
-            }
-            result = await fetchPage(result, param);
-            currentPage++;
-          } while (currentPage < remainingPages);
-        }
-        return result;
-      };
-      if (context.options.persister) {
-        context.fetchFn = () => {
-          var _a4, _b4;
-          return (_b4 = (_a4 = context.options).persister) == null ? void 0 : _b4.call(
-            _a4,
-            fetchFn,
-            {
-              client: context.client,
-              queryKey: context.queryKey,
-              meta: context.options.meta,
-              signal: context.signal
-            },
-            query
-          );
-        };
-      } else {
-        context.fetchFn = fetchFn;
-      }
-    }
-  };
-}
-function getNextPageParam(options, { pages, pageParams }) {
-  const lastIndex = pages.length - 1;
-  return pages.length > 0 ? options.getNextPageParam(
-    pages[lastIndex],
-    pages,
-    pageParams[lastIndex],
-    pageParams
-  ) : void 0;
-}
-function getPreviousPageParam(options, { pages, pageParams }) {
-  var _a3;
-  return pages.length > 0 ? (_a3 = options.getPreviousPageParam) == null ? void 0 : _a3.call(options, pages[0], pages, pageParams[0], pageParams) : void 0;
 }
 var Mutation = (_g = class extends Removable {
   constructor(config) {
@@ -2584,14 +2608,14 @@ var QueryClient = (_k = class {
     return this.fetchQuery(options).then(noop$6).catch(noop$6);
   }
   fetchInfiniteQuery(options) {
-    options.behavior = infiniteQueryBehavior(options.pages);
+    options._type = "infinite";
     return this.fetchQuery(options);
   }
   prefetchInfiniteQuery(options) {
     return this.fetchInfiniteQuery(options).then(noop$6).catch(noop$6);
   }
   ensureInfiniteQueryData(options) {
-    options.behavior = infiniteQueryBehavior(options.pages);
+    options._type = "infinite";
     return this.ensureQueryData(options);
   }
   resumePausedMutations() {
@@ -3124,15 +3148,15 @@ react_production.useSyncExternalStore = function(subscribe, getSnapshot, getServ
 react_production.useTransition = function() {
   return ReactSharedInternals$2.H.useTransition();
 };
-react_production.version = "19.1.5";
+react_production.version = "19.1.9";
 {
   react.exports = react_production;
 }
 var reactExports = react.exports;
-const React2 = /* @__PURE__ */ getDefaultExportFromCjs(reactExports);
-const React$2 = /* @__PURE__ */ _mergeNamespaces({
+const o = /* @__PURE__ */ getDefaultExportFromCjs(reactExports);
+const React2 = /* @__PURE__ */ _mergeNamespaces({
   __proto__: null,
-  default: React2
+  default: o
 }, [reactExports]);
 var QueryClientContext = reactExports.createContext(
   void 0
@@ -3227,7 +3251,8 @@ function useBaseQuery(options, Observer, queryClient2) {
     defaultedOptions
   );
   const query = client2.getQueryCache().get(defaultedOptions.queryHash);
-  defaultedOptions._optimisticResults = isRestoring ? "isRestoring" : "optimistic";
+  const subscribed = options.subscribed !== false;
+  defaultedOptions._optimisticResults = isRestoring ? "isRestoring" : subscribed ? "optimistic" : void 0;
   ensureSuspenseTimers(defaultedOptions);
   ensurePreventErrorBoundaryRetry(defaultedOptions, errorResetBoundary, query);
   useClearResetErrorBoundary(errorResetBoundary);
@@ -3239,7 +3264,7 @@ function useBaseQuery(options, Observer, queryClient2) {
     )
   );
   const result = observer.getOptimisticResult(defaultedOptions);
-  const shouldSubscribe = !isRestoring && options.subscribed !== false;
+  const shouldSubscribe = !isRestoring && subscribed;
   reactExports.useSyncExternalStore(
     reactExports.useCallback(
       (onStoreChange) => {
@@ -3736,7 +3761,7 @@ reactDom_production.useFormState = function(action, initialState, permalink) {
 reactDom_production.useFormStatus = function() {
   return ReactSharedInternals$1.H.useHostTransitionStatus();
 };
-reactDom_production.version = "19.1.5";
+reactDom_production.version = "19.1.9";
 function checkDCE$1() {
   if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") {
     return;
@@ -14717,12 +14742,12 @@ ReactDOMHydrationRoot.prototype.unstable_scheduleHydration = function(target) {
   }
 };
 var isomorphicReactPackageVersion$jscomp$inline_1785 = React.version;
-if ("19.1.5" !== isomorphicReactPackageVersion$jscomp$inline_1785)
+if ("19.1.9" !== isomorphicReactPackageVersion$jscomp$inline_1785)
   throw Error(
     formatProdErrorMessage(
       527,
       isomorphicReactPackageVersion$jscomp$inline_1785,
-      "19.1.5"
+      "19.1.9"
     )
   );
 ReactDOMSharedInternals.findDOMNode = function(componentOrElement) {
@@ -14740,10 +14765,10 @@ ReactDOMSharedInternals.findDOMNode = function(componentOrElement) {
 };
 var internals$jscomp$inline_2256 = {
   bundleType: 0,
-  version: "19.1.5",
+  version: "19.1.9",
   rendererPackageName: "react-dom",
   currentDispatcherRef: ReactSharedInternals,
-  reconcilerVersion: "19.1.5"
+  reconcilerVersion: "19.1.9"
 };
 if ("undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__) {
   var hook$jscomp$inline_2257 = __REACT_DEVTOOLS_GLOBAL_HOOK__;
@@ -14810,7 +14835,7 @@ reactDomClient_production.hydrateRoot = function(container, initialChildren, opt
   listenToAllSupportedEvents(container);
   return new ReactDOMHydrationRoot(initialChildren);
 };
-reactDomClient_production.version = "19.1.5";
+reactDomClient_production.version = "19.1.9";
 function checkDCE() {
   if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") {
     return;
@@ -14946,7 +14971,7 @@ function base32Decode(input) {
   let skip = 0;
   let byte = 0;
   const output = new Uint8Array(input.length * 4 / 3 | 0);
-  let o = 0;
+  let o2 = 0;
   function decodeChar(char) {
     let val = lookupTable[char.toLowerCase()];
     if (val === void 0) {
@@ -14956,7 +14981,7 @@ function base32Decode(input) {
     byte |= val >>> skip;
     skip += 5;
     if (skip >= 8) {
-      output[o++] = byte;
+      output[o2++] = byte;
       skip -= 8;
       if (skip > 0) {
         byte = val << 5 - skip & 255;
@@ -14968,7 +14993,7 @@ function base32Decode(input) {
   for (const c2 of input) {
     decodeChar(c2);
   }
-  return output.slice(0, o);
+  return output.slice(0, o2);
 }
 const lookUpTable = new Uint32Array([
   0,
@@ -18996,7 +19021,7 @@ function uint8Equals(a2, b2) {
 }
 function hashValue(value) {
   if (typeof value === "string") {
-    return hashString(value);
+    return hashString$1(value);
   } else if (typeof value === "number") {
     return sha256$2(lebEncode(value));
   } else if (value instanceof Uint8Array || ArrayBuffer.isView(value)) {
@@ -19015,7 +19040,7 @@ function hashValue(value) {
   }
   throw InputError.fromCode(new HashValueErrorCode(value));
 }
-const hashString = (value) => {
+const hashString$1 = (value) => {
   const encoded = new TextEncoder().encode(value);
   return sha256$2(encoded);
 };
@@ -19024,7 +19049,7 @@ function requestIdOf(request2) {
 }
 function hashOfMap(map) {
   const hashed = Object.entries(map).filter(([, value]) => value !== void 0).map(([key2, value]) => {
-    const hashedKey = hashString(key2);
+    const hashedKey = hashString$1(key2);
     const hashedValue = hashValue(value);
     return [hashedKey, hashedValue];
   });
@@ -19142,16 +19167,16 @@ function N() {
 function p(t, e) {
   const n = h(t);
   if (n === 1 / 0) {
-    const o = [];
+    const o2 = [];
     let i = B();
     for (; i !== R; )
-      o.push(i), i = B();
-    return o;
+      o2.push(i), i = B();
+    return o2;
   }
   const s = new Array(n);
-  for (let o = 0; o < n; o++) {
+  for (let o2 = 0; o2 < n; o2++) {
     const i = B();
-    s[o] = i;
+    s[o2] = i;
   }
   return s;
 }
@@ -19173,14 +19198,14 @@ function b(t) {
 function j(t, e) {
   const n = h(t), s = {};
   if (n === 1 / 0) {
-    let [o, i] = N();
-    for (; o !== c.Simple && i !== u.Break; ) {
+    let [o2, i] = N();
+    for (; o2 !== c.Simple && i !== u.Break; ) {
       const A = F(i), I = B();
-      s[A] = I, [o, i] = N();
+      s[A] = I, [o2, i] = N();
     }
     return s;
   }
-  for (let o = 0; o < n; o++) {
+  for (let o2 = 0; o2 < n; o2++) {
     const [i, A] = N();
     if (i !== c.TextString)
       throw new w("Map keys must be text strings");
@@ -20969,7 +20994,7 @@ function pprefix(hasEvenY) {
 function SWUFpSqrtRatio(Fp3, Z2) {
   const q2 = Fp3.ORDER;
   let l2 = _0n$a;
-  for (let o = q2 - _1n$b; o % _2n$8 === _0n$a; o /= _2n$8)
+  for (let o2 = q2 - _1n$b; o2 % _2n$8 === _0n$a; o2 /= _2n$8)
     l2 += _1n$b;
   const c1 = l2;
   const _2n_pow_c1_1 = _2n$8 << c1 - _1n$b - _1n$b;
@@ -27813,7 +27838,7 @@ function size$3(value) {
     return Math.ceil((value.length - 2) / 2);
   return value.length;
 }
-const version$1 = "2.48.1";
+const version$1 = "2.55.11";
 let errorConfig = {
   getDocsUrl: ({ docsBaseUrl, docsPath: docsPath2 = "", docsSlug }) => docsPath2 ? `${docsBaseUrl ?? "https://viem.sh"}${docsPath2}${docsSlug ? `#${docsSlug}` : ""}` : void 0,
   version: `viem@${version$1}`
@@ -28873,10 +28898,7 @@ function encodeAbiParameters(params, values) {
     params,
     values
   });
-  const data = encodeParams(preparedParams);
-  if (data.length === 0)
-    return "0x";
-  return data;
+  return encodeParams(preparedParams);
 }
 function prepareParams({ params, values }) {
   const preparedParams = [];
@@ -28942,7 +28964,7 @@ function encodeParams(preparedParams) {
       staticParams.push(encoded);
     }
   }
-  return concat$1([...staticParams, ...dynamicParams]);
+  return concatHex([...staticParams, ...dynamicParams]);
 }
 function encodeAddress$1(value) {
   if (!isAddress(value))
@@ -28959,7 +28981,7 @@ function encodeArray$1(value, { length, param }) {
       givenLength: value.length,
       type: `${param.type}[${length}]`
     });
-  let dynamicChild = false;
+  let dynamicChild = value.length === 0 && isDynamicType(param);
   const preparedParams = [];
   for (let i = 0; i < value.length; i++) {
     const preparedParam = prepareParam({ param, value: value[i] });
@@ -28973,7 +28995,7 @@ function encodeArray$1(value, { length, param }) {
       const length2 = numberToHex(preparedParams.length, { size: 32 });
       return {
         dynamic: true,
-        encoded: preparedParams.length > 0 ? concat$1([length2, data]) : length2
+        encoded: concatHex([length2, data])
       };
     }
     if (dynamicChild)
@@ -28981,7 +29003,7 @@ function encodeArray$1(value, { length, param }) {
   }
   return {
     dynamic: false,
-    encoded: concat$1(preparedParams.map(({ encoded }) => encoded))
+    encoded: concatHex(preparedParams.map(({ encoded }) => encoded))
   };
 }
 function encodeBytes$1(value, { param }) {
@@ -28996,7 +29018,10 @@ function encodeBytes$1(value, { param }) {
       });
     return {
       dynamic: true,
-      encoded: concat$1([padHex(numberToHex(bytesSize, { size: 32 })), value_])
+      encoded: concatHex([
+        padHex(numberToHex(bytesSize, { size: 32 })),
+        value_
+      ])
     };
   }
   if (bytesSize !== Number.parseInt(paramSize, 10))
@@ -29043,7 +29068,7 @@ function encodeString$1(value) {
   }
   return {
     dynamic: true,
-    encoded: concat$1([
+    encoded: concatHex([
       padHex(numberToHex(size$3(hexValue), { size: 32 })),
       ...parts
     ])
@@ -29065,7 +29090,7 @@ function encodeTuple$1(value, { param }) {
   }
   return {
     dynamic,
-    encoded: dynamic ? encodeParams(preparedParams) : concat$1(preparedParams.map(({ encoded }) => encoded))
+    encoded: dynamic ? encodeParams(preparedParams) : concatHex(preparedParams.map(({ encoded }) => encoded))
   };
 }
 function getArrayComponents$1(type) {
@@ -29074,6 +29099,21 @@ function getArrayComponents$1(type) {
     // Return `null` if the array is dynamic.
     [matches[2] ? Number(matches[2]) : null, matches[1]]
   ) : void 0;
+}
+function isDynamicType(param) {
+  const { type } = param;
+  if (type === "string")
+    return true;
+  if (type === "bytes")
+    return true;
+  if (type.endsWith("[]"))
+    return true;
+  if (type === "tuple")
+    return param.components.some(isDynamicType);
+  const arrayComponents = getArrayComponents$1(type);
+  if (arrayComponents)
+    return isDynamicType({ ...param, type: arrayComponents[1] });
+  return false;
 }
 const toFunctionSelector = (fn) => slice$2(toSignatureHash(fn), 0, 4);
 function getAbiItem(parameters) {
@@ -29199,8 +29239,6 @@ function encodeEventTopics(parameters) {
   }
   if (abiItem.type !== "event")
     throw new AbiEventNotFoundError(void 0, { docsPath: docsPath$6 });
-  const definition = formatAbiItem(abiItem);
-  const signature = toEventSelector(definition);
   let topics = [];
   if (args && "inputs" in abiItem) {
     const indexedInputs = (_a3 = abiItem.inputs) == null ? void 0 : _a3.filter((param) => "indexed" in param && param.indexed);
@@ -29213,6 +29251,10 @@ function encodeEventTopics(parameters) {
       })) ?? [];
     }
   }
+  if (abiItem.anonymous)
+    return topics;
+  const definition = formatAbiItem(abiItem);
+  const signature = toEventSelector(definition);
   return [signature, ...topics];
 }
 function encodeArg({ param, value }) {
@@ -29520,7 +29562,7 @@ function createCursor(bytes, { recursiveReadLimit = 8192 } = {}) {
 function bytesToBigInt(bytes, opts = {}) {
   if (typeof opts.size !== "undefined")
     assertSize$2(bytes, { size: opts.size });
-  const hex = bytesToHex$1(bytes, opts);
+  const hex = bytesToHex$1(bytes);
   return hexToBigInt(hex, opts);
 }
 function bytesToBool(bytes_, opts = {}) {
@@ -29536,7 +29578,7 @@ function bytesToBool(bytes_, opts = {}) {
 function bytesToNumber(bytes, opts = {}) {
   if (typeof opts.size !== "undefined")
     assertSize$2(bytes, { size: opts.size });
-  const hex = bytesToHex$1(bytes, opts);
+  const hex = bytesToHex$1(bytes);
   return hexToNumber$1(hex, opts);
 }
 function bytesToString(bytes_, opts = {}) {
@@ -29562,7 +29604,8 @@ function decodeAbiParameters(params, data) {
   const values = [];
   for (let i = 0; i < params.length; ++i) {
     const param = params[i];
-    cursor.setPosition(consumed);
+    if (consumed < bytes.length)
+      cursor.setPosition(consumed);
     const [data2, consumed_] = decodeParameter$1(cursor, param, {
       staticPosition: 0
     });
@@ -29580,7 +29623,7 @@ function decodeParameter$1(cursor, param, { staticPosition }) {
   if (param.type === "tuple")
     return decodeTuple$1(cursor, param, { staticPosition });
   if (param.type === "address")
-    return decodeAddress$1(cursor);
+    return decodeAddress$2(cursor);
   if (param.type === "bool")
     return decodeBool$1(cursor);
   if (param.type.startsWith("bytes"))
@@ -29595,12 +29638,12 @@ function decodeParameter$1(cursor, param, { staticPosition }) {
 }
 const sizeOfLength$1 = 32;
 const sizeOfOffset$1 = 32;
-function decodeAddress$1(cursor) {
+function decodeAddress$2(cursor) {
   const value = cursor.readBytes(32);
   return [checksumAddress(bytesToHex$1(sliceBytes(value, -20))), 32];
 }
 function decodeArray$1(cursor, param, { length, staticPosition }) {
-  if (!length) {
+  if (length === null) {
     const offset = bytesToNumber(cursor.readBytes(sizeOfOffset$1));
     const start = staticPosition + offset;
     const startOfData = start + sizeOfLength$1;
@@ -29616,6 +29659,10 @@ function decodeArray$1(cursor, param, { length, staticPosition }) {
       });
       consumed2 += consumed_;
       value2.push(data);
+      if (consumed_ === 0) {
+        cursor.assertReadLimit();
+        cursor._touch();
+      }
     }
     cursor.setPosition(staticPosition + 32);
     return [value2, 32];
@@ -29642,6 +29689,10 @@ function decodeArray$1(cursor, param, { length, staticPosition }) {
     });
     consumed += consumed_;
     value.push(data);
+    if (consumed_ === 0) {
+      cursor.assertReadLimit();
+      cursor._touch();
+    }
   }
   return [value, consumed];
 }
@@ -29713,7 +29764,7 @@ function decodeString$1(cursor, { staticPosition }) {
     return ["", 32];
   }
   const data = cursor.readBytes(length, 32);
-  const value = bytesToString(trim$1(data));
+  const value = bytesToString(data);
   cursor.setPosition(staticPosition + 32);
   return [value, 32];
 }
@@ -29764,15 +29815,16 @@ function formatAbiItemWithArgs({ abiItem, args, includeFunctionName = true, incl
     return;
   return `${includeFunctionName ? abiItem.name : ""}(${abiItem.inputs.map((input, i) => `${includeName && input.name ? `${input.name}: ` : ""}${typeof args[i] === "object" ? stringify$1(args[i]) : args[i]}`).join(", ")})`;
 }
-const etherUnits = {
+const exponents = {
+  wei: 0,
   gwei: 9,
-  wei: 18
+  szabo: 12,
+  finney: 15,
+  ether: 18
 };
-const gweiUnits = {
-  ether: -9,
-  wei: 9
-};
-function formatUnits(value, decimals) {
+function format(value, decimals = 0) {
+  if (!Number.isInteger(decimals) || decimals < 0)
+    throw new InvalidDecimalsError({ decimals });
   let display = value.toString();
   const negative = display.startsWith("-");
   if (negative)
@@ -29785,11 +29837,88 @@ function formatUnits(value, decimals) {
   fraction = fraction.replace(/(0+)$/, "");
   return `${negative ? "-" : ""}${integer || "0"}${fraction ? `.${fraction}` : ""}`;
 }
+function formatEther$1(wei, unit = "wei") {
+  return format(wei, exponents.ether - exponents[unit]);
+}
+function formatGwei$1(wei, unit = "wei") {
+  return format(wei, exponents.gwei - exponents[unit]);
+}
+function from$8(value, decimals = 0) {
+  if (!Number.isInteger(decimals) || decimals < 0)
+    throw new InvalidDecimalsError({ decimals });
+  if (!/^-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)$/.test(value))
+    throw new InvalidDecimalNumberError({ value });
+  let [integer = "", fraction = "0"] = value.split(".");
+  const negative = integer.startsWith("-");
+  if (negative)
+    integer = integer.slice(1);
+  if (integer === "")
+    integer = "0";
+  fraction = fraction.replace(/(0+)$/, "");
+  if (decimals === 0) {
+    if (fraction.length > 0 && Number.parseInt(fraction[0], 10) >= 5)
+      integer = `${BigInt(integer) + 1n}`;
+    fraction = "";
+  } else if (fraction.length > decimals) {
+    const left = fraction.slice(0, decimals);
+    const roundDigit = Number.parseInt(fraction.slice(decimals, decimals + 1), 10);
+    if (roundDigit >= 5) {
+      const carried = carry(left);
+      if (carried.length > decimals) {
+        fraction = carried.slice(1);
+        integer = `${BigInt(integer) + 1n}`;
+      } else {
+        fraction = carried;
+      }
+    } else {
+      fraction = left;
+    }
+  } else {
+    fraction = fraction.padEnd(decimals, "0");
+  }
+  return BigInt(`${negative ? "-" : ""}${integer}${fraction}`);
+}
+function carry(digits) {
+  const out = digits.split("");
+  let i = out.length - 1;
+  while (i >= 0) {
+    const d2 = Number.parseInt(out[i], 10) + 1;
+    if (d2 < 10) {
+      out[i] = String(d2);
+      return out.join("");
+    }
+    out[i] = "0";
+    i--;
+  }
+  return `1${out.join("")}`;
+}
+class InvalidDecimalNumberError extends Error {
+  constructor({ value }) {
+    super(`Value \`${value}\` is not a valid decimal number.`);
+    Object.defineProperty(this, "name", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: "Value.InvalidDecimalNumberError"
+    });
+  }
+}
+class InvalidDecimalsError extends Error {
+  constructor({ decimals }) {
+    super(`\`decimals\` must be a non-negative integer. Got \`${decimals}\`.`);
+    Object.defineProperty(this, "name", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: "Value.InvalidDecimalsError"
+    });
+  }
+}
 function formatEther(wei, unit = "wei") {
-  return formatUnits(wei, etherUnits[unit]);
+  return formatEther$1(wei, unit);
 }
 function formatGwei(wei, unit = "wei") {
-  return formatUnits(wei, gweiUnits[unit]);
+  return formatGwei$1(wei, unit);
 }
 class AccountStateConflictError extends BaseError$1 {
   constructor({ address }) {
@@ -29949,7 +30078,30 @@ class WaitForTransactionReceiptTimeoutError extends BaseError$1 {
   }
 }
 const getContractAddress = (address) => address;
-const getUrl = (url) => url;
+function getAbortError(signal) {
+  if (signal == null ? void 0 : signal.reason)
+    return signal.reason;
+  if (typeof DOMException === "function")
+    return new DOMException("This operation was aborted", "AbortError");
+  const error = new Error("This operation was aborted");
+  error.name = "AbortError";
+  return error;
+}
+function isAbortError(error) {
+  return typeof error === "object" && error !== null && "name" in error && error.name === "AbortError";
+}
+const getUrl = (url) => {
+  try {
+    const parsed = new URL(url);
+    if (!parsed.username && !parsed.password)
+      return url;
+    parsed.username = "";
+    parsed.password = "";
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+};
 class CallExecutionError extends BaseError$1 {
   constructor(cause, { account: account_, docsPath: docsPath2, chain: chain2, data, gas, gasPrice, maxFeePerGas, maxPriorityFeePerGas, nonce, to, value, stateOverride }) {
     var _a3;
@@ -30228,6 +30380,28 @@ class HttpRequestError extends BaseError$1 {
     this.headers = headers;
     this.status = status;
     this.url = url;
+  }
+}
+class ResponseBodyTooLargeError extends BaseError$1 {
+  constructor({ maxSize, size: size2 }) {
+    super("HTTP response body exceeded the size limit.", {
+      metaMessages: [`Max: ${maxSize} bytes`, `Received: ${size2} bytes`],
+      name: "ResponseBodyTooLargeError"
+    });
+    Object.defineProperty(this, "maxSize", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, "size", {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+    this.maxSize = maxSize;
+    this.size = size2;
   }
 }
 class RpcRequestError extends BaseError$1 {
@@ -31163,8 +31337,8 @@ function getEstimateGasError(err, { docsPath: docsPath2, ...args }) {
     ...args
   });
 }
-function extract$1(value_, { format }) {
-  if (!format)
+function extract$1(value_, { format: format2 }) {
+  if (!format2)
     return {};
   const value = {};
   function extract_(formatted2) {
@@ -31176,7 +31350,7 @@ function extract$1(value_, { format }) {
         extract_(formatted2[key2]);
     }
   }
-  const formatted = format(value_ || {});
+  const formatted = format2(value_ || {});
   extract_(formatted);
   return value;
 }
@@ -31343,6 +31517,9 @@ function formatTransaction(transaction, _2) {
     ...transaction,
     blockHash: transaction.blockHash ? transaction.blockHash : null,
     blockNumber: transaction.blockNumber ? BigInt(transaction.blockNumber) : null,
+    ...transaction.blockTimestamp != null && {
+      blockTimestamp: BigInt(transaction.blockTimestamp)
+    },
     chainId: transaction.chainId ? hexToNumber$1(transaction.chainId) : void 0,
     gas: transaction.gas ? BigInt(transaction.gas) : void 0,
     gasPrice: transaction.gasPrice ? BigInt(transaction.gasPrice) : void 0,
@@ -31440,8 +31617,8 @@ async function getBlock(client2, { blockHash, blockNumber, blockTag = client2.ex
   }
   if (!block)
     throw new BlockNotFoundError({ blockHash, blockNumber });
-  const format = ((_c2 = (_b3 = (_a3 = client2.chain) == null ? void 0 : _a3.formatters) == null ? void 0 : _b3.block) == null ? void 0 : _c2.format) || formatBlock;
-  return format(block, "getBlock");
+  const format2 = ((_c2 = (_b3 = (_a3 = client2.chain) == null ? void 0 : _a3.formatters) == null ? void 0 : _b3.block) == null ? void 0 : _c2.format) || formatBlock;
+  return format2(block, "getBlock");
 }
 async function getGasPrice(client2) {
   const gasPrice = await client2.request({
@@ -31507,7 +31684,7 @@ async function internal_estimateFeesPerGas(client2, args) {
     throw new BaseFeeScalarError();
   const decimals = ((_a3 = baseFeeMultiplier.toString().split(".")[1]) == null ? void 0 : _a3.length) ?? 0;
   const denominator = 10 ** decimals;
-  const multiply = (base) => base * BigInt(Math.ceil(baseFeeMultiplier * denominator)) / BigInt(denominator);
+  const multiply = (base) => base * BigInt(Math.round(baseFeeMultiplier * denominator)) / BigInt(denominator);
   const block = block_ ? block_ : await getAction(client2, getBlock, "getBlock")({});
   if (typeof ((_b3 = chain2 == null ? void 0 : chain2.fees) == null ? void 0 : _b3.estimateFeesPerGas) === "function") {
     const fees = await chain2.fees.estimateFeesPerGas({
@@ -31540,15 +31717,28 @@ async function internal_estimateFeesPerGas(client2, args) {
     gasPrice
   };
 }
-async function getTransactionCount(client2, { address, blockTag = "latest", blockNumber }) {
+function formatBlockParameter(parameters) {
+  const { blockHash, blockNumber, blockTag, requireCanonical } = parameters;
+  if (requireCanonical !== void 0 && !blockHash)
+    throw new BaseError$1("`requireCanonical` can only be provided when `blockHash` is set.");
+  if (blockHash)
+    return requireCanonical ? { blockHash, requireCanonical } : { blockHash };
+  if (typeof blockNumber === "bigint")
+    return numberToHex(blockNumber);
+  return blockTag ?? "latest";
+}
+async function getTransactionCount(client2, { address, blockHash, blockNumber, blockTag = "latest", requireCanonical }) {
+  const block = formatBlockParameter({
+    blockHash,
+    blockNumber,
+    blockTag,
+    requireCanonical
+  });
   const count = await client2.request({
     method: "eth_getTransactionCount",
-    params: [
-      address,
-      typeof blockNumber === "bigint" ? numberToHex(blockNumber) : blockTag
-    ]
+    params: [address, block]
   }, {
-    dedupe: Boolean(blockNumber)
+    dedupe: typeof blockNumber === "bigint" || blockHash !== void 0
   });
   return hexToNumber$1(count);
 }
@@ -31720,8 +31910,8 @@ async function fillTransaction(client2, parameters) {
   })();
   assertRequest(parameters);
   const chainFormat = (_b3 = (_a3 = chain2 == null ? void 0 : chain2.formatters) == null ? void 0 : _a3.transactionRequest) == null ? void 0 : _b3.format;
-  const format = chainFormat || formatTransactionRequest;
-  const request2 = format({
+  const format2 = chainFormat || formatTransactionRequest;
+  const request2 = format2({
     // Pick out extra data that might exist on the chain's transaction request type.
     ...extract$1(rest, { format: chainFormat }),
     account: account ? parseAccount(account) : void 0,
@@ -31745,8 +31935,8 @@ async function fillTransaction(client2, parameters) {
       method: "eth_fillTransaction",
       params: [request2]
     });
-    const format2 = ((_d2 = (_c2 = chain2 == null ? void 0 : chain2.formatters) == null ? void 0 : _c2.transaction) == null ? void 0 : _d2.format) || formatTransaction;
-    const transaction = format2(response.tx);
+    const format3 = ((_d2 = (_c2 = chain2 == null ? void 0 : chain2.formatters) == null ? void 0 : _c2.transaction) == null ? void 0 : _d2.format) || formatTransaction;
+    const transaction = format3(response.tx);
     delete transaction.blockHash;
     delete transaction.blockNumber;
     delete transaction.r;
@@ -31783,7 +31973,7 @@ async function fillTransaction(client2, parameters) {
       throw new BaseFeeScalarError();
     const decimals = ((_e2 = feeMultiplier.toString().split(".")[1]) == null ? void 0 : _e2.length) ?? 0;
     const denominator = 10 ** decimals;
-    const multiplyFee = (base) => base * BigInt(Math.ceil(feeMultiplier * denominator)) / BigInt(denominator);
+    const multiplyFee = (base) => base * BigInt(Math.round(feeMultiplier * denominator)) / BigInt(denominator);
     if (!transaction.feePayerSignature) {
       if (transaction.maxFeePerGas && !parameters.maxFeePerGas)
         transaction.maxFeePerGas = multiplyFee(transaction.maxFeePerGas);
@@ -31846,7 +32036,7 @@ async function prepareTransactionRequest(client2, args) {
     chainId = chainId_;
     return chainId;
   }
-  const account = account_ ? parseAccount(account_) : account_;
+  let account = account_ ? parseAccount(account_) : account_;
   let nonce = request2.nonce;
   if (parameters.includes("nonce") && typeof nonce === "undefined" && account && nonceManager) {
     const chainId2 = await getChainId$1();
@@ -31858,15 +32048,20 @@ async function prepareTransactionRequest(client2, args) {
   }
   if ((prepareTransactionRequest2 == null ? void 0 : prepareTransactionRequest2.fn) && ((_a3 = prepareTransactionRequest2.runAt) == null ? void 0 : _a3.includes("beforeFillTransaction"))) {
     request2 = await prepareTransactionRequest2.fn({ ...request2, chain: chain2 }, {
+      client: client2,
       phase: "beforeFillTransaction"
     });
     nonce ?? (nonce = request2.nonce);
+    const sender = request2.account ?? request2.from;
+    account = sender ? parseAccount(sender) : void 0;
   }
   const attemptFill = (() => {
     if ((parameters.includes("blobVersionedHashes") || parameters.includes("sidecars")) && request2.kzg && request2.blobs)
       return false;
     if (supportsFillTransaction.get(client2.uid) === false)
       return false;
+    if (parameters.length > 0 && "feePayer" in request2 && request2.feePayer && !("feePayerSignature" in request2 && request2.feePayerSignature))
+      return true;
     const shouldAttempt = ["fees", "gas"].some((parameter) => parameters.includes(parameter));
     if (!shouldAttempt)
       return false;
@@ -31882,6 +32077,9 @@ async function prepareTransactionRequest(client2, args) {
   })();
   const fillResult = attemptFill ? await getAction(client2, fillTransaction, "fillTransaction")({ ...request2, nonce }).then((result) => {
     const { chainId: chainId2, from: from2, gas: gas2, gasPrice, nonce: nonce2, maxFeePerBlobGas, maxFeePerGas, maxPriorityFeePerGas, type: type2, ...rest } = result.transaction;
+    const feeToken = "feeToken" in rest ? rest.feeToken : void 0;
+    const hasFilledFeePayerSignature = "feePayerSignature" in rest && rest.feePayerSignature !== null && typeof rest.feePayerSignature !== "undefined";
+    const shouldUseFilledFeeToken = typeof feeToken !== "undefined" && feeToken !== null && (!("feeToken" in request2) || hasFilledFeePayerSignature);
     supportsFillTransaction.set(client2.uid, true);
     return {
       ...request2,
@@ -31897,7 +32095,7 @@ async function prepareTransactionRequest(client2, args) {
       ..."nonceKey" in rest && typeof rest.nonceKey !== "undefined" ? { nonceKey: rest.nonceKey } : {},
       ..."keyAuthorization" in rest && typeof rest.keyAuthorization !== "undefined" && rest.keyAuthorization !== null && !("keyAuthorization" in request2) ? { keyAuthorization: rest.keyAuthorization } : {},
       ..."feePayerSignature" in rest && typeof rest.feePayerSignature !== "undefined" && rest.feePayerSignature !== null ? { feePayerSignature: rest.feePayerSignature } : {},
-      ..."feeToken" in rest && typeof rest.feeToken !== "undefined" && rest.feeToken !== null && !("feeToken" in request2) ? { feeToken: rest.feeToken } : {},
+      ...shouldUseFilledFeeToken ? { feeToken } : {},
       ...result.capabilities ? { _capabilities: result.capabilities } : {}
     };
   }).catch((e) => {
@@ -31924,11 +32122,12 @@ async function prepareTransactionRequest(client2, args) {
   request2 = {
     ...fillResult,
     ...account ? { from: account == null ? void 0 : account.address } : {},
-    ...nonce ? { nonce } : {}
+    ...typeof nonce !== "undefined" ? { nonce } : {}
   };
   const { blobs, gas, kzg, type } = request2;
   if ((prepareTransactionRequest2 == null ? void 0 : prepareTransactionRequest2.fn) && ((_b3 = prepareTransactionRequest2.runAt) == null ? void 0 : _b3.includes("beforeFillParameters"))) {
     request2 = await prepareTransactionRequest2.fn({ ...request2, chain: chain2 }, {
+      client: client2,
       phase: "beforeFillParameters"
     });
   }
@@ -32018,6 +32217,7 @@ async function prepareTransactionRequest(client2, args) {
     });
   if ((prepareTransactionRequest2 == null ? void 0 : prepareTransactionRequest2.fn) && ((_c2 = prepareTransactionRequest2.runAt) == null ? void 0 : _c2.includes("afterFillParameters")))
     request2 = await prepareTransactionRequest2.fn({ ...request2, chain: chain2 }, {
+      client: client2,
       phase: "afterFillParameters"
     });
   assertRequest(request2);
@@ -32059,8 +32259,8 @@ async function estimateGas(client2, args) {
     const rpcStateOverride = serializeStateOverride(stateOverride);
     assertRequest(args);
     const chainFormat = (_c2 = (_b3 = (_a3 = client2.chain) == null ? void 0 : _a3.formatters) == null ? void 0 : _b3.transactionRequest) == null ? void 0 : _c2.format;
-    const format = chainFormat || formatTransactionRequest;
-    const request2 = format({
+    const format2 = chainFormat || formatTransactionRequest;
+    const request2 = format2({
       // Pick out extra data that might exist on the chain's transaction request type.
       ...extract$1(rest, { format: chainFormat }),
       account,
@@ -33350,6 +33550,194 @@ const erc6492SignatureValidatorAbi = [
     name: "isValidSig"
   }
 ];
+const erc20Abi = [
+  {
+    type: "event",
+    name: "Approval",
+    inputs: [
+      {
+        indexed: true,
+        name: "owner",
+        type: "address"
+      },
+      {
+        indexed: true,
+        name: "spender",
+        type: "address"
+      },
+      {
+        indexed: false,
+        name: "value",
+        type: "uint256"
+      }
+    ]
+  },
+  {
+    type: "event",
+    name: "Transfer",
+    inputs: [
+      {
+        indexed: true,
+        name: "from",
+        type: "address"
+      },
+      {
+        indexed: true,
+        name: "to",
+        type: "address"
+      },
+      {
+        indexed: false,
+        name: "value",
+        type: "uint256"
+      }
+    ]
+  },
+  {
+    type: "function",
+    name: "allowance",
+    stateMutability: "view",
+    inputs: [
+      {
+        name: "owner",
+        type: "address"
+      },
+      {
+        name: "spender",
+        type: "address"
+      }
+    ],
+    outputs: [
+      {
+        type: "uint256"
+      }
+    ]
+  },
+  {
+    type: "function",
+    name: "approve",
+    stateMutability: "nonpayable",
+    inputs: [
+      {
+        name: "spender",
+        type: "address"
+      },
+      {
+        name: "amount",
+        type: "uint256"
+      }
+    ],
+    outputs: [
+      {
+        type: "bool"
+      }
+    ]
+  },
+  {
+    type: "function",
+    name: "balanceOf",
+    stateMutability: "view",
+    inputs: [
+      {
+        name: "account",
+        type: "address"
+      }
+    ],
+    outputs: [
+      {
+        type: "uint256"
+      }
+    ]
+  },
+  {
+    type: "function",
+    name: "decimals",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [
+      {
+        type: "uint8"
+      }
+    ]
+  },
+  {
+    type: "function",
+    name: "name",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [
+      {
+        type: "string"
+      }
+    ]
+  },
+  {
+    type: "function",
+    name: "symbol",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [
+      {
+        type: "string"
+      }
+    ]
+  },
+  {
+    type: "function",
+    name: "totalSupply",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [
+      {
+        type: "uint256"
+      }
+    ]
+  },
+  {
+    type: "function",
+    name: "transfer",
+    stateMutability: "nonpayable",
+    inputs: [
+      {
+        name: "recipient",
+        type: "address"
+      },
+      {
+        name: "amount",
+        type: "uint256"
+      }
+    ],
+    outputs: [
+      {
+        type: "bool"
+      }
+    ]
+  },
+  {
+    type: "function",
+    name: "transferFrom",
+    stateMutability: "nonpayable",
+    inputs: [
+      {
+        name: "sender",
+        type: "address"
+      },
+      {
+        name: "recipient",
+        type: "address"
+      },
+      {
+        name: "amount",
+        type: "uint256"
+      }
+    ],
+    outputs: [
+      {
+        type: "bool"
+      }
+    ]
+  }
+];
 const aggregate3Signature = "0x82ad56cb";
 const deploylessCallViaBytecodeBytecode = "0x608060405234801561001057600080fd5b5060405161018e38038061018e83398101604081905261002f91610124565b6000808351602085016000f59050803b61004857600080fd5b6000808351602085016000855af16040513d6000823e81610067573d81fd5b3d81f35b634e487b7160e01b600052604160045260246000fd5b600082601f83011261009257600080fd5b81516001600160401b038111156100ab576100ab61006b565b604051601f8201601f19908116603f011681016001600160401b03811182821017156100d9576100d961006b565b6040528181528382016020018510156100f157600080fd5b60005b82811015610110576020818601810151838301820152016100f4565b506000918101602001919091529392505050565b6000806040838503121561013757600080fd5b82516001600160401b0381111561014d57600080fd5b61015985828601610081565b602085015190935090506001600160401b0381111561017757600080fd5b61018385828601610081565b915050925092905056fe";
 const deploylessCallViaFactoryBytecode = "0x608060405234801561001057600080fd5b506040516102c03803806102c083398101604081905261002f916101e6565b836001600160a01b03163b6000036100e457600080836001600160a01b03168360405161005c9190610270565b6000604051808303816000865af19150503d8060008114610099576040519150601f19603f3d011682016040523d82523d6000602084013e61009e565b606091505b50915091508115806100b857506001600160a01b0386163b155b156100e1578060405163101bb98d60e01b81526004016100d8919061028c565b60405180910390fd5b50505b6000808451602086016000885af16040513d6000823e81610103573d81fd5b3d81f35b80516001600160a01b038116811461011e57600080fd5b919050565b634e487b7160e01b600052604160045260246000fd5b60005b8381101561015457818101518382015260200161013c565b50506000910152565b600082601f83011261016e57600080fd5b81516001600160401b0381111561018757610187610123565b604051601f8201601f19908116603f011681016001600160401b03811182821017156101b5576101b5610123565b6040528181528382016020018510156101cd57600080fd5b6101de826020830160208701610139565b949350505050565b600080600080608085870312156101fc57600080fd5b61020585610107565b60208601519094506001600160401b0381111561022157600080fd5b61022d8782880161015d565b93505061023c60408601610107565b60608601519092506001600160401b0381111561025857600080fd5b6102648782880161015d565b91505092959194509250565b60008251610282818460208701610139565b9190910192915050565b60208152600082518060208401526102ab816040850160208701610139565b601f01601f1916919091016040019291505056fe";
@@ -33498,8 +33886,8 @@ function createBatchScheduler({ fn, id, shouldSplitBatch, wait: wait2 = 0, sort 
   };
 }
 async function call(client2, args) {
-  var _a3, _b3, _c2, _d2;
-  const { account: account_ = client2.account, authorizationList, batch = Boolean((_a3 = client2.batch) == null ? void 0 : _a3.multicall), blockNumber, blockTag = client2.experimental_blockTag ?? "latest", accessList, blobs, blockOverrides, code, data: data_, factory, factoryData, gas, gasPrice, maxFeePerBlobGas, maxFeePerGas, maxPriorityFeePerGas, nonce, to, value, stateOverride, ...rest } = args;
+  var _a3, _b3, _c2, _d2, _e2, _f2;
+  const { account: account_ = client2.account, authorizationList, batch = Boolean((_a3 = client2.batch) == null ? void 0 : _a3.multicall), blockHash, blockNumber, blockTag = client2.experimental_blockTag ?? "latest", requireCanonical, accessList, blobs, blockOverrides, code, data: data_, factory, factoryData, gas, gasPrice, maxFeePerBlobGas, maxFeePerGas, maxPriorityFeePerGas, nonce, requestOptions, to, value, stateOverride, ...rest } = args;
   const account = account_ ? parseAccount(account_) : void 0;
   if (code && (factory || factoryData))
     throw new BaseError$1("Cannot provide both `code` & `factory`/`factoryData` as parameters.");
@@ -33525,13 +33913,17 @@ async function call(client2, args) {
   })();
   try {
     assertRequest(args);
-    const blockNumberHex = typeof blockNumber === "bigint" ? numberToHex(blockNumber) : void 0;
-    const block = blockNumberHex || blockTag;
+    const block = formatBlockParameter({
+      blockHash,
+      blockNumber,
+      blockTag,
+      requireCanonical
+    });
     const rpcBlockOverrides = blockOverrides ? toRpc(blockOverrides) : void 0;
     const rpcStateOverride = serializeStateOverride(stateOverride);
     const chainFormat = (_d2 = (_c2 = (_b3 = client2.chain) == null ? void 0 : _b3.formatters) == null ? void 0 : _c2.transactionRequest) == null ? void 0 : _d2.format;
-    const format = chainFormat || formatTransactionRequest;
-    const request2 = format({
+    const format2 = chainFormat || formatTransactionRequest;
+    const request2 = format2({
       // Pick out extra data that might exist on the chain's transaction request type.
       ...extract$1(rest, { format: chainFormat }),
       accessList,
@@ -33548,13 +33940,24 @@ async function call(client2, args) {
       to: deploylessCall ? void 0 : to,
       value
     }, "call");
-    if (batch && shouldPerformMulticall({ request: request2 }) && !rpcStateOverride && !rpcBlockOverrides) {
+    if (batch && shouldPerformMulticall({ request: request2 }) && !rpcBlockOverrides && blockHash === void 0) {
       try {
-        return await scheduleMulticall(client2, {
-          ...request2,
+        const { deployless = false } = typeof ((_e2 = client2.batch) == null ? void 0 : _e2.multicall) === "object" ? client2.batch.multicall : {};
+        const multicallAddress = getMulticallAddress(client2, {
           blockNumber,
-          blockTag
+          deployless
         });
+        if (!multicallAddress || !hasStateOverrideForAddress(rpcStateOverride, multicallAddress))
+          return await scheduleMulticall$1(client2, {
+            ...request2,
+            blockHash,
+            blockNumber,
+            blockTag,
+            multicallAddress,
+            requestOptions,
+            requireCanonical,
+            rpcStateOverride
+          });
       } catch (err) {
         if (!(err instanceof ClientChainNotConfiguredError) && !(err instanceof ChainDoesNotSupportContract))
           throw err;
@@ -33576,18 +33979,24 @@ async function call(client2, args) {
     const response = await client2.request({
       method: "eth_call",
       params
-    });
+    }, requestOptions);
     if (response === "0x")
       return { data: void 0 };
     return { data: response };
   } catch (err) {
+    if ((_f2 = requestOptions == null ? void 0 : requestOptions.signal) == null ? void 0 : _f2.aborted)
+      throw getAbortError(requestOptions.signal);
+    if (isAbortError(err))
+      throw err;
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-B22HSgCt.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-ymMVW4BS.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
-      return { data: await offchainLookup(client2, { data: data2, to }) };
+      return {
+        data: await offchainLookup(client2, { data: data2, requestOptions, to })
+      };
     if (deploylessCall && (data2 == null ? void 0 : data2.slice(0, 10)) === "0x101bb98d")
       throw new CounterfactualDeploymentFailedError({ factory });
     throw getCallError(err, {
@@ -33609,28 +34018,36 @@ function shouldPerformMulticall({ request: request2 }) {
     return false;
   return true;
 }
-async function scheduleMulticall(client2, args) {
+let requestOptionsId = 0;
+const requestOptionsIds = /* @__PURE__ */ new WeakMap();
+function getRequestOptionsId(requestOptions) {
+  if (!requestOptions)
+    return "default";
+  const id = requestOptionsIds.get(requestOptions);
+  if (id !== void 0)
+    return id;
+  const nextId = requestOptionsId++;
+  requestOptionsIds.set(requestOptions, nextId);
+  return nextId;
+}
+async function scheduleMulticall$1(client2, args) {
   var _a3;
   const { batchSize = 1024, deployless = false, wait: wait2 = 0 } = typeof ((_a3 = client2.batch) == null ? void 0 : _a3.multicall) === "object" ? client2.batch.multicall : {};
-  const { blockNumber, blockTag = client2.experimental_blockTag ?? "latest", data, to } = args;
-  const multicallAddress = (() => {
-    if (deployless)
-      return null;
-    if (args.multicallAddress)
-      return args.multicallAddress;
-    if (client2.chain) {
-      return getChainContractAddress({
-        blockNumber,
-        chain: client2.chain,
-        contract: "multicall3"
-      });
-    }
-    throw new ClientChainNotConfiguredError();
-  })();
-  const blockNumberHex = typeof blockNumber === "bigint" ? numberToHex(blockNumber) : void 0;
-  const block = blockNumberHex || blockTag;
+  const { blockHash, blockNumber, blockTag = client2.experimental_blockTag ?? "latest", requireCanonical, data, multicallAddress: multicallAddress_, requestOptions, rpcStateOverride, to } = args;
+  const multicallAddress = multicallAddress_ !== void 0 ? multicallAddress_ : getMulticallAddress(client2, {
+    blockNumber,
+    deployless
+  });
+  const block = formatBlockParameter({
+    blockHash,
+    blockNumber,
+    blockTag,
+    requireCanonical
+  });
+  const blockId = typeof block === "string" ? block : JSON.stringify(block);
+  const stateOverrideKey = rpcStateOverride ? `.${JSON.stringify(rpcStateOverride)}` : "";
   const { schedule } = createBatchScheduler({
-    id: `${client2.uid}.${block}`,
+    id: `${client2.uid}.${blockId}.${getRequestOptionsId(requestOptions)}${stateOverrideKey}`,
     wait: wait2,
     shouldSplitBatch(args2) {
       const size2 = args2.reduce((size3, { data: data2 }) => size3 + (data2.length - 2), 0);
@@ -33647,20 +34064,18 @@ async function scheduleMulticall(client2, args) {
         args: [calls],
         functionName: "aggregate3"
       });
+      const multicallRequest = {
+        ...multicallAddress === null ? {
+          data: toDeploylessCallViaBytecodeData({
+            code: multicall3Bytecode,
+            data: calldata
+          })
+        } : { to: multicallAddress, data: calldata }
+      };
       const data2 = await client2.request({
         method: "eth_call",
-        params: [
-          {
-            ...multicallAddress === null ? {
-              data: toDeploylessCallViaBytecodeData({
-                code: multicall3Bytecode,
-                data: calldata
-              })
-            } : { to: multicallAddress, data: calldata }
-          },
-          block
-        ]
-      });
+        params: rpcStateOverride ? [multicallRequest, block, rpcStateOverride] : [multicallRequest, block]
+      }, requestOptions);
       return decodeFunctionResult({
         abi: multicall3Abi,
         args: [calls],
@@ -33675,6 +34090,23 @@ async function scheduleMulticall(client2, args) {
   if (returnData === "0x")
     return { data: void 0 };
   return { data: returnData };
+}
+function getMulticallAddress(client2, parameters) {
+  const { blockNumber, deployless } = parameters;
+  if (deployless)
+    return null;
+  if (client2.chain)
+    return getChainContractAddress({
+      blockNumber,
+      chain: client2.chain,
+      contract: "multicall3"
+    });
+  throw new ClientChainNotConfiguredError();
+}
+function hasStateOverrideForAddress(rpcStateOverride, address) {
+  if (!rpcStateOverride)
+    return false;
+  return Object.keys(rpcStateOverride).some((stateOverrideAddress) => isAddressEqual(stateOverrideAddress, address));
 }
 function toDeploylessCallViaBytecodeData(parameters) {
   const { code, data } = parameters;
@@ -33779,7 +34211,13 @@ function observe(observerId, callbacks, fn) {
   const getListeners = () => listenersCache.get(observerId) || [];
   const unsubscribe = () => {
     const listeners2 = getListeners();
-    listenersCache.set(observerId, listeners2.filter((cb) => cb.id !== callbackId));
+    const nextListeners = listeners2.filter((cb) => cb.id !== callbackId);
+    if (nextListeners.length === 0) {
+      listenersCache.delete(observerId);
+      cleanupCache.delete(observerId);
+      return;
+    }
+    listenersCache.set(observerId, nextListeners);
   };
   const unwatch = () => {
     const listeners2 = getListeners();
@@ -33817,8 +34255,24 @@ function observe(observerId, callbacks, fn) {
     cleanupCache.set(observerId, cleanup);
   return unwatch;
 }
-async function wait(time) {
-  return new Promise((res) => setTimeout(res, time));
+async function wait(time, { signal } = {}) {
+  return new Promise((resolve, reject) => {
+    if (signal == null ? void 0 : signal.aborted) {
+      reject(getAbortError(signal));
+      return;
+    }
+    const cleanup = () => signal == null ? void 0 : signal.removeEventListener("abort", onAbort);
+    const timeout2 = setTimeout(() => {
+      cleanup();
+      resolve();
+    }, time);
+    const onAbort = () => {
+      clearTimeout(timeout2);
+      cleanup();
+      reject(getAbortError(signal));
+    };
+    signal == null ? void 0 : signal.addEventListener("abort", onAbort, { once: true });
+  });
 }
 function poll(fn, { emitOnBegin, initialWaitTime, interval }) {
   let active = true;
@@ -34122,13 +34576,14 @@ async function sendRawTransaction(client2, { serializedTransaction }) {
 }
 const supportsWalletNamespace$1 = new LruMap$1(128);
 async function sendTransaction(client2, parameters) {
-  var _a3, _b3, _c2, _d2, _e2;
+  var _a3, _b3, _c2, _d2, _e2, _f2;
   const { account: account_ = client2.account, assertChainId = true, chain: chain2 = client2.chain, accessList, authorizationList, blobs, data, dataSuffix = typeof client2.dataSuffix === "string" ? client2.dataSuffix : (_a3 = client2.dataSuffix) == null ? void 0 : _a3.value, gas, gasPrice, maxFeePerBlobGas, maxFeePerGas, maxPriorityFeePerGas, nonce, type, value, ...rest } = parameters;
   if (typeof account_ === "undefined")
     throw new AccountNotFoundError({
       docsPath: "/docs/actions/wallet/sendTransaction"
     });
   const account = account_ ? parseAccount(account_) : null;
+  let nonceManagerParameters;
   try {
     assertRequest(parameters);
     const to = await (async () => {
@@ -34155,8 +34610,8 @@ async function sendTransaction(client2, parameters) {
           });
       }
       const chainFormat = (_d2 = (_c2 = (_b3 = client2.chain) == null ? void 0 : _b3.formatters) == null ? void 0 : _c2.transactionRequest) == null ? void 0 : _d2.format;
-      const format = chainFormat || formatTransactionRequest;
-      const request2 = format({
+      const format2 = chainFormat || formatTransactionRequest;
+      const request2 = format2({
         // Pick out extra data that might exist on the chain's transaction request type.
         ...extract$1(rest, { format: chainFormat }),
         accessList,
@@ -34206,6 +34661,17 @@ async function sendTransaction(client2, parameters) {
       }
     }
     if ((account == null ? void 0 : account.type) === "local") {
+      if (account.nonceManager && typeof nonce === "undefined") {
+        const requestChainId = rest.chainId;
+        const chainId = await (async () => {
+          if (typeof requestChainId === "number")
+            return requestChainId;
+          if (chain2)
+            return chain2.id;
+          return getAction(client2, getChainId, "getChainId")({});
+        })();
+        nonceManagerParameters = { address: account.address, chainId };
+      }
       const request2 = await getAction(client2, prepareTransactionRequest, "prepareTransactionRequest")({
         account,
         accessList,
@@ -34249,6 +34715,8 @@ async function sendTransaction(client2, parameters) {
   } catch (err) {
     if (err instanceof AccountTypeNotSupportedError)
       throw err;
+    if (nonceManagerParameters)
+      (_f2 = account == null ? void 0 : account.nonceManager) == null ? void 0 : _f2.reset(nonceManagerParameters);
     throw getTransactionError(err, {
       ...parameters,
       account,
@@ -34306,25 +34774,43 @@ class BundleFailedError extends BaseError$1 {
     this.result = result;
   }
 }
-function withRetry(fn, { delay: delay_ = 100, retryCount = 2, shouldRetry: shouldRetry2 = () => true } = {}) {
+function withRetry(fn, { delay: delay_ = 100, retryCount = 2, shouldRetry: shouldRetry2 = () => true, signal } = {}) {
   return new Promise((resolve, reject) => {
     const attemptRetry = async ({ count = 0 } = {}) => {
+      if (signal == null ? void 0 : signal.aborted) {
+        reject(getAbortError(signal));
+        return;
+      }
       const retry = async ({ error }) => {
         const delay = typeof delay_ === "function" ? delay_({ count, error }) : delay_;
-        if (delay)
-          await wait(delay);
-        attemptRetry({ count: count + 1 });
+        if (delay) {
+          try {
+            await wait(delay, { signal });
+          } catch (err) {
+            reject(err);
+            return;
+          }
+        }
+        return attemptRetry({ count: count + 1 });
       };
       try {
         const data = await fn();
         resolve(data);
       } catch (err) {
+        if (signal == null ? void 0 : signal.aborted) {
+          reject(getAbortError(signal));
+          return;
+        }
+        if (isAbortError(err)) {
+          reject(err);
+          return;
+        }
         if (count < retryCount && await shouldRetry2({ count, error: err }))
           return retry({ error: err });
         reject(err);
       }
     };
-    attemptRetry();
+    void attemptRetry().catch(reject);
   });
 }
 const receiptStatuses = {
@@ -34426,20 +34912,23 @@ async function sendCalls(client2, parameters) {
           details: message
         }));
       }
-      const promises = [];
+      const results = [];
       for (const call2 of calls) {
-        const promise = sendTransaction(client2, {
-          account,
-          chain: chain2,
-          data: call2.data,
-          to: call2.to,
-          value: call2.value ? hexToBigInt(call2.value) : void 0
-        });
-        promises.push(promise);
+        try {
+          const value = await sendTransaction(client2, {
+            account,
+            chain: chain2,
+            data: call2.data,
+            to: call2.to,
+            value: call2.value ? hexToBigInt(call2.value) : void 0
+          });
+          results.push({ status: "fulfilled", value });
+        } catch (reason) {
+          results.push({ reason, status: "rejected" });
+        }
         if (experimental_fallbackDelay > 0)
           await new Promise((resolve) => setTimeout(resolve, experimental_fallbackDelay));
       }
-      const results = await Promise.allSettled(promises);
       if (results.every((r2) => r2.status === "rejected"))
         throw results[0].reason;
       const hashes = results.map((result) => {
@@ -34595,7 +35084,7 @@ function uid(length = 11) {
   return buffer.substring(index, index++ + length);
 }
 function createClient(parameters) {
-  const { batch, chain: chain2, ccipRead, dataSuffix, key: key2 = "base", name = "Base Client", type = "base" } = parameters;
+  const { batch, chain: chain2, ccipRead, dataSuffix, key: key2 = "base", name = "Base Client", tokens, type = "base" } = parameters;
   const experimental_blockTag = parameters.experimental_blockTag ?? (typeof (chain2 == null ? void 0 : chain2.experimental_preconfirmationTime) === "number" ? "pending" : void 0);
   const blockTime = (chain2 == null ? void 0 : chain2.blockTime) ?? 12e3;
   const defaultPollingInterval = Math.min(Math.max(Math.floor(blockTime / 2), 500), 4e3);
@@ -34619,6 +35108,7 @@ function createClient(parameters) {
     name,
     pollingInterval,
     request: request2,
+    tokens,
     transport,
     type,
     uid: uid(),
@@ -34630,10 +35120,46 @@ function createClient(parameters) {
       for (const key3 in client2)
         delete extended[key3];
       const combined = { ...base, ...extended };
+      for (const key3 in extended) {
+        const a2 = base[key3];
+        const b2 = extended[key3];
+        if (isPlainObject(a2) && isPlainObject(b2))
+          combined[key3] = { ...a2, ...b2 };
+      }
       return Object.assign(combined, { extend: extend(combined) });
     };
   }
   return Object.assign(client2, { extend: extend(client2) });
+}
+function isPlainObject(value) {
+  if (typeof value !== "object" || value === null)
+    return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+function bindActionDecorators(client2, action) {
+  const wrapped = (parameters = {}) => action(client2, parameters);
+  for (const key2 of [
+    "call",
+    "calls",
+    "callWithPeriod",
+    "estimateGas",
+    "prepare",
+    "prepareRecipient",
+    "simulate"
+  ])
+    if (Object.hasOwn(action, key2)) {
+      const helper = action[key2];
+      wrapped[key2] = (args = {}) => {
+        if (helper.length === 1)
+          return helper(args);
+        return helper(client2, args);
+      };
+    }
+  for (const key2 of ["extractEvent", "extractEvents"])
+    if (Object.hasOwn(action, key2))
+      wrapped[key2] = action[key2];
+  return wrapped;
 }
 function isNullUniversalResolverError(err) {
   var _a3, _b3, _c2, _d2, _e2, _f2;
@@ -34846,12 +35372,7 @@ async function getEnsAddress(client2, parameters) {
     const res = await readContractAction(readContractParameters);
     if (res[0] === "0x")
       return null;
-    const address = decodeFunctionResult({
-      abi: addressResolverAbi,
-      args,
-      functionName: "addr",
-      data: res[0]
-    });
+    const address = decodeAddress$1({ coinType, data: res[0], args });
     if (address === "0x")
       return null;
     if (trim$1(address) === "0x00")
@@ -34862,6 +35383,23 @@ async function getEnsAddress(client2, parameters) {
       throw err;
     if (isNullUniversalResolverError(err))
       return null;
+    throw err;
+  }
+}
+function decodeAddress$1({ coinType, data, args }) {
+  try {
+    return decodeFunctionResult({
+      abi: addressResolverAbi,
+      args,
+      functionName: "addr",
+      data
+    });
+  } catch (err) {
+    if (coinType == null)
+      throw err;
+    const address = trim$1(data);
+    if (size$3(address) === 20)
+      return getAddress(address);
     throw err;
   }
 }
@@ -35246,8 +35784,8 @@ async function createAccessList(client2, args) {
     const blockNumberHex = typeof blockNumber === "bigint" ? numberToHex(blockNumber) : void 0;
     const block = blockNumberHex || blockTag;
     const chainFormat = (_c2 = (_b3 = (_a3 = client2.chain) == null ? void 0 : _a3.formatters) == null ? void 0 : _b3.transactionRequest) == null ? void 0 : _c2.format;
-    const format = chainFormat || formatTransactionRequest;
-    const request2 = format({
+    const format2 = chainFormat || formatTransactionRequest;
+    const request2 = format2({
       // Pick out extra data that might exist on the chain's transaction request type.
       ...extract$1(rest, { format: chainFormat }),
       account,
@@ -35265,6 +35803,8 @@ async function createAccessList(client2, args) {
       method: "eth_createAccessList",
       params: [request2, block]
     });
+    if (response.error)
+      throw new BaseError$1(response.error, { details: response.error });
     return {
       accessList: response.accessList,
       gasUsed: BigInt(response.gasUsed)
@@ -35334,8 +35874,14 @@ async function createPendingTransactionFilter(client2) {
   });
   return { id, request: getRequest(id), type: "transaction" };
 }
-async function getBalance(client2, { address, blockNumber, blockTag = client2.experimental_blockTag ?? "latest" }) {
+async function getBalance$1(client2, { address, blockHash, blockNumber, blockTag = client2.experimental_blockTag ?? "latest", requireCanonical }) {
   var _a3, _b3, _c2;
+  const block = formatBlockParameter({
+    blockHash,
+    blockNumber,
+    blockTag,
+    requireCanonical
+  });
   if (((_a3 = client2.batch) == null ? void 0 : _a3.multicall) && ((_c2 = (_b3 = client2.chain) == null ? void 0 : _b3.contracts) == null ? void 0 : _c2.multicall3)) {
     const multicall3Address = client2.chain.contracts.multicall3.address;
     const calldata = encodeFunctionData({
@@ -35346,8 +35892,10 @@ async function getBalance(client2, { address, blockNumber, blockTag = client2.ex
     const { data } = await getAction(client2, call, "call")({
       to: multicall3Address,
       data: calldata,
+      blockHash,
       blockNumber,
-      blockTag
+      blockTag,
+      requireCanonical
     });
     return decodeFunctionResult({
       abi: multicall3Abi,
@@ -35356,10 +35904,9 @@ async function getBalance(client2, { address, blockNumber, blockTag = client2.ex
       data: data || "0x"
     });
   }
-  const blockNumberHex = typeof blockNumber === "bigint" ? numberToHex(blockNumber) : void 0;
   const balance = await client2.request({
     method: "eth_getBalance",
-    params: [address, blockNumberHex || blockTag]
+    params: [address, block]
   });
   return BigInt(balance);
 }
@@ -35368,6 +35915,18 @@ async function getBlobBaseFee(client2) {
     method: "eth_blobBaseFee"
   });
   return BigInt(baseFee);
+}
+async function getBlockReceipts(client2, { blockHash, blockNumber, blockTag = client2.experimental_blockTag ?? "latest" } = {}) {
+  var _a3, _b3, _c2;
+  const blockNumberHex = blockNumber !== void 0 ? numberToHex(blockNumber) : void 0;
+  const receipts = await client2.request({
+    method: "eth_getBlockReceipts",
+    params: [blockHash || blockNumberHex || blockTag]
+  }, { dedupe: Boolean(blockHash || blockNumberHex) });
+  if (!receipts)
+    throw new BlockNotFoundError({ blockHash, blockNumber });
+  const format2 = ((_c2 = (_b3 = (_a3 = client2.chain) == null ? void 0 : _a3.formatters) == null ? void 0 : _b3.transactionReceipt) == null ? void 0 : _c2.format) || formatTransactionReceipt;
+  return receipts.map((receipt) => format2(receipt, "getBlockReceipts"));
 }
 async function getBlockTransactionCount(client2, { blockHash, blockNumber, blockTag = "latest" } = {}) {
   const blockNumberHex = blockNumber !== void 0 ? numberToHex(blockNumber) : void 0;
@@ -35385,12 +35944,19 @@ async function getBlockTransactionCount(client2, { blockHash, blockNumber, block
   }
   return hexToNumber$1(count);
 }
-async function getCode(client2, { address, blockNumber, blockTag = "latest" }) {
-  const blockNumberHex = blockNumber !== void 0 ? numberToHex(blockNumber) : void 0;
+async function getCode(client2, { address, blockHash, blockNumber, blockTag = "latest", requireCanonical }) {
+  const block = formatBlockParameter({
+    blockHash,
+    blockNumber,
+    blockTag,
+    requireCanonical
+  });
   const hex = await client2.request({
     method: "eth_getCode",
-    params: [address, blockNumberHex || blockTag]
-  }, { dedupe: Boolean(blockNumberHex) });
+    params: [address, block]
+  }, {
+    dedupe: typeof blockNumber === "bigint" || blockHash !== void 0
+  });
   if (hex === "0x")
     return void 0;
   return hex;
@@ -35522,7 +36088,7 @@ function withDedupe(fn, { enabled = true, id }) {
 function buildRequest(request2, options = {}) {
   return async (args, overrideOptions = {}) => {
     var _a3;
-    const { dedupe = false, methods, retryDelay = 150, retryCount = 3, uid: uid2 } = {
+    const { dedupe = false, methods, retryDelay = 150, retryCount = 3, signal, uid: uid2 } = {
       ...options,
       ...overrideOptions
     };
@@ -35535,11 +36101,17 @@ function buildRequest(request2, options = {}) {
       throw new MethodNotSupportedRpcError(new Error("method not supported"), {
         method
       });
-    const requestId = dedupe ? stringToHex(`${uid2}.${stringify$1(args)}`) : void 0;
+    if (signal == null ? void 0 : signal.aborted)
+      throw getAbortError(signal);
+    const requestId = dedupe ? hashString(`${uid2}.${stringify$1(args)}`) : void 0;
     return withDedupe(() => withRetry(async () => {
       try {
-        return await request2(args);
+        return await request2(args, signal ? { signal } : void 0);
       } catch (err_) {
+        if (signal == null ? void 0 : signal.aborted)
+          throw getAbortError(signal);
+        if (isAbortError(err_))
+          throw err_;
         const err = err_;
         switch (err.code) {
           case ParseRpcError.code:
@@ -35615,11 +36187,14 @@ function buildRequest(request2, options = {}) {
         return ~~(1 << count) * retryDelay;
       },
       retryCount,
+      signal,
       shouldRetry: ({ error }) => shouldRetry(error)
     }), { enabled: dedupe, id: requestId });
   };
 }
 function shouldRetry(error) {
+  if (isAbortError(error))
+    return false;
   if ("code" in error && typeof error.code === "number") {
     if (error.code === -1)
       return true;
@@ -35652,6 +36227,20 @@ function shouldRetry(error) {
   }
   return true;
 }
+function hashString(str, seed = 0) {
+  let h1 = 3735928559 ^ seed;
+  let h2 = 1103547991 ^ seed;
+  for (let i = 0; i < str.length; i++) {
+    const ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ h1 >>> 16, 2246822507);
+  h1 ^= Math.imul(h2 ^ h2 >>> 16, 3266489909);
+  h2 = Math.imul(h2 ^ h2 >>> 16, 2246822507);
+  h2 ^= Math.imul(h1 ^ h1 >>> 16, 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+}
 function defineChain(chain2) {
   const chainInstance = {
     formatters: void 0,
@@ -35674,8 +36263,8 @@ function withTimeout$1(fn, { errorInstance = new Error("timed out"), timeout: ti
   return new Promise((resolve, reject) => {
     (async () => {
       let timeoutId;
+      const controller = new AbortController();
       try {
-        const controller = new AbortController();
         if (timeout2 > 0) {
           timeoutId = setTimeout(() => {
             if (signal) {
@@ -35685,8 +36274,10 @@ function withTimeout$1(fn, { errorInstance = new Error("timed out"), timeout: ti
         }
         resolve(await fn({ signal: (controller == null ? void 0 : controller.signal) || null }));
       } catch (err) {
-        if ((err == null ? void 0 : err.name) === "AbortError")
+        if ((controller == null ? void 0 : controller.signal.aborted) && isAbortError(err)) {
           reject(errorInstance);
+          return;
+        }
         reject(err);
       } finally {
         clearTimeout(timeoutId);
@@ -35706,12 +36297,13 @@ function createIdStore() {
   };
 }
 const idCache = /* @__PURE__ */ createIdStore();
+const defaultMaxResponseBodySize = 10485760;
 function getHttpRpcClient(url_, options = {}) {
   const { url, headers: headers_url } = parseUrl(url_);
   return {
     async request(params) {
       var _a3, _b3, _c2;
-      const { body, fetchFn = options.fetchFn ?? fetch, onRequest = options.onRequest, onResponse = options.onResponse, timeout: timeout2 = options.timeout ?? 1e4 } = params;
+      const { body, fetchFn = options.fetchFn ?? fetch, maxResponseBodySize = options.maxResponseBodySize ?? defaultMaxResponseBodySize, onRequest = options.onRequest, onResponse = options.onResponse, timeout: timeout2 = options.timeout ?? 1e4 } = params;
       const fetchOptions = {
         ...options.fetchOptions ?? {},
         ...params.fetchOptions ?? {}
@@ -35750,10 +36342,13 @@ function getHttpRpcClient(url_, options = {}) {
         if (onResponse)
           await onResponse(response);
         let data;
+        const responseBody = await readResponseBody(response, {
+          maxResponseBodySize
+        });
         if ((_a3 = response.headers.get("Content-Type")) == null ? void 0 : _a3.startsWith("application/json"))
-          data = await response.json();
+          data = JSON.parse(responseBody);
         else {
-          data = await response.text();
+          data = responseBody;
           try {
             data = JSON.parse(data || "{}");
           } catch (err) {
@@ -35775,7 +36370,13 @@ function getHttpRpcClient(url_, options = {}) {
         }
         return data;
       } catch (err) {
+        if (signal_ == null ? void 0 : signal_.aborted)
+          throw getAbortError(signal_);
+        if (isAbortError(err))
+          throw err;
         if (err instanceof HttpRequestError)
+          throw err;
+        if (err instanceof ResponseBodyTooLargeError)
           throw err;
         if (err instanceof TimeoutError)
           throw err;
@@ -35787,6 +36388,53 @@ function getHttpRpcClient(url_, options = {}) {
       }
     }
   };
+}
+async function readResponseBody(response, { maxResponseBodySize }) {
+  if (maxResponseBodySize === false)
+    return response.text();
+  const contentLength = response.headers.get("Content-Length");
+  if (contentLength) {
+    const size3 = Number(contentLength);
+    if (size3 > maxResponseBodySize)
+      throw new ResponseBodyTooLargeError({
+        maxSize: maxResponseBodySize,
+        size: size3
+      });
+  }
+  if (!response.body) {
+    const body2 = await response.text();
+    const size3 = new TextEncoder().encode(body2).length;
+    if (size3 > maxResponseBodySize)
+      throw new ResponseBodyTooLargeError({
+        maxSize: maxResponseBodySize,
+        size: size3
+      });
+    return body2;
+  }
+  const reader = response.body.getReader();
+  const decoder2 = new TextDecoder();
+  let body = "";
+  let size2 = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done)
+        break;
+      size2 += value.byteLength;
+      if (size2 > maxResponseBodySize) {
+        await reader.cancel();
+        throw new ResponseBodyTooLargeError({
+          maxSize: maxResponseBodySize,
+          size: size2
+        });
+      }
+      body += decoder2.decode(value, { stream: true });
+    }
+    body += decoder2.decode();
+    return body;
+  } finally {
+    reader.releaseLock();
+  }
 }
 function parseUrl(url_) {
   try {
@@ -35846,6 +36494,15 @@ class InvalidStructTypeError extends BaseError$1 {
     });
   }
 }
+class InvalidTypedDataTypeError extends BaseError$1 {
+  constructor({ type }) {
+    const canonicalType = type.replace(/^(u?int)/, "$&256");
+    super(`Type "${type}" is not a valid EIP-712 type.`, {
+      metaMessages: [`Use "${canonicalType}" instead.`],
+      name: "InvalidTypedDataTypeError"
+    });
+  }
+}
 function serializeTypedData(parameters) {
   const { domain: domain_, message: message_, primaryType, types } = parameters;
   const normalizeData = (struct, data_) => {
@@ -35877,6 +36534,9 @@ function validateTypedData(parameters) {
     for (const param of struct) {
       const { name, type } = param;
       const value = data[name];
+      const baseType = type.replace(/(\[[0-9]*\])+$/, "");
+      if (baseType === "int" || baseType === "uint")
+        throw new InvalidTypedDataTypeError({ type });
       const integerMatch = type.match(integerRegex$1);
       if (integerMatch && (typeof value === "number" || typeof value === "bigint")) {
         const [_type, base, size_] = integerMatch;
@@ -36201,7 +36861,7 @@ function decodeAddress(cursor, options = {}) {
 }
 function decodeArray(cursor, param, options) {
   const { checksumAddress: checksumAddress2, length, staticPosition } = options;
-  if (!length) {
+  if (length === null) {
     const offset = toNumber$1(cursor.readBytes(sizeOfOffset));
     const start = staticPosition + offset;
     const startOfData = start + sizeOfLength;
@@ -36218,6 +36878,10 @@ function decodeArray(cursor, param, options) {
       });
       consumed2 += consumed_;
       value2.push(data);
+      if (consumed_ === 0) {
+        cursor.assertReadLimit();
+        cursor._touch();
+      }
     }
     cursor.setPosition(staticPosition + 32);
     return [value2, 32];
@@ -36246,6 +36910,10 @@ function decodeArray(cursor, param, options) {
     });
     consumed += consumed_;
     value.push(data);
+    if (consumed_ === 0) {
+      cursor.assertReadLimit();
+      cursor._touch();
+    }
   }
   return [value, consumed];
 }
@@ -36422,7 +37090,7 @@ function encodeArray(value, options) {
       givenLength: value.length,
       type: `${parameter.type}[${length}]`
     });
-  let dynamicChild = false;
+  let dynamicChild = value.length === 0 && hasDynamicChild(parameter);
   const preparedParameters = [];
   for (let i = 0; i < value.length; i++) {
     const preparedParam = prepareParameter({
@@ -36771,7 +37439,8 @@ function decode(parameters, data, options = {}) {
   const values = as === "Array" ? [] : {};
   for (let i = 0; i < parameters.length; ++i) {
     const param = parameters[i];
-    cursor.setPosition(consumed);
+    if (consumed < bytes.length)
+      cursor.setPosition(consumed);
     const [data2, consumed_] = decodeParameter(cursor, param, {
       checksumAddress: checksumAddress2,
       staticPosition: 0
@@ -37191,6 +37860,12 @@ let InvalidWrappedSignatureError$1 = class InvalidWrappedSignatureError extends 
     });
   }
 };
+function formatUnits(value, decimals) {
+  return format(value, decimals);
+}
+function parseUnits(value, decimals) {
+  return from$8(value, decimals);
+}
 function formatStorageProof(storageProof) {
   return storageProof.map((proof) => ({
     ...proof,
@@ -37205,20 +37880,38 @@ function formatProof(proof) {
     storageProof: proof.storageProof ? formatStorageProof(proof.storageProof) : void 0
   };
 }
-async function getProof(client2, { address, blockNumber, blockTag: blockTag_, storageKeys }) {
-  const blockTag = blockTag_ ?? "latest";
-  const blockNumberHex = blockNumber !== void 0 ? numberToHex(blockNumber) : void 0;
+async function getProof(client2, { address, blockHash, blockNumber, blockTag = "latest", requireCanonical, storageKeys }) {
+  const block = formatBlockParameter({
+    blockHash,
+    blockNumber,
+    blockTag,
+    requireCanonical
+  });
   const proof = await client2.request({
     method: "eth_getProof",
-    params: [address, storageKeys, blockNumberHex || blockTag]
+    params: [address, storageKeys, block]
   });
   return formatProof(proof);
 }
-async function getStorageAt(client2, { address, blockNumber, blockTag = "latest", slot }) {
-  const blockNumberHex = blockNumber !== void 0 ? numberToHex(blockNumber) : void 0;
+async function getRawTransaction(client2, { hash: hash2 }) {
+  const rawTransaction = await client2.request({
+    method: "eth_getRawTransactionByHash",
+    params: [hash2]
+  }, { dedupe: true });
+  if (!rawTransaction)
+    throw new TransactionNotFoundError({ hash: hash2 });
+  return rawTransaction;
+}
+async function getStorageAt(client2, { address, blockHash, blockNumber, blockTag = "latest", requireCanonical, slot }) {
+  const block = formatBlockParameter({
+    blockHash,
+    blockNumber,
+    blockTag,
+    requireCanonical
+  });
   const data = await client2.request({
     method: "eth_getStorageAt",
-    params: [address, slot, blockNumberHex || blockTag]
+    params: [address, slot, block]
   });
   return data;
 }
@@ -37256,8 +37949,8 @@ async function getTransaction(client2, { blockHash, blockNumber, blockTag: block
       hash: hash2,
       index: index2
     });
-  const format = ((_c2 = (_b3 = (_a3 = client2.chain) == null ? void 0 : _a3.formatters) == null ? void 0 : _b3.transaction) == null ? void 0 : _c2.format) || formatTransaction;
-  return format(transaction, "getTransaction");
+  const format2 = ((_c2 = (_b3 = (_a3 = client2.chain) == null ? void 0 : _a3.formatters) == null ? void 0 : _b3.transaction) == null ? void 0 : _c2.format) || formatTransaction;
+  return format2(transaction, "getTransaction");
 }
 async function getTransactionConfirmations(client2, { hash: hash2, transactionReceipt }) {
   const [blockNumber, transaction] = await Promise.all([
@@ -37277,14 +37970,16 @@ async function getTransactionReceipt(client2, { hash: hash2 }) {
   }, { dedupe: true });
   if (!receipt)
     throw new TransactionReceiptNotFoundError({ hash: hash2 });
-  const format = ((_c2 = (_b3 = (_a3 = client2.chain) == null ? void 0 : _a3.formatters) == null ? void 0 : _b3.transactionReceipt) == null ? void 0 : _c2.format) || formatTransactionReceipt;
-  return format(receipt, "getTransactionReceipt");
+  const format2 = ((_c2 = (_b3 = (_a3 = client2.chain) == null ? void 0 : _a3.formatters) == null ? void 0 : _b3.transactionReceipt) == null ? void 0 : _c2.format) || formatTransactionReceipt;
+  return format2(receipt, "getTransactionReceipt");
 }
 async function multicall(client2, parameters) {
-  var _a3;
-  const { account, authorizationList, allowFailure = true, blockNumber, blockOverrides, blockTag, stateOverride } = parameters;
+  var _a3, _b3;
+  const { account, authorizationList, allowFailure = true, blockHash, blockNumber, blockOverrides, blockTag, requireCanonical, stateOverride } = parameters;
   const contracts = parameters.contracts;
-  const { batchSize = parameters.batchSize ?? 1024, deployless = parameters.deployless ?? false } = typeof ((_a3 = client2.batch) == null ? void 0 : _a3.multicall) === "object" ? client2.batch.multicall : {};
+  const batch = typeof ((_a3 = client2.batch) == null ? void 0 : _a3.multicall) === "object" ? client2.batch.multicall : {};
+  const batchSize = parameters.batchSize ?? batch.batchSize ?? 1024;
+  const deployless = parameters.deployless ?? batch.deployless ?? false;
   const multicallAddress = (() => {
     if (parameters.multicallAddress)
       return parameters.multicallAddress;
@@ -37346,25 +38041,45 @@ async function multicall(client2, parameters) {
       ];
     }
   }
-  const aggregate3Results = await Promise.allSettled(chunkedCalls.map((calls) => getAction(client2, readContract, "readContract")({
-    ...multicallAddress === null ? { code: multicall3Bytecode } : { address: multicallAddress },
-    abi: multicall3Abi,
-    account,
-    args: [calls],
-    authorizationList,
-    blockNumber,
-    blockOverrides,
-    blockTag,
-    functionName: "aggregate3",
-    stateOverride
-  })));
+  const batching = Boolean((_b3 = client2.batch) == null ? void 0 : _b3.multicall);
+  const batches = batching ? chunkedCalls.flatMap((calls) => calls.map((call2) => [call2])) : chunkedCalls;
+  const aggregate3Results = await Promise.allSettled(batches.map((calls) => {
+    if (batching)
+      return scheduleMulticall(client2, {
+        account,
+        authorizationList,
+        batchSize,
+        blockHash,
+        blockNumber,
+        blockOverrides,
+        blockTag,
+        call: calls[0],
+        multicallAddress,
+        requireCanonical,
+        stateOverride
+      }).then((result) => [result]);
+    return getAction(client2, readContract, "readContract")({
+      ...multicallAddress === null ? { code: multicall3Bytecode } : { address: multicallAddress },
+      abi: multicall3Abi,
+      account,
+      args: [calls],
+      authorizationList,
+      blockHash,
+      blockNumber,
+      blockOverrides,
+      blockTag,
+      functionName: "aggregate3",
+      requireCanonical,
+      stateOverride
+    });
+  }));
   const results = [];
   for (let i = 0; i < aggregate3Results.length; i++) {
     const result = aggregate3Results[i];
     if (result.status === "rejected") {
       if (!allowFailure)
         throw result.reason;
-      for (let j2 = 0; j2 < chunkedCalls[i].length; j2++) {
+      for (let j2 = 0; j2 < batches[i].length; j2++) {
         results.push({
           status: "failure",
           error: result.reason,
@@ -37376,7 +38091,7 @@ async function multicall(client2, parameters) {
     const aggregate3Result = result.value;
     for (let j2 = 0; j2 < aggregate3Result.length; j2++) {
       const { returnData, success } = aggregate3Result[j2];
-      const { callData } = chunkedCalls[i][j2];
+      const { callData } = batches[i][j2];
       const { abi: abi2, address, functionName, args } = contracts[results.length];
       try {
         if (callData === "0x")
@@ -37407,6 +38122,30 @@ async function multicall(client2, parameters) {
   if (results.length !== contracts.length)
     throw new BaseError$1("multicall results mismatch");
   return results;
+}
+async function scheduleMulticall(client2, parameters) {
+  var _a3;
+  const { batchSize, call: call2, multicallAddress, ...rest } = parameters;
+  const { wait: wait2 = 0 } = typeof ((_a3 = client2.batch) == null ? void 0 : _a3.multicall) === "object" ? client2.batch.multicall : {};
+  const { schedule } = createBatchScheduler({
+    id: stringify$1(["multicall", client2.uid, batchSize, multicallAddress, rest]),
+    wait: wait2,
+    shouldSplitBatch(calls) {
+      if (batchSize === 0)
+        return false;
+      const size2 = calls.reduce((size3, { callData }) => size3 + (callData.length - 2) / 2, 0);
+      return size2 > batchSize;
+    },
+    fn: (calls) => getAction(client2, readContract, "readContract")({
+      ...multicallAddress === null ? { code: multicall3Bytecode } : { address: multicallAddress },
+      ...rest,
+      abi: multicall3Abi,
+      args: [calls],
+      functionName: "aggregate3"
+    })
+  });
+  const [result] = await schedule(call2);
+  return result;
 }
 async function simulateBlocks(client2, parameters) {
   const { blockNumber, blockTag = client2.experimental_blockTag ?? "latest", blocks, returnFullTransactions, traceTransfers, validation } = parameters;
@@ -39580,14 +40319,14 @@ function weierstrass(curveDef) {
     const sg = signature;
     msgHash = ensureBytes("msgHash", msgHash);
     publicKey = ensureBytes("publicKey", publicKey);
-    const { lowS, prehash, format } = opts;
+    const { lowS, prehash, format: format2 } = opts;
     validateSigVerOpts(opts);
     if ("strict" in opts)
       throw new Error("options.strict was renamed to lowS");
-    if (format !== void 0 && format !== "compact" && format !== "der")
+    if (format2 !== void 0 && format2 !== "compact" && format2 !== "der")
       throw new Error("format must be compact or der");
     const isHex2 = typeof sg === "string" || isBytes(sg);
-    const isObj = !isHex2 && !format && typeof sg === "object" && sg !== null && typeof sg.r === "bigint" && typeof sg.s === "bigint";
+    const isObj = !isHex2 && !format2 && typeof sg === "object" && sg !== null && typeof sg.r === "bigint" && typeof sg.s === "bigint";
     if (!isHex2 && !isObj)
       throw new Error("invalid signature, expected Uint8Array, hex string or Signature instance");
     let _sig = void 0;
@@ -39597,13 +40336,13 @@ function weierstrass(curveDef) {
         _sig = new Signature(sg.r, sg.s);
       if (isHex2) {
         try {
-          if (format !== "compact")
+          if (format2 !== "compact")
             _sig = Signature.fromDER(sg);
         } catch (derError) {
           if (!(derError instanceof DER.Err))
             throw derError;
         }
-        if (!_sig && format !== "der")
+        if (!_sig && format2 !== "der")
           _sig = Signature.fromCompact(sg);
       }
       P2 = Point.fromHex(publicKey);
@@ -39784,19 +40523,18 @@ async function verifyHash(client2, parameters) {
 }
 async function verifyErc8010(client2, parameters) {
   var _a3;
-  const { address, blockNumber, blockTag, hash: hash2, multicallAddress } = parameters;
+  const { address, blockHash, blockNumber, blockTag, hash: hash2, multicallAddress, requireCanonical } = parameters;
   const { authorization: authorization_ox, data: initData, signature, to } = unwrap(parameters.signature);
   const code = await getCode(client2, {
     address,
+    blockHash,
     blockNumber,
-    blockTag
+    blockTag,
+    requireCanonical
   });
   if (code === concatHex(["0xef0100", authorization_ox.address]))
     return await verifyErc1271(client2, {
-      address,
-      blockNumber,
-      blockTag,
-      hash: hash2,
+      ...parameters,
       signature
     });
   const authorization = {
@@ -39817,9 +40555,11 @@ async function verifyErc8010(client2, parameters) {
     ...multicallAddress ? { address: multicallAddress } : { code: multicall3Bytecode },
     authorizationList: [authorization],
     abi: multicall3Abi,
+    blockHash,
     blockNumber,
     blockTag: "pending",
     functionName: "aggregate3",
+    requireCanonical,
     args: [
       [
         ...initData ? [
@@ -39885,14 +40625,16 @@ async function verifyErc6492(client2, parameters) {
   throw new VerificationError();
 }
 async function verifyErc1271(client2, parameters) {
-  const { address, blockNumber, blockTag, hash: hash2, signature } = parameters;
+  const { address, blockHash, blockNumber, blockTag, hash: hash2, requireCanonical, signature } = parameters;
   const result = await getAction(client2, readContract, "readContract")({
     address,
     abi: erc1271Abi,
     args: [hash2, signature],
+    blockHash,
     blockNumber,
     blockTag,
-    functionName: "isValidSignature"
+    functionName: "isValidSignature",
+    requireCanonical
   }).catch((error) => {
     if (error instanceof ContractFunctionExecutionError)
       throw new VerificationError();
@@ -40021,8 +40763,9 @@ function watchBlockNumber(client2, { emitOnBegin = false, emitMissed = false, on
   return enablePolling ? pollBlockNumber() : subscribeBlockNumber();
 }
 async function waitForTransactionReceipt(client2, parameters) {
+  var _a3;
   const {
-    checkReplacement = true,
+    checkReplacement = ((_a3 = client2.chain) == null ? void 0 : _a3.supportsTransactionReplacementDetection) ?? true,
     confirmations = 1,
     hash: hash2,
     onReplaced,
@@ -40033,10 +40776,10 @@ async function waitForTransactionReceipt(client2, parameters) {
   } = parameters;
   const observerId = stringify$1(["waitForTransactionReceipt", client2.uid, hash2]);
   const pollingInterval = (() => {
-    var _a3;
+    var _a4;
     if (parameters.pollingInterval)
       return parameters.pollingInterval;
-    if ((_a3 = client2.chain) == null ? void 0 : _a3.experimental_preconfirmationTime)
+    if ((_a4 = client2.chain) == null ? void 0 : _a4.experimental_preconfirmationTime)
       return client2.chain.experimental_preconfirmationTime;
     return client2.pollingInterval;
   })();
@@ -40131,8 +40874,8 @@ async function waitForTransactionReceipt(client2, parameters) {
                 reason = "cancelled";
               }
               done(() => {
-                var _a3;
-                (_a3 = emit.onReplaced) == null ? void 0 : _a3.call(emit, {
+                var _a4;
+                (_a4 = emit.onReplaced) == null ? void 0 : _a4.call(emit, {
                   reason,
                   replacedTransaction,
                   transaction: replacementTransaction,
@@ -40576,17 +41319,547 @@ async function verifySiweMessage(client2, parameters) {
     ...callRequest
   });
 }
+function toAmount(amount, decimals) {
+  return { amount, decimals, formatted: formatUnits(amount, decimals) };
+}
+function toBaseUnits(amount, decimals) {
+  if (typeof amount === "bigint")
+    return amount;
+  const resolved = amount.decimals ?? decimals;
+  return parseUnits(amount.formatted, requireTokenDecimals(resolved));
+}
+function requireTokenDecimals(decimals) {
+  if (decimals === void 0)
+    throw new Error("Token decimals are required. Pass `amount.decimals` or select a declared token.");
+  return decimals;
+}
+function resolveAmountDecimals(amount, decimals) {
+  if (typeof amount === "bigint")
+    return decimals;
+  return amount.decimals ?? decimals;
+}
+function resolveToken(client2, parameters) {
+  const { decimals, token } = parameters;
+  const declared = findDeclaredToken(client2, token);
+  if (declared)
+    return {
+      address: declared.address,
+      decimals: decimals ?? declared.decimals
+    };
+  if (isAddress(token, { strict: false }))
+    return {
+      address: token,
+      decimals: decimals ?? inferDecimals(client2, token)
+    };
+  throw new Error(`Token "${token}" is not a declared ERC-20 token on the client's \`tokens\` array (with an address for the client's chain), and is not a valid address.`);
+}
+function findDeclaredToken(client2, token) {
+  var _a3;
+  const tokens = client2.tokens;
+  const chainId = (_a3 = client2.chain) == null ? void 0 : _a3.id;
+  if (!tokens || chainId === void 0)
+    return void 0;
+  const bySymbol = findTokenBySymbol(tokens, token);
+  if (bySymbol)
+    return resolveTokenForChain(bySymbol, chainId);
+  if (isAddress(token, { strict: false }))
+    for (const token_ of tokens) {
+      const resolved = resolveTokenForChain(token_, chainId);
+      if (resolved && isAddressEqual(resolved.address, token))
+        return resolved;
+    }
+  return void 0;
+}
+function resolveTokenForChain(token, chainId) {
+  const address = token.addresses[chainId];
+  if (!address)
+    return void 0;
+  return {
+    address,
+    currency: token.currency,
+    decimals: token.decimals,
+    name: token.name,
+    popular: token.popular,
+    symbol: token.symbol
+  };
+}
+function findTokenBySymbol(tokens, symbol) {
+  var _a3;
+  const lowerSymbol = symbol.toLowerCase();
+  for (const token of tokens) {
+    if (((_a3 = token.symbol) == null ? void 0 : _a3.toLowerCase()) === lowerSymbol)
+      return token;
+  }
+  return void 0;
+}
+function inferDecimals(client2, address) {
+  var _a3;
+  const tokens = client2.tokens;
+  const chainId = (_a3 = client2.chain) == null ? void 0 : _a3.id;
+  if (tokens && chainId !== void 0)
+    for (const token of tokens) {
+      const resolved = resolveTokenForChain(token, chainId);
+      if (resolved && isAddressEqual(resolved.address, address))
+        return resolved.decimals;
+    }
+  return void 0;
+}
+async function resolveTokenWithDecimals(client2, parameters) {
+  const { address, decimals } = resolveToken(client2, parameters);
+  if (decimals !== void 0)
+    return { address, decimals };
+  return {
+    address,
+    decimals: await readContract(client2, {
+      abi: erc20Abi,
+      address,
+      functionName: "decimals"
+    })
+  };
+}
+function pickWriteParameters(parameters) {
+  const { account, chain: chain2, gas, maxFeePerGas, maxPriorityFeePerGas, nonce } = parameters;
+  return { account, chain: chain2, gas, maxFeePerGas, maxPriorityFeePerGas, nonce };
+}
+function defineCall(call2) {
+  return {
+    ...call2,
+    data: encodeFunctionData(call2),
+    to: call2.address
+  };
+}
+async function approve(client2, parameters) {
+  return approve.inner(writeContract, client2, parameters);
+}
+(function(approve2) {
+  async function inner(action, client2, parameters) {
+    return await action(client2, {
+      ...parameters,
+      ...approve2.call(client2, parameters)
+    });
+  }
+  approve2.inner = inner;
+  function call2(client2, parameters) {
+    return defineCall(getCall$1(client2, parameters));
+  }
+  approve2.call = call2;
+  async function estimateGas2(client2, parameters) {
+    return estimateContractGas(client2, {
+      ...pickWriteParameters(parameters),
+      ...approve2.call(client2, parameters)
+    });
+  }
+  approve2.estimateGas = estimateGas2;
+  async function simulate(client2, parameters) {
+    return simulateContract(client2, {
+      ...pickWriteParameters(parameters),
+      ...approve2.call(client2, parameters)
+    });
+  }
+  approve2.simulate = simulate;
+  function extractEvent(logs) {
+    const [log2] = parseEventLogs({
+      abi: erc20Abi,
+      logs,
+      eventName: "Approval",
+      strict: true
+    });
+    if (!log2)
+      throw new Error("`Approval` event not found.");
+    return log2;
+  }
+  approve2.extractEvent = extractEvent;
+})(approve || (approve = {}));
+function getCall$1(client2, parameters) {
+  const { amount, spender, token } = parameters;
+  const { address, decimals } = resolveToken(client2, { token });
+  return {
+    abi: erc20Abi,
+    address,
+    args: [spender, toBaseUnits(amount, decimals)],
+    functionName: "approve"
+  };
+}
 async function sendRawTransactionSync(client2, { serializedTransaction, throwOnReceiptRevert, timeout: timeout2 }) {
   var _a3, _b3, _c2;
   const receipt = await client2.request({
     method: "eth_sendRawTransactionSync",
     params: timeout2 ? [serializedTransaction, timeout2] : [serializedTransaction]
   }, { retryCount: 0 });
-  const format = ((_c2 = (_b3 = (_a3 = client2.chain) == null ? void 0 : _a3.formatters) == null ? void 0 : _b3.transactionReceipt) == null ? void 0 : _c2.format) || formatTransactionReceipt;
-  const formatted = format(receipt);
+  const format2 = ((_c2 = (_b3 = (_a3 = client2.chain) == null ? void 0 : _a3.formatters) == null ? void 0 : _b3.transactionReceipt) == null ? void 0 : _c2.format) || formatTransactionReceipt;
+  const formatted = format2(receipt);
   if (formatted.status === "reverted" && throwOnReceiptRevert)
     throw new TransactionReceiptRevertedError({ receipt: formatted });
   return formatted;
+}
+const supportsWalletNamespace = new LruMap$1(128);
+async function sendTransactionSync(client2, parameters) {
+  var _a3, _b3, _c2, _d2, _e2, _f2;
+  const { account: account_ = client2.account, assertChainId = true, chain: chain2 = client2.chain, accessList, authorizationList, blobs, data, dataSuffix = typeof client2.dataSuffix === "string" ? client2.dataSuffix : (_a3 = client2.dataSuffix) == null ? void 0 : _a3.value, gas, gasPrice, maxFeePerBlobGas, maxFeePerGas, maxPriorityFeePerGas, nonce, pollingInterval, throwOnReceiptRevert, type, value, ...rest } = parameters;
+  const timeout2 = parameters.timeout ?? Math.max(((chain2 == null ? void 0 : chain2.blockTime) ?? 0) * 3, 5e3);
+  if (typeof account_ === "undefined")
+    throw new AccountNotFoundError({
+      docsPath: "/docs/actions/wallet/sendTransactionSync"
+    });
+  const account = account_ ? parseAccount(account_) : null;
+  let nonceManagerParameters;
+  try {
+    assertRequest(parameters);
+    const to = await (async () => {
+      if (parameters.to)
+        return parameters.to;
+      if (parameters.to === null)
+        return void 0;
+      if (authorizationList && authorizationList.length > 0)
+        return await recoverAuthorizationAddress({
+          authorization: authorizationList[0]
+        }).catch(() => {
+          throw new BaseError$1("`to` is required. Could not infer from `authorizationList`.");
+        });
+      return void 0;
+    })();
+    if ((account == null ? void 0 : account.type) === "json-rpc" || account === null) {
+      let chainId;
+      if (chain2 !== null) {
+        chainId = await getAction(client2, getChainId, "getChainId")({});
+        if (assertChainId)
+          assertCurrentChain({
+            currentChainId: chainId,
+            chain: chain2
+          });
+      }
+      const chainFormat = (_d2 = (_c2 = (_b3 = client2.chain) == null ? void 0 : _b3.formatters) == null ? void 0 : _c2.transactionRequest) == null ? void 0 : _d2.format;
+      const format2 = chainFormat || formatTransactionRequest;
+      const request2 = format2({
+        // Pick out extra data that might exist on the chain's transaction request type.
+        ...extract$1(rest, { format: chainFormat }),
+        accessList,
+        account,
+        authorizationList,
+        blobs,
+        chainId,
+        data: dataSuffix ? concat$1([data ?? "0x", dataSuffix]) : data,
+        gas,
+        gasPrice,
+        maxFeePerBlobGas,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        nonce,
+        to,
+        type,
+        value
+      }, "sendTransaction");
+      const isWalletNamespaceSupported = supportsWalletNamespace.get(client2.uid);
+      const method = isWalletNamespaceSupported ? "wallet_sendTransaction" : "eth_sendTransaction";
+      const hash2 = await (async () => {
+        try {
+          return await client2.request({
+            method,
+            params: [request2]
+          }, { retryCount: 0 });
+        } catch (e) {
+          if (isWalletNamespaceSupported === false)
+            throw e;
+          const error = e;
+          if (error.name === "InvalidInputRpcError" || error.name === "InvalidParamsRpcError" || error.name === "MethodNotFoundRpcError" || error.name === "MethodNotSupportedRpcError") {
+            return await client2.request({
+              method: "wallet_sendTransaction",
+              params: [request2]
+            }, { retryCount: 0 }).then((hash3) => {
+              supportsWalletNamespace.set(client2.uid, true);
+              return hash3;
+            }).catch((e2) => {
+              const walletNamespaceError = e2;
+              if (walletNamespaceError.name === "MethodNotFoundRpcError" || walletNamespaceError.name === "MethodNotSupportedRpcError") {
+                supportsWalletNamespace.set(client2.uid, false);
+                throw error;
+              }
+              throw walletNamespaceError;
+            });
+          }
+          throw error;
+        }
+      })();
+      const receipt = await getAction(client2, waitForTransactionReceipt, "waitForTransactionReceipt")({
+        checkReplacement: false,
+        hash: hash2,
+        pollingInterval,
+        timeout: timeout2
+      });
+      if (throwOnReceiptRevert && receipt.status === "reverted")
+        throw new TransactionReceiptRevertedError({ receipt });
+      return receipt;
+    }
+    if ((account == null ? void 0 : account.type) === "local") {
+      if (account.nonceManager && typeof nonce === "undefined") {
+        const requestChainId = rest.chainId;
+        const chainId = await (async () => {
+          if (typeof requestChainId === "number")
+            return requestChainId;
+          if (chain2)
+            return chain2.id;
+          return getAction(client2, getChainId, "getChainId")({});
+        })();
+        nonceManagerParameters = { address: account.address, chainId };
+      }
+      const request2 = await getAction(client2, prepareTransactionRequest, "prepareTransactionRequest")({
+        account,
+        accessList,
+        authorizationList,
+        blobs,
+        chain: chain2,
+        data: dataSuffix ? concat$1([data ?? "0x", dataSuffix]) : data,
+        gas,
+        gasPrice,
+        maxFeePerBlobGas,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        nonce,
+        nonceManager: account.nonceManager,
+        parameters: [...defaultParameters, "sidecars"],
+        type,
+        value,
+        ...rest,
+        to
+      });
+      const serializer = (_e2 = chain2 == null ? void 0 : chain2.serializers) == null ? void 0 : _e2.transaction;
+      const serializedTransaction = await account.signTransaction(request2, {
+        serializer
+      });
+      return await getAction(client2, sendRawTransactionSync, "sendRawTransactionSync")({
+        serializedTransaction,
+        throwOnReceiptRevert,
+        timeout: parameters.timeout
+      });
+    }
+    if ((account == null ? void 0 : account.type) === "smart")
+      throw new AccountTypeNotSupportedError({
+        metaMessages: [
+          "Consider using the `sendUserOperation` Action instead."
+        ],
+        docsPath: "/docs/actions/bundler/sendUserOperation",
+        type: "smart"
+      });
+    throw new AccountTypeNotSupportedError({
+      docsPath: "/docs/actions/wallet/sendTransactionSync",
+      type: account == null ? void 0 : account.type
+    });
+  } catch (err) {
+    if (err instanceof AccountTypeNotSupportedError)
+      throw err;
+    if (nonceManagerParameters && !(err instanceof TransactionReceiptRevertedError))
+      (_f2 = account == null ? void 0 : account.nonceManager) == null ? void 0 : _f2.reset(nonceManagerParameters);
+    throw getTransactionError(err, {
+      ...parameters,
+      account,
+      chain: parameters.chain || void 0
+    });
+  }
+}
+async function writeContractSync(client2, parameters) {
+  return writeContract.internal(client2, sendTransactionSync, "sendTransactionSync", parameters);
+}
+async function approveSync(client2, parameters) {
+  const { amount, token, throwOnReceiptRevert = true } = parameters;
+  const { decimals } = resolveToken(client2, { token });
+  const resolved = resolveAmountDecimals(amount, decimals);
+  const receipt = await approve.inner(writeContractSync, client2, {
+    ...parameters,
+    throwOnReceiptRevert
+  });
+  const { args } = approve.extractEvent(receipt.logs);
+  return {
+    ...args,
+    ...resolved === void 0 ? {} : { decimals: resolved, formatted: formatUnits(args.value, resolved) },
+    receipt
+  };
+}
+async function getAllowance(client2, parameters) {
+  const { account, decimals, spender, token, ...rest } = parameters;
+  const [amount, { decimals: resolved }] = await Promise.all([
+    readContract(client2, {
+      ...rest,
+      ...getAllowance.call(client2, { account, spender, token })
+    }),
+    resolveTokenWithDecimals(client2, {
+      decimals,
+      token
+    })
+  ]);
+  return toAmount(amount, resolved);
+}
+(function(getAllowance2) {
+  function call2(client2, args) {
+    return defineCall({
+      address: resolveToken(client2, args).address,
+      abi: erc20Abi,
+      functionName: "allowance",
+      args: [args.account, args.spender]
+    });
+  }
+  getAllowance2.call = call2;
+})(getAllowance || (getAllowance = {}));
+async function getBalance(client2, parameters) {
+  const { account: account_ = client2.account, decimals, token, ...rest } = parameters;
+  if (!account_)
+    throw new AccountNotFoundError();
+  const account = parseAccount(account_).address;
+  const [amount, { decimals: resolved }] = await Promise.all([
+    readContract(client2, {
+      ...rest,
+      ...getBalance.call(client2, { account, token })
+    }),
+    resolveTokenWithDecimals(client2, {
+      decimals,
+      token
+    })
+  ]);
+  return toAmount(amount, resolved);
+}
+(function(getBalance2) {
+  function call2(client2, args) {
+    const account_ = args.account ?? client2.account;
+    if (!account_)
+      throw new AccountNotFoundError();
+    const account = parseAccount(account_).address;
+    return defineCall({
+      address: resolveToken(client2, args).address,
+      abi: erc20Abi,
+      functionName: "balanceOf",
+      args: [account]
+    });
+  }
+  getBalance2.call = call2;
+})(getBalance || (getBalance = {}));
+async function getMetadata(client2, parameters) {
+  const { token, ...rest } = parameters;
+  const { address } = resolveToken(client2, { token });
+  const declared = findDeclaredToken(client2, token);
+  const [decimals_, name, symbol] = await Promise.all([
+    (declared == null ? void 0 : declared.decimals) ?? readContract(client2, {
+      ...rest,
+      abi: erc20Abi,
+      address,
+      functionName: "decimals"
+    }),
+    (declared == null ? void 0 : declared.name) ?? readContract(client2, {
+      ...rest,
+      abi: erc20Abi,
+      address,
+      functionName: "name"
+    }),
+    (declared == null ? void 0 : declared.symbol) ?? readContract(client2, {
+      ...rest,
+      abi: erc20Abi,
+      address,
+      functionName: "symbol"
+    })
+  ]);
+  return {
+    decimals: decimals_,
+    name,
+    symbol
+  };
+}
+async function getTotalSupply(client2, parameters) {
+  const { decimals, token, ...rest } = parameters;
+  const [amount, { decimals: resolved }] = await Promise.all([
+    readContract(client2, {
+      ...rest,
+      ...getTotalSupply.call(client2, { token })
+    }),
+    resolveTokenWithDecimals(client2, {
+      decimals,
+      token
+    })
+  ]);
+  return toAmount(amount, resolved);
+}
+(function(getTotalSupply2) {
+  function call2(client2, args) {
+    return defineCall({
+      address: resolveToken(client2, args).address,
+      abi: erc20Abi,
+      args: [],
+      functionName: "totalSupply"
+    });
+  }
+  getTotalSupply2.call = call2;
+})(getTotalSupply || (getTotalSupply = {}));
+async function transfer(client2, parameters) {
+  return transfer.inner(writeContract, client2, parameters);
+}
+(function(transfer2) {
+  async function inner(action, client2, parameters) {
+    return await action(client2, {
+      ...parameters,
+      ...transfer2.call(client2, parameters)
+    });
+  }
+  transfer2.inner = inner;
+  function call2(client2, parameters) {
+    return defineCall(getCall(client2, parameters));
+  }
+  transfer2.call = call2;
+  async function estimateGas2(client2, parameters) {
+    return estimateContractGas(client2, {
+      ...pickWriteParameters(parameters),
+      ...transfer2.call(client2, parameters)
+    });
+  }
+  transfer2.estimateGas = estimateGas2;
+  async function simulate(client2, parameters) {
+    return simulateContract(client2, {
+      ...pickWriteParameters(parameters),
+      ...transfer2.call(client2, parameters)
+    });
+  }
+  transfer2.simulate = simulate;
+  function extractEvent(logs) {
+    const [log2] = parseEventLogs({
+      abi: erc20Abi,
+      logs,
+      eventName: "Transfer",
+      strict: true
+    });
+    if (!log2)
+      throw new Error("`Transfer` event not found.");
+    return log2;
+  }
+  transfer2.extractEvent = extractEvent;
+})(transfer || (transfer = {}));
+function getCall(client2, parameters) {
+  const { amount, from: from2, to, token } = parameters;
+  const { address, decimals } = resolveToken(client2, { token });
+  const value = toBaseUnits(amount, decimals);
+  if (from2)
+    return {
+      abi: erc20Abi,
+      address,
+      args: [from2, to, value],
+      functionName: "transferFrom"
+    };
+  return {
+    abi: erc20Abi,
+    address,
+    args: [to, value],
+    functionName: "transfer"
+  };
+}
+async function transferSync(client2, parameters) {
+  const { amount, token, throwOnReceiptRevert = true } = parameters;
+  const { decimals } = resolveToken(client2, { token });
+  const resolved = resolveAmountDecimals(amount, decimals);
+  const receipt = await transfer.inner(writeContractSync, client2, {
+    ...parameters,
+    throwOnReceiptRevert
+  });
+  const { args } = transfer.extractEvent(receipt.logs);
+  return {
+    ...args,
+    ...resolved === void 0 ? {} : { decimals: resolved, formatted: formatUnits(args.value, resolved) },
+    receipt
+  };
 }
 function publicActions(client2) {
   return {
@@ -40598,10 +41871,11 @@ function publicActions(client2) {
     createPendingTransactionFilter: () => createPendingTransactionFilter(client2),
     estimateContractGas: (args) => estimateContractGas(client2, args),
     estimateGas: (args) => estimateGas(client2, args),
-    getBalance: (args) => getBalance(client2, args),
+    getBalance: (args) => getBalance$1(client2, args),
     getBlobBaseFee: () => getBlobBaseFee(client2),
     getBlock: (args) => getBlock(client2, args),
     getBlockNumber: (args) => getBlockNumber(client2, args),
+    getBlockReceipts: (args) => getBlockReceipts(client2, args),
     getBlockTransactionCount: (args) => getBlockTransactionCount(client2, args),
     getBytecode: (args) => getCode(client2, args),
     getChainId: () => getChainId(client2),
@@ -40623,6 +41897,7 @@ function publicActions(client2) {
     getProof: (args) => getProof(client2, args),
     estimateMaxPriorityFeePerGas: (args) => estimateMaxPriorityFeePerGas(client2, args),
     fillTransaction: (args) => fillTransaction(client2, args),
+    getRawTransaction: (args) => getRawTransaction(client2, args),
     getStorageAt: (args) => getStorageAt(client2, args),
     getTransaction: (args) => getTransaction(client2, args),
     getTransactionConfirmations: (args) => getTransactionConfirmations(client2, args),
@@ -40647,7 +41922,16 @@ function publicActions(client2) {
     watchBlockNumber: (args) => watchBlockNumber(client2, args),
     watchContractEvent: (args) => watchContractEvent(client2, args),
     watchEvent: (args) => watchEvent(client2, args),
-    watchPendingTransactions: (args) => watchPendingTransactions(client2, args)
+    watchPendingTransactions: (args) => watchPendingTransactions(client2, args),
+    token: bindPublicToken(client2)
+  };
+}
+function bindPublicToken(client2) {
+  return {
+    getAllowance: bindActionDecorators(client2, getAllowance),
+    getBalance: bindActionDecorators(client2, getBalance),
+    getMetadata: bindActionDecorators(client2, getMetadata),
+    getTotalSupply: bindActionDecorators(client2, getTotalSupply)
   };
 }
 function createPublicClient(parameters) {
@@ -40767,156 +42051,6 @@ async function sendCallsSync(client2, parameters) {
   });
   return status;
 }
-const supportsWalletNamespace = new LruMap$1(128);
-async function sendTransactionSync(client2, parameters) {
-  var _a3, _b3, _c2, _d2, _e2;
-  const { account: account_ = client2.account, assertChainId = true, chain: chain2 = client2.chain, accessList, authorizationList, blobs, data, dataSuffix = typeof client2.dataSuffix === "string" ? client2.dataSuffix : (_a3 = client2.dataSuffix) == null ? void 0 : _a3.value, gas, gasPrice, maxFeePerBlobGas, maxFeePerGas, maxPriorityFeePerGas, nonce, pollingInterval, throwOnReceiptRevert, type, value, ...rest } = parameters;
-  const timeout2 = parameters.timeout ?? Math.max(((chain2 == null ? void 0 : chain2.blockTime) ?? 0) * 3, 5e3);
-  if (typeof account_ === "undefined")
-    throw new AccountNotFoundError({
-      docsPath: "/docs/actions/wallet/sendTransactionSync"
-    });
-  const account = account_ ? parseAccount(account_) : null;
-  try {
-    assertRequest(parameters);
-    const to = await (async () => {
-      if (parameters.to)
-        return parameters.to;
-      if (parameters.to === null)
-        return void 0;
-      if (authorizationList && authorizationList.length > 0)
-        return await recoverAuthorizationAddress({
-          authorization: authorizationList[0]
-        }).catch(() => {
-          throw new BaseError$1("`to` is required. Could not infer from `authorizationList`.");
-        });
-      return void 0;
-    })();
-    if ((account == null ? void 0 : account.type) === "json-rpc" || account === null) {
-      let chainId;
-      if (chain2 !== null) {
-        chainId = await getAction(client2, getChainId, "getChainId")({});
-        if (assertChainId)
-          assertCurrentChain({
-            currentChainId: chainId,
-            chain: chain2
-          });
-      }
-      const chainFormat = (_d2 = (_c2 = (_b3 = client2.chain) == null ? void 0 : _b3.formatters) == null ? void 0 : _c2.transactionRequest) == null ? void 0 : _d2.format;
-      const format = chainFormat || formatTransactionRequest;
-      const request2 = format({
-        // Pick out extra data that might exist on the chain's transaction request type.
-        ...extract$1(rest, { format: chainFormat }),
-        accessList,
-        account,
-        authorizationList,
-        blobs,
-        chainId,
-        data: data ? concat$1([data, dataSuffix ?? "0x"]) : data,
-        gas,
-        gasPrice,
-        maxFeePerBlobGas,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
-        nonce,
-        to,
-        type,
-        value
-      }, "sendTransaction");
-      const isWalletNamespaceSupported = supportsWalletNamespace.get(client2.uid);
-      const method = isWalletNamespaceSupported ? "wallet_sendTransaction" : "eth_sendTransaction";
-      const hash2 = await (async () => {
-        try {
-          return await client2.request({
-            method,
-            params: [request2]
-          }, { retryCount: 0 });
-        } catch (e) {
-          if (isWalletNamespaceSupported === false)
-            throw e;
-          const error = e;
-          if (error.name === "InvalidInputRpcError" || error.name === "InvalidParamsRpcError" || error.name === "MethodNotFoundRpcError" || error.name === "MethodNotSupportedRpcError") {
-            return await client2.request({
-              method: "wallet_sendTransaction",
-              params: [request2]
-            }, { retryCount: 0 }).then((hash3) => {
-              supportsWalletNamespace.set(client2.uid, true);
-              return hash3;
-            }).catch((e2) => {
-              const walletNamespaceError = e2;
-              if (walletNamespaceError.name === "MethodNotFoundRpcError" || walletNamespaceError.name === "MethodNotSupportedRpcError") {
-                supportsWalletNamespace.set(client2.uid, false);
-                throw error;
-              }
-              throw walletNamespaceError;
-            });
-          }
-          throw error;
-        }
-      })();
-      const receipt = await getAction(client2, waitForTransactionReceipt, "waitForTransactionReceipt")({
-        checkReplacement: false,
-        hash: hash2,
-        pollingInterval,
-        timeout: timeout2
-      });
-      if (throwOnReceiptRevert && receipt.status === "reverted")
-        throw new TransactionReceiptRevertedError({ receipt });
-      return receipt;
-    }
-    if ((account == null ? void 0 : account.type) === "local") {
-      const request2 = await getAction(client2, prepareTransactionRequest, "prepareTransactionRequest")({
-        account,
-        accessList,
-        authorizationList,
-        blobs,
-        chain: chain2,
-        data: data ? concat$1([data, dataSuffix ?? "0x"]) : data,
-        gas,
-        gasPrice,
-        maxFeePerBlobGas,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
-        nonce,
-        nonceManager: account.nonceManager,
-        parameters: [...defaultParameters, "sidecars"],
-        type,
-        value,
-        ...rest,
-        to
-      });
-      const serializer = (_e2 = chain2 == null ? void 0 : chain2.serializers) == null ? void 0 : _e2.transaction;
-      const serializedTransaction = await account.signTransaction(request2, {
-        serializer
-      });
-      return await getAction(client2, sendRawTransactionSync, "sendRawTransactionSync")({
-        serializedTransaction,
-        throwOnReceiptRevert,
-        timeout: parameters.timeout
-      });
-    }
-    if ((account == null ? void 0 : account.type) === "smart")
-      throw new AccountTypeNotSupportedError({
-        metaMessages: [
-          "Consider using the `sendUserOperation` Action instead."
-        ],
-        docsPath: "/docs/actions/bundler/sendUserOperation",
-        type: "smart"
-      });
-    throw new AccountTypeNotSupportedError({
-      docsPath: "/docs/actions/wallet/sendTransactionSync",
-      type: account == null ? void 0 : account.type
-    });
-  } catch (err) {
-    if (err instanceof AccountTypeNotSupportedError)
-      throw err;
-    throw getTransactionError(err, {
-      ...parameters,
-      account,
-      chain: parameters.chain || void 0
-    });
-  }
-}
 async function showCallsStatus(client2, parameters) {
   const { id } = parameters;
   await client2.request({
@@ -40982,7 +42116,7 @@ async function signTransaction(client2, parameters) {
       chain: chain2
     });
   const formatters = (chain2 == null ? void 0 : chain2.formatters) || ((_a3 = client2.chain) == null ? void 0 : _a3.formatters);
-  const format = ((_b3 = formatters == null ? void 0 : formatters.transactionRequest) == null ? void 0 : _b3.format) || formatTransactionRequest;
+  const format2 = ((_b3 = formatters == null ? void 0 : formatters.transactionRequest) == null ? void 0 : _b3.format) || formatTransactionRequest;
   if (account.signTransaction)
     return account.signTransaction({
       ...transaction,
@@ -40993,7 +42127,7 @@ async function signTransaction(client2, parameters) {
     method: "eth_signTransaction",
     params: [
       {
-        ...format({
+        ...format2({
           ...transaction,
           account
         }, "signTransaction"),
@@ -41040,9 +42174,6 @@ async function watchAsset(client2, params) {
   }, { retryCount: 0 });
   return added;
 }
-async function writeContractSync(client2, parameters) {
-  return writeContract.internal(client2, sendTransactionSync, "sendTransactionSync", parameters);
-}
 function walletActions(client2) {
   return {
     addChain: (args) => addChain(client2, args),
@@ -41072,7 +42203,13 @@ function walletActions(client2) {
     waitForCallsStatus: (args) => waitForCallsStatus(client2, args),
     watchAsset: (args) => watchAsset(client2, args),
     writeContract: (args) => writeContract(client2, args),
-    writeContractSync: (args) => writeContractSync(client2, args)
+    writeContractSync: (args) => writeContractSync(client2, args),
+    token: {
+      approve: bindActionDecorators(client2, approve),
+      approveSync: bindActionDecorators(client2, approveSync),
+      transfer: bindActionDecorators(client2, transfer),
+      transferSync: bindActionDecorators(client2, transferSync)
+    }
   };
 }
 function createWalletClient(parameters) {
@@ -41254,8 +42391,20 @@ class UrlRequiredError extends BaseError$1 {
     });
   }
 }
+let signalId = 0;
+const signalIds = /* @__PURE__ */ new WeakMap();
+function getSignalId(signal) {
+  if (!signal)
+    return "default";
+  const id = signalIds.get(signal);
+  if (id !== void 0)
+    return id;
+  const nextId = signalId++;
+  signalIds.set(signal, nextId);
+  return nextId;
+}
 function http(url, config = {}) {
-  const { batch, fetchFn, fetchOptions, key: key2 = "http", methods, name = "HTTP JSON-RPC", onFetchRequest, onFetchResponse, retryDelay, raw } = config;
+  const { batch, fetchFn, fetchOptions, key: key2 = "http", maxResponseBodySize, methods, name = "HTTP JSON-RPC", onFetchRequest, onFetchResponse, retryDelay, raw } = config;
   return ({ chain: chain2, retryCount: retryCount_, timeout: timeout_ }) => {
     const { batchSize = 1e3, wait: wait2 = 0 } = typeof batch === "object" ? batch : {};
     const retryCount = config.retryCount ?? retryCount_;
@@ -41266,6 +42415,7 @@ function http(url, config = {}) {
     const rpcClient = getHttpRpcClient(url_, {
       fetchFn,
       fetchOptions,
+      maxResponseBodySize,
       onRequest: onFetchRequest,
       onResponse: onFetchResponse,
       timeout: timeout2
@@ -41274,22 +42424,25 @@ function http(url, config = {}) {
       key: key2,
       methods,
       name,
-      async request({ method, params }) {
+      async request({ method, params }, options) {
         const body = { method, params };
+        const fetchOptions2 = (options == null ? void 0 : options.signal) ? { signal: options.signal } : void 0;
         const { schedule } = createBatchScheduler({
-          id: url_,
+          id: `${url_}.${getSignalId(options == null ? void 0 : options.signal)}`,
           wait: wait2,
           shouldSplitBatch(requests) {
             return requests.length > batchSize;
           },
           fn: (body2) => rpcClient.request({
-            body: body2
+            body: body2,
+            fetchOptions: fetchOptions2
           }),
           sort: (a2, b2) => a2.id - b2.id
         });
         const fn = async (body2) => batch ? schedule(body2) : [
           await rpcClient.request({
-            body: body2
+            body: body2,
+            fetchOptions: fetchOptions2
           })
         ];
         const [{ error, result }] = await fn(body);
@@ -41320,7 +42473,7 @@ const mainnet = /* @__PURE__ */ defineChain({
   blockTime: 12e3,
   rpcUrls: {
     default: {
-      http: ["https://eth.merkle.io"]
+      http: ["https://ethereum.reth.rs/rpc"]
     }
   },
   blockExplorers: {
@@ -41975,10 +43128,10 @@ var jt = (n) => {
     default:
       return null;
   }
-}, te = Array(12).fill(0), Yt = ({ visible: n, className: e }) => React2.createElement("div", { className: ["sonner-loading-wrapper", e].filter(Boolean).join(" "), "data-visible": n }, React2.createElement("div", { className: "sonner-spinner" }, te.map((t, a2) => React2.createElement("div", { className: "sonner-loading-bar", key: `spinner-bar-${a2}` })))), ee = React2.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, React2.createElement("path", { fillRule: "evenodd", d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z", clipRule: "evenodd" })), oe = React2.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor", height: "20", width: "20" }, React2.createElement("path", { fillRule: "evenodd", d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z", clipRule: "evenodd" })), ae = React2.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, React2.createElement("path", { fillRule: "evenodd", d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z", clipRule: "evenodd" })), se = React2.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, React2.createElement("path", { fillRule: "evenodd", d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z", clipRule: "evenodd" })), Ot = React2.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }, React2.createElement("line", { x1: "18", y1: "6", x2: "6", y2: "18" }), React2.createElement("line", { x1: "6", y1: "6", x2: "18", y2: "18" }));
+}, te = Array(12).fill(0), Yt = ({ visible: n, className: e }) => o.createElement("div", { className: ["sonner-loading-wrapper", e].filter(Boolean).join(" "), "data-visible": n }, o.createElement("div", { className: "sonner-spinner" }, te.map((t, a2) => o.createElement("div", { className: "sonner-loading-bar", key: `spinner-bar-${a2}` })))), ee = o.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, o.createElement("path", { fillRule: "evenodd", d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z", clipRule: "evenodd" })), oe = o.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "currentColor", height: "20", width: "20" }, o.createElement("path", { fillRule: "evenodd", d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z", clipRule: "evenodd" })), ae = o.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, o.createElement("path", { fillRule: "evenodd", d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z", clipRule: "evenodd" })), se = o.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", height: "20", width: "20" }, o.createElement("path", { fillRule: "evenodd", d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z", clipRule: "evenodd" })), Ot = o.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: "12", height: "12", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }, o.createElement("line", { x1: "18", y1: "6", x2: "6", y2: "18" }), o.createElement("line", { x1: "6", y1: "6", x2: "18", y2: "18" }));
 var Ft = () => {
-  let [n, e] = React2.useState(document.hidden);
-  return React2.useEffect(() => {
+  let [n, e] = o.useState(document.hidden);
+  return o.useEffect(() => {
     let t = () => {
       e(document.hidden);
     };
@@ -42016,7 +43169,7 @@ var bt = 1, yt = class {
       let a2;
       t.loading !== void 0 && (a2 = this.create({ ...t, promise: e, type: "loading", message: t.loading, description: typeof t.description != "function" ? t.description : void 0 }));
       let u2 = e instanceof Promise ? e : e(), f2 = a2 !== void 0, w2, S2 = u2.then(async (i) => {
-        if (w2 = ["resolve", i], React2.isValidElement(i)) f2 = false, this.create({ id: a2, type: "default", message: i });
+        if (w2 = ["resolve", i], o.isValidElement(i)) f2 = false, this.create({ id: a2, type: "default", message: i });
         else if (ie(i) && !i.ok) {
           f2 = false;
           let T2 = typeof t.error == "function" ? await t.error(`HTTP error! status: ${i.status}`) : t.error, F2 = typeof t.description == "function" ? await t.description(`HTTP error! status: ${i.status}`) : t.description;
@@ -42069,33 +43222,33 @@ function xe(n) {
 }
 var ve = (n) => {
   var Dt, Pt, Nt, Bt, Ct, kt, It, Mt, Ht, At, Lt;
-  let { invert: e, toast: t, unstyled: a2, interacting: u2, setHeights: f2, visibleToasts: w2, heights: S2, index: g2, toasts: i, expanded: D, removeToast: T2, defaultRichColors: F2, closeButton: et2, style: ut2, cancelButtonStyle: ft2, actionButtonStyle: l2, className: ot2 = "", descriptionClassName: at = "", duration: X2, position: st2, gap: pt, loadingIcon: rt2, expandByDefault: B2, classNames: s, icons: P2, closeButtonAriaLabel: nt2 = "Close toast", pauseWhenPageIsHidden: it2 } = n, [Y2, C2] = React2.useState(null), [lt, J2] = React2.useState(null), [W2, H2] = React2.useState(false), [A, mt] = React2.useState(false), [L2, z2] = React2.useState(false), [ct2, d2] = React2.useState(false), [h2, y2] = React2.useState(false), [R2, j2] = React2.useState(0), [p2, _2] = React2.useState(0), O2 = React2.useRef(t.duration || X2 || Wt), G2 = React2.useRef(null), k2 = React2.useRef(null), Vt = g2 === 0, Ut = g2 + 1 <= w2, N2 = t.type, V2 = t.dismissible !== false, Kt = t.className || "", Xt = t.descriptionClassName || "", dt = React2.useMemo(() => S2.findIndex((r2) => r2.toastId === t.id) || 0, [S2, t.id]), Jt = React2.useMemo(() => {
+  let { invert: e, toast: t, unstyled: a2, interacting: u2, setHeights: f2, visibleToasts: w2, heights: S2, index: g2, toasts: i, expanded: D, removeToast: T2, defaultRichColors: F2, closeButton: et2, style: ut2, cancelButtonStyle: ft2, actionButtonStyle: l2, className: ot2 = "", descriptionClassName: at = "", duration: X2, position: st2, gap: pt, loadingIcon: rt2, expandByDefault: B2, classNames: s, icons: P2, closeButtonAriaLabel: nt2 = "Close toast", pauseWhenPageIsHidden: it2 } = n, [Y2, C2] = o.useState(null), [lt, J2] = o.useState(null), [W2, H2] = o.useState(false), [A, mt] = o.useState(false), [L2, z2] = o.useState(false), [ct2, d2] = o.useState(false), [h2, y2] = o.useState(false), [R2, j2] = o.useState(0), [p2, _2] = o.useState(0), O2 = o.useRef(t.duration || X2 || Wt), G2 = o.useRef(null), k2 = o.useRef(null), Vt = g2 === 0, Ut = g2 + 1 <= w2, N2 = t.type, V2 = t.dismissible !== false, Kt = t.className || "", Xt = t.descriptionClassName || "", dt = o.useMemo(() => S2.findIndex((r2) => r2.toastId === t.id) || 0, [S2, t.id]), Jt = o.useMemo(() => {
     var r2;
     return (r2 = t.closeButton) != null ? r2 : et2;
-  }, [t.closeButton, et2]), Tt = React2.useMemo(() => t.duration || X2 || Wt, [t.duration, X2]), gt2 = React2.useRef(0), U2 = React2.useRef(0), St = React2.useRef(0), K2 = React2.useRef(null), [Gt, Qt] = st2.split("-"), Rt = React2.useMemo(() => S2.reduce((r2, m2, c2) => c2 >= dt ? r2 : r2 + m2.height, 0), [S2, dt]), Et = Ft(), qt = t.invert || e, ht = N2 === "loading";
-  U2.current = React2.useMemo(() => dt * pt + Rt, [dt, Rt]), React2.useEffect(() => {
+  }, [t.closeButton, et2]), Tt = o.useMemo(() => t.duration || X2 || Wt, [t.duration, X2]), gt2 = o.useRef(0), U2 = o.useRef(0), St = o.useRef(0), K2 = o.useRef(null), [Gt, Qt] = st2.split("-"), Rt = o.useMemo(() => S2.reduce((r2, m2, c2) => c2 >= dt ? r2 : r2 + m2.height, 0), [S2, dt]), Et = Ft(), qt = t.invert || e, ht = N2 === "loading";
+  U2.current = o.useMemo(() => dt * pt + Rt, [dt, Rt]), o.useEffect(() => {
     O2.current = Tt;
-  }, [Tt]), React2.useEffect(() => {
+  }, [Tt]), o.useEffect(() => {
     H2(true);
-  }, []), React2.useEffect(() => {
+  }, []), o.useEffect(() => {
     let r2 = k2.current;
     if (r2) {
       let m2 = r2.getBoundingClientRect().height;
       return _2(m2), f2((c2) => [{ toastId: t.id, height: m2, position: t.position }, ...c2]), () => f2((c2) => c2.filter((b2) => b2.toastId !== t.id));
     }
-  }, [f2, t.id]), React2.useLayoutEffect(() => {
+  }, [f2, t.id]), o.useLayoutEffect(() => {
     if (!W2) return;
     let r2 = k2.current, m2 = r2.style.height;
     r2.style.height = "auto";
     let c2 = r2.getBoundingClientRect().height;
     r2.style.height = m2, _2(c2), f2((b2) => b2.find((x2) => x2.toastId === t.id) ? b2.map((x2) => x2.toastId === t.id ? { ...x2, height: c2 } : x2) : [{ toastId: t.id, height: c2, position: t.position }, ...b2]);
   }, [W2, t.title, t.description, f2, t.id]);
-  let $2 = React2.useCallback(() => {
+  let $2 = o.useCallback(() => {
     mt(true), j2(U2.current), f2((r2) => r2.filter((m2) => m2.toastId !== t.id)), setTimeout(() => {
       T2(t);
     }, we);
   }, [t, T2, f2, U2]);
-  React2.useEffect(() => {
+  o.useEffect(() => {
     if (t.promise && N2 === "loading" || t.duration === 1 / 0 || t.type === "loading") return;
     let r2;
     return D || u2 || it2 && Et ? (() => {
@@ -42110,14 +43263,14 @@ var ve = (n) => {
         (b2 = t.onAutoClose) == null || b2.call(t, t), $2();
       }, O2.current));
     })(), () => clearTimeout(r2);
-  }, [D, u2, t, N2, it2, Et, $2]), React2.useEffect(() => {
+  }, [D, u2, t, N2, it2, Et, $2]), o.useEffect(() => {
     t.delete && $2();
   }, [$2, t.delete]);
   function Zt() {
     var r2, m2, c2;
-    return P2 != null && P2.loading ? React2.createElement("div", { className: M(s == null ? void 0 : s.loader, (r2 = t == null ? void 0 : t.classNames) == null ? void 0 : r2.loader, "sonner-loader"), "data-visible": N2 === "loading" }, P2.loading) : rt2 ? React2.createElement("div", { className: M(s == null ? void 0 : s.loader, (m2 = t == null ? void 0 : t.classNames) == null ? void 0 : m2.loader, "sonner-loader"), "data-visible": N2 === "loading" }, rt2) : React2.createElement(Yt, { className: M(s == null ? void 0 : s.loader, (c2 = t == null ? void 0 : t.classNames) == null ? void 0 : c2.loader), visible: N2 === "loading" });
+    return P2 != null && P2.loading ? o.createElement("div", { className: M(s == null ? void 0 : s.loader, (r2 = t == null ? void 0 : t.classNames) == null ? void 0 : r2.loader, "sonner-loader"), "data-visible": N2 === "loading" }, P2.loading) : rt2 ? o.createElement("div", { className: M(s == null ? void 0 : s.loader, (m2 = t == null ? void 0 : t.classNames) == null ? void 0 : m2.loader, "sonner-loader"), "data-visible": N2 === "loading" }, rt2) : o.createElement(Yt, { className: M(s == null ? void 0 : s.loader, (c2 = t == null ? void 0 : t.classNames) == null ? void 0 : c2.loader), visible: N2 === "loading" });
   }
-  return React2.createElement("li", { tabIndex: 0, ref: k2, className: M(ot2, Kt, s == null ? void 0 : s.toast, (Dt = t == null ? void 0 : t.classNames) == null ? void 0 : Dt.toast, s == null ? void 0 : s.default, s == null ? void 0 : s[N2], (Pt = t == null ? void 0 : t.classNames) == null ? void 0 : Pt[N2]), "data-sonner-toast": "", "data-rich-colors": (Nt = t.richColors) != null ? Nt : F2, "data-styled": !(t.jsx || t.unstyled || a2), "data-mounted": W2, "data-promise": !!t.promise, "data-swiped": h2, "data-removed": A, "data-visible": Ut, "data-y-position": Gt, "data-x-position": Qt, "data-index": g2, "data-front": Vt, "data-swiping": L2, "data-dismissible": V2, "data-type": N2, "data-invert": qt, "data-swipe-out": ct2, "data-swipe-direction": lt, "data-expanded": !!(D || B2 && W2), style: { "--index": g2, "--toasts-before": g2, "--z-index": i.length - g2, "--offset": `${A ? R2 : U2.current}px`, "--initial-height": B2 ? "auto" : `${p2}px`, ...ut2, ...t.style }, onDragEnd: () => {
+  return o.createElement("li", { tabIndex: 0, ref: k2, className: M(ot2, Kt, s == null ? void 0 : s.toast, (Dt = t == null ? void 0 : t.classNames) == null ? void 0 : Dt.toast, s == null ? void 0 : s.default, s == null ? void 0 : s[N2], (Pt = t == null ? void 0 : t.classNames) == null ? void 0 : Pt[N2]), "data-sonner-toast": "", "data-rich-colors": (Nt = t.richColors) != null ? Nt : F2, "data-styled": !(t.jsx || t.unstyled || a2), "data-mounted": W2, "data-promise": !!t.promise, "data-swiped": h2, "data-removed": A, "data-visible": Ut, "data-y-position": Gt, "data-x-position": Qt, "data-index": g2, "data-front": Vt, "data-swiping": L2, "data-dismissible": V2, "data-type": N2, "data-invert": qt, "data-swipe-out": ct2, "data-swipe-direction": lt, "data-expanded": !!(D || B2 && W2), style: { "--index": g2, "--toasts-before": g2, "--z-index": i.length - g2, "--offset": `${A ? R2 : U2.current}px`, "--initial-height": B2 ? "auto" : `${p2}px`, ...ut2, ...t.style }, onDragEnd: () => {
     z2(false), C2(null), K2.current = null;
   }, onPointerDown: (r2) => {
     ht || !V2 || (G2.current = /* @__PURE__ */ new Date(), j2(U2.current), r2.target.setPointerCapture(r2.pointerId), r2.target.tagName !== "BUTTON" && (z2(true), K2.current = { x: r2.clientX, y: r2.clientY }));
@@ -42138,14 +43291,14 @@ var ve = (n) => {
     !Y2 && (Math.abs(b2) > 1 || Math.abs(c2) > 1) && C2(Math.abs(b2) > Math.abs(c2) ? "x" : "y");
     let x2 = { x: 0, y: 0 };
     Y2 === "y" ? (I.includes("top") || I.includes("bottom")) && (I.includes("top") && c2 < 0 || I.includes("bottom") && c2 > 0) && (x2.y = c2) : Y2 === "x" && (I.includes("left") || I.includes("right")) && (I.includes("left") && b2 < 0 || I.includes("right") && b2 > 0) && (x2.x = b2), (Math.abs(x2.x) > 0 || Math.abs(x2.y) > 0) && y2(true), (Z2 = k2.current) == null || Z2.style.setProperty("--swipe-amount-x", `${x2.x}px`), (zt = k2.current) == null || zt.style.setProperty("--swipe-amount-y", `${x2.y}px`);
-  } }, Jt && !t.jsx ? React2.createElement("button", { "aria-label": nt2, "data-disabled": ht, "data-close-button": true, onClick: ht || !V2 ? () => {
+  } }, Jt && !t.jsx ? o.createElement("button", { "aria-label": nt2, "data-disabled": ht, "data-close-button": true, onClick: ht || !V2 ? () => {
   } : () => {
     var r2;
     $2(), (r2 = t.onDismiss) == null || r2.call(t, t);
-  }, className: M(s == null ? void 0 : s.closeButton, (Bt = t == null ? void 0 : t.classNames) == null ? void 0 : Bt.closeButton) }, (Ct = P2 == null ? void 0 : P2.close) != null ? Ct : Ot) : null, t.jsx || reactExports.isValidElement(t.title) ? t.jsx ? t.jsx : typeof t.title == "function" ? t.title() : t.title : React2.createElement(React2.Fragment, null, N2 || t.icon || t.promise ? React2.createElement("div", { "data-icon": "", className: M(s == null ? void 0 : s.icon, (kt = t == null ? void 0 : t.classNames) == null ? void 0 : kt.icon) }, t.promise || t.type === "loading" && !t.icon ? t.icon || Zt() : null, t.type !== "loading" ? t.icon || (P2 == null ? void 0 : P2[N2]) || jt(N2) : null) : null, React2.createElement("div", { "data-content": "", className: M(s == null ? void 0 : s.content, (It = t == null ? void 0 : t.classNames) == null ? void 0 : It.content) }, React2.createElement("div", { "data-title": "", className: M(s == null ? void 0 : s.title, (Mt = t == null ? void 0 : t.classNames) == null ? void 0 : Mt.title) }, typeof t.title == "function" ? t.title() : t.title), t.description ? React2.createElement("div", { "data-description": "", className: M(at, Xt, s == null ? void 0 : s.description, (Ht = t == null ? void 0 : t.classNames) == null ? void 0 : Ht.description) }, typeof t.description == "function" ? t.description() : t.description) : null), reactExports.isValidElement(t.cancel) ? t.cancel : t.cancel && tt(t.cancel) ? React2.createElement("button", { "data-button": true, "data-cancel": true, style: t.cancelButtonStyle || ft2, onClick: (r2) => {
+  }, className: M(s == null ? void 0 : s.closeButton, (Bt = t == null ? void 0 : t.classNames) == null ? void 0 : Bt.closeButton) }, (Ct = P2 == null ? void 0 : P2.close) != null ? Ct : Ot) : null, t.jsx || reactExports.isValidElement(t.title) ? t.jsx ? t.jsx : typeof t.title == "function" ? t.title() : t.title : o.createElement(o.Fragment, null, N2 || t.icon || t.promise ? o.createElement("div", { "data-icon": "", className: M(s == null ? void 0 : s.icon, (kt = t == null ? void 0 : t.classNames) == null ? void 0 : kt.icon) }, t.promise || t.type === "loading" && !t.icon ? t.icon || Zt() : null, t.type !== "loading" ? t.icon || (P2 == null ? void 0 : P2[N2]) || jt(N2) : null) : null, o.createElement("div", { "data-content": "", className: M(s == null ? void 0 : s.content, (It = t == null ? void 0 : t.classNames) == null ? void 0 : It.content) }, o.createElement("div", { "data-title": "", className: M(s == null ? void 0 : s.title, (Mt = t == null ? void 0 : t.classNames) == null ? void 0 : Mt.title) }, typeof t.title == "function" ? t.title() : t.title), t.description ? o.createElement("div", { "data-description": "", className: M(at, Xt, s == null ? void 0 : s.description, (Ht = t == null ? void 0 : t.classNames) == null ? void 0 : Ht.description) }, typeof t.description == "function" ? t.description() : t.description) : null), reactExports.isValidElement(t.cancel) ? t.cancel : t.cancel && tt(t.cancel) ? o.createElement("button", { "data-button": true, "data-cancel": true, style: t.cancelButtonStyle || ft2, onClick: (r2) => {
     var m2, c2;
     tt(t.cancel) && V2 && ((c2 = (m2 = t.cancel).onClick) == null || c2.call(m2, r2), $2());
-  }, className: M(s == null ? void 0 : s.cancelButton, (At = t == null ? void 0 : t.classNames) == null ? void 0 : At.cancelButton) }, t.cancel.label) : null, reactExports.isValidElement(t.action) ? t.action : t.action && tt(t.action) ? React2.createElement("button", { "data-button": true, "data-action": true, style: t.actionButtonStyle || l2, onClick: (r2) => {
+  }, className: M(s == null ? void 0 : s.cancelButton, (At = t == null ? void 0 : t.classNames) == null ? void 0 : At.cancelButton) }, t.cancel.label) : null, reactExports.isValidElement(t.action) ? t.action : t.action && tt(t.action) ? o.createElement("button", { "data-button": true, "data-action": true, style: t.actionButtonStyle || l2, onClick: (r2) => {
     var m2, c2;
     tt(t.action) && ((c2 = (m2 = t.action).onClick) == null || c2.call(m2, r2), !r2.defaultPrevented && $2());
   }, className: M(s == null ? void 0 : s.actionButton, (Lt = t == null ? void 0 : t.classNames) == null ? void 0 : Lt.actionButton) }, t.action.label) : null));
@@ -42170,13 +43323,13 @@ function Te(n, e) {
   }), t;
 }
 reactExports.forwardRef(function(e, t) {
-  let { invert: a2, position: u2 = "bottom-right", hotkey: f2 = ["altKey", "KeyT"], expand: w2, closeButton: S2, className: g2, offset: i, mobileOffset: D, theme: T2 = "light", richColors: F2, duration: et2, style: ut2, visibleToasts: ft2 = pe, toastOptions: l2, dir: ot2 = _t(), gap: at = be, loadingIcon: X2, icons: st2, containerAriaLabel: pt = "Notifications", pauseWhenPageIsHidden: rt2 } = e, [B2, s] = React2.useState([]), P2 = React2.useMemo(() => Array.from(new Set([u2].concat(B2.filter((d2) => d2.position).map((d2) => d2.position)))), [B2, u2]), [nt2, it2] = React2.useState([]), [Y2, C2] = React2.useState(false), [lt, J2] = React2.useState(false), [W2, H2] = React2.useState(T2 !== "system" ? T2 : typeof window != "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"), A = React2.useRef(null), mt = f2.join("+").replace(/Key/g, "").replace(/Digit/g, ""), L2 = React2.useRef(null), z2 = React2.useRef(false), ct2 = React2.useCallback((d2) => {
+  let { invert: a2, position: u2 = "bottom-right", hotkey: f2 = ["altKey", "KeyT"], expand: w2, closeButton: S2, className: g2, offset: i, mobileOffset: D, theme: T2 = "light", richColors: F2, duration: et2, style: ut2, visibleToasts: ft2 = pe, toastOptions: l2, dir: ot2 = _t(), gap: at = be, loadingIcon: X2, icons: st2, containerAriaLabel: pt = "Notifications", pauseWhenPageIsHidden: rt2 } = e, [B2, s] = o.useState([]), P2 = o.useMemo(() => Array.from(new Set([u2].concat(B2.filter((d2) => d2.position).map((d2) => d2.position)))), [B2, u2]), [nt2, it2] = o.useState([]), [Y2, C2] = o.useState(false), [lt, J2] = o.useState(false), [W2, H2] = o.useState(T2 !== "system" ? T2 : typeof window != "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"), A = o.useRef(null), mt = f2.join("+").replace(/Key/g, "").replace(/Digit/g, ""), L2 = o.useRef(null), z2 = o.useRef(false), ct2 = o.useCallback((d2) => {
     s((h2) => {
       var y2;
       return (y2 = h2.find((R2) => R2.id === d2.id)) != null && y2.delete || v.dismiss(d2.id), h2.filter(({ id: R2 }) => R2 !== d2.id);
     });
   }, []);
-  return React2.useEffect(() => v.subscribe((d2) => {
+  return o.useEffect(() => v.subscribe((d2) => {
     if (d2.dismiss) {
       s((h2) => h2.map((y2) => y2.id === d2.id ? { ...y2, delete: true } : y2));
       return;
@@ -42189,7 +43342,7 @@ reactExports.forwardRef(function(e, t) {
         });
       });
     });
-  }), []), React2.useEffect(() => {
+  }), []), o.useEffect(() => {
     if (T2 !== "system") {
       H2(T2);
       return;
@@ -42209,22 +43362,22 @@ reactExports.forwardRef(function(e, t) {
         }
       });
     }
-  }, [T2]), React2.useEffect(() => {
+  }, [T2]), o.useEffect(() => {
     B2.length <= 1 && C2(false);
-  }, [B2]), React2.useEffect(() => {
+  }, [B2]), o.useEffect(() => {
     let d2 = (h2) => {
       var R2, j2;
       f2.every((p2) => h2[p2] || h2.code === p2) && (C2(true), (R2 = A.current) == null || R2.focus()), h2.code === "Escape" && (document.activeElement === A.current || (j2 = A.current) != null && j2.contains(document.activeElement)) && C2(false);
     };
     return document.addEventListener("keydown", d2), () => document.removeEventListener("keydown", d2);
-  }, [f2]), React2.useEffect(() => {
+  }, [f2]), o.useEffect(() => {
     if (A.current) return () => {
       L2.current && (L2.current.focus({ preventScroll: true }), L2.current = null, z2.current = false);
     };
-  }, [A.current]), React2.createElement("section", { ref: t, "aria-label": `${pt} ${mt}`, tabIndex: -1, "aria-live": "polite", "aria-relevant": "additions text", "aria-atomic": "false", suppressHydrationWarning: true }, P2.map((d2, h2) => {
+  }, [A.current]), o.createElement("section", { ref: t, "aria-label": `${pt} ${mt}`, tabIndex: -1, "aria-live": "polite", "aria-relevant": "additions text", "aria-atomic": "false", suppressHydrationWarning: true }, P2.map((d2, h2) => {
     var j2;
     let [y2, R2] = d2.split("-");
-    return B2.length ? React2.createElement("ol", { key: d2, dir: ot2 === "auto" ? _t() : ot2, tabIndex: -1, ref: A, className: g2, "data-sonner-toaster": true, "data-theme": W2, "data-y-position": y2, "data-lifted": Y2 && B2.length > 1 && !w2, "data-x-position": R2, style: { "--front-toast-height": `${((j2 = nt2[0]) == null ? void 0 : j2.height) || 0}px`, "--width": `${he}px`, "--gap": `${at}px`, ...ut2, ...Te(i, D) }, onBlur: (p2) => {
+    return B2.length ? o.createElement("ol", { key: d2, dir: ot2 === "auto" ? _t() : ot2, tabIndex: -1, ref: A, className: g2, "data-sonner-toaster": true, "data-theme": W2, "data-y-position": y2, "data-lifted": Y2 && B2.length > 1 && !w2, "data-x-position": R2, style: { "--front-toast-height": `${((j2 = nt2[0]) == null ? void 0 : j2.height) || 0}px`, "--width": `${he}px`, "--gap": `${at}px`, ...ut2, ...Te(i, D) }, onBlur: (p2) => {
       z2.current && !p2.currentTarget.contains(p2.relatedTarget) && (z2.current = false, L2.current && (L2.current.focus({ preventScroll: true }), L2.current = null));
     }, onFocus: (p2) => {
       p2.target instanceof HTMLElement && p2.target.dataset.dismissible === "false" || z2.current || (z2.current = true, L2.current = p2.relatedTarget);
@@ -42234,7 +43387,7 @@ reactExports.forwardRef(function(e, t) {
       p2.target instanceof HTMLElement && p2.target.dataset.dismissible === "false" || J2(true);
     }, onPointerUp: () => J2(false) }, B2.filter((p2) => !p2.position && h2 === 0 || p2.position === d2).map((p2, _2) => {
       var O2, G2;
-      return React2.createElement(ve, { key: p2.id, icons: st2, index: _2, toast: p2, defaultRichColors: F2, duration: (O2 = l2 == null ? void 0 : l2.duration) != null ? O2 : et2, className: l2 == null ? void 0 : l2.className, descriptionClassName: l2 == null ? void 0 : l2.descriptionClassName, invert: a2, visibleToasts: ft2, closeButton: (G2 = l2 == null ? void 0 : l2.closeButton) != null ? G2 : S2, interacting: lt, position: d2, style: l2 == null ? void 0 : l2.style, unstyled: l2 == null ? void 0 : l2.unstyled, classNames: l2 == null ? void 0 : l2.classNames, cancelButtonStyle: l2 == null ? void 0 : l2.cancelButtonStyle, actionButtonStyle: l2 == null ? void 0 : l2.actionButtonStyle, removeToast: ct2, toasts: B2.filter((k2) => k2.position == p2.position), heights: nt2.filter((k2) => k2.position == p2.position), setHeights: it2, expandByDefault: w2, gap: at, loadingIcon: X2, expanded: Y2, pauseWhenPageIsHidden: rt2, swipeDirections: e.swipeDirections });
+      return o.createElement(ve, { key: p2.id, icons: st2, index: _2, toast: p2, defaultRichColors: F2, duration: (O2 = l2 == null ? void 0 : l2.duration) != null ? O2 : et2, className: l2 == null ? void 0 : l2.className, descriptionClassName: l2 == null ? void 0 : l2.descriptionClassName, invert: a2, visibleToasts: ft2, closeButton: (G2 = l2 == null ? void 0 : l2.closeButton) != null ? G2 : S2, interacting: lt, position: d2, style: l2 == null ? void 0 : l2.style, unstyled: l2 == null ? void 0 : l2.unstyled, classNames: l2 == null ? void 0 : l2.classNames, cancelButtonStyle: l2 == null ? void 0 : l2.cancelButtonStyle, actionButtonStyle: l2 == null ? void 0 : l2.actionButtonStyle, removeToast: ct2, toasts: B2.filter((k2) => k2.position == p2.position), heights: nt2.filter((k2) => k2.position == p2.position), setHeights: it2, expandByDefault: w2, gap: at, loadingIcon: X2, expanded: Y2, pauseWhenPageIsHidden: rt2, swipeDirections: e.swipeDirections });
     })) : null;
   }));
 });
@@ -42296,13 +43449,13 @@ function r(e) {
   var t, f2, n = "";
   if ("string" == typeof e || "number" == typeof e) n += e;
   else if ("object" == typeof e) if (Array.isArray(e)) {
-    var o = e.length;
-    for (t = 0; t < o; t++) e[t] && (f2 = r(e[t])) && (n && (n += " "), n += f2);
+    var o2 = e.length;
+    for (t = 0; t < o2; t++) e[t] && (f2 = r(e[t])) && (n && (n += " "), n += f2);
   } else for (f2 in e) e[f2] && (n && (n += " "), n += f2);
   return n;
 }
 function clsx() {
-  for (var e, t, f2 = 0, n = "", o = arguments.length; f2 < o; f2++) (e = arguments[f2]) && (t = r(e)) && (n && (n += " "), n += t);
+  for (var e, t, f2 = 0, n = "", o2 = arguments.length; f2 < o2; f2++) (e = arguments[f2]) && (t = r(e)) && (n && (n += " "), n += t);
   return n;
 }
 const falsyToString = (value) => typeof value === "boolean" ? `${value}` : value === 0 ? "0" : value;
@@ -46689,9 +47842,10 @@ function LoginOverlay({ isLoggingIn, onLogin, onBack }) {
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-3 text-[11px] text-zinc-500", children: [
-          "Opens ",
+          "Face ID, a fingerprint, or a security key via",
+          " ",
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Internet Identity" }),
-          " — sign in with Face ID, a fingerprint, or a security key. First time? It creates your vault in the same step."
+          ". First time? It creates your vault in the same step."
         ] }),
         onBack && /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
@@ -46704,6 +47858,99 @@ function LoginOverlay({ isLoggingIn, onLogin, onBack }) {
           }
         )
       ] })
+    }
+  );
+}
+const ICP_MARK = /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "22", height: "11", viewBox: "0 0 358.8 179.8", fill: "none", "aria-label": "Internet Computer", children: [
+  /* @__PURE__ */ jsxRuntimeExports.jsxs("defs", { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("linearGradient", { id: "chooserIcpA", gradientUnits: "userSpaceOnUse", x1: "224.7853", y1: "257.7536", x2: "348.0663", y2: "133.4581", gradientTransform: "matrix(1 0 0 -1 0 272)", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0.21", stopColor: "#F15A24" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0.6841", stopColor: "#FBB03B" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("linearGradient", { id: "chooserIcpB", gradientUnits: "userSpaceOnUse", x1: "133.9461", y1: "106.4262", x2: "10.6653", y2: "230.7215", gradientTransform: "matrix(1 0 0 -1 0 272)", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0.21", stopColor: "#ED1E79" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0.8929", stopColor: "#522785" })
+    ] })
+  ] }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("path", { fill: "url(#chooserIcpA)", d: "M271.6,0c-20,0-41.9,10.9-65,32.4c-10.9,10.1-20.5,21.1-27.5,29.8c0,0,11.2,12.9,23.5,26.8 c6.7-8.4,16.2-19.8,27.3-30.1c20.5-19.2,33.9-23.1,41.6-23.1c28.8,0,52.2,24.2,52.2,54.1c0,29.6-23.4,53.8-52.2,54.1 c-1.4,0-3-0.2-5-0.6c8.4,3.9,17.5,6.7,26,6.7c52.8,0,63.2-36.5,63.8-39.1c1.5-6.7,2.4-13.7,2.4-20.9C358.6,40.4,319.6,0,271.6,0z" }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("path", { fill: "url(#chooserIcpB)", d: "M87.1,179.8c20,0,41.9-10.9,65-32.4c10.9-10.1,20.5-21.1,27.5-29.8c0,0-11.2-12.9-23.5-26.8 c-6.7,8.4-16.2,19.8-27.3,30.1c-20.5,19-34,23.1-41.6,23.1c-28.8,0-52.2-24.2-52.2-54.1c0-29.6,23.4-53.8,52.2-54.1 c1.4,0,3,0.2,5,0.6c-8.4-3.9-17.5-6.7-26-6.7C13.4,29.6,3,66.1,2.4,68.8C0.9,75.5,0,82.5,0,89.7C0,139.4,39,179.8,87.1,179.8z" }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("path", { fill: "#29ABE2", fillRule: "evenodd", clipRule: "evenodd", d: "M127.3,59.7c-5.8-5.6-34-28.5-61-29.3C18.1,29.2,4,64.2,2.7,68.7C12,29.5,46.4,0.2,87.2,0 c33.3,0,67,32.7,91.9,62.2c0,0,0.1-0.1,0.1-0.1c0,0,11.2,12.9,23.5,26.8c0,0,14,16.5,28.8,31c5.8,5.6,33.9,28.2,60.9,29 c49.5,1.4,63.2-35.6,63.9-38.4c-9.1,39.5-43.6,68.9-84.6,69.1c-33.3,0-67-32.7-92-62.2c0,0.1-0.1,0.1-0.1,0.2 c0,0-11.2-12.9-23.5-26.8C156.2,90.8,142.2,74.2,127.3,59.7z M2.7,69.1c0-0.1,0-0.2,0.1-0.3C2.7,68.9,2.7,69,2.7,69.1z" })
+] });
+const OISY_MARK = /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "22", height: "22", viewBox: "0 0 32 32", fill: "none", "aria-label": "OISY Wallet", children: [
+  /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "16", cy: "16", r: "16", fill: "#4A26FB" }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M9 20.5 L16 9 L23 20.5", stroke: "#ffffff", strokeWidth: "2.2", strokeLinecap: "round", strokeLinejoin: "round", fill: "none" })
+] });
+function SignInChooser({ open, isLoggingIn, onChooseInternetIdentity, onClose }) {
+  if (!open) return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      "data-ocid": "signin.chooser",
+      className: "fixed inset-0 z-[110] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4",
+      onClick: onClose,
+      onKeyDown: (e) => e.key === "Escape" && onClose(),
+      role: "presentation",
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
+        {
+          className: "w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl",
+          onClick: (e) => e.stopPropagation(),
+          onKeyDown: (e) => e.stopPropagation(),
+          role: "dialog",
+          "aria-modal": "true",
+          "aria-labelledby": "signin-chooser-title",
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-14 h-14 bg-gradient-to-br from-yellow-600 to-yellow-400 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-yellow-500/30", children: /* @__PURE__ */ jsxRuntimeExports.jsx(MinegoldMark, { size: 28 }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { id: "signin-chooser-title", className: "t-headline text-white text-center mb-1", children: "Sign in" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500 text-center mb-5 px-2", children: "Choose how you want to open your vault." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                type: "button",
+                "data-ocid": "signin.chooser.ii",
+                onClick: onChooseInternetIdentity,
+                disabled: isLoggingIn,
+                className: "w-full min-h-[68px] rounded-2xl border border-zinc-700 bg-zinc-800/60 hover:border-yellow-500/50 hover:bg-zinc-800 transition-colors p-4 flex items-center gap-3 text-left disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-11 h-11 rounded-xl bg-black flex items-center justify-center shrink-0", children: ICP_MARK }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold text-sm text-white", children: isLoggingIn ? "Signing in…" : "Internet Identity" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] text-zinc-400 mt-0.5 leading-snug", children: "Face ID, fingerprint, or a security key. Creates your vault the first time." })
+                  ] })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                "data-ocid": "signin.chooser.oisy",
+                className: "w-full mt-2.5 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 flex items-center gap-3 text-left opacity-60",
+                "aria-disabled": "true",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-11 h-11 rounded-xl bg-black flex items-center justify-center shrink-0", children: OISY_MARK }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-bold text-sm text-white", children: "OISY Wallet" }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "t-label bg-zinc-700/60 text-zinc-300 rounded-full px-2 py-0.5", children: "Coming soon" })
+                    ] }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] text-zinc-500 mt-0.5 leading-snug", children: "OISY can't hold a silent vault session yet — every read would need a wallet approval. We're not shipping that door until it doesn't mean a popup once a minute." })
+                  ] })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                "data-ocid": "signin.chooser.close",
+                onClick: onClose,
+                className: "mt-4 w-full text-center text-[11px] text-zinc-500 underline underline-offset-2 hover:text-zinc-300",
+                children: "Not yet — take me back"
+              }
+            )
+          ]
+        }
+      )
     }
   );
 }
@@ -48881,6 +50128,30 @@ function useBackendActor() {
     isFetching: actorQuery.isFetching
   };
 }
+const CKBAT_ASSET = {
+  id: "ckBAT",
+  symbol: "ckBAT",
+  originSymbol: "BAT",
+  ledgerCanisterId: "j7x7x-syaaa-aaaar-qcbea-cai",
+  erc20Address: "0x0D8775F648430679A709E98d2b0Cb6250d2887EF",
+  decimals: 18,
+  feeFallback: 100000000000000000n,
+  // 1 ckBAT — ten times the ledger fee. At ckUNI's "minimum == one fee" rule
+  // a failed payout here could not cover its own refund transfer.
+  minRefineFallback: 1000000000000000000n,
+  minRefineLabel: "1 ckBAT"
+};
+function formatAssetAmount(amount, asset, places = 4) {
+  const divisor = 10 ** asset.decimals;
+  return (Number(amount) / divisor).toFixed(places);
+}
+function parseAssetAmount(input, asset) {
+  const trimmed = input.trim();
+  if (!trimmed || !/^\d*\.?\d*$/.test(trimmed)) return 0n;
+  const [whole = "0", frac = ""] = trimmed.split(".");
+  const padded = (frac + "0".repeat(asset.decimals)).slice(0, asset.decimals);
+  return BigInt(whole || "0") * 10n ** BigInt(asset.decimals) + BigInt(padded || "0");
+}
 const BACKEND_CANISTER_ID$1 = "c626g-iyaaa-aaaau-agpoa-cai";
 const TREASURY_PRINCIPAL = BACKEND_CANISTER_ID$1;
 const SGLDT_CANISTER_ID = "i2s4q-syaaa-aaaan-qz4sq-cai";
@@ -49579,7 +50850,7 @@ function useRetryUNIDepositPayout() {
   return useMutation({
     mutationFn: async (requestId) => {
       if (!actor) throw new Error("Not connected");
-      const result = await actor.verifyEthTransaction(requestId);
+      const result = await actor.retryUNIDepositPayout(requestId);
       return typeof result === "string" ? result : String(result);
     },
     onSuccess: () => {
@@ -49634,7 +50905,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-alh0AJ--.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DF2d8mxQ.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49665,7 +50936,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-alh0AJ--.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DF2d8mxQ.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49689,7 +50960,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-alh0AJ--.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DF2d8mxQ.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -49892,6 +51163,113 @@ function useAdminDissolveCkUNI() {
       qc.invalidateQueries({ queryKey: ["directCkUNITreasuryBalance"] });
     }
   });
+}
+const batRefineIDL = ({ IDL: IDL2 }) => {
+  const RefineOk = IDL2.Record({
+    refineId: IDL2.Nat,
+    sgldtPaid: IDL2.Nat,
+    rate: IDL2.Nat,
+    blockIndex: IDL2.Nat
+  });
+  return IDL2.Service({
+    getMyCkBATPosition: IDL2.Func(
+      [],
+      [
+        IDL2.Record({
+          balance: IDL2.Nat,
+          allowance: IDL2.Nat,
+          minRefine: IDL2.Nat,
+          rate: IDL2.Nat,
+          fee: IDL2.Nat
+        })
+      ],
+      []
+    ),
+    refineCkBAT: IDL2.Func(
+      [IDL2.Nat, IDL2.Opt(IDL2.Nat)],
+      [IDL2.Variant({ ok: RefineOk, err: IDL2.Text })],
+      []
+    )
+  });
+};
+async function fetchMyCkBATPosition(identity) {
+  try {
+    const actor = await directActor(batRefineIDL, { identity });
+    return await actor.getMyCkBATPosition();
+  } catch (err) {
+    console.warn("[refine] ckBAT position fetch failed:", err);
+    return null;
+  }
+}
+const CKBAT_FEE_FALLBACK = 100000000000000000n;
+let _ckbatFeeCache = null;
+async function fetchCkBATFee() {
+  if (_ckbatFeeCache !== null) return _ckbatFeeCache;
+  try {
+    const actor = Actor.createActor(icrc1LedgerIDL, {
+      agent: getAnonymousAgent(),
+      canisterId: CKBAT_ASSET.ledgerCanisterId
+    });
+    _ckbatFeeCache = await actor.icrc1_fee();
+    return _ckbatFeeCache;
+  } catch {
+    return CKBAT_FEE_FALLBACK;
+  }
+}
+async function approveCkBATForRefinery(opts) {
+  const actor = await directActor(icrc2ApproveIDL, {
+    identity: opts.identity,
+    canisterId: CKBAT_ASSET.ledgerCanisterId
+  });
+  const result = await actor.icrc2_approve({
+    from_subaccount: [],
+    spender: {
+      owner: Principal$1.fromText(BACKEND_CANISTER_ID$1),
+      subaccount: []
+    },
+    amount: opts.amount,
+    expected_allowance: [],
+    expires_at: [],
+    fee: [],
+    memo: [],
+    created_at_time: []
+  });
+  if ("Ok" in result) return { ok: true, blockIndex: result.Ok };
+  const err = result.Err;
+  if ("InsufficientFunds" in err) {
+    return {
+      ok: false,
+      error: `Not enough ckBAT to cover the 0.1 ckBAT approval fee (balance ${err.InsufficientFunds.balance}).`
+    };
+  }
+  if ("AllowanceChanged" in err) {
+    return { ok: false, error: "Your ckBAT allowance changed mid-flight. Try again." };
+  }
+  if ("TemporarilyUnavailable" in err) {
+    return { ok: false, error: "ckBAT ledger temporarily unavailable. Try again." };
+  }
+  if ("GenericError" in err) {
+    return {
+      ok: false,
+      error: `Approve failed (${err.GenericError.error_code}): ${err.GenericError.message}`
+    };
+  }
+  return { ok: false, error: `Approve failed: ${JSON.stringify(err)}` };
+}
+async function refineCkBAT(opts) {
+  const actor = await directActor(batRefineIDL, { identity: opts.identity });
+  const rateOpt = opts.rateHint == null ? [] : [opts.rateHint];
+  const result = await actor.refineCkBAT(opts.amount, rateOpt);
+  if ("ok" in result) {
+    return {
+      ok: true,
+      refineId: result.ok.refineId,
+      sgldtPaid: result.ok.sgldtPaid,
+      rate: result.ok.rate,
+      blockIndex: result.ok.blockIndex
+    };
+  }
+  return { ok: false, error: result.err };
 }
 const DOT = {
   verified: "var(--trust-verified)",
@@ -50340,6 +51718,8 @@ const PARTY_STYLE = {
 const OPERATOR_CONTROLLER = "xip3r-mhzcr-csb7y-ilqf5-4tpge-dka64-jv2ow-zon7z-key3x-77kf3-mae";
 const SGLDT_LEDGER_ID = "i2s4q-syaaa-aaaan-qz4sq-cai";
 const CKUNI_LEDGER_ID = "ilzky-ayaaa-aaaar-qahha-cai";
+const CKBAT_LEDGER_ID = "j7x7x-syaaa-aaaar-qcbea-cai";
+const CK_ORCHESTRATOR_ID = "vxkom-oyaaa-aaaar-qafda-cai";
 const CANISTERS = [
   {
     label: "Refinery backend (the treasury)",
@@ -50360,10 +51740,22 @@ const CANISTERS = [
     note: "your bridged UNI lives here, in YOUR account"
   },
   {
+    label: "ckBAT ledger",
+    id: CKBAT_LEDGER_ID,
+    party: "DFINITY",
+    note: "your bridged BAT lives here, in YOUR account"
+  },
+  {
     label: "ckERC-20 minter",
     id: "sv3dd-oaaaa-aaaar-qacoa-cai",
     party: "DFINITY",
-    note: "mints ckUNI after 12 Ethereum blocks — not our code"
+    note: "mints ckUNI and ckBAT after 12 Ethereum blocks — not our code"
+  },
+  {
+    label: "ckERC-20 ledger suite orchestrator",
+    id: CK_ORCHESTRATOR_ID,
+    party: "DFINITY",
+    note: "NNS-controlled; created the ckBAT ledger when the proposal carried"
   },
   {
     label: "Exchange Rate Canister (XRC)",
@@ -50372,7 +51764,10 @@ const CANISTERS = [
     note: "the UNI/USD oracle — DFINITY infrastructure"
   }
 ];
-const ledgerUrl = (token) => `${DASHBOARD}/${token === "sGLDT" ? SGLDT_LEDGER_ID : CKUNI_LEDGER_ID}`;
+const ledgerUrl = (token) => {
+  const id = token === "sGLDT" ? SGLDT_LEDGER_ID : token === "ckBAT" ? CKBAT_LEDGER_ID : CKUNI_LEDGER_ID;
+  return `${DASHBOARD}/${id}`;
+};
 function CanisterRow({ canister }) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[11px]", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -52109,24 +53504,24 @@ function WalletSection({
         ethBalanceDiag && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: "ETH · " }),
           ["wallet", "rpc", "canister"].map((k2) => {
-            const o = ethBalanceDiag.outcomes[k2];
-            const color = o === "ok" ? "text-emerald-400" : o === "null" ? "text-zinc-500" : o === "err" ? "text-red-400" : "text-zinc-700";
+            const o2 = ethBalanceDiag.outcomes[k2];
+            const color = o2 === "ok" ? "text-emerald-400" : o2 === "null" ? "text-zinc-500" : o2 === "err" ? "text-red-400" : "text-zinc-700";
             return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: `mr-2 ${color}`, children: [
               k2,
               "=",
-              o ?? "…"
+              o2 ?? "…"
             ] }, k2);
           })
         ] }),
         uniBalanceDiag && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-500", children: "UNI · " }),
           ["wallet", "rpc", "canister"].map((k2) => {
-            const o = uniBalanceDiag.outcomes[k2];
-            const color = o === "ok" ? "text-emerald-400" : o === "null" ? "text-zinc-500" : o === "err" ? "text-red-400" : "text-zinc-700";
+            const o2 = uniBalanceDiag.outcomes[k2];
+            const color = o2 === "ok" ? "text-emerald-400" : o2 === "null" ? "text-zinc-500" : o2 === "err" ? "text-red-400" : "text-zinc-700";
             return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: `mr-2 ${color}`, children: [
               k2,
               "=",
-              o ?? "…"
+              o2 ?? "…"
             ] }, k2);
           })
         ] }),
@@ -52638,7 +54033,7 @@ function useRefineFlow(identity) {
   })();
   return { state, position, progress, beginWatch, refineNow, refreshPosition, reset };
 }
-const TTL_MS = 60 * 6e4;
+const TTL_MS$1 = 60 * 6e4;
 const key = (principalSlug) => `minegold_refine_watch_${principalSlug}`;
 function writeRefineWatch(principalSlug, record) {
   try {
@@ -52657,7 +54052,7 @@ function readRefineWatch(principalSlug) {
     const raw = localStorage.getItem(key(principalSlug));
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    if (typeof parsed.amountWei !== "string" || typeof parsed.startedAt !== "number" || Date.now() - parsed.startedAt > TTL_MS) {
+    if (typeof parsed.amountWei !== "string" || typeof parsed.startedAt !== "number" || Date.now() - parsed.startedAt > TTL_MS$1) {
       clearRefineWatch(principalSlug);
       return null;
     }
@@ -52728,38 +54123,158 @@ function usePathRoute() {
   }, []);
   return [match.route, navigate, match.params];
 }
-const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-BdcOqrUS.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
-);
-const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-BgiF9B-q.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
-);
-const LandingPage = reactExports.lazy(
-  () => __vitePreload(() => import("./LandingPage-BMw2ytIE.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
-);
-const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-CzFZWnIP.js"), true ? __vite__mapDeps([5,3,6,4]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
-);
-const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-BvelNsuT.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
-    default: m2.TransactionHistoryPage
-  }))
-);
-const ReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./ReceiptPage-Bag55iKQ.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
-);
-const DocsPage = reactExports.lazy(
-  () => __vitePreload(() => import("./DocsPage-DGYvf5CY.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
-);
-const StatusPage = reactExports.lazy(
-  () => __vitePreload(() => import("./StatusPage-DgG4RwH5.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
-);
-const SharedReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./SharedReceiptPage-DkaCl3pz.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
-    default: m2.SharedReceiptPage
-  }))
-);
-const PageFallback = () => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-[40vh] flex items-center justify-center text-xs text-zinc-500 animate-pulse", children: "Loading…" });
+const PRICE_CACHE_KEY = "minegold_last_prices";
+const PRICE_REFRESH_MS = 6e4;
+function usePrices() {
+  const [uniPrice, setUniPrice] = reactExports.useState(null);
+  const [sgldtPrice, setSgldtPrice] = reactExports.useState(null);
+  const [ethPrice, setEthPrice] = reactExports.useState(null);
+  const [liveRate, setLiveRate] = reactExports.useState(0);
+  const [priceWarning, setPriceWarning] = reactExports.useState(null);
+  reactExports.useEffect(() => {
+    let cancelled = false;
+    const fetchPrices = async () => {
+      var _a3, _b3, _c2, _d2;
+      try {
+        const [cgRes, gtRes] = await Promise.all([
+          fetch(
+            "https://api.coingecko.com/api/v3/simple/price?ids=uniswap%2Cethereum&vs_currencies=usd"
+          ),
+          fetch(
+            "https://api.geckoterminal.com/api/v2/networks/icp/pools/jedlb-haaaa-aaaar-qbrma-cai"
+          )
+        ]);
+        if (cancelled) return;
+        let fetchedUniPrice = null;
+        let fetchedSgldtPrice = null;
+        let fetchedEthPrice = null;
+        if (cgRes.ok) {
+          const d2 = await cgRes.json();
+          if ((_a3 = d2 == null ? void 0 : d2.uniswap) == null ? void 0 : _a3.usd) {
+            fetchedUniPrice = Number(d2.uniswap.usd);
+            setUniPrice(fetchedUniPrice);
+          }
+          if ((_b3 = d2 == null ? void 0 : d2.ethereum) == null ? void 0 : _b3.usd) {
+            fetchedEthPrice = Number(d2.ethereum.usd);
+            setEthPrice(fetchedEthPrice);
+          }
+        }
+        if (gtRes.ok) {
+          const gt2 = await gtRes.json();
+          const basePrice = Number((_d2 = (_c2 = gt2 == null ? void 0 : gt2.data) == null ? void 0 : _c2.attributes) == null ? void 0 : _d2.base_token_price_usd);
+          if (Number.isFinite(basePrice) && basePrice > 0) {
+            fetchedSgldtPrice = basePrice;
+            setSgldtPrice(fetchedSgldtPrice);
+          }
+        }
+        if (fetchedUniPrice && fetchedSgldtPrice && fetchedSgldtPrice > 0) {
+          setLiveRate(fetchedUniPrice / fetchedSgldtPrice);
+          try {
+            localStorage.setItem(
+              PRICE_CACHE_KEY,
+              JSON.stringify({
+                uniPrice: fetchedUniPrice,
+                sgldtPrice: fetchedSgldtPrice,
+                ethPrice: fetchedEthPrice ?? 2500,
+                timestamp: Date.now()
+              })
+            );
+          } catch {
+          }
+          setPriceWarning(null);
+          return;
+        }
+      } catch {
+      }
+      if (cancelled) return;
+      try {
+        const raw = localStorage.getItem(PRICE_CACHE_KEY);
+        if (raw) {
+          const cached = JSON.parse(raw);
+          if (cached.uniPrice > 0 && cached.sgldtPrice > 0) {
+            setUniPrice(cached.uniPrice);
+            setSgldtPrice(cached.sgldtPrice);
+            setEthPrice(cached.ethPrice ?? 2500);
+            setLiveRate(cached.uniPrice / cached.sgldtPrice);
+            const ageHours = (Date.now() - cached.timestamp) / (1e3 * 60 * 60);
+            if (ageHours > 24) {
+              setPriceWarning(
+                "Using cached prices — live feed unavailable (>24h old)"
+              );
+            } else {
+              setPriceWarning("Using cached prices — live feed unavailable");
+            }
+            return;
+          }
+        }
+      } catch {
+      }
+      setPriceWarning(
+        "Live exchange rate unavailable. Check your connection or wallet's content filters (Brave Shields blocks some price APIs) and retry."
+      );
+    };
+    fetchPrices();
+    const id = setInterval(fetchPrices, PRICE_REFRESH_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, []);
+  return { uniPrice, sgldtPrice, ethPrice, liveRate, priceWarning };
+}
+const TTL_MS = 24 * 60 * 6e4;
+const storageKey = (principalSlug) => `minegold_steps_${principalSlug}`;
+function useMiningSteps(principalSlug) {
+  const [steps, setSteps] = reactExports.useState([]);
+  const persist = reactExports.useCallback(
+    (next) => {
+      try {
+        if (next.length === 0) localStorage.removeItem(storageKey(principalSlug));
+        else localStorage.setItem(storageKey(principalSlug), JSON.stringify(next));
+      } catch {
+      }
+    },
+    [principalSlug]
+  );
+  const hydratedForRef = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    if (!principalSlug) return;
+    if (hydratedForRef.current === principalSlug) return;
+    hydratedForRef.current = principalSlug;
+    try {
+      const raw = localStorage.getItem(storageKey(principalSlug));
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return;
+      const newest = parsed.reduce((n, s) => Math.max(n, s.updatedAt ?? 0), 0);
+      if (newest && Date.now() - newest > TTL_MS) {
+        localStorage.removeItem(storageKey(principalSlug));
+      } else {
+        setSteps(parsed);
+      }
+    } catch {
+    }
+  }, [principalSlug]);
+  const updateStep = reactExports.useCallback(
+    (id, label, status, detail) => {
+      setSteps((prev) => {
+        const now2 = Date.now();
+        const existing = prev.find((s) => s.id === id);
+        const next = existing ? prev.map(
+          (s) => s.id === id ? { ...s, label, status, detail, updatedAt: now2 } : s
+        ) : [...prev, { id, label, status, detail, startedAt: now2, updatedAt: now2 }];
+        persist(next);
+        return next;
+      });
+    },
+    [persist]
+  );
+  const resetSteps = reactExports.useCallback(() => {
+    setSteps([]);
+    persist([]);
+  }, [persist]);
+  return { steps, updateStep, resetSteps };
+}
 const UNI_CONTRACT_ADDRESS = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984";
 const CKUNI_LEDGER_CANISTER_ID = "ilzky-ayaaa-aaaar-qahha-cai";
 const CKERC20_HELPER_CONTRACT = "0x6abDA0438307733FC299e9C229FD3cc074bD8cC0";
@@ -52828,6 +54343,7 @@ async function readHexViaWallet(method, params, label) {
   }
 }
 function parseHexBigInt(hex) {
+  if (hex.trim() === "") return null;
   try {
     return BigInt(hex === "0x" || hex === "0X" ? "0x0" : hex);
   } catch {
@@ -52944,6 +54460,472 @@ async function fetchUniBalanceRaw(address) {
     "UNI"
   );
 }
+const ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;
+const CONNECT_PENDING_KEY = "bb_wallet_connect_pending";
+const BALANCE_REFRESH_MS = 6e4;
+function readConnectPending() {
+  try {
+    return localStorage.getItem(CONNECT_PENDING_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+function setConnectPending(pending) {
+  try {
+    if (pending) localStorage.setItem(CONNECT_PENDING_KEY, "1");
+    else localStorage.removeItem(CONNECT_PENDING_KEY);
+  } catch {
+  }
+}
+function preferredProvider(eth) {
+  if (eth.providers && eth.providers.length > 0) {
+    const brave = eth.providers.find((p2) => p2.isBraveWallet === true);
+    if (brave) return brave;
+  }
+  return eth;
+}
+function extractAddress(accounts) {
+  if (Array.isArray(accounts)) {
+    const first = accounts.map((a2) => typeof a2 === "string" ? a2.trim() : "").find((a2) => ADDRESS_RE.test(a2));
+    return first ?? null;
+  }
+  if (typeof accounts === "string") {
+    const trimmed = accounts.trim();
+    if (ADDRESS_RE.test(trimmed)) return trimmed;
+    const m2 = trimmed.match(/0x[a-fA-F0-9]{40}/);
+    return m2 ? m2[0] : null;
+  }
+  if (accounts && typeof accounts === "object") {
+    const anyAccounts = accounts;
+    const candidate = anyAccounts.result ?? anyAccounts.accounts ?? anyAccounts[0];
+    if (Array.isArray(candidate)) {
+      const first = candidate.map((a2) => typeof a2 === "string" ? a2.trim() : "").find((a2) => ADDRESS_RE.test(a2));
+      return first ?? null;
+    }
+    if (typeof candidate === "string" && ADDRESS_RE.test(candidate.trim())) {
+      return candidate.trim();
+    }
+  }
+  return null;
+}
+function useEthWallet() {
+  const [ethAddress2, setEthAddress] = reactExports.useState(null);
+  const [ethBalance, setEthBalance] = reactExports.useState(null);
+  const [uniBalance, setUniBalance] = reactExports.useState(null);
+  const [walletConnectionError, setWalletConnectionError] = reactExports.useState(
+    null
+  );
+  const [ethBalanceDiag, setEthBalanceDiag] = reactExports.useState(null);
+  const [uniBalanceDiag, setUniBalanceDiag] = reactExports.useState(null);
+  const [balanceRefreshing, setBalanceRefreshing] = reactExports.useState(false);
+  const [walletConnectLog, setWalletConnectLog] = reactExports.useState([]);
+  const appendWalletLog = reactExports.useCallback((line) => {
+    console.log(`[connectWallet] ${line}`);
+    setWalletConnectLog((prev) => [
+      ...prev.slice(-9),
+      `${(/* @__PURE__ */ new Date()).toLocaleTimeString()} ${line}`
+    ]);
+  }, []);
+  const refreshBalances = reactExports.useCallback(async (address) => {
+    setBalanceRefreshing(true);
+    const [ethDiag, uniDiag] = await Promise.all([
+      fetchEthBalanceRaw(address),
+      fetchUniBalanceRaw(address)
+    ]);
+    if (ethDiag.value !== null) setEthBalance(ethDiag.value);
+    if (uniDiag.value !== null) setUniBalance(uniDiag.value);
+    setEthBalanceDiag(ethDiag);
+    setUniBalanceDiag(uniDiag);
+    setWalletConnectionError(
+      ethDiag.value === null && uniDiag.value === null ? "Can't read balance. Check your wallet is unlocked on Ethereum mainnet and your network allows reads to ethereum-mainnet.wallet.brave.com / eth.llamarpc.com." : null
+    );
+    setBalanceRefreshing(false);
+  }, []);
+  const probeExistingAccount = reactExports.useCallback(
+    async (provider) => {
+      if (!provider) return null;
+      try {
+        const result = await provider.request({ method: "eth_accounts" });
+        if (Array.isArray(result)) {
+          const first = result.map((a2) => typeof a2 === "string" ? a2.trim() : "").find((a2) => ADDRESS_RE.test(a2));
+          if (first) return first;
+        }
+      } catch {
+      }
+      return null;
+    },
+    []
+  );
+  reactExports.useEffect(() => {
+    if (!ethAddress2) return;
+    refreshBalances(ethAddress2);
+    const id = setInterval(() => refreshBalances(ethAddress2), BALANCE_REFRESH_MS);
+    return () => clearInterval(id);
+  }, [ethAddress2, refreshBalances]);
+  const eip6963ProviderRef = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    const handleAnnounce = (e) => {
+      const detail = e.detail;
+      if ((detail == null ? void 0 : detail.provider) && !eip6963ProviderRef.current) {
+        console.log("[eip6963] provider announced:", detail.info);
+        eip6963ProviderRef.current = detail.provider;
+      }
+    };
+    window.addEventListener("eip6963:announceProvider", handleAnnounce);
+    window.dispatchEvent(new Event("eip6963:requestProvider"));
+    return () => {
+      window.removeEventListener("eip6963:announceProvider", handleAnnounce);
+    };
+  }, []);
+  reactExports.useEffect(() => {
+    const win = window;
+    const eth = win.ethereum;
+    if (!eth) return;
+    const anyEth = eth;
+    if (typeof anyEth.on !== "function") return;
+    const handler = (accounts) => {
+      if (Array.isArray(accounts) && accounts.length > 0 && typeof accounts[0] === "string") {
+        const addr = accounts[0];
+        if (ADDRESS_RE.test(addr)) {
+          console.log("[accountsChanged] picked up", addr);
+          setEthAddress(addr);
+          refreshBalances(addr);
+        }
+      }
+    };
+    anyEth.on("accountsChanged", handler);
+    return () => {
+      if (typeof anyEth.removeListener === "function") {
+        anyEth.removeListener("accountsChanged", handler);
+      }
+    };
+  }, [refreshBalances]);
+  reactExports.useEffect(() => {
+    if (ethAddress2) return;
+    const win = window;
+    if (!win.ethereum) return;
+    let cancelled = false;
+    (async () => {
+      for (let i = 0; i < 10; i++) {
+        await new Promise((r2) => setTimeout(r2, 200));
+        if (window.ethereum) break;
+      }
+      if (cancelled) return;
+      const currentEth = window.ethereum;
+      if (!currentEth) return;
+      const provider = preferredProvider(currentEth);
+      const probeTries = readConnectPending() ? 15 : 3;
+      for (let i = 0; i < probeTries && !cancelled; i++) {
+        const existing = await probeExistingAccount(provider);
+        if (cancelled) return;
+        if (existing) {
+          console.log("[auto-connect] found existing account:", existing);
+          setConnectPending(false);
+          setEthAddress(existing);
+          refreshBalances(existing);
+          return;
+        }
+        if (i < probeTries - 1) await new Promise((r2) => setTimeout(r2, 2e3));
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [ethAddress2, probeExistingAccount, refreshBalances]);
+  const connectEthereumWallet = reactExports.useCallback(async () => {
+    var _a3;
+    setWalletConnectLog([]);
+    appendWalletLog("Connect clicked");
+    setConnectPending(true);
+    const win = window;
+    let eth = win.ethereum;
+    appendWalletLog(
+      `Probes: window.ethereum=${!!win.ethereum} braveEthereum=${!!win.braveEthereum}`
+    );
+    if (eth) {
+      appendWalletLog(
+        `ethereum flags: isBraveWallet=${!!eth.isBraveWallet} providers=${eth.providers ? eth.providers.length : 0}`
+      );
+    }
+    if (!eth) {
+      if (isMobile) {
+        for (let i = 0; i < 10; i++) {
+          await new Promise((r2) => setTimeout(r2, 200));
+          eth = window.ethereum;
+          if (eth) break;
+        }
+      }
+      if (!eth) {
+        setConnectPending(false);
+        if (isIOS) {
+          setWalletConnectionError(
+            "iOS doesn't inject Web3 into regular browser tabs. Open the Brave Wallet app, tap the compass/browser tab, and navigate to this page from inside it. (MetaMask and Trust Wallet also have in-app browsers that work.)"
+          );
+        } else if (isMobile) {
+          setWalletConnectionError(
+            "No Web3 wallet detected. Open this page from inside your wallet app's built-in browser (Brave Wallet, MetaMask, Trust, Rainbow all have one)."
+          );
+        } else {
+          setWalletConnectionError(
+            "Please install Brave Wallet, MetaMask, or a compatible Web3 wallet browser extension, then refresh."
+          );
+        }
+        return;
+      }
+    }
+    const provider = preferredProvider(eth);
+    try {
+      appendWalletLog(
+        `Calling eth_requestAccounts${provider.isBraveWallet ? " (Brave sub-provider)" : ""}`
+      );
+      const requestPromise = provider.request({ method: "eth_requestAccounts" }).catch((err) => {
+        const code = err == null ? void 0 : err.code;
+        if (code === 4001) throw err;
+        appendWalletLog(`eth_requestAccounts rejected: ${String(err).slice(0, 80)}`);
+        return null;
+      });
+      const pollPromise = (async () => {
+        await new Promise((r2) => setTimeout(r2, isMobile ? 3e3 : 8e3));
+        for (let i = 0; i < 12; i++) {
+          const addr2 = await probeExistingAccount(provider);
+          if (addr2) {
+            appendWalletLog(`Parallel poll found addr (attempt ${i + 1})`);
+            return [addr2];
+          }
+          await new Promise((r2) => setTimeout(r2, 2500));
+        }
+        return null;
+      })();
+      const accounts = await Promise.race([requestPromise, pollPromise]);
+      appendWalletLog(
+        `Got response: ${((_a3 = JSON.stringify(accounts)) == null ? void 0 : _a3.slice(0, 80)) ?? String(accounts)}`
+      );
+      let addr = extractAddress(accounts);
+      if (!addr) {
+        appendWalletLog("No address in response — polling eth_accounts…");
+        for (let i = 0; i < 10 && !addr; i++) {
+          await new Promise((r2) => setTimeout(r2, 2e3));
+          addr = await probeExistingAccount(provider);
+          if (addr) {
+            appendWalletLog(`Recovered address (attempt ${i + 1}): ${addr.slice(0, 10)}…`);
+            break;
+          }
+          appendWalletLog(`Still waiting (${i + 1}/10)…`);
+        }
+      }
+      if (!addr) {
+        appendWalletLog("FAILED — no address after all polls");
+        setConnectPending(false);
+        if (isIOS) {
+          setWalletConnectionError(
+            "No account returned. Make sure you've opened this page inside the Brave Wallet app's browser (not regular Brave), your wallet is unlocked, and an account is selected."
+          );
+        } else if (isMobile) {
+          setWalletConnectionError(
+            "Wallet didn't return an account. Open this page from inside your wallet's in-app browser, make sure the wallet is unlocked with an account selected, then try again."
+          );
+        } else {
+          setWalletConnectionError(
+            "Wallet didn't return an account. Make sure your wallet is unlocked and has at least one account selected, then try again."
+          );
+        }
+        return;
+      }
+      appendWalletLog(`Connected: ${addr.slice(0, 10)}…`);
+      setConnectPending(false);
+      setEthAddress(addr);
+      await new Promise((r2) => setTimeout(r2, isMobile ? 1e3 : 500));
+      await refreshBalances(addr);
+    } catch (error) {
+      const code = error == null ? void 0 : error.code;
+      if (code === 4001) {
+        appendWalletLog("Rejected by user");
+        setConnectPending(false);
+        return;
+      }
+      appendWalletLog(
+        `Error: ${error instanceof Error ? error.message : String(error)}`.slice(0, 120)
+      );
+      console.error("[connectWallet] error:", error);
+      appendWalletLog("Polling eth_accounts after error…");
+      let addr = null;
+      for (let i = 0; i < 10 && !addr; i++) {
+        await new Promise((r2) => setTimeout(r2, 2e3));
+        addr = await probeExistingAccount(provider);
+        if (addr) {
+          appendWalletLog(`Recovered after error (attempt ${i + 1}): ${addr.slice(0, 10)}…`);
+          break;
+        }
+      }
+      setConnectPending(false);
+      if (addr) {
+        setEthAddress(addr);
+        await refreshBalances(addr);
+        return;
+      }
+      setWalletConnectionError(
+        `Wallet connection failed: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }, [appendWalletLog, probeExistingAccount, refreshBalances]);
+  const resetWallet = reactExports.useCallback(() => {
+    setEthAddress(null);
+    setEthBalance(null);
+    setUniBalance(null);
+  }, []);
+  return {
+    ethAddress: ethAddress2,
+    setEthAddress,
+    ethBalance,
+    uniBalance,
+    ethBalanceDiag,
+    uniBalanceDiag,
+    balanceRefreshing,
+    refreshBalances,
+    walletConnectionError,
+    setWalletConnectionError,
+    walletConnectLog,
+    connectEthereumWallet,
+    resetWallet
+  };
+}
+const TOTAL_GAS_CEILING = 260000n;
+const REFRESH_MS$1 = 9e4;
+function useGasEstimate(ethAddress2, ethPrice, ethBalance) {
+  const [gasEstimateEth, setGasEstimateEth] = reactExports.useState(null);
+  reactExports.useEffect(() => {
+    if (!ethAddress2) {
+      setGasEstimateEth(null);
+      return;
+    }
+    let cancelled = false;
+    const refresh = async () => {
+      try {
+        const gasPrice = await publicClient.getGasPrice();
+        if (!cancelled) {
+          setGasEstimateEth(Number(TOTAL_GAS_CEILING * gasPrice) / 1e18);
+        }
+      } catch {
+      }
+    };
+    void refresh();
+    const t = setInterval(() => void refresh(), REFRESH_MS$1);
+    return () => {
+      cancelled = true;
+      clearInterval(t);
+    };
+  }, [ethAddress2]);
+  const gasEstimate = gasEstimateEth != null ? `~${gasEstimateEth.toFixed(4)} ETH${ethPrice ? ` ($${(gasEstimateEth * ethPrice).toFixed(2)})` : ""}` : null;
+  const gasShortfall = gasEstimateEth != null && ethBalance != null && Number.parseFloat(ethBalance) < gasEstimateEth ? `Needs ~${gasEstimateEth.toFixed(4)} ETH for gas — you have ${ethBalance} ETH.` : null;
+  return { gasEstimateEth, gasEstimate, gasShortfall };
+}
+const TREASURY_ETH_ADDRESS = "0x22582083361bf06579BbfFcC1138D3fc986B91FF";
+const REFRESH_MS = 3e4;
+const PER_ENDPOINT_TIMEOUT_MS = 5e3;
+const RPC_ENDPOINTS = [
+  "https://ethereum-mainnet.wallet.brave.com/",
+  "https://eth.llamarpc.com",
+  "https://ethereum-rpc.publicnode.com",
+  "https://eth-mainnet.public.blastapi.io"
+];
+function useTreasuryEthUniBalance() {
+  const [balance, setBalance] = reactExports.useState(null);
+  const [loading, setLoading] = reactExports.useState(true);
+  const [unavailable, setUnavailable] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    let cancelled = false;
+    const fetchTreasuryUniBalance = async () => {
+      const callData = `0x70a08231000000000000000000000000${TREASURY_ETH_ADDRESS.replace("0x", "").toLowerCase()}`;
+      let successfulRead = false;
+      for (const endpoint of RPC_ENDPOINTS) {
+        if (cancelled) return;
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(
+            () => controller.abort(),
+            PER_ENDPOINT_TIMEOUT_MS
+          );
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              jsonrpc: "2.0",
+              method: "eth_call",
+              params: [{ to: UNI_CONTRACT_ADDRESS, data: callData }, "latest"],
+              id: 1
+            }),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          if (cancelled) return;
+          if (!response.ok) continue;
+          const json = await response.json();
+          const hex = (json == null ? void 0 : json.result) ?? "";
+          if (!isValidHex(hex) || hex === "0x") continue;
+          const raw = BigInt(hex);
+          successfulRead = true;
+          if (!cancelled) {
+            setBalance((Number(raw) / 1e18).toFixed(4));
+            setLoading(false);
+            setUnavailable(false);
+          }
+          return;
+        } catch {
+        }
+      }
+      if (!cancelled) {
+        setLoading(false);
+        if (!successfulRead) {
+          setUnavailable(true);
+          setBalance(null);
+        }
+        if (successfulRead) {
+          setBalance("0.0000");
+          setUnavailable(false);
+        }
+      }
+    };
+    fetchTreasuryUniBalance();
+    const id = setInterval(fetchTreasuryUniBalance, REFRESH_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, []);
+  return { balance, loading, unavailable };
+}
+const AdminPage = reactExports.lazy(
+  () => __vitePreload(() => import("./AdminPage-BN42L9m1.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+);
+const BankingBraveHome = reactExports.lazy(
+  () => __vitePreload(() => import("./BankingBraveHome-CYsBEtlH.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+);
+const LandingPage = reactExports.lazy(
+  () => __vitePreload(() => import("./LandingPage-Bu72_hjg.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
+);
+const MinegoldBraveSoon = reactExports.lazy(
+  () => __vitePreload(() => import("./MinegoldBraveSoon-BCbhqBFD.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+);
+const TransactionHistoryPage = reactExports.lazy(
+  () => __vitePreload(() => import("./TransactionHistoryPage-BZec2W34.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
+    default: m2.TransactionHistoryPage
+  }))
+);
+const ReceiptPage = reactExports.lazy(
+  () => __vitePreload(() => import("./ReceiptPage-Jer4UFkw.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
+);
+const DocsPage = reactExports.lazy(
+  () => __vitePreload(() => import("./DocsPage-Bc6NRkl3.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
+);
+const StatusPage = reactExports.lazy(
+  () => __vitePreload(() => import("./StatusPage-B6hYFXJb.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
+);
+const SharedReceiptPage = reactExports.lazy(
+  () => __vitePreload(() => import("./SharedReceiptPage-CwIORIX2.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
+    default: m2.SharedReceiptPage
+  }))
+);
+const PageFallback = () => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-[40vh] flex items-center justify-center text-xs text-zinc-500 animate-pulse", children: "Loading…" });
 function App() {
   var _a3, _b3;
   const { actor: actorRaw } = useBackendActor();
@@ -52962,7 +54944,20 @@ function App() {
   } : null;
   const isLoggingIn = iiIsLoggingIn;
   const refineFlow = useRefineFlow(identity);
-  const [ethAddress2, setEthAddress] = reactExports.useState(null);
+  const {
+    ethAddress: ethAddress2,
+    ethBalance,
+    uniBalance,
+    ethBalanceDiag,
+    uniBalanceDiag,
+    balanceRefreshing,
+    refreshBalances,
+    walletConnectionError,
+    setWalletConnectionError,
+    walletConnectLog,
+    connectEthereumWallet,
+    resetWallet
+  } = useEthWallet();
   const [firstRun, setFirstRun] = reactExports.useState(() => {
     try {
       return localStorage.getItem("minegold_has_refined") !== "1";
@@ -52980,11 +54975,8 @@ function App() {
   const [phase, setPhase] = reactExports.useState("idle");
   const [statusMsg, setStatusMsg] = reactExports.useState("");
   const [sgldtReleased, setSgldtReleased] = reactExports.useState(null);
-  const [uniBalance, setUniBalance] = reactExports.useState(null);
-  const [ethBalance, setEthBalance] = reactExports.useState(null);
-  const [walletConnectionError, setWalletConnectionError] = reactExports.useState(null);
   const [connectModalOpen, setConnectModalOpen] = reactExports.useState(false);
-  const [liveRate, setLiveRate] = reactExports.useState(0);
+  const { uniPrice, sgldtPrice, ethPrice, liveRate, priceWarning } = usePrices();
   const [route, navigate, routeParams] = usePathRoute();
   const topView = route === "portfolio" ? "home" : route === "brave" ? "brave-soon" : "uni";
   const showAdmin = route === "admin";
@@ -53008,9 +55000,6 @@ function App() {
   const [actorTimedOut, setActorTimedOut] = reactExports.useState(false);
   const [copiedPrincipal, setCopiedPrincipal] = reactExports.useState(false);
   const [copiedEthAddress, setCopiedEthAddress] = reactExports.useState(false);
-  const [uniPrice, setUniPrice] = reactExports.useState(null);
-  const [sgldtPrice, setSgldtPrice] = reactExports.useState(null);
-  const [ethPrice, setEthPrice] = reactExports.useState(null);
   const pollEpochRef = reactExports.useRef(0);
   const treasuryPanelRef = reactExports.useRef(null);
   const _principalSlug = (user == null ? void 0 : user.principal.slice(0, 16)) ?? "";
@@ -53031,39 +55020,11 @@ function App() {
     [DEPOSIT_ID_KEY]
   );
   const [pollAttempt, setPollAttempt] = reactExports.useState(0);
-  const MINING_STEPS_KEY = `minegold_steps_${_principalSlug}`;
-  const MINING_STEPS_TTL_MS = 24 * 60 * 6e4;
-  const [miningSteps, setMiningSteps] = reactExports.useState([]);
-  const persistMiningSteps = reactExports.useCallback((next) => {
-    try {
-      if (next.length === 0) localStorage.removeItem(MINING_STEPS_KEY);
-      else localStorage.setItem(MINING_STEPS_KEY, JSON.stringify(next));
-    } catch {
-    }
-  }, [MINING_STEPS_KEY]);
-  const updateStep = reactExports.useCallback(
-    (id, label, status, detail) => {
-      setMiningSteps((prev) => {
-        const now2 = Date.now();
-        const existing = prev.find((s) => s.id === id);
-        let next;
-        if (existing) {
-          next = prev.map(
-            (s) => s.id === id ? { ...s, label, status, detail, updatedAt: now2 } : s
-          );
-        } else {
-          next = [...prev, { id, label, status, detail, startedAt: now2, updatedAt: now2 }];
-        }
-        persistMiningSteps(next);
-        return next;
-      });
-    },
-    [persistMiningSteps]
-  );
-  const resetSteps = reactExports.useCallback(() => {
-    setMiningSteps([]);
-    persistMiningSteps([]);
-  }, [persistMiningSteps]);
+  const {
+    steps: miningSteps,
+    updateStep,
+    resetSteps
+  } = useMiningSteps(_principalSlug);
   const pollingIntervalRef = reactExports.useRef(
     null
   );
@@ -53268,73 +55229,11 @@ function App() {
   reactExports.useEffect(() => {
     refreshTreasury();
   }, [refreshTreasury]);
-  const TREASURY_ETH_ADDRESS = "0x22582083361bf06579BbfFcC1138D3fc986B91FF";
-  const [treasuryEthUniBalance, setTreasuryEthUniBalance] = reactExports.useState(null);
-  const [treasuryEthUniLoading, setTreasuryEthUniLoading] = reactExports.useState(true);
-  const [treasuryEthUniUnavailable, setTreasuryEthUniUnavailable] = reactExports.useState(false);
-  reactExports.useEffect(() => {
-    let cancelled = false;
-    const RPC_ENDPOINTS = [
-      "https://ethereum-mainnet.wallet.brave.com/",
-      "https://eth.llamarpc.com",
-      "https://ethereum-rpc.publicnode.com",
-      "https://eth-mainnet.public.blastapi.io"
-    ];
-    const fetchTreasuryUniBalance = async () => {
-      const callData = `0x70a08231000000000000000000000000${TREASURY_ETH_ADDRESS.replace("0x", "").toLowerCase()}`;
-      let successfulRead = false;
-      for (const endpoint of RPC_ENDPOINTS) {
-        if (cancelled) return;
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 5e3);
-          const response = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              jsonrpc: "2.0",
-              method: "eth_call",
-              params: [{ to: UNI_CONTRACT_ADDRESS, data: callData }, "latest"],
-              id: 1
-            }),
-            signal: controller.signal
-          });
-          clearTimeout(timeoutId);
-          if (cancelled) return;
-          if (!response.ok) continue;
-          const json = await response.json();
-          const hex = (json == null ? void 0 : json.result) ?? "";
-          if (!isValidHex(hex) || hex === "0x") continue;
-          const raw = BigInt(hex);
-          successfulRead = true;
-          if (!cancelled) {
-            setTreasuryEthUniBalance((Number(raw) / 1e18).toFixed(4));
-            setTreasuryEthUniLoading(false);
-            setTreasuryEthUniUnavailable(false);
-          }
-          return;
-        } catch {
-        }
-      }
-      if (!cancelled) {
-        setTreasuryEthUniLoading(false);
-        if (!successfulRead) {
-          setTreasuryEthUniUnavailable(true);
-          setTreasuryEthUniBalance(null);
-        }
-        if (successfulRead) {
-          setTreasuryEthUniBalance("0.0000");
-          setTreasuryEthUniUnavailable(false);
-        }
-      }
-    };
-    fetchTreasuryUniBalance();
-    const id = setInterval(fetchTreasuryUniBalance, 3e4);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
-  }, []);
+  const {
+    balance: treasuryEthUniBalance,
+    loading: treasuryEthUniLoading,
+    unavailable: treasuryEthUniUnavailable
+  } = useTreasuryEthUniBalance();
   const { data: sgldtBalanceRaw } = useUserSGLDTBalance(user == null ? void 0 : user.principal);
   const sgldtBalance = sgldtBalanceRaw !== void 0 ? (Number(sgldtBalanceRaw) / 1e8).toFixed(4) : null;
   const sgldtUsd = sgldtBalance && sgldtPrice ? (Number.parseFloat(sgldtBalance) * sgldtPrice).toFixed(2) : null;
@@ -53410,21 +55309,6 @@ function App() {
     try {
       const storedHash = localStorage.getItem(`minegold_tx_hash_${slug}`);
       if (storedHash) setCurrentTxHashState(storedHash);
-    } catch {
-    }
-    try {
-      const raw = localStorage.getItem(`minegold_steps_${slug}`);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          const newest = parsed.reduce((n, s) => Math.max(n, s.updatedAt ?? 0), 0);
-          if (newest && Date.now() - newest > MINING_STEPS_TTL_MS) {
-            localStorage.removeItem(`minegold_steps_${slug}`);
-          } else {
-            setMiningSteps(parsed);
-          }
-        }
-      }
     } catch {
     }
   }, [user]);
@@ -53521,439 +55405,19 @@ function App() {
   const estimatedGold = (Number.parseFloat(uniAmount) || 0) * effectiveRate;
   estimatedGoldRef.current = estimatedGold;
   const minReceivedDisplay = estimatedGold > 0 ? `${(estimatedGold * 0.98).toFixed(5)} sGLDT` : null;
-  const [gasEstimateEth, setGasEstimateEth] = reactExports.useState(null);
-  reactExports.useEffect(() => {
-    if (!ethAddress2) {
-      setGasEstimateEth(null);
-      return;
-    }
-    let cancelled = false;
-    const refresh = async () => {
-      try {
-        const gasPrice = await publicClient.getGasPrice();
-        const totalGas = 260000n;
-        if (!cancelled) setGasEstimateEth(Number(totalGas * gasPrice) / 1e18);
-      } catch {
-      }
-    };
-    void refresh();
-    const t = setInterval(() => void refresh(), 9e4);
-    return () => {
-      cancelled = true;
-      clearInterval(t);
-    };
-  }, [ethAddress2]);
-  const gasEstimate = gasEstimateEth != null ? `~${gasEstimateEth.toFixed(4)} ETH${ethPrice ? ` ($${(gasEstimateEth * ethPrice).toFixed(2)})` : ""}` : null;
-  const gasShortfall = gasEstimateEth != null && ethBalance != null && Number.parseFloat(ethBalance) < gasEstimateEth ? `Needs ~${gasEstimateEth.toFixed(4)} ETH for gas — you have ${ethBalance} ETH.` : null;
-  const isActive = phase === "awaiting_deposit" || phase === "wallet_confirming" || phase === "eth_monitoring" || phase === "ckuni_minting" || phase === "releasing_sgldt";
-  const [ethBalanceDiag, setEthBalanceDiag] = reactExports.useState(null);
-  const [uniBalanceDiag, setUniBalanceDiag] = reactExports.useState(null);
-  const [balanceRefreshing, setBalanceRefreshing] = reactExports.useState(false);
-  const refreshBalances = reactExports.useCallback(async (address) => {
-    setBalanceRefreshing(true);
-    const [ethDiag, uniDiag] = await Promise.all([
-      fetchEthBalanceRaw(address),
-      fetchUniBalanceRaw(address)
-    ]);
-    if (ethDiag.value !== null) setEthBalance(ethDiag.value);
-    if (uniDiag.value !== null) setUniBalance(uniDiag.value);
-    setEthBalanceDiag(ethDiag);
-    setUniBalanceDiag(uniDiag);
-    setWalletConnectionError(
-      ethDiag.value === null && uniDiag.value === null ? "Can't read balance. Check your wallet is unlocked on Ethereum mainnet and your network allows reads to ethereum-mainnet.wallet.brave.com / eth.llamarpc.com." : null
-    );
-    setBalanceRefreshing(false);
-  }, []);
-  const [priceWarning, setPriceWarning] = reactExports.useState(null);
-  reactExports.useEffect(() => {
-    let cancelled = false;
-    const fetchPrices = async () => {
-      var _a4, _b4, _c2, _d2;
-      try {
-        const [cgRes, gtRes] = await Promise.all([
-          fetch(
-            "https://api.coingecko.com/api/v3/simple/price?ids=uniswap%2Cethereum&vs_currencies=usd"
-          ),
-          fetch(
-            "https://api.geckoterminal.com/api/v2/networks/icp/pools/jedlb-haaaa-aaaar-qbrma-cai"
-          )
-        ]);
-        if (cancelled) return;
-        let fetchedUniPrice = null;
-        let fetchedSgldtPrice = null;
-        let fetchedEthPrice = null;
-        if (cgRes.ok) {
-          const d2 = await cgRes.json();
-          if ((_a4 = d2 == null ? void 0 : d2.uniswap) == null ? void 0 : _a4.usd) {
-            fetchedUniPrice = Number(d2.uniswap.usd);
-            setUniPrice(fetchedUniPrice);
-          }
-          if ((_b4 = d2 == null ? void 0 : d2.ethereum) == null ? void 0 : _b4.usd) {
-            fetchedEthPrice = Number(d2.ethereum.usd);
-            setEthPrice(fetchedEthPrice);
-          }
-        }
-        if (gtRes.ok) {
-          const gt2 = await gtRes.json();
-          const basePrice = Number((_d2 = (_c2 = gt2 == null ? void 0 : gt2.data) == null ? void 0 : _c2.attributes) == null ? void 0 : _d2.base_token_price_usd);
-          if (Number.isFinite(basePrice) && basePrice > 0) {
-            fetchedSgldtPrice = basePrice;
-            setSgldtPrice(fetchedSgldtPrice);
-          }
-        }
-        if (fetchedUniPrice && fetchedSgldtPrice && fetchedSgldtPrice > 0) {
-          setLiveRate(fetchedUniPrice / fetchedSgldtPrice);
-          try {
-            localStorage.setItem(
-              "minegold_last_prices",
-              JSON.stringify({
-                uniPrice: fetchedUniPrice,
-                sgldtPrice: fetchedSgldtPrice,
-                ethPrice: fetchedEthPrice ?? 2500,
-                timestamp: Date.now()
-              })
-            );
-          } catch {
-          }
-          setPriceWarning(null);
-          return;
-        }
-      } catch {
-      }
-      if (cancelled) return;
-      try {
-        const raw = localStorage.getItem("minegold_last_prices");
-        if (raw) {
-          const cached = JSON.parse(raw);
-          if (cached.uniPrice > 0 && cached.sgldtPrice > 0) {
-            setUniPrice(cached.uniPrice);
-            setSgldtPrice(cached.sgldtPrice);
-            setEthPrice(cached.ethPrice ?? 2500);
-            setLiveRate(cached.uniPrice / cached.sgldtPrice);
-            const ageHours = (Date.now() - cached.timestamp) / (1e3 * 60 * 60);
-            if (ageHours > 24) {
-              setPriceWarning(
-                "Using cached prices — live feed unavailable (>24h old)"
-              );
-            } else {
-              setPriceWarning("Using cached prices — live feed unavailable");
-            }
-            return;
-          }
-        }
-      } catch {
-      }
-      setPriceWarning(
-        "Live exchange rate unavailable. Check your connection or wallet's content filters (Brave Shields blocks some price APIs) and retry."
-      );
-    };
-    fetchPrices();
-    const id = setInterval(fetchPrices, 6e4);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
-  }, []);
-  reactExports.useEffect(() => {
-    if (!ethAddress2) return;
-    refreshBalances(ethAddress2);
-    const id = setInterval(() => refreshBalances(ethAddress2), 6e4);
-    return () => clearInterval(id);
-  }, [ethAddress2, refreshBalances]);
-  const handleLogin = () => {
-    iiLogin();
-  };
-  const [walletConnectLog, setWalletConnectLog] = reactExports.useState([]);
-  const appendWalletLog = reactExports.useCallback((line) => {
-    console.log(`[connectWallet] ${line}`);
-    setWalletConnectLog((prev) => [...prev.slice(-9), `${(/* @__PURE__ */ new Date()).toLocaleTimeString()} ${line}`]);
-  }, []);
-  const probeExistingAccount = reactExports.useCallback(
-    async (provider) => {
-      if (!provider) return null;
-      try {
-        const result = await provider.request({ method: "eth_accounts" });
-        const addrRe = /^0x[a-fA-F0-9]{40}$/;
-        if (Array.isArray(result)) {
-          const first = result.map((a2) => typeof a2 === "string" ? a2.trim() : "").find((a2) => addrRe.test(a2));
-          if (first) return first;
-        }
-      } catch {
-      }
-      return null;
-    },
-    []
+  const { gasEstimate, gasShortfall } = useGasEstimate(
+    ethAddress2,
+    ethPrice,
+    ethBalance
   );
-  const eip6963ProviderRef = reactExports.useRef(null);
-  reactExports.useEffect(() => {
-    const handleAnnounce = (e) => {
-      const detail = e.detail;
-      if ((detail == null ? void 0 : detail.provider) && !eip6963ProviderRef.current) {
-        console.log("[eip6963] provider announced:", detail.info);
-        eip6963ProviderRef.current = detail.provider;
-      }
-    };
-    window.addEventListener("eip6963:announceProvider", handleAnnounce);
-    window.dispatchEvent(new Event("eip6963:requestProvider"));
-    return () => {
-      window.removeEventListener("eip6963:announceProvider", handleAnnounce);
-    };
-  }, []);
-  reactExports.useEffect(() => {
-    const win = window;
-    const eth = win.ethereum;
-    if (!eth) return;
-    const anyEth = eth;
-    if (typeof anyEth.on !== "function") return;
-    const handler = (accounts) => {
-      if (Array.isArray(accounts) && accounts.length > 0 && typeof accounts[0] === "string") {
-        const addr = accounts[0];
-        if (/^0x[a-fA-F0-9]{40}$/.test(addr)) {
-          console.log("[accountsChanged] picked up", addr);
-          setEthAddress(addr);
-          refreshBalances(addr);
-        }
-      }
-    };
-    anyEth.on("accountsChanged", handler);
-    return () => {
-      if (typeof anyEth.removeListener === "function") {
-        anyEth.removeListener("accountsChanged", handler);
-      }
-    };
-  }, [refreshBalances]);
-  reactExports.useEffect(() => {
-    if (ethAddress2) return;
-    const win = window;
-    const eth = win.ethereum;
-    if (!eth) return;
-    let cancelled = false;
-    (async () => {
-      for (let i = 0; i < 10; i++) {
-        await new Promise((r2) => setTimeout(r2, 200));
-        if (window.ethereum) break;
-      }
-      if (cancelled) return;
-      const currentEth = window.ethereum;
-      if (!currentEth) return;
-      let provider = currentEth;
-      if (currentEth.providers && currentEth.providers.length > 0) {
-        const brave = currentEth.providers.find((p2) => p2.isBraveWallet === true);
-        if (brave) provider = brave;
-      }
-      const wasPending = (() => {
-        try {
-          return localStorage.getItem("bb_wallet_connect_pending") === "1";
-        } catch {
-          return false;
-        }
-      })();
-      const probeTries = wasPending ? 15 : 3;
-      for (let i = 0; i < probeTries && !cancelled; i++) {
-        const existing = await probeExistingAccount(provider);
-        if (cancelled) return;
-        if (existing) {
-          console.log("[auto-connect] found existing account:", existing);
-          try {
-            localStorage.removeItem("bb_wallet_connect_pending");
-          } catch {
-          }
-          setEthAddress(existing);
-          refreshBalances(existing);
-          return;
-        }
-        if (i < probeTries - 1) await new Promise((r2) => setTimeout(r2, 2e3));
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [ethAddress2, probeExistingAccount, refreshBalances]);
-  const connectEthereumWallet = async () => {
-    var _a4;
-    setWalletConnectLog([]);
-    appendWalletLog("Connect clicked");
-    try {
-      localStorage.setItem("bb_wallet_connect_pending", "1");
-    } catch {
-    }
-    const win = window;
-    let eth = win.ethereum;
-    appendWalletLog(
-      `Probes: window.ethereum=${!!win.ethereum} braveEthereum=${!!win.braveEthereum}`
-    );
-    if (eth) {
-      appendWalletLog(
-        `ethereum flags: isBraveWallet=${!!eth.isBraveWallet} providers=${eth.providers ? eth.providers.length : 0}`
-      );
-    }
-    if (!eth) {
-      if (isMobile) {
-        for (let i = 0; i < 10; i++) {
-          await new Promise((r2) => setTimeout(r2, 200));
-          eth = window.ethereum;
-          if (eth) break;
-        }
-      }
-      if (!eth) {
-        try {
-          localStorage.removeItem("bb_wallet_connect_pending");
-        } catch {
-        }
-        if (isIOS) {
-          setWalletConnectionError(
-            "iOS doesn't inject Web3 into regular browser tabs. Open the Brave Wallet app, tap the compass/browser tab, and navigate to this page from inside it. (MetaMask and Trust Wallet also have in-app browsers that work.)"
-          );
-        } else if (isMobile) {
-          setWalletConnectionError(
-            "No Web3 wallet detected. Open this page from inside your wallet app's built-in browser (Brave Wallet, MetaMask, Trust, Rainbow all have one)."
-          );
-        } else {
-          setWalletConnectionError(
-            "Please install Brave Wallet, MetaMask, or a compatible Web3 wallet browser extension, then refresh."
-          );
-        }
-        return;
-      }
-    }
-    let provider = eth;
-    if (eth.providers && eth.providers.length > 0) {
-      const brave = eth.providers.find((p2) => p2.isBraveWallet === true);
-      if (brave) provider = brave;
-    } else if (eth.isBraveWallet === true) {
-      provider = eth;
-    }
-    try {
-      appendWalletLog(
-        `Calling eth_requestAccounts${provider.isBraveWallet ? " (Brave sub-provider)" : ""}`
-      );
-      const requestPromise = provider.request({ method: "eth_requestAccounts" }).catch((err) => {
-        const code = err == null ? void 0 : err.code;
-        if (code === 4001) throw err;
-        appendWalletLog(`eth_requestAccounts rejected: ${String(err).slice(0, 80)}`);
-        return null;
-      });
-      const pollPromise = (async () => {
-        await new Promise((r2) => setTimeout(r2, isMobile ? 3e3 : 8e3));
-        for (let i = 0; i < 12; i++) {
-          const addr2 = await probeExistingAccount(provider);
-          if (addr2) {
-            appendWalletLog(`Parallel poll found addr (attempt ${i + 1})`);
-            return [addr2];
-          }
-          await new Promise((r2) => setTimeout(r2, 2500));
-        }
-        return null;
-      })();
-      const accounts = await Promise.race([requestPromise, pollPromise]);
-      appendWalletLog(
-        `Got response: ${((_a4 = JSON.stringify(accounts)) == null ? void 0 : _a4.slice(0, 80)) ?? String(accounts)}`
-      );
-      let addr = null;
-      const addrRe = /^0x[a-fA-F0-9]{40}$/;
-      if (Array.isArray(accounts)) {
-        const first = accounts.map((a2) => typeof a2 === "string" ? a2.trim() : "").find((a2) => addrRe.test(a2));
-        if (first) addr = first;
-      } else if (typeof accounts === "string") {
-        const trimmed = accounts.trim();
-        if (addrRe.test(trimmed)) addr = trimmed;
-        else {
-          const m2 = trimmed.match(/0x[a-fA-F0-9]{40}/);
-          if (m2) addr = m2[0];
-        }
-      } else if (accounts && typeof accounts === "object") {
-        const anyAccounts = accounts;
-        const candidate = anyAccounts.result ?? anyAccounts.accounts ?? anyAccounts[0];
-        if (Array.isArray(candidate)) {
-          const first = candidate.map((a2) => typeof a2 === "string" ? a2.trim() : "").find((a2) => addrRe.test(a2));
-          if (first) addr = first;
-        } else if (typeof candidate === "string" && addrRe.test(candidate.trim())) {
-          addr = candidate.trim();
-        }
-      }
-      if (!addr) {
-        appendWalletLog("No address in response — polling eth_accounts…");
-        for (let i = 0; i < 10 && !addr; i++) {
-          await new Promise((r2) => setTimeout(r2, 2e3));
-          addr = await probeExistingAccount(provider);
-          if (addr) {
-            appendWalletLog(`Recovered address (attempt ${i + 1}): ${addr.slice(0, 10)}…`);
-            break;
-          }
-          appendWalletLog(`Still waiting (${i + 1}/10)…`);
-        }
-      }
-      if (!addr) {
-        appendWalletLog("FAILED — no address after all polls");
-        try {
-          localStorage.removeItem("bb_wallet_connect_pending");
-        } catch {
-        }
-        if (isIOS) {
-          setWalletConnectionError(
-            "No account returned. Make sure you've opened this page inside the Brave Wallet app's browser (not regular Brave), your wallet is unlocked, and an account is selected."
-          );
-        } else if (isMobile) {
-          setWalletConnectionError(
-            "Wallet didn't return an account. Open this page from inside your wallet's in-app browser, make sure the wallet is unlocked with an account selected, then try again."
-          );
-        } else {
-          setWalletConnectionError(
-            "Wallet didn't return an account. Make sure your wallet is unlocked and has at least one account selected, then try again."
-          );
-        }
-        return;
-      }
-      appendWalletLog(`Connected: ${addr.slice(0, 10)}…`);
-      try {
-        localStorage.removeItem("bb_wallet_connect_pending");
-      } catch {
-      }
-      setEthAddress(addr);
-      const delay = isMobile ? 1e3 : 500;
-      await new Promise((r2) => setTimeout(r2, delay));
-      await refreshBalances(addr);
-    } catch (error) {
-      const code = error == null ? void 0 : error.code;
-      if (code === 4001) {
-        appendWalletLog("Rejected by user");
-        try {
-          localStorage.removeItem("bb_wallet_connect_pending");
-        } catch {
-        }
-        return;
-      }
-      appendWalletLog(
-        `Error: ${error instanceof Error ? error.message : String(error)}`.slice(0, 120)
-      );
-      console.error("[connectWallet] error:", error);
-      appendWalletLog("Polling eth_accounts after error…");
-      let addr = null;
-      for (let i = 0; i < 10 && !addr; i++) {
-        await new Promise((r2) => setTimeout(r2, 2e3));
-        addr = await probeExistingAccount(provider);
-        if (addr) {
-          appendWalletLog(`Recovered after error (attempt ${i + 1}): ${addr.slice(0, 10)}…`);
-          break;
-        }
-      }
-      if (addr) {
-        try {
-          localStorage.removeItem("bb_wallet_connect_pending");
-        } catch {
-        }
-        setEthAddress(addr);
-        await refreshBalances(addr);
-        return;
-      }
-      try {
-        localStorage.removeItem("bb_wallet_connect_pending");
-      } catch {
-      }
-      setWalletConnectionError(
-        `Wallet connection failed: ${error instanceof Error ? error.message : String(error)}`
-      );
-    }
+  const isActive = phase === "awaiting_deposit" || phase === "wallet_confirming" || phase === "eth_monitoring" || phase === "ckuni_minting" || phase === "releasing_sgldt";
+  const [signInChooserOpen, setSignInChooserOpen] = reactExports.useState(false);
+  const handleLogin = () => {
+    setSignInChooserOpen(true);
+  };
+  const handleChooseInternetIdentity = () => {
+    setSignInChooserOpen(false);
+    iiLogin();
   };
   const handleLogout = () => {
     stopPolling();
@@ -53961,9 +55425,7 @@ function App() {
     refineFlow.reset();
     clearRefineWatch(_principalSlug);
     iiClear();
-    setEthAddress(null);
-    setEthBalance(null);
-    setUniBalance(null);
+    resetWallet();
     setPhase("idle");
     setSgldtReleased(null);
     setEnteredRefinery(false);
@@ -54460,7 +55922,15 @@ function App() {
     ) });
   }
   if (topView === "brave-soon") {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(PageFallback, {}), children: /* @__PURE__ */ jsxRuntimeExports.jsx(MinegoldBraveSoon, { onBack: backToBankingBrave, onOpenUni: enterMinegoldUni }) });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(PageFallback, {}), children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      MinegoldBraveSoon,
+      {
+        onBack: backToBankingBrave,
+        onOpenUni: enterMinegoldUni,
+        identity: identity ?? null,
+        onSignIn: () => void iiLogin()
+      }
+    ) });
   }
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-[#080808] text-zinc-100 font-sans", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(IncidentBanner, { onNavigatePath: navigatePath }),
@@ -54470,6 +55940,15 @@ function App() {
         isLoggingIn,
         onLogin: handleLogin,
         onBack: enteredRefinery ? () => setEnteredRefinery(false) : void 0
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      SignInChooser,
+      {
+        open: signInChooserOpen,
+        isLoggingIn,
+        onChooseInternetIdentity: handleChooseInternetIdentity,
+        onClose: () => setSignInChooserOpen(false)
       }
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -54905,7 +56384,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   /* @__PURE__ */ jsxRuntimeExports.jsx(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxRuntimeExports.jsx(InternetIdentityProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) }) })
 );
 export {
-  cva as $,
+  Actor as $,
   ShieldCheck as A,
   TrendingUp as B,
   CircleAlert as C,
@@ -54919,55 +56398,65 @@ export {
   JOURNEY as K,
   LoaderCircle as L,
   MinegoldMark as M,
-  HttpAgent as N,
-  Actor as O,
+  fetchMyCkBATPosition as N,
+  fetchCkBATFee as O,
   Principal$1 as P,
-  useLedger as Q,
+  computeRefineAmounts as Q,
   React2 as R,
   Send as S,
   ThemeToggle as T,
-  ArrowRightLeft as U,
-  StatusPill as V,
+  formatAssetAmount as U,
+  CKBAT_ASSET as V,
   Wallet as W,
-  ChevronUp as X,
-  ChevronDown as Y,
-  ArrowDownToLine as Z,
-  ArrowUpFromLine as _,
+  approveCkBATForRefinery as X,
+  refineCkBAT as Y,
+  parseAssetAmount as Z,
+  HttpAgent as _,
   cn as a,
-  fetchShareToken as a0,
-  shareUrl as a1,
-  Check as a2,
-  X as a3,
-  unpublishReceipt as a4,
-  publishReceipt as a5,
-  findEntry as a6,
-  fmtAmount as a7,
-  ledgerUrl as a8,
-  TriangleAlert as a9,
-  fetchPublicReceipt as aa,
-  formatTimestamp as ab,
-  SGLDT_LEDGER_ID as ac,
-  encode$4 as ad,
-  Text as ae,
-  isV3ResponseBody as af,
-  DelegationIdentity as ag,
-  isDelegationValid as ah,
-  AuthClient as ai,
-  useQueryClient as aj,
-  useQuery as ak,
-  BaseError$1 as al,
-  getUrl as am,
-  stringify$1 as an,
-  decodeErrorResult as ao,
-  isAddressEqual as ap,
-  localBatchGatewayUrl as aq,
-  localBatchGatewayRequest as ar,
-  call as as,
-  concat$1 as at,
-  encodeAbiParameters as au,
-  HttpRequestError as av,
-  isHex as aw,
-  React$2 as b,
+  useLedger as a0,
+  ArrowRightLeft as a1,
+  StatusPill as a2,
+  ChevronUp as a3,
+  ChevronDown as a4,
+  ArrowDownToLine as a5,
+  ArrowUpFromLine as a6,
+  cva as a7,
+  fetchShareToken as a8,
+  shareUrl as a9,
+  call as aA,
+  concat$1 as aB,
+  encodeAbiParameters as aC,
+  getAbortError as aD,
+  isAbortError as aE,
+  HttpRequestError as aF,
+  isHex as aG,
+  Check as aa,
+  X as ab,
+  unpublishReceipt as ac,
+  publishReceipt as ad,
+  findEntry as ae,
+  fmtAmount as af,
+  ledgerUrl as ag,
+  TriangleAlert as ah,
+  fetchPublicReceipt as ai,
+  formatTimestamp as aj,
+  SGLDT_LEDGER_ID as ak,
+  encode$4 as al,
+  Text as am,
+  isV3ResponseBody as an,
+  DelegationIdentity as ao,
+  isDelegationValid as ap,
+  AuthClient as aq,
+  useQueryClient as ar,
+  useQuery as as,
+  BaseError$1 as at,
+  getUrl as au,
+  stringify$1 as av,
+  decodeErrorResult as aw,
+  isAddressEqual as ax,
+  localBatchGatewayUrl as ay,
+  localBatchGatewayRequest as az,
+  reactDomExports as b,
   createLucideIcon as c,
   useIsAdmin as d,
   Coins as e,

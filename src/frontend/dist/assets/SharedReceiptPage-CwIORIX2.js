@@ -1,5 +1,5 @@
-import { r as reactExports, aa as fetchPublicReceipt, j as jsxRuntimeExports, T as ThemeToggle, F as formatTokenAmount, ab as formatTimestamp, a8 as ledgerUrl, A as ShieldCheck, ac as SGLDT_LEDGER_ID, I as ExternalLink } from "./index-Dfb_LJyK.js";
-import { A as ArrowRight } from "./arrow-right-1PJWC54Z.js";
+import { r as reactExports, ai as fetchPublicReceipt, j as jsxRuntimeExports, T as ThemeToggle, F as formatTokenAmount, aj as formatTimestamp, ag as ledgerUrl, A as ShieldCheck, ak as SGLDT_LEDGER_ID, I as ExternalLink } from "./index-DHI22Byt.js";
+import { A as ArrowRight } from "./arrow-right-Cq1viCDs.js";
 const STATUS_COPY = {
   paid: { label: "Settled", tone: "var(--trust-verified)" },
   pulled: { label: "In flight", tone: "var(--trust-attested)" },

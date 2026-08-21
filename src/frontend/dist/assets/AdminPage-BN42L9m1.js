@@ -1,5 +1,13 @@
-import { c as createLucideIcon, j as jsxRuntimeExports, a as cn, r as reactExports, R as React2, b as React, u as useInternetIdentity, d as useIsAdmin, L as LoaderCircle, W as Wallet, C as CircleAlert, e as Coins, f as useTreasuryICRC1Balances, g as RefreshCw, h as useGetTreasuryWalletInfo, i as useUNIExchangeRate, k as useSetUNIExchangeRate, S as Send, l as useAllUNIDeposits, m as useBackendActor, n as useAdminMintCkUNI, o as useAdminDissolveCkUNI, p as useAdminInitializeMinterAddress, q as Copy, s as CircleCheck, t as useStrandedQueue, v as directWhoAmI, w as directAdminGrantAdmin, P as Principal, x as directAdminTransfer } from "./index-Dfb_LJyK.js";
-import { c as createSlot$3, a as composeRefs, u as useComposedRefs, B as Button } from "./button-BlGdvUCp.js";
+var __typeError = (msg) => {
+  throw TypeError(msg);
+};
+var __accessCheck = (obj, member, msg) => member.has(obj) || __typeError("Cannot " + msg);
+var __privateGet = (obj, member, getter) => (__accessCheck(obj, member, "read from private field"), getter ? getter.call(obj) : member.get(obj));
+var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot add the same private member more than once") : member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
+var __privateSet = (obj, member, value, setter) => (__accessCheck(obj, member, "write to private field"), setter ? setter.call(obj, value) : member.set(obj, value), value);
+var _keys, _a;
+import { c as createLucideIcon, j as jsxRuntimeExports, a as cn, r as reactExports, b as reactDomExports, R as React2, u as useInternetIdentity, d as useIsAdmin, L as LoaderCircle, W as Wallet, C as CircleAlert, e as Coins, f as useTreasuryICRC1Balances, g as RefreshCw, h as useGetTreasuryWalletInfo, i as useUNIExchangeRate, k as useSetUNIExchangeRate, S as Send, l as useAllUNIDeposits, m as useBackendActor, n as useAdminMintCkUNI, o as useAdminDissolveCkUNI, p as useAdminInitializeMinterAddress, q as Copy, s as CircleCheck, t as useStrandedQueue, v as directWhoAmI, w as directAdminGrantAdmin, P as Principal, x as directAdminTransfer } from "./index-DHI22Byt.js";
+import { c as createSlot, u as useComposedRefs, B as Button } from "./button-CPQUQL-f.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -77,7 +85,9 @@ function Input({ className, type, ...props }) {
     }
   );
 }
-var NODES$2 = [
+var __defProp$d = Object.defineProperty;
+var __name$d = (target, value) => __defProp$d(target, "name", { value, configurable: true });
+var NODES = [
   "a",
   "button",
   "div",
@@ -96,9 +106,9 @@ var NODES$2 = [
   "svg",
   "ul"
 ];
-var Primitive$2 = NODES$2.reduce((primitive, node) => {
-  const Slot = createSlot$3(`Primitive.${node}`);
-  const Node = reactExports.forwardRef((props, forwardedRef) => {
+var Primitive = NODES.reduce((primitive, node) => {
+  const Slot = createSlot(`Primitive.${node}`);
+  const Node2 = reactExports.forwardRef((props, forwardedRef) => {
     const { asChild, ...primitiveProps } = props;
     const Comp = asChild ? Slot : node;
     if (typeof window !== "undefined") {
@@ -106,27 +116,33 @@ var Primitive$2 = NODES$2.reduce((primitive, node) => {
     }
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
   });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
+  Node2.displayName = `Primitive.${node}`;
+  return { ...primitive, [node]: Node2 };
 }, {});
-var NAME = "Label";
-var Label$1 = reactExports.forwardRef((props, forwardedRef) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    Primitive$2.label,
-    {
-      ...props,
-      ref: forwardedRef,
-      onMouseDown: (event) => {
-        var _a;
-        const target = event.target;
-        if (target.closest("button, input, select, textarea")) return;
-        (_a = props.onMouseDown) == null ? void 0 : _a.call(props, event);
-        if (!event.defaultPrevented && event.detail > 1) event.preventDefault();
+function dispatchDiscreteCustomEvent(target, event) {
+  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
+}
+__name$d(dispatchDiscreteCustomEvent, "dispatchDiscreteCustomEvent");
+var __defProp$c = Object.defineProperty;
+var __name$c = (target, value) => __defProp$c(target, "name", { value, configurable: true });
+var Label$1 = /* @__PURE__ */ reactExports.forwardRef(
+  /* @__PURE__ */ __name$c(function Label2(props, forwardedRef) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Primitive.label,
+      {
+        ...props,
+        ref: forwardedRef,
+        onMouseDown: (event) => {
+          var _a2;
+          const target = event.target;
+          if (target.closest("button, input, select, textarea")) return;
+          (_a2 = props.onMouseDown) == null ? void 0 : _a2.call(props, event);
+          if (!event.defaultPrevented && event.detail > 1) event.preventDefault();
+        }
       }
-    }
-  );
-});
-Label$1.displayName = NAME;
+    );
+  }, "Label")
+);
 var Root$1 = Label$1;
 function Label({
   className,
@@ -144,173 +160,168 @@ function Label({
     }
   );
 }
+var __defProp$b = Object.defineProperty;
+var __name$b = (target, value) => __defProp$b(target, "name", { value, configurable: true });
+var canUseDOM = !!(typeof window !== "undefined" && window.document && window.document.createElement);
 function composeEventHandlers(originalEventHandler, ourEventHandler, { checkForDefaultPrevented = true } = {}) {
-  return function handleEvent(event) {
+  return /* @__PURE__ */ __name$b(function handleEvent(event) {
     originalEventHandler == null ? void 0 : originalEventHandler(event);
-    if (checkForDefaultPrevented === false || !event.defaultPrevented) {
+    if (checkForDefaultPrevented === false || !event || !event.defaultPrevented) {
       return ourEventHandler == null ? void 0 : ourEventHandler(event);
     }
-  };
+  }, "handleEvent");
 }
+__name$b(composeEventHandlers, "composeEventHandlers");
+function getOwnerWindow(element) {
+  var _a2;
+  if (!canUseDOM) {
+    throw new Error("Cannot access window outside of the DOM");
+  }
+  return ((_a2 = element == null ? void 0 : element.ownerDocument) == null ? void 0 : _a2.defaultView) ?? window;
+}
+__name$b(getOwnerWindow, "getOwnerWindow");
+function getOwnerDocument(element) {
+  if (!canUseDOM) {
+    throw new Error("Cannot access document outside of the DOM");
+  }
+  return (element == null ? void 0 : element.ownerDocument) ?? document;
+}
+__name$b(getOwnerDocument, "getOwnerDocument");
+function getActiveElement(node, activeDescendant = false) {
+  const { activeElement } = getOwnerDocument(node);
+  if (!(activeElement == null ? void 0 : activeElement.nodeName)) {
+    return null;
+  }
+  if (isFrame(activeElement) && activeElement.contentDocument) {
+    return getActiveElement(activeElement.contentDocument.body, activeDescendant);
+  }
+  if (activeDescendant) {
+    const id = activeElement.getAttribute("aria-activedescendant");
+    if (id) {
+      const element = getOwnerDocument(activeElement).getElementById(id);
+      if (element) {
+        return element;
+      }
+    }
+  }
+  return activeElement;
+}
+__name$b(getActiveElement, "getActiveElement");
+function isFrame(element) {
+  return element.tagName === "IFRAME";
+}
+__name$b(isFrame, "isFrame");
+var __defProp$a = Object.defineProperty;
+var __name$a = (target, value) => __defProp$a(target, "name", { value, configurable: true });
+// @__NO_SIDE_EFFECTS__
+function createContext2(rootComponentName, defaultContext) {
+  const Context = reactExports.createContext(defaultContext);
+  Context.displayName = rootComponentName + "Context";
+  const Provider = /* @__PURE__ */ __name$a((props) => {
+    const { children, ...context } = props;
+    const value = reactExports.useMemo(() => context, Object.values(context));
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+  }, "Provider");
+  Provider.displayName = rootComponentName + "Provider";
+  function useContext2(consumerName, options = {}) {
+    const { optional = false } = options;
+    const context = reactExports.useContext(Context);
+    if (context) return context;
+    if (defaultContext !== void 0) return defaultContext;
+    if (optional) return void 0;
+    throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+  }
+  __name$a(useContext2, "useContext");
+  return [Provider, useContext2];
+}
+__name$a(createContext2, "createContext");
+// @__NO_SIDE_EFFECTS__
 function createContextScope(scopeName, createContextScopeDeps = []) {
   let defaultContexts = [];
   function createContext3(rootComponentName, defaultContext) {
     const BaseContext = reactExports.createContext(defaultContext);
+    BaseContext.displayName = rootComponentName + "Context";
     const index = defaultContexts.length;
     defaultContexts = [...defaultContexts, defaultContext];
-    const Provider = (props) => {
-      var _a;
+    const Provider = /* @__PURE__ */ __name$a((props) => {
+      var _a2;
       const { scope, children, ...context } = props;
-      const Context = ((_a = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a[index]) || BaseContext;
+      const Context = ((_a2 = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a2[index]) || BaseContext;
       const value = reactExports.useMemo(() => context, Object.values(context));
       return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
-    };
+    }, "Provider");
     Provider.displayName = rootComponentName + "Provider";
-    function useContext2(consumerName, scope) {
-      var _a;
-      const Context = ((_a = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a[index]) || BaseContext;
+    function useContext2(consumerName, scope, options = {}) {
+      var _a2;
+      const { optional = false } = options;
+      const Context = ((_a2 = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a2[index]) || BaseContext;
       const context = reactExports.useContext(Context);
       if (context) return context;
       if (defaultContext !== void 0) return defaultContext;
+      if (optional) return void 0;
       throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
     }
+    __name$a(useContext2, "useContext");
     return [Provider, useContext2];
   }
-  const createScope = () => {
+  __name$a(createContext3, "createContext");
+  const createScope = /* @__PURE__ */ __name$a(() => {
     const scopeContexts = defaultContexts.map((defaultContext) => {
       return reactExports.createContext(defaultContext);
     });
-    return function useScope(scope) {
+    return /* @__PURE__ */ __name$a(function useScope(scope) {
       const contexts = (scope == null ? void 0 : scope[scopeName]) || scopeContexts;
       return reactExports.useMemo(
         () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
         [scope, contexts]
       );
-    };
-  };
+    }, "useScope");
+  }, "createScope");
   createScope.scopeName = scopeName;
   return [createContext3, composeContextScopes(createScope, ...createContextScopeDeps)];
 }
+__name$a(createContextScope, "createContextScope");
 function composeContextScopes(...scopes) {
   const baseScope = scopes[0];
   if (scopes.length === 1) return baseScope;
-  const createScope = () => {
+  const createScope = /* @__PURE__ */ __name$a(() => {
     const scopeHooks = scopes.map((createScope2) => ({
       useScope: createScope2(),
       scopeName: createScope2.scopeName
     }));
-    return function useComposedScopes(overrideScopes) {
+    return /* @__PURE__ */ __name$a(function useComposedScopes(overrideScopes) {
       const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
         const scopeProps = useScope(overrideScopes);
         const currentScope = scopeProps[`__scope${scopeName}`];
         return { ...nextScopes2, ...currentScope };
       }, {});
       return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
-    };
-  };
+    }, "useComposedScopes");
+  }, "createScope");
   createScope.scopeName = baseScope.scopeName;
   return createScope;
 }
+__name$a(composeContextScopes, "composeContextScopes");
+var __defProp$9 = Object.defineProperty;
+var __name$9 = (target, value) => __defProp$9(target, "name", { value, configurable: true });
 // @__NO_SIDE_EFFECTS__
-function createSlot$2(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$2(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$2);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlotClone$2(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$3(children);
-      const props2 = mergeProps$2(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER$2 = Symbol("radix.slottable");
-function isSlottable$2(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$2;
-}
-function mergeProps$2(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef$3(element) {
-  var _a, _b;
-  let getter = (_a = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = (_b = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
 function createCollection(name) {
   const PROVIDER_NAME = name + "CollectionProvider";
-  const [createCollectionContext, createCollectionScope2] = createContextScope(PROVIDER_NAME);
+  const [createCollectionContext, createCollectionScope2] = /* @__PURE__ */ createContextScope(PROVIDER_NAME);
   const [CollectionProviderImpl, useCollectionContext] = createCollectionContext(
     PROVIDER_NAME,
     { collectionRef: { current: null }, itemMap: /* @__PURE__ */ new Map() }
   );
-  const CollectionProvider = (props) => {
+  const CollectionProvider = /* @__PURE__ */ __name$9((props) => {
     const { scope, children } = props;
-    const ref = React2.useRef(null);
-    const itemMap = React2.useRef(/* @__PURE__ */ new Map()).current;
+    const ref = reactExports.useRef(null);
+    const itemMap = reactExports.useRef(/* @__PURE__ */ new Map()).current;
     return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionProviderImpl, { scope, itemMap, collectionRef: ref, children });
-  };
+  }, "CollectionProvider");
   CollectionProvider.displayName = PROVIDER_NAME;
   const COLLECTION_SLOT_NAME = name + "CollectionSlot";
-  const CollectionSlotImpl = /* @__PURE__ */ createSlot$2(COLLECTION_SLOT_NAME);
-  const CollectionSlot = React2.forwardRef(
+  const CollectionSlotImpl = createSlot(COLLECTION_SLOT_NAME);
+  const CollectionSlot = reactExports.forwardRef(
     (props, forwardedRef) => {
       const { scope, children } = props;
       const context = useCollectionContext(COLLECTION_SLOT_NAME, scope);
@@ -321,14 +332,14 @@ function createCollection(name) {
   CollectionSlot.displayName = COLLECTION_SLOT_NAME;
   const ITEM_SLOT_NAME = name + "CollectionItemSlot";
   const ITEM_DATA_ATTR = "data-radix-collection-item";
-  const CollectionItemSlotImpl = /* @__PURE__ */ createSlot$2(ITEM_SLOT_NAME);
-  const CollectionItemSlot = React2.forwardRef(
+  const CollectionItemSlotImpl = createSlot(ITEM_SLOT_NAME);
+  const CollectionItemSlot = reactExports.forwardRef(
     (props, forwardedRef) => {
       const { scope, children, ...itemData } = props;
-      const ref = React2.useRef(null);
+      const ref = reactExports.useRef(null);
       const composedRefs = useComposedRefs(forwardedRef, ref);
       const context = useCollectionContext(ITEM_SLOT_NAME, scope);
-      React2.useEffect(() => {
+      reactExports.useEffect(() => {
         context.itemMap.set(ref, { ref, ...itemData });
         return () => void context.itemMap.delete(ref);
       });
@@ -338,7 +349,7 @@ function createCollection(name) {
   CollectionItemSlot.displayName = ITEM_SLOT_NAME;
   function useCollection2(scope) {
     const context = useCollectionContext(name + "CollectionConsumer", scope);
-    const getItems = React2.useCallback(() => {
+    const getItems = reactExports.useCallback(() => {
       const collectionNode = context.collectionRef.current;
       if (!collectionNode) return [];
       const orderedNodes = Array.from(collectionNode.querySelectorAll(`[${ITEM_DATA_ATTR}]`));
@@ -350,154 +361,545 @@ function createCollection(name) {
     }, [context.collectionRef, context.itemMap]);
     return getItems;
   }
+  __name$9(useCollection2, "useCollection");
   return [
     { Provider: CollectionProvider, Slot: CollectionSlot, ItemSlot: CollectionItemSlot },
     useCollection2,
     createCollectionScope2
   ];
 }
+__name$9(createCollection, "createCollection");
+var __instanciated = /* @__PURE__ */ new WeakMap();
+var OrderedDict = (_a = class extends Map {
+  constructor(entries) {
+    super(entries);
+    __privateAdd(this, _keys);
+    __privateSet(this, _keys, [...super.keys()]);
+    __instanciated.set(this, true);
+  }
+  set(key, value) {
+    if (__instanciated.get(this)) {
+      if (this.has(key)) {
+        __privateGet(this, _keys)[__privateGet(this, _keys).indexOf(key)] = key;
+      } else {
+        __privateGet(this, _keys).push(key);
+      }
+    }
+    super.set(key, value);
+    return this;
+  }
+  insert(index, key, value) {
+    const has = this.has(key);
+    const length = __privateGet(this, _keys).length;
+    const relativeIndex = toSafeInteger(index);
+    let actualIndex = relativeIndex >= 0 ? relativeIndex : length + relativeIndex;
+    const safeIndex = actualIndex < 0 || actualIndex >= length ? -1 : actualIndex;
+    if (safeIndex === this.size || has && safeIndex === this.size - 1 || safeIndex === -1) {
+      this.set(key, value);
+      return this;
+    }
+    const size = this.size + (has ? 0 : 1);
+    if (relativeIndex < 0) {
+      actualIndex++;
+    }
+    const keys = [...__privateGet(this, _keys)];
+    let nextValue;
+    let shouldSkip = false;
+    for (let i = actualIndex; i < size; i++) {
+      if (actualIndex === i) {
+        let nextKey = keys[i];
+        if (keys[i] === key) {
+          nextKey = keys[i + 1];
+        }
+        if (has) {
+          this.delete(key);
+        }
+        nextValue = this.get(nextKey);
+        this.set(key, value);
+      } else {
+        if (!shouldSkip && keys[i - 1] === key) {
+          shouldSkip = true;
+        }
+        const currentKey = keys[shouldSkip ? i : i - 1];
+        const currentValue = nextValue;
+        nextValue = this.get(currentKey);
+        this.delete(currentKey);
+        this.set(currentKey, currentValue);
+      }
+    }
+    return this;
+  }
+  with(index, key, value) {
+    const copy = new _a(this);
+    copy.insert(index, key, value);
+    return copy;
+  }
+  before(key) {
+    const index = __privateGet(this, _keys).indexOf(key) - 1;
+    if (index < 0) {
+      return void 0;
+    }
+    return this.entryAt(index);
+  }
+  /**
+   * Sets a new key-value pair at the position before the given key.
+   */
+  setBefore(key, newKey, value) {
+    const index = __privateGet(this, _keys).indexOf(key);
+    if (index === -1) {
+      return this;
+    }
+    return this.insert(index, newKey, value);
+  }
+  after(key) {
+    let index = __privateGet(this, _keys).indexOf(key);
+    index = index === -1 || index === this.size - 1 ? -1 : index + 1;
+    if (index === -1) {
+      return void 0;
+    }
+    return this.entryAt(index);
+  }
+  /**
+   * Sets a new key-value pair at the position after the given key.
+   */
+  setAfter(key, newKey, value) {
+    const index = __privateGet(this, _keys).indexOf(key);
+    if (index === -1) {
+      return this;
+    }
+    return this.insert(index + 1, newKey, value);
+  }
+  first() {
+    return this.entryAt(0);
+  }
+  last() {
+    return this.entryAt(-1);
+  }
+  clear() {
+    __privateSet(this, _keys, []);
+    return super.clear();
+  }
+  delete(key) {
+    const deleted = super.delete(key);
+    if (deleted) {
+      __privateGet(this, _keys).splice(__privateGet(this, _keys).indexOf(key), 1);
+    }
+    return deleted;
+  }
+  deleteAt(index) {
+    const key = this.keyAt(index);
+    if (key !== void 0) {
+      return this.delete(key);
+    }
+    return false;
+  }
+  at(index) {
+    const key = at(__privateGet(this, _keys), index);
+    if (key !== void 0) {
+      return this.get(key);
+    }
+  }
+  entryAt(index) {
+    const key = at(__privateGet(this, _keys), index);
+    if (key !== void 0) {
+      return [key, this.get(key)];
+    }
+  }
+  indexOf(key) {
+    return __privateGet(this, _keys).indexOf(key);
+  }
+  keyAt(index) {
+    return at(__privateGet(this, _keys), index);
+  }
+  from(key, offset) {
+    const index = this.indexOf(key);
+    if (index === -1) {
+      return void 0;
+    }
+    let dest = index + offset;
+    if (dest < 0) dest = 0;
+    if (dest >= this.size) dest = this.size - 1;
+    return this.at(dest);
+  }
+  keyFrom(key, offset) {
+    const index = this.indexOf(key);
+    if (index === -1) {
+      return void 0;
+    }
+    let dest = index + offset;
+    if (dest < 0) dest = 0;
+    if (dest >= this.size) dest = this.size - 1;
+    return this.keyAt(dest);
+  }
+  find(predicate, thisArg) {
+    let index = 0;
+    for (const entry of this) {
+      if (Reflect.apply(predicate, thisArg, [entry, index, this])) {
+        return entry;
+      }
+      index++;
+    }
+    return void 0;
+  }
+  findIndex(predicate, thisArg) {
+    let index = 0;
+    for (const entry of this) {
+      if (Reflect.apply(predicate, thisArg, [entry, index, this])) {
+        return index;
+      }
+      index++;
+    }
+    return -1;
+  }
+  filter(predicate, thisArg) {
+    const entries = [];
+    let index = 0;
+    for (const entry of this) {
+      if (Reflect.apply(predicate, thisArg, [entry, index, this])) {
+        entries.push(entry);
+      }
+      index++;
+    }
+    return new _a(entries);
+  }
+  map(callbackfn, thisArg) {
+    const entries = [];
+    let index = 0;
+    for (const entry of this) {
+      entries.push([entry[0], Reflect.apply(callbackfn, thisArg, [entry, index, this])]);
+      index++;
+    }
+    return new _a(entries);
+  }
+  reduce(...args) {
+    const [callbackfn, initialValue] = args;
+    let index = 0;
+    let accumulator = initialValue ?? this.at(0);
+    for (const entry of this) {
+      if (index === 0 && args.length === 1) {
+        accumulator = entry;
+      } else {
+        accumulator = Reflect.apply(callbackfn, this, [accumulator, entry, index, this]);
+      }
+      index++;
+    }
+    return accumulator;
+  }
+  reduceRight(...args) {
+    const [callbackfn, initialValue] = args;
+    let accumulator = initialValue ?? this.at(-1);
+    for (let index = this.size - 1; index >= 0; index--) {
+      const entry = this.at(index);
+      if (index === this.size - 1 && args.length === 1) {
+        accumulator = entry;
+      } else {
+        accumulator = Reflect.apply(callbackfn, this, [accumulator, entry, index, this]);
+      }
+    }
+    return accumulator;
+  }
+  toSorted(compareFn) {
+    const entries = [...this.entries()].sort(compareFn);
+    return new _a(entries);
+  }
+  toReversed() {
+    const reversed = new _a();
+    for (let index = this.size - 1; index >= 0; index--) {
+      const key = this.keyAt(index);
+      const element = this.get(key);
+      reversed.set(key, element);
+    }
+    return reversed;
+  }
+  toSpliced(...args) {
+    const entries = [...this.entries()];
+    entries.splice(...args);
+    return new _a(entries);
+  }
+  slice(start, end) {
+    const result = new _a();
+    let stop = this.size - 1;
+    if (start === void 0) {
+      return result;
+    }
+    if (start < 0) {
+      start = start + this.size;
+    }
+    if (end !== void 0 && end > 0) {
+      stop = end - 1;
+    }
+    for (let index = start; index <= stop; index++) {
+      const key = this.keyAt(index);
+      const element = this.get(key);
+      result.set(key, element);
+    }
+    return result;
+  }
+  every(predicate, thisArg) {
+    let index = 0;
+    for (const entry of this) {
+      if (!Reflect.apply(predicate, thisArg, [entry, index, this])) {
+        return false;
+      }
+      index++;
+    }
+    return true;
+  }
+  some(predicate, thisArg) {
+    let index = 0;
+    for (const entry of this) {
+      if (Reflect.apply(predicate, thisArg, [entry, index, this])) {
+        return true;
+      }
+      index++;
+    }
+    return false;
+  }
+}, _keys = new WeakMap(), __name$9(_a, "OrderedDict"), _a);
+function at(array, index) {
+  if ("at" in Array.prototype) {
+    return Array.prototype.at.call(array, index);
+  }
+  const actualIndex = toSafeIndex(array, index);
+  return actualIndex === -1 ? void 0 : array[actualIndex];
+}
+__name$9(at, "at");
+function toSafeIndex(array, index) {
+  const length = array.length;
+  const relativeIndex = toSafeInteger(index);
+  const actualIndex = relativeIndex >= 0 ? relativeIndex : length + relativeIndex;
+  return actualIndex < 0 || actualIndex >= length ? -1 : actualIndex;
+}
+__name$9(toSafeIndex, "toSafeIndex");
+function toSafeInteger(number) {
+  return number !== number || number === 0 ? 0 : Math.trunc(number);
+}
+__name$9(toSafeInteger, "toSafeInteger");
+// @__NO_SIDE_EFFECTS__
+function createCollection2(name) {
+  const PROVIDER_NAME = name + "CollectionProvider";
+  const [createCollectionContext, createCollectionScope2] = /* @__PURE__ */ createContextScope(PROVIDER_NAME);
+  const [CollectionContextProvider, useCollectionContext] = createCollectionContext(
+    PROVIDER_NAME,
+    {
+      collectionElement: null,
+      collectionRef: { current: null },
+      collectionRefObject: { current: null },
+      itemMap: new OrderedDict(),
+      setItemMap: /* @__PURE__ */ __name$9(() => void 0, "setItemMap")
+    }
+  );
+  const CollectionProvider = /* @__PURE__ */ __name$9(({ state, ...props }) => {
+    return state ? /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionProviderImpl, { ...props, state }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionInit, { ...props });
+  }, "CollectionProvider");
+  CollectionProvider.displayName = PROVIDER_NAME;
+  const CollectionInit = /* @__PURE__ */ __name$9((props) => {
+    const state = useInitCollection();
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionProviderImpl, { ...props, state });
+  }, "CollectionInit");
+  CollectionInit.displayName = PROVIDER_NAME + "Init";
+  const CollectionProviderImpl = /* @__PURE__ */ __name$9((props) => {
+    const { scope, children, state } = props;
+    const ref = reactExports.useRef(null);
+    const [collectionElement, setCollectionElement] = reactExports.useState(
+      null
+    );
+    const composeRefs = useComposedRefs(ref, setCollectionElement);
+    const [itemMap, setItemMap] = state;
+    reactExports.useEffect(() => {
+      if (!collectionElement) return;
+      const observer = getChildListObserver(() => {
+      });
+      observer.observe(collectionElement, {
+        childList: true,
+        subtree: true
+      });
+      return () => {
+        observer.disconnect();
+      };
+    }, [collectionElement]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      CollectionContextProvider,
+      {
+        scope,
+        itemMap,
+        setItemMap,
+        collectionRef: composeRefs,
+        collectionRefObject: ref,
+        collectionElement,
+        children
+      }
+    );
+  }, "CollectionProviderImpl");
+  CollectionProviderImpl.displayName = PROVIDER_NAME + "Impl";
+  const COLLECTION_SLOT_NAME = name + "CollectionSlot";
+  const CollectionSlotImpl = createSlot(COLLECTION_SLOT_NAME);
+  const CollectionSlot = reactExports.forwardRef(
+    (props, forwardedRef) => {
+      const { scope, children } = props;
+      const context = useCollectionContext(COLLECTION_SLOT_NAME, scope);
+      const composedRefs = useComposedRefs(forwardedRef, context.collectionRef);
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionSlotImpl, { ref: composedRefs, children });
+    }
+  );
+  CollectionSlot.displayName = COLLECTION_SLOT_NAME;
+  const ITEM_SLOT_NAME = name + "CollectionItemSlot";
+  const ITEM_DATA_ATTR = "data-radix-collection-item";
+  const CollectionItemSlotImpl = createSlot(ITEM_SLOT_NAME);
+  const CollectionItemSlot = reactExports.forwardRef(
+    (props, forwardedRef) => {
+      const { scope, children, ...itemData } = props;
+      const ref = reactExports.useRef(null);
+      const [element, setElement] = reactExports.useState(null);
+      const composedRefs = useComposedRefs(forwardedRef, ref, setElement);
+      const context = useCollectionContext(ITEM_SLOT_NAME, scope);
+      const { setItemMap } = context;
+      const itemDataRef = reactExports.useRef(itemData);
+      if (!shallowEqual(itemDataRef.current, itemData)) {
+        itemDataRef.current = itemData;
+      }
+      const memoizedItemData = itemDataRef.current;
+      reactExports.useEffect(() => {
+        const itemData2 = memoizedItemData;
+        setItemMap((map) => {
+          if (!element) {
+            return map;
+          }
+          if (!map.has(element)) {
+            map.set(element, { ...itemData2, element });
+            return map.toSorted(sortByDocumentPosition);
+          }
+          return map.set(element, { ...itemData2, element }).toSorted(sortByDocumentPosition);
+        });
+        return () => {
+          setItemMap((map) => {
+            if (!element || !map.has(element)) {
+              return map;
+            }
+            map.delete(element);
+            return new OrderedDict(map);
+          });
+        };
+      }, [element, memoizedItemData, setItemMap]);
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionItemSlotImpl, { ...{ [ITEM_DATA_ATTR]: "" }, ref: composedRefs, children });
+    }
+  );
+  CollectionItemSlot.displayName = ITEM_SLOT_NAME;
+  function useInitCollection() {
+    return reactExports.useState(new OrderedDict());
+  }
+  __name$9(useInitCollection, "useInitCollection");
+  function useCollection2(scope) {
+    const { itemMap } = useCollectionContext(name + "CollectionConsumer", scope);
+    return itemMap;
+  }
+  __name$9(useCollection2, "useCollection");
+  const functions = {
+    createCollectionScope: createCollectionScope2,
+    useCollection: useCollection2,
+    useInitCollection
+  };
+  return [
+    { Provider: CollectionProvider, Slot: CollectionSlot, ItemSlot: CollectionItemSlot },
+    functions
+  ];
+}
+__name$9(createCollection2, "createCollection");
+function shallowEqual(a, b) {
+  if (a === b) return true;
+  if (typeof a !== "object" || typeof b !== "object") return false;
+  if (a == null || b == null) return false;
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+  for (const key of keysA) {
+    if (!Object.prototype.hasOwnProperty.call(b, key)) return false;
+    if (a[key] !== b[key]) return false;
+  }
+  return true;
+}
+__name$9(shallowEqual, "shallowEqual");
+function isElementPreceding(a, b) {
+  return !!(b.compareDocumentPosition(a) & Node.DOCUMENT_POSITION_PRECEDING);
+}
+__name$9(isElementPreceding, "isElementPreceding");
+function sortByDocumentPosition(a, b) {
+  return !a[1].element || !b[1].element ? 0 : isElementPreceding(a[1].element, b[1].element) ? -1 : 1;
+}
+__name$9(sortByDocumentPosition, "sortByDocumentPosition");
+function getChildListObserver(callback) {
+  const observer = new MutationObserver((mutationsList) => {
+    for (const mutation of mutationsList) {
+      if (mutation.type === "childList") {
+        callback();
+        return;
+      }
+    }
+  });
+  return observer;
+}
+__name$9(getChildListObserver, "getChildListObserver");
 var useLayoutEffect2 = (globalThis == null ? void 0 : globalThis.document) ? reactExports.useLayoutEffect : () => {
 };
-var useReactId = React[" useId ".trim().toString()] || (() => void 0);
+var __defProp$8 = Object.defineProperty;
+var __name$8 = (target, value) => __defProp$8(target, "name", { value, configurable: true });
+var useReactId = React2[" useId ".trim().toString()] || (() => void 0);
 var count = 0;
 function useId(deterministicId) {
   const [id, setId] = reactExports.useState(useReactId());
   useLayoutEffect2(() => {
-    setId((reactId) => reactId ?? String(count++));
+    if (!deterministicId) setId((reactId) => reactId ?? String(count++));
   }, [deterministicId]);
   return deterministicId || (id ? `radix-${id}` : "");
 }
-// @__NO_SIDE_EFFECTS__
-function createSlot$1(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$1(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$1);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlotClone$1(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$2(children);
-      const props2 = mergeProps$1(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER$1 = Symbol("radix.slottable");
-function isSlottable$1(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$1;
-}
-function mergeProps$1(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
-function getElementRef$2(element) {
-  var _a, _b;
-  let getter = (_a = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = (_b = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-var NODES$1 = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive$1 = NODES$1.reduce((primitive, node) => {
-  const Slot = /* @__PURE__ */ createSlot$1(`Primitive.${node}`);
-  const Node = reactExports.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
-  });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
-}, {});
+__name$8(useId, "useId");
+var __defProp$7 = Object.defineProperty;
+var __name$7 = (target, value) => __defProp$7(target, "name", { value, configurable: true });
 function useCallbackRef(callback) {
   const callbackRef = reactExports.useRef(callback);
   reactExports.useEffect(() => {
     callbackRef.current = callback;
   });
   return reactExports.useMemo(() => (...args) => {
-    var _a;
-    return (_a = callbackRef.current) == null ? void 0 : _a.call(callbackRef, ...args);
+    var _a2;
+    return (_a2 = callbackRef.current) == null ? void 0 : _a2.call(callbackRef, ...args);
   }, []);
 }
-var useInsertionEffect = React[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
+__name$7(useCallbackRef, "useCallbackRef");
+var __defProp$6 = Object.defineProperty;
+var __name$6 = (target, value) => __defProp$6(target, "name", { value, configurable: true });
+var useReactEffectEvent = React2[" useEffectEvent ".trim().toString()];
+var useReactInsertionEffect = React2[" useInsertionEffect ".trim().toString()];
+function useEffectEvent(callback) {
+  if (typeof useReactEffectEvent === "function") {
+    return useReactEffectEvent(callback);
+  }
+  const ref = reactExports.useRef(() => {
+    throw new Error("Cannot call an event handler while rendering.");
+  });
+  if (typeof useReactInsertionEffect === "function") {
+    useReactInsertionEffect(() => {
+      ref.current = callback;
+    });
+  } else {
+    useLayoutEffect2(() => {
+      ref.current = callback;
+    });
+  }
+  return reactExports.useMemo(() => (...args) => {
+    var _a2;
+    return (_a2 = ref.current) == null ? void 0 : _a2.call(ref, ...args);
+  }, []);
+}
+__name$6(useEffectEvent, "useEffectEvent");
+var __defProp$5 = Object.defineProperty;
+var __name$5 = (target, value) => __defProp$5(target, "name", { value, configurable: true });
+var useInsertionEffect = React2[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
 function useControllableState({
   prop,
   defaultProp,
-  onChange = () => {
-  },
+  onChange = /* @__PURE__ */ __name$5(() => {
+  }, "onChange"),
   caller
 }) {
   const [uncontrolledProp, setUncontrolledProp, onChangeRef] = useUncontrolledState({
@@ -506,27 +908,13 @@ function useControllableState({
   });
   const isControlled = prop !== void 0;
   const value = isControlled ? prop : uncontrolledProp;
-  {
-    const isControlledRef = reactExports.useRef(prop !== void 0);
-    reactExports.useEffect(() => {
-      const wasControlled = isControlledRef.current;
-      if (wasControlled !== isControlled) {
-        const from = wasControlled ? "controlled" : "uncontrolled";
-        const to = isControlled ? "controlled" : "uncontrolled";
-        console.warn(
-          `${caller} is changing from ${from} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
-        );
-      }
-      isControlledRef.current = isControlled;
-    }, [isControlled, caller]);
-  }
   const setValue = reactExports.useCallback(
     (nextValue) => {
-      var _a;
+      var _a2;
       if (isControlled) {
         const value2 = isFunction(nextValue) ? nextValue(prop) : nextValue;
         if (value2 !== prop) {
-          (_a = onChangeRef.current) == null ? void 0 : _a.call(onChangeRef, value2);
+          (_a2 = onChangeRef.current) == null ? void 0 : _a2.call(onChangeRef, value2);
         }
       } else {
         setUncontrolledProp(nextValue);
@@ -536,6 +924,7 @@ function useControllableState({
   );
   return [value, setValue];
 }
+__name$5(useControllableState, "useControllableState");
 function useUncontrolledState({
   defaultProp,
   onChange
@@ -547,38 +936,121 @@ function useUncontrolledState({
     onChangeRef.current = onChange;
   }, [onChange]);
   reactExports.useEffect(() => {
-    var _a;
+    var _a2;
     if (prevValueRef.current !== value) {
-      (_a = onChangeRef.current) == null ? void 0 : _a.call(onChangeRef, value);
+      (_a2 = onChangeRef.current) == null ? void 0 : _a2.call(onChangeRef, value);
       prevValueRef.current = value;
     }
   }, [value, prevValueRef]);
   return [value, setValue, onChangeRef];
 }
+__name$5(useUncontrolledState, "useUncontrolledState");
 function isFunction(value) {
   return typeof value === "function";
 }
+__name$5(isFunction, "isFunction");
+var SYNC_STATE = Symbol("RADIX:SYNC_STATE");
+function useControllableStateReducer(reducer, userArgs, initialArg, init) {
+  const { prop: controlledState, defaultProp, onChange: onChangeProp, caller } = userArgs;
+  const isControlled = controlledState !== void 0;
+  const onChange = useEffectEvent(onChangeProp);
+  const args = [{ ...initialArg, state: defaultProp }];
+  if (init) {
+    args.push(init);
+  }
+  const [internalState, dispatch] = reactExports.useReducer(
+    (state2, action) => {
+      if (action.type === SYNC_STATE) {
+        return { ...state2, state: action.state };
+      }
+      const next = reducer(state2, action);
+      if (isControlled && !Object.is(next.state, state2.state)) {
+        onChange(next.state);
+      }
+      return next;
+    },
+    ...args
+  );
+  const uncontrolledState = internalState.state;
+  const prevValueRef = reactExports.useRef(uncontrolledState);
+  reactExports.useEffect(() => {
+    if (prevValueRef.current !== uncontrolledState) {
+      prevValueRef.current = uncontrolledState;
+      if (!isControlled) {
+        onChange(uncontrolledState);
+      }
+    }
+  }, [uncontrolledState, prevValueRef, isControlled]);
+  const state = reactExports.useMemo(() => {
+    const isControlled2 = controlledState !== void 0;
+    if (isControlled2) {
+      return { ...internalState, state: controlledState };
+    }
+    return internalState;
+  }, [internalState, controlledState]);
+  reactExports.useEffect(() => {
+    if (isControlled && !Object.is(controlledState, internalState.state)) {
+      dispatch({ type: SYNC_STATE, state: controlledState });
+    }
+  }, [controlledState, internalState.state, isControlled]);
+  return [state, dispatch];
+}
+__name$5(useControllableStateReducer, "useControllableStateReducer");
+var __defProp$4 = Object.defineProperty;
+var __name$4 = (target, value) => __defProp$4(target, "name", { value, configurable: true });
 var DirectionContext = reactExports.createContext(void 0);
 function useDirection(localDir) {
   const globalDir = reactExports.useContext(DirectionContext);
   return localDir || globalDir || "ltr";
 }
+__name$4(useDirection, "useDirection");
+var __defProp$3 = Object.defineProperty;
+var __name$3 = (target, value) => __defProp$3(target, "name", { value, configurable: true });
+var _isHydrated = false;
+function useIsHydrated() {
+  const [isHydrated, setIsHydrated] = reactExports.useState(_isHydrated);
+  reactExports.useEffect(() => {
+    if (!_isHydrated) {
+      _isHydrated = true;
+      setIsHydrated(true);
+    }
+  }, []);
+  return isHydrated;
+}
+__name$3(useIsHydrated, "useIsHydrated");
+var useReactSyncExternalStore = React2[" useSyncExternalStore ".trim().toString()];
+function subscribe() {
+  return () => {
+  };
+}
+__name$3(subscribe, "subscribe");
+function useIsHydratedModern() {
+  return useReactSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false
+  );
+}
+__name$3(useIsHydratedModern, "useIsHydratedModern");
+var useIsHydrated2 = typeof useReactSyncExternalStore === "function" ? useIsHydratedModern : useIsHydrated;
+var __defProp$2 = Object.defineProperty;
+var __name$2 = (target, value) => __defProp$2(target, "name", { value, configurable: true });
 var ENTRY_FOCUS = "rovingFocusGroup.onEntryFocus";
 var EVENT_OPTIONS = { bubbles: false, cancelable: true };
 var GROUP_NAME = "RovingFocusGroup";
-var [Collection, useCollection, createCollectionScope] = createCollection(GROUP_NAME);
-var [createRovingFocusGroupContext, createRovingFocusGroupScope] = createContextScope(
+var [Collection, useCollection, createCollectionScope] = /* @__PURE__ */ createCollection(GROUP_NAME);
+var [createRovingFocusGroupContext, createRovingFocusGroupScope] = /* @__PURE__ */ createContextScope(
   GROUP_NAME,
   [createCollectionScope]
 );
 var [RovingFocusProvider, useRovingFocusContext] = createRovingFocusGroupContext(GROUP_NAME);
-var RovingFocusGroup = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var RovingFocusGroup = /* @__PURE__ */ reactExports.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name$2(function RovingFocusGroup2(props, forwardedRef) {
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Provider, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Slot, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ jsxRuntimeExports.jsx(RovingFocusGroupImpl, { ...props, ref: forwardedRef }) }) });
-  }
+  }, "RovingFocusGroup")
 );
-RovingFocusGroup.displayName = GROUP_NAME;
-var RovingFocusGroupImpl = reactExports.forwardRef((props, forwardedRef) => {
+var RovingFocusGroupImpl = /* @__PURE__ */ reactExports.forwardRef(/* @__PURE__ */ __name$2(function RovingFocusGroupImpl2(props, forwardedRef) {
   const {
     __scopeRovingFocusGroup,
     orientation,
@@ -634,7 +1106,7 @@ var RovingFocusGroupImpl = reactExports.forwardRef((props, forwardedRef) => {
         []
       ),
       children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-        Primitive$1.div,
+        Primitive.div,
         {
           tabIndex: isTabbingBackOut || focusableItemsCount === 0 ? -1 : 0,
           "data-orientation": orientation,
@@ -667,10 +1139,11 @@ var RovingFocusGroupImpl = reactExports.forwardRef((props, forwardedRef) => {
       )
     }
   );
-});
+}, "RovingFocusGroupImpl"));
 var ITEM_NAME = "RovingFocusGroupItem";
-var RovingFocusGroupItem = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var RovingFocusGroupItem = /* @__PURE__ */ reactExports.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name$2(function RovingFocusGroupItem2(props, forwardedRef) {
     const {
       __scopeRovingFocusGroup,
       focusable = true,
@@ -685,12 +1158,21 @@ var RovingFocusGroupItem = reactExports.forwardRef(
     const isCurrentTabStop = context.currentTabStopId === id;
     const getItems = useCollection(__scopeRovingFocusGroup);
     const { onFocusableItemAdd, onFocusableItemRemove, currentTabStopId } = context;
-    reactExports.useEffect(() => {
-      if (focusable) {
-        onFocusableItemAdd();
-        return () => onFocusableItemRemove();
+    const isHydrated = useIsHydrated2();
+    useLayoutEffect2(() => {
+      if (!isHydrated || !focusable) {
+        return;
       }
-    }, [focusable, onFocusableItemAdd, onFocusableItemRemove]);
+      onFocusableItemAdd();
+      return () => onFocusableItemRemove();
+    }, [isHydrated, focusable, onFocusableItemAdd, onFocusableItemRemove]);
+    reactExports.useEffect(() => {
+      if (isHydrated || !focusable) {
+        return;
+      }
+      onFocusableItemAdd();
+      return () => onFocusableItemRemove();
+    }, [isHydrated, focusable, onFocusableItemAdd, onFocusableItemRemove]);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Collection.ItemSlot,
       {
@@ -699,7 +1181,7 @@ var RovingFocusGroupItem = reactExports.forwardRef(
         focusable,
         active,
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive$1.span,
+          Primitive.span,
           {
             tabIndex: isCurrentTabStop ? 0 : -1,
             "data-orientation": context.orientation,
@@ -736,9 +1218,8 @@ var RovingFocusGroupItem = reactExports.forwardRef(
         )
       }
     );
-  }
+  }, "RovingFocusGroupItem")
 );
-RovingFocusGroupItem.displayName = ITEM_NAME;
 var MAP_KEY_TO_FOCUS_INTENT = {
   ArrowLeft: "prev",
   ArrowUp: "prev",
@@ -753,12 +1234,14 @@ function getDirectionAwareKey(key, dir) {
   if (dir !== "rtl") return key;
   return key === "ArrowLeft" ? "ArrowRight" : key === "ArrowRight" ? "ArrowLeft" : key;
 }
+__name$2(getDirectionAwareKey, "getDirectionAwareKey");
 function getFocusIntent(event, orientation, dir) {
   const key = getDirectionAwareKey(event.key, dir);
   if (orientation === "vertical" && ["ArrowLeft", "ArrowRight"].includes(key)) return void 0;
   if (orientation === "horizontal" && ["ArrowUp", "ArrowDown"].includes(key)) return void 0;
   return MAP_KEY_TO_FOCUS_INTENT[key];
 }
+__name$2(getFocusIntent, "getFocusIntent");
 function focusFirst(candidates, preventScroll = false) {
   const PREVIOUSLY_FOCUSED_ELEMENT = document.activeElement;
   for (const candidate of candidates) {
@@ -767,31 +1250,36 @@ function focusFirst(candidates, preventScroll = false) {
     if (document.activeElement !== PREVIOUSLY_FOCUSED_ELEMENT) return;
   }
 }
+__name$2(focusFirst, "focusFirst");
 function wrapArray(array, startIndex) {
   return array.map((_, index) => array[(startIndex + index) % array.length]);
 }
+__name$2(wrapArray, "wrapArray");
 var Root = RovingFocusGroup;
 var Item = RovingFocusGroupItem;
+var __defProp$1 = Object.defineProperty;
+var __name$1 = (target, value) => __defProp$1(target, "name", { value, configurable: true });
 function useStateMachine(initialState, machine) {
   return reactExports.useReducer((state, event) => {
     const nextState = machine[state][event];
     return nextState ?? state;
   }, initialState);
 }
-var Presence = (props) => {
+__name$1(useStateMachine, "useStateMachine");
+var Presence = /* @__PURE__ */ __name$1((props) => {
   const { present, children } = props;
   const presence = usePresence(present);
   const child = typeof children === "function" ? children({ present: presence.isPresent }) : reactExports.Children.only(children);
-  const ref = useComposedRefs(presence.ref, getElementRef$1(child));
+  const ref = useStableComposedRefs(presence.ref, getElementRef(child));
   const forceMount = typeof children === "function";
   return forceMount || presence.isPresent ? reactExports.cloneElement(child, { ref }) : null;
-};
-Presence.displayName = "Presence";
+}, "Presence");
 function usePresence(present) {
   const [node, setNode] = reactExports.useState();
   const stylesRef = reactExports.useRef(null);
   const prevPresentRef = reactExports.useRef(present);
   const prevAnimationNameRef = reactExports.useRef("none");
+  const mountAnimationNameRef = reactExports.useRef(void 0);
   const initialState = present ? "mounted" : "unmounted";
   const [state, send] = useStateMachine(initialState, {
     mounted: {
@@ -807,8 +1295,12 @@ function usePresence(present) {
     }
   });
   reactExports.useEffect(() => {
-    const currentAnimationName = getAnimationName(stylesRef.current);
-    prevAnimationNameRef.current = state === "mounted" ? currentAnimationName : "none";
+    if (state === "mounted") {
+      prevAnimationNameRef.current = mountAnimationNameRef.current ?? getAnimationName(stylesRef.current);
+      mountAnimationNameRef.current = void 0;
+    } else {
+      prevAnimationNameRef.current = "none";
+    }
   }, [state]);
   useLayoutEffect2(() => {
     const styles = stylesRef.current;
@@ -818,6 +1310,7 @@ function usePresence(present) {
       const prevAnimationName = prevAnimationNameRef.current;
       const currentAnimationName = getAnimationName(styles);
       if (present) {
+        mountAnimationNameRef.current = currentAnimationName;
         send("MOUNT");
       } else if (currentAnimationName === "none" || (styles == null ? void 0 : styles.display) === "none") {
         send("UNMOUNT");
@@ -836,7 +1329,7 @@ function usePresence(present) {
     if (node) {
       let timeoutId;
       const ownerWindow = node.ownerDocument.defaultView ?? window;
-      const handleAnimationEnd = (event) => {
+      const handleAnimationEnd = /* @__PURE__ */ __name$1((event) => {
         const currentAnimationName = getAnimationName(stylesRef.current);
         const isCurrentAnimation = currentAnimationName.includes(CSS.escape(event.animationName));
         if (event.target === node && isCurrentAnimation) {
@@ -851,12 +1344,12 @@ function usePresence(present) {
             });
           }
         }
-      };
-      const handleAnimationStart = (event) => {
+      }, "handleAnimationEnd");
+      const handleAnimationStart = /* @__PURE__ */ __name$1((event) => {
         if (event.target === node) {
           prevAnimationNameRef.current = getAnimationName(stylesRef.current);
         }
-      };
+      }, "handleAnimationStart");
       node.addEventListener("animationstart", handleAnimationStart);
       node.addEventListener("animationcancel", handleAnimationEnd);
       node.addEventListener("animationend", handleAnimationEnd);
@@ -873,100 +1366,61 @@ function usePresence(present) {
   return {
     isPresent: ["mounted", "unmountSuspended"].includes(state),
     ref: reactExports.useCallback((node2) => {
-      stylesRef.current = node2 ? getComputedStyle(node2) : null;
+      if (node2) {
+        const styles = getComputedStyle(node2);
+        stylesRef.current = styles;
+        mountAnimationNameRef.current = getAnimationName(styles);
+      } else {
+        stylesRef.current = null;
+      }
       setNode(node2);
     }, [])
   };
 }
+__name$1(usePresence, "usePresence");
+function setRef(ref, value) {
+  if (typeof ref === "function") {
+    return ref(value);
+  } else if (ref !== null && ref !== void 0) {
+    ref.current = value;
+  }
+}
+__name$1(setRef, "setRef");
+function useStableComposedRefs(...refs) {
+  const refsRef = reactExports.useRef(refs);
+  refsRef.current = refs;
+  return reactExports.useCallback((node) => {
+    const currentRefs = refsRef.current;
+    let hasCleanup = false;
+    const cleanups = currentRefs.map((ref) => {
+      const cleanup = setRef(ref, node);
+      if (!hasCleanup && typeof cleanup === "function") {
+        hasCleanup = true;
+      }
+      return cleanup;
+    });
+    if (hasCleanup) {
+      return () => {
+        for (let i = 0; i < cleanups.length; i++) {
+          const cleanup = cleanups[i];
+          if (typeof cleanup === "function") {
+            cleanup();
+          } else {
+            setRef(currentRefs[i], null);
+          }
+        }
+      };
+    }
+  }, []);
+}
+__name$1(useStableComposedRefs, "useStableComposedRefs");
 function getAnimationName(styles) {
   return (styles == null ? void 0 : styles.animationName) || "none";
 }
-function getElementRef$1(element) {
-  var _a, _b;
-  let getter = (_a = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a.get;
-  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.ref;
-  }
-  getter = (_b = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b.get;
-  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
-  if (mayWarn) {
-    return element.props.ref;
-  }
-  return element.props.ref || element.ref;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlot(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone(ownerName);
-  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable);
-    if (slottable) {
-      const newElement = slottable.props.children;
-      const newChildren = childrenArray.map((child) => {
-        if (child === slottable) {
-          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
-          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
-        } else {
-          return child;
-        }
-      });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
-  });
-  Slot2.displayName = `${ownerName}.Slot`;
-  return Slot2;
-}
-// @__NO_SIDE_EFFECTS__
-function createSlotClone(ownerName) {
-  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
-    const { children, ...slotProps } = props;
-    if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef(children);
-      const props2 = mergeProps(slotProps, children.props);
-      if (children.type !== reactExports.Fragment) {
-        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
-      }
-      return reactExports.cloneElement(children, props2);
-    }
-    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
-  });
-  SlotClone.displayName = `${ownerName}.SlotClone`;
-  return SlotClone;
-}
-var SLOTTABLE_IDENTIFIER = Symbol("radix.slottable");
-function isSlottable(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER;
-}
-function mergeProps(slotProps, childProps) {
-  const overrideProps = { ...childProps };
-  for (const propName in childProps) {
-    const slotPropValue = slotProps[propName];
-    const childPropValue = childProps[propName];
-    const isHandler = /^on[A-Z]/.test(propName);
-    if (isHandler) {
-      if (slotPropValue && childPropValue) {
-        overrideProps[propName] = (...args) => {
-          const result = childPropValue(...args);
-          slotPropValue(...args);
-          return result;
-        };
-      } else if (slotPropValue) {
-        overrideProps[propName] = slotPropValue;
-      }
-    } else if (propName === "style") {
-      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
-    } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
-    }
-  }
-  return { ...slotProps, ...overrideProps };
-}
+__name$1(getAnimationName, "getAnimationName");
 function getElementRef(element) {
-  var _a, _b;
-  let getter = (_a = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a.get;
+  var _a2, _b;
+  let getter = (_a2 = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a2.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
     return element.ref;
@@ -978,46 +1432,18 @@ function getElementRef(element) {
   }
   return element.props.ref || element.ref;
 }
-var NODES = [
-  "a",
-  "button",
-  "div",
-  "form",
-  "h2",
-  "h3",
-  "img",
-  "input",
-  "label",
-  "li",
-  "nav",
-  "ol",
-  "p",
-  "select",
-  "span",
-  "svg",
-  "ul"
-];
-var Primitive = NODES.reduce((primitive, node) => {
-  const Slot = /* @__PURE__ */ createSlot(`Primitive.${node}`);
-  const Node = reactExports.forwardRef((props, forwardedRef) => {
-    const { asChild, ...primitiveProps } = props;
-    const Comp = asChild ? Slot : node;
-    if (typeof window !== "undefined") {
-      window[Symbol.for("radix-ui")] = true;
-    }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
-  });
-  Node.displayName = `Primitive.${node}`;
-  return { ...primitive, [node]: Node };
-}, {});
+__name$1(getElementRef, "getElementRef");
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 var TABS_NAME = "Tabs";
-var [createTabsContext] = createContextScope(TABS_NAME, [
+var [createTabsContext, createTabsScope] = /* @__PURE__ */ createContextScope(TABS_NAME, [
   createRovingFocusGroupScope
 ]);
 var useRovingFocusGroupScope = createRovingFocusGroupScope();
 var [TabsProvider, useTabsContext] = createTabsContext(TABS_NAME);
-var Tabs$1 = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var Tabs$1 = /* @__PURE__ */ reactExports.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name(function Tabs2(props, forwardedRef) {
     const {
       __scopeTabs,
       value: valueProp,
@@ -1056,12 +1482,12 @@ var Tabs$1 = reactExports.forwardRef(
         )
       }
     );
-  }
+  }, "Tabs")
 );
-Tabs$1.displayName = TABS_NAME;
 var TAB_LIST_NAME = "TabsList";
-var TabsList$1 = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var TabsList$1 = /* @__PURE__ */ reactExports.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name(function TabsList2(props, forwardedRef) {
     const { __scopeTabs, loop = true, ...listProps } = props;
     const context = useTabsContext(TAB_LIST_NAME, __scopeTabs);
     const rovingFocusGroupScope = useRovingFocusGroupScope(__scopeTabs);
@@ -1084,12 +1510,11 @@ var TabsList$1 = reactExports.forwardRef(
         )
       }
     );
-  }
+  }, "TabsList")
 );
-TabsList$1.displayName = TAB_LIST_NAME;
 var TRIGGER_NAME = "TabsTrigger";
-var TabsTrigger$1 = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var TabsTrigger$1 = /* @__PURE__ */ reactExports.forwardRef(
+  /* @__PURE__ */ __name(function TabsTrigger2(props, forwardedRef) {
     const { __scopeTabs, value, disabled = false, ...triggerProps } = props;
     const context = useTabsContext(TRIGGER_NAME, __scopeTabs);
     const rovingFocusGroupScope = useRovingFocusGroupScope(__scopeTabs);
@@ -1124,7 +1549,12 @@ var TabsTrigger$1 = reactExports.forwardRef(
               }
             }),
             onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
-              if ([" ", "Enter"].includes(event.key)) context.onValueChange(value);
+              if (disabled || event.target !== event.currentTarget) {
+                return;
+              }
+              if ([" ", "Enter"].includes(event.key)) {
+                context.onValueChange(value);
+              }
             }),
             onFocus: composeEventHandlers(props.onFocus, () => {
               const isAutomaticActivation = context.activationMode !== "manual";
@@ -1136,12 +1566,11 @@ var TabsTrigger$1 = reactExports.forwardRef(
         )
       }
     );
-  }
+  }, "TabsTrigger")
 );
-TabsTrigger$1.displayName = TRIGGER_NAME;
 var CONTENT_NAME = "TabsContent";
-var TabsContent$1 = reactExports.forwardRef(
-  (props, forwardedRef) => {
+var TabsContent$1 = /* @__PURE__ */ reactExports.forwardRef(
+  /* @__PURE__ */ __name(function TabsContent2(props, forwardedRef) {
     const { __scopeTabs, value, forceMount, children, ...contentProps } = props;
     const context = useTabsContext(CONTENT_NAME, __scopeTabs);
     const triggerId = makeTriggerId(context.baseId, value);
@@ -1171,15 +1600,16 @@ var TabsContent$1 = reactExports.forwardRef(
         children: present && children
       }
     ) });
-  }
+  }, "TabsContent")
 );
-TabsContent$1.displayName = CONTENT_NAME;
 function makeTriggerId(baseId, value) {
   return `${baseId}-trigger-${value}`;
 }
+__name(makeTriggerId, "makeTriggerId");
 function makeContentId(baseId, value) {
   return `${baseId}-content-${value}`;
 }
+__name(makeContentId, "makeContentId");
 var Root2 = Tabs$1;
 var List = TabsList$1;
 var Trigger = TabsTrigger$1;
@@ -1336,7 +1766,7 @@ function DiagnosticsBar() {
   const [diagStatus, setDiagStatus] = reactExports.useState(null);
   const [who, setWho] = reactExports.useState(null);
   const runDiagnose = async () => {
-    var _a, _b;
+    var _a2, _b;
     if (!identity) {
       setDiagStatus({ busy: false, ok: false, message: "Not logged in" });
       return;
@@ -1346,7 +1776,7 @@ function DiagnosticsBar() {
       const result = await directWhoAmI(identity);
       setWho(result);
       const bal = await refetchBalances();
-      const msg = `caller=${result.caller} · isAdmin=${result.isAdmin} (hardcoded=${result.isHardcodedAdmin}, role=${result.hasAdminRole}) · sGLDT=${(_a = bal.data) == null ? void 0 : _a.sgldtBalance} · ckUNI=${(_b = bal.data) == null ? void 0 : _b.ckUNIBalance}`;
+      const msg = `caller=${result.caller} · isAdmin=${result.isAdmin} (hardcoded=${result.isHardcodedAdmin}, role=${result.hasAdminRole}) · sGLDT=${(_a2 = bal.data) == null ? void 0 : _a2.sgldtBalance} · ckUNI=${(_b = bal.data) == null ? void 0 : _b.ckUNIBalance}`;
       setDiagStatus({ busy: false, ok: !!result.isAdmin, message: msg });
     } catch (err) {
       console.error("[whoAmI] threw:", err);

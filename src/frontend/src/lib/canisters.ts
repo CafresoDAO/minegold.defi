@@ -26,6 +26,13 @@ export const OPERATOR_CONTROLLER =
 
 export const SGLDT_LEDGER_ID = "i2s4q-syaaa-aaaan-qz4sq-cai";
 export const CKUNI_LEDGER_ID = "ilzky-ayaaa-aaaar-qahha-cai";
+export const CKBAT_LEDGER_ID = "j7x7x-syaaa-aaaar-qcbea-cai";
+/** The ckERC-20 ledger suite orchestrator. Created by NNS proposal 129750;
+ *  adding a token is a configuration change it executes, not new code — which
+ *  is why the ckBAT suite existed the moment the proposal carried. Its
+ *  get_orchestrator_info() is the authoritative list of every ckERC-20 ledger
+ *  and index canister on the IC. */
+export const CK_ORCHESTRATOR_ID = "vxkom-oyaaa-aaaar-qafda-cai";
 
 export type CanisterInfo = {
   label: string;
@@ -54,10 +61,22 @@ export const CANISTERS: CanisterInfo[] = [
     note: "your bridged UNI lives here, in YOUR account",
   },
   {
+    label: "ckBAT ledger",
+    id: CKBAT_LEDGER_ID,
+    party: "DFINITY",
+    note: "your bridged BAT lives here, in YOUR account",
+  },
+  {
     label: "ckERC-20 minter",
     id: "sv3dd-oaaaa-aaaar-qacoa-cai",
     party: "DFINITY",
-    note: "mints ckUNI after 12 Ethereum blocks — not our code",
+    note: "mints ckUNI and ckBAT after 12 Ethereum blocks — not our code",
+  },
+  {
+    label: "ckERC-20 ledger suite orchestrator",
+    id: CK_ORCHESTRATOR_ID,
+    party: "DFINITY",
+    note: "NNS-controlled; created the ckBAT ledger when the proposal carried",
   },
   {
     label: "Exchange Rate Canister (XRC)",
@@ -71,5 +90,12 @@ export const CANISTERS: CanisterInfo[] = [
  *  per-block URL for generic ICRC-1 ledgers, so the honest target is the
  *  ledger canister page itself — the block index in the label is what makes
  *  the row reconcilable. */
-export const ledgerUrl = (token: "sGLDT" | "ckUNI"): string =>
-  `${DASHBOARD}/${token === "sGLDT" ? SGLDT_LEDGER_ID : CKUNI_LEDGER_ID}`;
+export const ledgerUrl = (token: "sGLDT" | "ckUNI" | "ckBAT"): string => {
+  const id =
+    token === "sGLDT"
+      ? SGLDT_LEDGER_ID
+      : token === "ckBAT"
+        ? CKBAT_LEDGER_ID
+        : CKUNI_LEDGER_ID;
+  return `${DASHBOARD}/${id}`;
+};

@@ -4154,6 +4154,46 @@ actor Self {
     { rate = uniExchangeRate; uniUsdE8 = lastUniUsdPriceE8; lastError = lastXRCError };
   };
 
+  /// Admin recovery: directly await a sync, bypassing the hourly timer chain
+  /// entirely. If _periodicRateSync's self-reschedule ever dies (a trap
+  /// inside _syncRateFromXRC rolls back the whole message atomically,
+  /// including the Timer.setTimer reschedule that was already issued — see
+  /// getRateStatus.lastSyncNs going stale past autoSyncSeconds), this is the
+  /// manual escape hatch: an admin can force a sync from here without a full
+  /// canister upgrade, and a trap in the sync path surfaces to the caller
+  /// immediately instead of silently killing a background timer.
+  public shared ({ caller }) func adminForceRateSync() : async Text {
+    if (not isAdmin(caller)) {
+      Runtime.trap("Unauthorized: admin only");
+    };
+    let beforeNs = lastXRCSyncNs;
+    await _syncRateFromXRC();
+    if (lastXRCSyncNs == beforeNs) {
+      return "skipped: within the " # XRC_MIN_SYNC_GAP_NS.toText()
+      # "ns minimum sync gap (last attempt " # beforeNs.toText() # " ns) — no-op, try again shortly";
+    };
+    if (lastXRCError.size() > 0) {
+      "err: " # lastXRCError # " (uniRate=" # uniExchangeRate.toText()
+      # ", batRate=" # batExchangeRate.toText() # ")";
+    } else {
+      "ok: uniRate=" # uniExchangeRate.toText() # " uniUsdE8=" # lastUniUsdPriceE8.toText()
+      # " batRate=" # batExchangeRate.toText() # " batUsdE8=" # lastBatUsdPriceE8.toText();
+    };
+  };
+
+  /// Admin recovery: re-arm the hourly rate-sync timer chain without a full
+  /// canister upgrade (the postupgrade hook otherwise being the only thing
+  /// that re-registers _periodicRateSync). Use this after confirming via
+  /// getRateStatus that the chain has stalled — this only reschedules the
+  /// loop; call adminForceRateSync separately for an immediate sync.
+  public shared ({ caller }) func adminRearmRateSyncTimer() : async Text {
+    if (not isAdmin(caller)) {
+      Runtime.trap("Unauthorized: admin only");
+    };
+    ignore Timer.setTimer<system>(#seconds XRC_AUTO_SYNC_SECONDS, _periodicRateSync);
+    "ok: rate-sync timer re-armed, next automatic sync in " # XRC_AUTO_SYNC_SECONDS.toText() # "s";
+  };
+
   /// Admin: set the USD reference price of sGLDT (1e8 precision). This is the
   /// slow leg of the rate — the XRC handles the volatile UNI leg from then
   /// on. Setting it recomputes the rate immediately from the last XRC

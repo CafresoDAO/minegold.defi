@@ -124,6 +124,19 @@ type BatRefineRecord =
    timestamp: Time;
    user: principal;
  };
+type BatRedeemRecord = 
+ record {
+   ckbatPaid: nat;
+   errorMsg: opt text;
+   id: nat;
+   payBlock: opt nat;
+   pullBlock: opt nat;
+   rate: nat;
+   sgldtAmount: nat;
+   status: RefineStatus;
+   timestamp: Time;
+   user: principal;
+ };
 service : {
   _initializeAccessControl: () -> ();
   /// Admin-only: add a transaction record on behalf of any user (e.g. for manual entries).
@@ -152,6 +165,15 @@ service : {
       err: text;
       ok: text;
     });
+  /// Admin recovery: directly await a sync, bypassing the hourly timer chain
+  /// entirely. If _periodicRateSync's self-reschedule ever dies (a trap
+  /// inside _syncRateFromXRC rolls back the whole message atomically,
+  /// including the Timer.setTimer reschedule that was already issued — see
+  /// getRateStatus.lastSyncNs going stale past autoSyncSeconds), this is the
+  /// manual escape hatch: an admin can force a sync from here without a full
+  /// canister upgrade, and a trap in the sync path surfaces to the caller
+  /// immediately instead of silently killing a background timer.
+  adminForceRateSync: () -> (text);
   /// Admin-only: view any user's transaction history.
   adminGetUserTransactions: (user: principal) -> (vec TxRecord) query;
   /// Admin-only: promote another principal to #admin. Use this to grant admin
@@ -172,6 +194,12 @@ service : {
       err: text;
       ok: text;
     });
+  /// Admin recovery: re-arm the hourly rate-sync timer chain without a full
+  /// canister upgrade (the postupgrade hook otherwise being the only thing
+  /// that re-registers _periodicRateSync). Use this after confirming via
+  /// getRateStatus that the chain has stalled — this only reschedules the
+  /// loop; call adminForceRateSync separately for an immediate sync.
+  adminRearmRateSyncTimer: () -> (text);
   /// Admin transfers ckUNI from this canister to any principal via ICRC-1.
   /// Returns a Text result prefixed with "ok:" on success or "error:" on failure
   /// so the frontend can surface the real reason (no traps on transfer errors).
@@ -249,6 +277,8 @@ service : {
           status: text;
           txHash: text;
         }) query;
+  /// The caller's own ckBAT redeem history, newest-first.
+  getMyBatRedeems: () -> (vec BatRedeemRecord) query;
   /// The caller's own ckBAT refine history, newest-first.
   getMyBatRefines: () -> (vec BatRefineRecord) query;
   /// The UI polls this to know when the minter has credited the user and
@@ -285,6 +315,17 @@ service : {
       minRedeem: nat;
       rate: nat;
       treasuryCkUNI: nat;
+    });
+  /// The caller's sGLDT balance and the allowance granted to this canister,
+  /// plus what the treasury could currently pay out in ckBAT. Mirrors
+  /// getMySGLDTPosition, which does the same for the ckUNI leg.
+  getMySGLDTPositionForCkBAT: () ->
+   (record {
+      allowance: nat;
+      balance: nat;
+      minRedeem: nat;
+      rate: nat;
+      treasuryCkBAT: nat;
     });
   /// Caller's own transaction history.
   getMyTransactions: () -> (vec TxRecord) query;
@@ -345,6 +386,8 @@ service : {
   /// This is a query so it works for unauthenticated (anonymous) callers.
   /// Call refreshTreasuryBalances() to update the cache from the ledger.
   getSGLDTTreasuryBalance: () -> (nat) query;
+  /// Admin view: every ckBAT redeem that ended #stranded.
+  getStrandedBatRedeems: () -> (vec BatRedeemRecord) query;
   /// Admin view: every ckBAT refine that ended #stranded.
   getStrandedBatRefines: () -> (vec BatRefineRecord) query;
   /// PUBLIC transparency counter for /proof: how many refines and redeems are
@@ -360,6 +403,7 @@ service : {
   /// canister stopped returning).
   getStrandedCounts: () ->
    (record {
+      strandedBatRedeems: nat;
       strandedBatRefines: nat;
       strandedRedeems: nat;
       strandedRefines: nat;
@@ -416,6 +460,38 @@ service : {
    (variant {
       err: text;
       ok: text;
+    });
+  /// Redeem sGLDT back into ckBAT at the oracle rate. Prerequisite: the user
+  /// has icrc2_approve'd this canister on the sGLDT ledger for at least
+  /// `amount` plus the sGLDT transfer fee. Fully symmetric to redeemSGLDT —
+  /// see its doc comment for the general shape.
+  /// 
+  /// Gating note: redeemSGLDT settles as long as uniExchangeRate != 0 and
+  /// does not run any separate freshness gate ahead of settlement — there
+  /// isn't one, because the UNI leg has no staleness concept at all.
+  /// refineCkBAT, by contrast, explicitly checks _batRateIsFresh() and
+  /// refuses with a dedicated message before ever calling _settleRate.
+  /// This function follows redeemSGLDT's *shape* (settle, then a single
+  /// rate == 0 check — no separate pre-gate) rather than refineCkBAT's, per
+  /// the ckUNI/ckBAT parity this function is meant to preserve. But the BAT
+  /// oracle genuinely can go stale (unlike UNI's), and paying real ckBAT out
+  /// of the treasury against a price the canister itself no longer trusts
+  /// would be a real loss, not a cosmetic asymmetry. So the "current" rate
+  /// fed into _settleRate is _settleableBatRate() — which is defined
+  /// elsewhere as reading 0 whenever the rate is stale, "the rate as the
+  /// outside world should see it" — rather than the raw batExchangeRate.
+  /// A stale rate then falls out of the existing rate == 0 check below,
+  /// with no second gate needed: same structure as redeemSGLDT, same
+  /// stale-price protection as refineCkBAT.
+  redeemCkBAT: (amount: nat, rateHint: opt nat) ->
+   (variant {
+      err: text;
+      ok: record {
+            blockIndex: nat;
+            ckbatPaid: nat;
+            rate: nat;
+            redeemId: nat;
+          };
     });
   /// Redeem sGLDT back into ckUNI at the oracle rate. Prerequisite: the user
   /// has icrc2_approve'd this canister on the sGLDT ledger for at least

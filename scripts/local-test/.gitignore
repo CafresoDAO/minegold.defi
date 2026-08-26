@@ -1,0 +1,8 @@
+# Throwaway local-replica build/deploy state. Regenerated fresh by
+# run-bat-redeem-test.sh on every run — nothing here should be committed,
+# and .artifacts/src/main_local.mo in particular is a LOCAL-TEST-ONLY copy
+# of main.mo with an extra admin principal spliced in; it must never be
+# mistaken for (or shipped as) the real backend.
+.artifacts/
+.dfx/
+.mops/

@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "canisters": {
+    "backend": {
+      "type": "custom",
+      "wasm": ".artifacts/backend_local.wasm",
+      "candid": ".artifacts/backend_local.did",
+      "build": "true"
+    },
+    "mock_sgldt_ledger": {
+      "type": "custom",
+      "wasm": ".artifacts/mock_ledger.wasm",
+      "candid": ".artifacts/mock_ledger.did",
+      "build": "true",
+      "specified_id": "i2s4q-syaaa-aaaan-qz4sq-cai"
+    },
+    "mock_ckbat_ledger": {
+      "type": "custom",
+      "wasm": ".artifacts/mock_ledger.wasm",
+      "candid": ".artifacts/mock_ledger.did",
+      "build": "true",
+      "specified_id": "j7x7x-syaaa-aaaar-qcbea-cai"
+    },
+    "mock_ckuni_ledger": {
+      "type": "custom",
+      "wasm": ".artifacts/mock_ledger.wasm",
+      "candid": ".artifacts/mock_ledger.did",
+      "build": "true",
+      "specified_id": "ilzky-ayaaa-aaaar-qahha-cai"
+    }
+  },
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:4955",
+      "type": "ephemeral",
+      "replica": {
+        "subnet_type": "application"
+      }
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  }
+}

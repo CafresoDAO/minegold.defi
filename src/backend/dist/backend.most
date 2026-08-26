@@ -1,6 +1,19 @@
 // Version: 1.0.0
 type BalanceCacheEntry__515968485 =
   {cachedAt : Time__900049286; ethWei : Nat; uniWei : Nat};
+type BatRedeemRecord__813692632 =
+  {
+    ckbatPaid : Nat;
+    errorMsg : ?Text;
+    id : Nat;
+    payBlock : ?Nat;
+    pullBlock : ?Nat;
+    rate : Nat;
+    sgldtAmount : Nat;
+    status : RefineStatus__981240074;
+    timestamp : Time__900049286;
+    user : Principal
+  };
 type BatRefineRecord__749390045 =
   {
     ckbatAmount : Nat;
@@ -193,6 +206,11 @@ actor {
   stable var batExchangeRate : Nat;
   stable var batPoolBalance : Nat;
   stable var batRateAppliedNs : Int;
+  stable batRedeems :
+    {
+      var root : Node__46230540<Nat, BatRedeemRecord__813692632>;
+      var size : Nat__490723111
+    };
   stable batRefines :
     {
       var root : Node__46230540<Nat, BatRefineRecord__749390045>;
@@ -229,6 +247,7 @@ actor {
   stable var lastUniUsdPriceE8 : Nat;
   stable var lastXRCError : Text;
   stable var lastXRCSyncNs : Int;
+  stable var nextBatRedeemId : Nat;
   stable var nextBatRefineId : Nat;
   stable var nextBridgeRequestId : Nat;
   stable var nextExchangeRequestId : Nat;

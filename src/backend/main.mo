@@ -581,11 +581,34 @@ actor Self {
     } catch (e) { lastXRCError := e.message() };
   };
 
-  /// Hourly self-rescheduling sync. Rescheduled before the await so a failed
-  /// sync can never kill the timer chain.
+  /// Hourly self-rescheduling sync. Structurally decoupled from the sync
+  /// itself: this function never awaits anything, so it always runs to
+  /// completion as one atomic message and its Timer.setTimer call always
+  /// commits — no code path in here can trap on the far side of an await
+  /// and unwind the reschedule with it. (Reordering to "reschedule before
+  /// the await" doesn't fully close this: everything synchronous between
+  /// entry and the sync's own first await — including a cycles-attach that
+  /// traps immediately rather than rejecting — still shares this message's
+  /// commit boundary. A live incident traced to exactly this: lastSyncNs
+  /// froze with lastError empty, meaning _syncRateFromXRC never even
+  /// stamped its own entry — the whole triggering message rolled back
+  /// before reaching any checkpoint, reschedule included.) The actual sync
+  /// runs as a separate, independently-scheduled message via a zero-delay
+  /// timer, wrapped in its own try/catch as a second line of defense.
   func _periodicRateSync() : async () {
     ignore Timer.setTimer<system>(#seconds XRC_AUTO_SYNC_SECONDS, _periodicRateSync);
-    await _syncRateFromXRC();
+    ignore Timer.setTimer<system>(#seconds 0, _runRateSyncGuarded);
+  };
+
+  /// Runs in its own message (see _periodicRateSync above), so whatever
+  /// happens in here — including a trap this try/catch doesn't reach —
+  /// cannot touch the already-committed reschedule from the caller.
+  func _runRateSyncGuarded() : async () {
+    try {
+      await _syncRateFromXRC();
+    } catch (e) {
+      lastXRCError := "guarded sync wrapper caught: " # e.message();
+    };
   };
 
   // Types

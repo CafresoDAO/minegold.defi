@@ -1649,3 +1649,96 @@ export async function fetchBatRateStatus(): Promise<BatRateStatus | null> {
     return null;
   }
 }
+
+// ── ckBAT redeem ─────────────────────────────────────────────────────────────
+//
+// The exit half of the BAT leg: sGLDT back into ckBAT. Fully symmetric to the
+// redeemIDL / fetchMySGLDTPosition / redeemSGLDT trio above — see those doc
+// comments for the general shape. The token being pulled from the user is
+// still sGLDT in both directions, so approveSGLDTForRedeem is shared as-is;
+// only the position shape and payout side differ.
+
+const redeemBatIDL = ({ IDL }: { IDL: any }) => {
+  const RedeemOk = IDL.Record({
+    redeemId: IDL.Nat,
+    ckbatPaid: IDL.Nat,
+    rate: IDL.Nat,
+    blockIndex: IDL.Nat,
+  });
+  return IDL.Service({
+    getMySGLDTPositionForCkBAT: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          balance: IDL.Nat,
+          allowance: IDL.Nat,
+          minRedeem: IDL.Nat,
+          rate: IDL.Nat,
+          treasuryCkBAT: IDL.Nat,
+        }),
+      ],
+      [],
+    ),
+    redeemCkBAT: IDL.Func(
+      [IDL.Nat, IDL.Opt(IDL.Nat)],
+      [IDL.Variant({ ok: RedeemOk, err: IDL.Text })],
+      [],
+    ),
+  });
+};
+
+export type SGLDTPositionForCkBAT = {
+  balance: bigint;
+  allowance: bigint;
+  minRedeem: bigint;
+  rate: bigint;
+  treasuryCkBAT: bigint;
+};
+
+/** The caller's sGLDT balance, the allowance granted to the refinery, and the
+ *  treasury's ckBAT liquidity — everything the ckBAT redeem UI needs to gate
+ *  the button and size the approve. Mirrors fetchMySGLDTPosition. */
+export async function fetchMySGLDTPositionForCkBAT(
+  identity: unknown,
+): Promise<SGLDTPositionForCkBAT | null> {
+  try {
+    const actor = await directActor(redeemBatIDL, { identity });
+    return (await actor.getMySGLDTPositionForCkBAT()) as SGLDTPositionForCkBAT;
+  } catch (err) {
+    console.warn("[redeem] sGLDT position (ckBAT) fetch failed:", err);
+    return null;
+  }
+}
+
+export type RedeemCkBATOutcome =
+  | {
+      ok: true;
+      redeemId: bigint;
+      ckbatPaid: bigint;
+      rate: bigint;
+      blockIndex: bigint;
+    }
+  | { ok: false; error: string };
+
+/** Swap sGLDT back into ckBAT at the oracle rate. Requires a prior
+ *  approveSGLDTForRedeem for at least `amount` + the sGLDT fee. Mirrors
+ *  redeemSGLDT. */
+export async function redeemCkBAT(opts: {
+  identity: unknown;
+  amount: bigint;
+  rateHint: bigint | null;
+}): Promise<RedeemCkBATOutcome> {
+  const actor = await directActor(redeemBatIDL, { identity: opts.identity });
+  const rateOpt: [] | [bigint] = opts.rateHint == null ? [] : [opts.rateHint];
+  const result = await actor.redeemCkBAT(opts.amount, rateOpt);
+  if ("ok" in result) {
+    return {
+      ok: true,
+      redeemId: result.ok.redeemId as bigint,
+      ckbatPaid: result.ok.ckbatPaid as bigint,
+      rate: result.ok.rate as bigint,
+      blockIndex: result.ok.blockIndex as bigint,
+    };
+  }
+  return { ok: false, error: result.err as string };
+}

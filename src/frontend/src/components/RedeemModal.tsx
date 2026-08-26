@@ -3,10 +3,17 @@ import { useCallback, useEffect, useState } from "react";
 import {
   approveSGLDTForRedeem,
   fetchMySGLDTPosition,
+  fetchMySGLDTPositionForCkBAT,
+  redeemCkBAT,
   redeemSGLDT,
-  type SGLDTPosition,
 } from "../hooks/useQueries";
 import { parseDecimalToBigInt } from "../lib/erc20";
+import {
+  CKBAT_ASSET,
+  CKUNI_ASSET,
+  type RefineAsset,
+  type RefineAssetId,
+} from "../lib/refineAssets";
 import { GoldCTA } from "./ui/GoldCTA";
 
 type Props = {
@@ -16,42 +23,109 @@ type Props = {
   onRedeemed: () => void;
 };
 
+/** The two exit assets, normalized to one shape so the rest of this
+ *  component doesn't need to know whether it's looking at
+ *  SGLDTPosition.treasuryCkUNI or SGLDTPositionForCkBAT.treasuryCkBAT. */
+type RedeemPosition = {
+  balance: bigint;
+  allowance: bigint;
+  minRedeem: bigint;
+  rate: bigint;
+  treasuryLiquidity: bigint;
+};
+
 type RedeemPhase =
   | { kind: "loading" }
-  | { kind: "input"; position: SGLDTPosition }
-  | { kind: "approving"; position: SGLDTPosition }
-  | { kind: "redeeming"; position: SGLDTPosition }
-  | { kind: "done"; ckuni: bigint; sgldt: bigint; payBlock: bigint; rate: bigint }
-  | { kind: "error"; message: string; position: SGLDTPosition | null };
+  | { kind: "input"; position: RedeemPosition }
+  | { kind: "approving"; position: RedeemPosition }
+  | { kind: "redeeming"; position: RedeemPosition }
+  | {
+      kind: "done";
+      asset: RefineAssetId;
+      received: bigint;
+      sgldt: bigint;
+      payBlock: bigint;
+      rate: bigint;
+    }
+  | { kind: "error"; message: string; position: RedeemPosition | null };
 
 /** sGLDT fee headroom added to the approve so the ledger's fee deduction
- *  can't leave the allowance a hair short of the redeem amount. */
+ *  can't leave the allowance a hair short of the redeem amount. Same for
+ *  both exit assets — the token being approved is always sGLDT. */
 const SGLDT_FEE_HEADROOM = 100_000n;
 
-/** Redeem sGLDT back into ckUNI at the oracle rate — the exit half of the
- *  refinery. Once the ckUNI lands in the user's own account they can bridge
- *  back to native UNI on Ethereum via DFINITY's standard minter withdrawal. */
+const REDEEM_ASSETS: Record<RefineAssetId, RefineAsset> = {
+  ckUNI: CKUNI_ASSET,
+  ckBAT: CKBAT_ASSET,
+};
+
+/** Redeem sGLDT back into ckUNI or ckBAT at the oracle rate — the exit half
+ *  of the refinery. Once the chain-key token lands in the user's own account
+ *  they can bridge it back to the native Ethereum asset via DFINITY's
+ *  standard minter withdrawal. */
 export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
+  const [asset, setAsset] = useState<RefineAssetId>("ckUNI");
   const [phase, setPhase] = useState<RedeemPhase>({ kind: "loading" });
   const [amountStr, setAmountStr] = useState("");
 
   const loadPosition = useCallback(async () => {
     setPhase({ kind: "loading" });
-    const pos = await fetchMySGLDTPosition(identity);
+    if (asset === "ckUNI") {
+      const pos = await fetchMySGLDTPosition(identity);
+      if (!pos) {
+        setPhase({
+          kind: "error",
+          message:
+            "Could not load your sGLDT position. Check your connection and try again.",
+          position: null,
+        });
+        return;
+      }
+      setPhase({
+        kind: "input",
+        position: {
+          balance: pos.balance,
+          allowance: pos.allowance,
+          minRedeem: pos.minRedeem,
+          rate: pos.rate,
+          treasuryLiquidity: pos.treasuryCkUNI,
+        },
+      });
+      return;
+    }
+    const pos = await fetchMySGLDTPositionForCkBAT(identity);
     if (!pos) {
       setPhase({
         kind: "error",
-        message: "Could not load your sGLDT position. Check your connection and try again.",
+        message:
+          "Could not load your sGLDT position. Check your connection and try again.",
         position: null,
       });
       return;
     }
-    setPhase({ kind: "input", position: pos });
-  }, [identity]);
+    setPhase({
+      kind: "input",
+      position: {
+        balance: pos.balance,
+        allowance: pos.allowance,
+        minRedeem: pos.minRedeem,
+        rate: pos.rate,
+        treasuryLiquidity: pos.treasuryCkBAT,
+      },
+    });
+  }, [identity, asset]);
 
   useEffect(() => {
     void loadPosition();
   }, [loadPosition]);
+
+  // Reset the amount whenever the asset tab changes — a typed amount for one
+  // asset's balance/rate is meaningless for the other.
+  useEffect(() => {
+    setAmountStr("");
+  }, [asset]);
+
+  const assetInfo = REDEEM_ASSETS[asset];
 
   const position =
     phase.kind === "input" || phase.kind === "approving" || phase.kind === "redeeming"
@@ -63,13 +137,16 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
   const amountE8s = parseDecimalToBigInt(amountStr, 8);
 
   const rateNum = position ? Number(position.rate) / 1e8 : 0;
-  const estCkUNI = rateNum > 0 ? (Number(amountE8s) / 1e8) / rateNum : 0;
+  const estReceived = rateNum > 0 ? (Number(amountE8s) / 1e8) / rateNum : 0;
   const balanceNum = position ? Number(position.balance) / 1e8 : 0;
-  const treasuryCkUNINum = position ? Number(position.treasuryCkUNI) / 1e18 : 0;
+  const treasuryLiquidityNum = position
+    ? Number(position.treasuryLiquidity) / 1e18
+    : 0;
 
   const tooSmall = position != null && amountE8s > 0n && amountE8s < position.minRedeem;
   const overBalance = position != null && amountE8s > position.balance;
-  const overLiquidity = position != null && rateNum > 0 && estCkUNI > treasuryCkUNINum;
+  const overLiquidity =
+    position != null && rateNum > 0 && estReceived > treasuryLiquidityNum;
   const canSubmit =
     position != null && amountE8s > 0n && !tooSmall && !overBalance && !overLiquidity;
 
@@ -89,14 +166,18 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
         }
       }
       setPhase({ kind: "redeeming", position });
-      const result = await redeemSGLDT({ identity, amount: amountE8s, rateHint });
+      const result =
+        asset === "ckUNI"
+          ? await redeemSGLDT({ identity, amount: amountE8s, rateHint })
+          : await redeemCkBAT({ identity, amount: amountE8s, rateHint });
       if (!result.ok) {
         setPhase({ kind: "error", message: result.error, position });
         return;
       }
       setPhase({
         kind: "done",
-        ckuni: result.ckuniPaid,
+        asset,
+        received: "ckuniPaid" in result ? result.ckuniPaid : result.ckbatPaid,
         sgldt: amountE8s,
         payBlock: result.blockIndex,
         rate: result.rate,
@@ -136,10 +217,37 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
           <div>
             <h2 className="t-headline text-white">Redeem sGLDT</h2>
             <p className="text-xs text-zinc-500">
-              Swap back to ckUNI at the live oracle rate
+              Swap back to {assetInfo.symbol} at the live oracle rate
             </p>
           </div>
         </div>
+
+        {phase.kind !== "done" && (
+          <div
+            role="tablist"
+            aria-label="Redeem to"
+            className="grid grid-cols-2 gap-2 mb-5"
+          >
+            {(Object.keys(REDEEM_ASSETS) as RefineAssetId[]).map((id) => (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={asset === id}
+                data-ocid={`wallet.redeem.asset_tab.${id}`}
+                disabled={busy}
+                onClick={() => setAsset(id)}
+                className={`rounded-xl py-2 text-sm font-bold border transition-colors disabled:opacity-40 ${
+                  asset === id
+                    ? "bg-yellow-500/15 border-yellow-500/50 text-yellow-400"
+                    : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:bg-zinc-800"
+                }`}
+              >
+                {REDEEM_ASSETS[id].symbol}
+              </button>
+            ))}
+          </div>
+        )}
 
         {phase.kind === "loading" && (
           <div className="flex items-center justify-center gap-2 py-10 text-zinc-400 text-sm">
@@ -152,25 +260,29 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
             <CheckCircle2 size={40} className="text-emerald-400 mx-auto" />
             <div>
               <p className="text-white font-bold">
-                {(Number(phase.ckuni) / 1e18).toFixed(6)} ckUNI received
+                {(Number(phase.received) / 1e18).toFixed(6)}{" "}
+                {REDEEM_ASSETS[phase.asset].symbol} received
               </p>
               <p className="text-xs text-zinc-400 mt-1">
-                for {(Number(phase.sgldt) / 1e8).toFixed(4)} sGLDT — the ckUNI is
-                in your own ICP account. Bridge it back to native UNI on Ethereum
-                any time via the chain-key minter.
+                for {(Number(phase.sgldt) / 1e8).toFixed(4)} sGLDT — the{" "}
+                {REDEEM_ASSETS[phase.asset].symbol} is in your own ICP account.
+                Bridge it back to native {REDEEM_ASSETS[phase.asset].originSymbol}{" "}
+                on Ethereum any time via the chain-key minter.
               </p>
-              {/* On-chain receipt: the settled rate and the ckUNI ledger
-               *  block of the payout — the verifiable proof of this swap. */}
+              {/* On-chain receipt: the settled rate and the ledger block of
+               *  the payout — the verifiable proof of this swap. */}
               <p className="text-[10px] text-zinc-500 font-mono mt-2">
-                settled @ {(Number(phase.rate) / 1e8).toFixed(4)} sGLDT/UNI ·{" "}
+                settled @ {(Number(phase.rate) / 1e8).toFixed(4)} sGLDT/
+                {REDEEM_ASSETS[phase.asset].originSymbol} ·{" "}
                 <a
-                  href="https://dashboard.internetcomputer.org/canister/ilzky-ayaaa-aaaar-qahha-cai"
+                  href={`https://dashboard.internetcomputer.org/canister/${REDEEM_ASSETS[phase.asset].ledgerCanisterId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-400 hover:text-blue-300 underline underline-offset-2"
-                  title="ckUNI ledger canister on the ICP dashboard"
+                  title={`${REDEEM_ASSETS[phase.asset].symbol} ledger canister on the ICP dashboard`}
                 >
-                  ckUNI ledger block #{phase.payBlock.toString()}
+                  {REDEEM_ASSETS[phase.asset].symbol} ledger block #
+                  {phase.payBlock.toString()}
                 </a>
               </p>
             </div>
@@ -206,7 +318,9 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
                     Rate
                   </div>
                   <div className="text-zinc-200 font-bold">
-                    {rateNum > 0 ? `${rateNum.toFixed(4)} sGLDT/UNI` : "—"}
+                    {rateNum > 0
+                      ? `${rateNum.toFixed(4)} sGLDT/${assetInfo.originSymbol}`
+                      : "—"}
                   </div>
                 </div>
                 <div className="col-span-2">
@@ -214,7 +328,7 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
                     Treasury liquidity
                   </div>
                   <div className="text-zinc-300 font-bold">
-                    {treasuryCkUNINum.toFixed(6)} ckUNI available
+                    {treasuryLiquidityNum.toFixed(6)} {assetInfo.symbol} available
                   </div>
                 </div>
               </div>
@@ -251,7 +365,7 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
               </div>
               {amountE8s > 0n && rateNum > 0 && (
                 <p className="text-[11px] text-zinc-400 mt-1.5">
-                  ≈ {estCkUNI.toFixed(6)} ckUNI
+                  ≈ {estReceived.toFixed(6)} {assetInfo.symbol}
                 </p>
               )}
               {tooSmall && position && (
@@ -266,8 +380,8 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
               )}
               {overLiquidity && !overBalance && (
                 <p className="text-[11px] text-amber-400 mt-1.5">
-                  The treasury doesn't hold that much ckUNI right now — try a
-                  smaller amount.
+                  The treasury doesn't hold that much {assetInfo.symbol} right
+                  now — try a smaller amount.
                 </p>
               )}
             </div>
@@ -295,7 +409,7 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
                   <Loader2 size={14} className="animate-spin" /> Redeeming…
                 </span>
               ) : (
-                "Redeem to ckUNI"
+                `Redeem to ${assetInfo.symbol}`
               )}
             </GoldCTA>
 

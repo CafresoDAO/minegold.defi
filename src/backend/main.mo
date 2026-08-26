@@ -1011,6 +1011,18 @@ actor Self {
         case (_) {};
       };
     };
+    // The ckBAT exit leg (redeemCkBAT) can strand exactly like the ckUNI
+    // redeems loop above — sGLDT pulled from the user, ckBAT payout failed,
+    // and the refund also failed — but batRedeems is a separate Map (see the
+    // ckBAT redeem section's doc comment for why), so it needs its own loop
+    // here or its stranded sGLDT silently disappears from the /proof page's
+    // risk disclosure.
+    for ((_, r) in batRedeems.entries()) {
+      switch (r.status) {
+        case (#stranded) { strandedCount += 1; strandedOwed += r.sgldtAmount };
+        case (_) {};
+      };
+    };
 
     {
       treasurySGLDTBalance = treasuryBalance;

@@ -2936,10 +2936,12 @@ actor Self {
     strandedRefines : Nat;
     strandedRedeems : Nat;
     strandedBatRefines : Nat;
+    strandedBatRedeems : Nat;
   } {
     var rf : Nat = 0;
     var rd : Nat = 0;
     var rb : Nat = 0;
+    var rdb : Nat = 0;
     for ((_, r) in refines.entries()) {
       switch (r.status) { case (#stranded) { rf += 1 }; case (_) {} };
     };
@@ -2949,7 +2951,10 @@ actor Self {
     for ((_, r) in redeems.entries()) {
       switch (r.status) { case (#stranded) { rd += 1 }; case (_) {} };
     };
-    { strandedRefines = rf + rb; strandedRedeems = rd; strandedBatRefines = rb };
+    for ((_, r) in batRedeems.entries()) {
+      switch (r.status) { case (#stranded) { rdb += 1 }; case (_) {} };
+    };
+    { strandedRefines = rf + rb; strandedRedeems = rd + rdb; strandedBatRefines = rb; strandedBatRedeems = rdb };
   };
 
   /// Admin view: every ckBAT refine that ended #stranded.
@@ -3598,6 +3603,422 @@ actor Self {
     if (not isAdmin(caller)) { return [] };
     let out = List.empty<RedeemRecord>();
     for ((_, r) in redeems.entries()) {
+      switch (r.status) {
+        case (#stranded) { out.add(r) };
+        case (_) {};
+      };
+    };
+    out.toArray();
+  };
+
+  // =======================================================
+  // REDEEM — sGLDT → ckBAT (the ckBAT exit path)
+  // =======================================================
+  // Mirror of redeemSGLDT above, with ckBAT as the payout leg instead of
+  // ckUNI. Kept as a parallel path rather than generalising redeemSGLDT, for
+  // the same reason refineCkBAT is parallel to refineCkUNI: `redeems` is a
+  // persistent Map whose value type cannot change across an upgrade, so a
+  // new asset gets a new map (`batRedeems`/`nextBatRedeemId`) rather than an
+  // asset tag bolted onto the existing one — exactly the split refineCkBAT
+  // already established between `refines` and `batRefines`.
+
+  /// The reverse leg of BatRefineRecord: sGLDT pulled from the user, ckBAT
+  /// paid from treasury. Shares RefineStatus — the lifecycle is identical
+  /// with the tokens swapped, same as RedeemRecord does for the ckUNI leg.
+  type BatRedeemRecord = {
+    id : Nat;
+    user : Principal;
+    sgldtAmount : Nat; // e8s, as pulled from the user
+    ckbatPaid : Nat; // e18
+    rate : Nat; // 1e8-precision sGLDT per BAT used for this redeem
+    status : RefineStatus;
+    timestamp : Time.Time;
+    pullBlock : ?Nat;
+    payBlock : ?Nat;
+    errorMsg : ?Text;
+  };
+
+  let batRedeems = Map.empty<Nat, BatRedeemRecord>();
+  var nextBatRedeemId : Nat = 0;
+
+  /// ckBAT (e18) owed for a given sGLDT amount (e8s) at a 1e8-precision
+  /// sGLDT-per-BAT rate. Inverse of _sgldtForCkBAT, same math as
+  /// _ckuniForSGLDT — ckBAT is 18 decimals like ckUNI (see the ckBATLedgerV2
+  /// binding's comment and BatRefineRecord's ckbatAmount, both e18), so the
+  /// same 1e18 constant applies.
+  func _ckbatForSGLDT(sgldtAmount : Nat, rate : Nat) : Nat {
+    (sgldtAmount * 1_000_000_000_000_000_000) / rate;
+  };
+
+  /// The caller's sGLDT balance and the allowance granted to this canister,
+  /// plus what the treasury could currently pay out in ckBAT. Mirrors
+  /// getMySGLDTPosition, which does the same for the ckUNI leg.
+  public shared ({ caller }) func getMySGLDTPositionForCkBAT() : async {
+    balance : Nat;
+    allowance : Nat;
+    minRedeem : Nat;
+    rate : Nat;
+    treasuryCkBAT : Nat;
+  } {
+    let me = Principal.fromActor(Self);
+    let treasuryBal = try {
+      await ckBATLedgerV2.icrc1_balance_of({ owner = me; subaccount = null });
+    } catch (_) { 0 };
+    if (caller.isAnonymous()) {
+      return {
+        balance = 0;
+        allowance = 0;
+        minRedeem = MIN_REDEEM_SGLDT;
+        rate = _settleableBatRate();
+        treasuryCkBAT = treasuryBal;
+      };
+    };
+    let bal = try {
+      await sgldtLedgerV2.icrc1_balance_of({ owner = caller; subaccount = null });
+    } catch (_) { 0 };
+    let allow = try {
+      let a = await sgldtLedgerV2.icrc2_allowance({
+        account = { owner = caller; subaccount = null };
+        spender = { owner = me; subaccount = null };
+      });
+      a.allowance;
+    } catch (_) { 0 };
+    {
+      balance = bal;
+      allowance = allow;
+      minRedeem = MIN_REDEEM_SGLDT;
+      rate = _settleableBatRate();
+      treasuryCkBAT = treasuryBal;
+    };
+  };
+
+  /// Redeem sGLDT back into ckBAT at the oracle rate. Prerequisite: the user
+  /// has icrc2_approve'd this canister on the sGLDT ledger for at least
+  /// `amount` plus the sGLDT transfer fee. Fully symmetric to redeemSGLDT —
+  /// see its doc comment for the general shape.
+  ///
+  /// Gating note: redeemSGLDT settles as long as uniExchangeRate != 0 and
+  /// does not run any separate freshness gate ahead of settlement — there
+  /// isn't one, because the UNI leg has no staleness concept at all.
+  /// refineCkBAT, by contrast, explicitly checks _batRateIsFresh() and
+  /// refuses with a dedicated message before ever calling _settleRate.
+  /// This function follows redeemSGLDT's *shape* (settle, then a single
+  /// rate == 0 check — no separate pre-gate) rather than refineCkBAT's, per
+  /// the ckUNI/ckBAT parity this function is meant to preserve. But the BAT
+  /// oracle genuinely can go stale (unlike UNI's), and paying real ckBAT out
+  /// of the treasury against a price the canister itself no longer trusts
+  /// would be a real loss, not a cosmetic asymmetry. So the "current" rate
+  /// fed into _settleRate is _settleableBatRate() — which is defined
+  /// elsewhere as reading 0 whenever the rate is stale, "the rate as the
+  /// outside world should see it" — rather than the raw batExchangeRate.
+  /// A stale rate then falls out of the existing rate == 0 check below,
+  /// with no second gate needed: same structure as redeemSGLDT, same
+  /// stale-price protection as refineCkBAT.
+  public shared ({ caller }) func redeemCkBAT(amount : Nat, rateHint : ?Nat) : async {
+    #ok : { redeemId : Nat; ckbatPaid : Nat; rate : Nat; blockIndex : Nat };
+    #err : Text;
+  } {
+    if (not isAuthenticatedUser(caller)) {
+      return #err("Sign in with Internet Identity before redeeming.");
+    };
+    if (amount < MIN_REDEEM_SGLDT) {
+      return #err("Amount too small. Minimum redeem is 0.1 sGLDT.");
+    };
+
+    let rate = switch (_settleRate(rateHint, _settleableBatRate())) {
+      case (#ok(r)) { r };
+      case (#moved(r)) { return #err(_movedMsg("BAT", r)) };
+    };
+    if (rate == 0) {
+      return #err("Exchange rate unavailable — try again shortly.");
+    };
+    let ckbatAmount = _ckbatForSGLDT(amount, rate);
+    if (ckbatAmount == 0) {
+      return #err("Calculated payout is zero — check the exchange rate.");
+    };
+
+    let me = Principal.fromActor(Self);
+
+    // Cheap pre-check, same purpose as redeemSGLDT's: refuse before pulling
+    // funds if the treasury clearly can't pay.
+    let treasuryCkBAT = try {
+      await ckBATLedgerV2.icrc1_balance_of({ owner = me; subaccount = null });
+    } catch (_) { 0 };
+    if (treasuryCkBAT < ckbatAmount) {
+      return #err(
+        "The treasury doesn't hold enough ckBAT for this redeem right now (has "
+        # treasuryCkBAT.toText() # " e18, needs " # ckbatAmount.toText() # " e18). Try a smaller amount or come back later."
+      );
+    };
+
+    // ── Step 1: pull the sGLDT from the user ──
+    let pullResult = try {
+      await sgldtLedgerV2.icrc2_transfer_from({
+        spender_subaccount = null;
+        from = { owner = caller; subaccount = null };
+        to = { owner = me; subaccount = null };
+        amount = amount;
+        fee = null;
+        memo = null;
+        created_at_time = null;
+      });
+    } catch (e) {
+      return #err("Could not reach the sGLDT ledger: " # e.message());
+    };
+
+    let pullBlock = switch (pullResult) {
+      case (#Ok(b)) { b };
+      case (#Err(#InsufficientAllowance { allowance })) {
+        return #err(
+          "Approval too small. Approve at least " # amount.toText()
+          # " sGLDT e8s (current allowance: " # allowance.toText() # ")."
+        );
+      };
+      case (#Err(#InsufficientFunds { balance })) {
+        return #err(
+          "Not enough sGLDT. Your balance is " # balance.toText()
+          # " e8s but " # amount.toText() # " e8s was requested."
+        );
+      };
+      case (#Err(#BadFee { expected_fee })) {
+        return #err("sGLDT ledger fee mismatch; expected " # expected_fee.toText() # ". Try again.");
+      };
+      case (#Err(#TemporarilyUnavailable)) {
+        return #err("sGLDT ledger temporarily unavailable. Try again shortly.");
+      };
+      case (#Err(#GenericError { message; error_code })) {
+        return #err("sGLDT transfer failed (" # error_code.toText() # "): " # message);
+      };
+      case (#Err(_)) {
+        return #err("sGLDT transfer was rejected by the ledger.");
+      };
+    };
+
+    // The sGLDT is ours from here on — pay or refund, never keep.
+    nextBatRedeemId += 1;
+    let redeemId = nextBatRedeemId;
+    let startedAt = Time.now();
+    batRedeems.add(
+      redeemId,
+      {
+        id = redeemId;
+        user = caller;
+        sgldtAmount = amount;
+        ckbatPaid = 0;
+        rate = rate;
+        status = #pulled;
+        timestamp = startedAt;
+        pullBlock = ?pullBlock;
+        payBlock = null;
+        errorMsg = null;
+      },
+    );
+
+    _recordTx(
+      caller,
+      {
+        id = _nextTxId();
+        txType = #Redeem;
+        amount = amount;
+        tokenSymbol = "sGLDT";
+        status = #Completed;
+        timestamp = startedAt;
+        ethTxHash = null;
+        icpBlockIndex = ?pullBlock;
+        errorMsg = null;
+        description = "sGLDT received for redemption: " # amount.toText() # " e8s. Block: " # pullBlock.toText();
+      },
+    );
+
+    // ── Step 2: pay the ckBAT ──
+    let ckFee = try { await ckBATLedgerV2.icrc1_fee() } catch (_) { 0 };
+    let payResult = try {
+      await ckBATLedgerV2.icrc1_transfer({
+        from_subaccount = null;
+        to = { owner = caller; subaccount = null };
+        amount = ckbatAmount;
+        fee = ?ckFee;
+        memo = ?_depositMemo(redeemId);
+        created_at_time = ?_dedupCreatedAt(startedAt);
+      });
+    } catch (e) {
+      #Err(#GenericError { error_code = 0; message = e.message() });
+    };
+
+    switch (payResult) {
+      case (#Ok(payBlock)) {
+        batRedeems.add(
+          redeemId,
+          {
+            id = redeemId;
+            user = caller;
+            sgldtAmount = amount;
+            ckbatPaid = ckbatAmount;
+            rate = rate;
+            status = #paid;
+            timestamp = startedAt;
+            pullBlock = ?pullBlock;
+            payBlock = ?payBlock;
+            errorMsg = null;
+          },
+        );
+        _recordTx(
+          caller,
+          {
+            id = _nextTxId();
+            txType = #Redeem;
+            amount = ckbatAmount;
+            tokenSymbol = "ckBAT";
+            status = #Completed;
+            timestamp = Time.now();
+            ethTxHash = null;
+            icpBlockIndex = ?payBlock;
+            errorMsg = null;
+            description = "ckBAT released from treasury: " # ckbatAmount.toText() # " e18. Block: " # payBlock.toText();
+          },
+        );
+        try { ignore await refreshTreasuryBalances() } catch (_) {};
+        #ok({ redeemId = redeemId; ckbatPaid = ckbatAmount; rate = rate; blockIndex = payBlock });
+      };
+      case (#Err(payErr)) {
+        let reason = switch (payErr) {
+          case (#InsufficientFunds { balance }) {
+            "The treasury is out of ckBAT (holds " # balance.toText()
+            # " e18, needed " # ckbatAmount.toText() # " e18)";
+          };
+          case (#GenericError { message; error_code }) {
+            "ckBAT ledger error " # error_code.toText() # ": " # message;
+          };
+          case (#TemporarilyUnavailable) { "The ckBAT ledger is temporarily unavailable" };
+          case (#BadFee { expected_fee }) { "ckBAT fee mismatch, expected " # expected_fee.toText() };
+          case (_) { "The ckBAT transfer was rejected by the ledger" };
+        };
+        await _refundSGLDTforBat(redeemId, caller, amount, rate, startedAt, pullBlock, reason);
+      };
+    };
+  };
+
+  /// Return pulled sGLDT after a failed ckBAT payout — the treasury absorbs
+  /// the sGLDT transfer fee. Mirrors _refundSGLDT.
+  func _refundSGLDTforBat(
+    redeemId : Nat,
+    user : Principal,
+    amount : Nat,
+    rate : Nat,
+    startedAt : Time.Time,
+    pullBlock : Nat,
+    reason : Text,
+  ) : async { #ok : { redeemId : Nat; ckbatPaid : Nat; rate : Nat; blockIndex : Nat }; #err : Text } {
+    let sgldtFee = try { await sgldtLedgerV2.icrc1_fee() } catch (_) { 10_000 };
+
+    func markStranded(detail : Text) {
+      batRedeems.add(
+        redeemId,
+        {
+          id = redeemId;
+          user = user;
+          sgldtAmount = amount;
+          ckbatPaid = 0;
+          rate = rate;
+          status = #stranded;
+          timestamp = startedAt;
+          pullBlock = ?pullBlock;
+          payBlock = null;
+          errorMsg = ?(reason # " | refund failed: " # detail);
+        },
+      );
+      _recordTx(
+        user,
+        {
+          id = _nextTxId();
+          txType = #Redeem;
+          amount = amount;
+          tokenSymbol = "sGLDT";
+          status = #Held;
+          timestamp = Time.now();
+          ethTxHash = null;
+          icpBlockIndex = null;
+          errorMsg = ?(reason # " | refund failed: " # detail);
+          description = "Redeem failed and the sGLDT refund did not go through. Redeem #" # redeemId.toText() # " is held for admin resolution.";
+        },
+      );
+    };
+
+    if (amount <= sgldtFee) {
+      markStranded("amount is below the sGLDT transfer fee");
+      return #err(reason # ". Your sGLDT could not be auto-refunded (below the ledger fee) — redeem #" # redeemId.toText() # " has been flagged for support.");
+    };
+
+    let refundAmount = amount - sgldtFee;
+    let refundResult = try {
+      await sgldtLedgerV2.icrc1_transfer({
+        from_subaccount = null;
+        to = { owner = user; subaccount = null };
+        amount = refundAmount;
+        fee = ?sgldtFee;
+        memo = ?_depositMemo(redeemId);
+        created_at_time = ?_dedupCreatedAt(startedAt);
+      });
+    } catch (e) {
+      #Err(#GenericError { error_code = 0; message = e.message() });
+    };
+
+    switch (refundResult) {
+      case (#Ok(_) or #Err(#Duplicate(_))) {
+        batRedeems.add(
+          redeemId,
+          {
+            id = redeemId;
+            user = user;
+            sgldtAmount = amount;
+            ckbatPaid = 0;
+            rate = rate;
+            status = #refunded;
+            timestamp = startedAt;
+            pullBlock = ?pullBlock;
+            payBlock = null;
+            errorMsg = ?reason;
+          },
+        );
+        _recordTx(
+          user,
+          {
+            id = _nextTxId();
+            txType = #Refund;
+            amount = refundAmount;
+            tokenSymbol = "sGLDT";
+            status = #Completed;
+            timestamp = Time.now();
+            ethTxHash = null;
+            icpBlockIndex = null;
+            errorMsg = ?reason;
+            description = "Redeem could not complete; " # refundAmount.toText() # " e8s sGLDT was refunded to your account.";
+          },
+        );
+        #err(reason # ". Your sGLDT has been refunded — you can try again once the treasury holds enough ckBAT.");
+      };
+      case (#Err(refundErr)) {
+        markStranded(debug_show (refundErr));
+        #err(reason # ". Automatic refund also failed — redeem #" # redeemId.toText() # " has been flagged for support with your funds recorded.");
+      };
+    };
+  };
+
+  /// The caller's own ckBAT redeem history, newest-first.
+  public query ({ caller }) func getMyBatRedeems() : async [BatRedeemRecord] {
+    let out = List.empty<BatRedeemRecord>();
+    for ((_, r) in batRedeems.entries()) {
+      if (r.user == caller) { out.add(r) };
+    };
+    let arr = out.toArray();
+    arr.sort(func(a : BatRedeemRecord, b : BatRedeemRecord) : Order.Order { Int.compare(b.timestamp, a.timestamp) });
+  };
+
+  /// Admin view: every ckBAT redeem that ended #stranded.
+  public query ({ caller }) func getStrandedBatRedeems() : async [BatRedeemRecord] {
+    if (not isAdmin(caller)) { return [] };
+    let out = List.empty<BatRedeemRecord>();
+    for ((_, r) in batRedeems.entries()) {
       switch (r.status) {
         case (#stranded) { out.add(r) };
         case (_) {};

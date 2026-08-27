@@ -11,23 +11,29 @@ permission.**
 Your sGLDT is a token in your vault on a ledger we don't control. That gives
 you three independent exits, and only the first involves us at all.
 
-### 1. Withdraw here — sGLDT back to ckUNI
+### 1. Withdraw here — sGLDT back to ckUNI or ckBAT
 
 The Withdraw button sits next to Deposit as an equal, on purpose. It redeems
-sGLDT back to ckUNI at the same rate source that priced your deposit.
+sGLDT back to whichever token you deposited with, at the same rate source
+that priced your deposit. Both directions go through the identical code
+path — ckBAT redemption is not a lesser-supported feature bolted on
+afterward.
 
 - Minimum: **0.1 sGLDT** (below that, ledger fees exceed the payout)
-- Paid from treasury ckUNI; if the treasury is short, the withdrawal is
-  declined cleanly rather than partially executed
-- Current treasury ckUNI is published live on [/proof](/proof)
+- Paid from treasury ckUNI or ckBAT; if the treasury is short in the asset
+  you're redeeming to, the withdrawal is declined cleanly rather than
+  partially executed
+- Current treasury ckUNI and ckBAT balances are published live on
+  [/proof](/proof)
 
-From ckUNI you can withdraw to Ethereum through DFINITY's minter, the same
-infrastructure that brought it in. **That last leg has a cost we don't
-control and should state plainly:**
+From ckUNI or ckBAT you can withdraw to Ethereum through DFINITY's minter,
+the same infrastructure that brought it in. **That last leg has a cost we
+don't control and should state plainly:**
 
 - The minter pays the Ethereum gas for your withdrawal by **burning ckETH**,
-  not by taking a cut of your ckUNI. If you arrived here by depositing UNI,
-  you have **no ckETH**, and the withdrawal will fail until you acquire some.
+  not by taking a cut of your ckUNI or ckBAT. If you arrived here by
+  depositing UNI or BAT, you have **no ckETH**, and the withdrawal will fail
+  until you acquire some. This applies identically to both assets.
 - You can see this in the minter's own interface: `withdraw_erc20` returns
   `CkEthLedgerError` when it "could not burn the required amount of ckETH to
   pay for the transaction fees."
@@ -65,11 +71,13 @@ Almost always this is just timing: the minter waits **12 Ethereum block
 confirmations**, roughly three minutes.
 
 If it's been materially longer, your funds are not lost. The minter credits
-ckUNI to **your own principal** — it arrives whether or not this app is open.
-Sign in and the app will show the un-refined ckUNI balance and offer to
-complete the swap. You can also verify the balance directly on the ckUNI
-ledger (`ilzky-ayaaa-aaaar-qahha-cai`) via the ICP dashboard, without
-involving us.
+ckUNI or ckBAT to **your own principal** — it arrives whether or not this app
+is open. Sign in and the app will show the un-refined balance and offer to
+complete the swap. You can also verify the balance directly on the ledger,
+without involving us:
+
+- ckUNI: `ilzky-ayaaa-aaaar-qahha-cai`
+- ckBAT: `j7x7x-syaaa-aaaar-qcbea-cai`
 
 ### I closed the tab mid-deposit
 
@@ -78,8 +86,8 @@ independently of this application's UI.
 
 ### My swap failed
 
-The swap is atomic: if the payout leg fails, the ckUNI pull is reversed and
-**your ckUNI is refunded**. You should see it back in your balance.
+The swap is atomic: if the payout leg fails, the pull is reversed and **your
+ckUNI or ckBAT is refunded**. You should see it back in your balance.
 
 The most common cause is the treasury being short of sGLDT, which you can
 check yourself on [/proof](/proof).

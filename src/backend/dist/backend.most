@@ -169,6 +169,8 @@ actor {
   stable BAT_RATE_MAX_AGE_NS : Int;
   stable BB_TOKEN_DECIMALS : Nat;
   stable CKERC20_HELPER_CONTRACT_LOWER : Text;
+  stable CYCLES_SNAPSHOT_MAX : Nat;
+  stable CYCLES_WARN_DAYS : Nat;
   stable DEPLOYER_PRINCIPAL : Principal;
   stable DEPOSIT_SELECTOR : Text;
   stable FIXED_ETH_DEPOSIT_ADDRESS : Text;
@@ -181,6 +183,7 @@ actor {
   stable OUTCALL_WINDOW_MAX : Nat;
   stable OUTCALL_WINDOW_NS : Int;
   stable PRICE_CACHE_DURATION : Nat;
+  stable RATE_NUDGE_MAX_AGE_NS : Int;
   stable RATE_SAMPLE_WINDOW : Nat;
   stable SGLDT_DECIMALS : Nat;
   stable SGLDT_DEFAULT_PRICE : Nat;
@@ -241,6 +244,7 @@ actor {
       get_deposit_address :
         shared {owner : Principal; subaccount : ?Blob} -> async Text
     };
+  stable var cyclesSnapshots : [(Int, Nat)];
   stable var etherscanApiKey : Text;
   stable var incidentNotice : ?IncidentNotice__643741317;
   stable var lastBatUsdPriceE8 : Nat;

@@ -1,4 +1,5 @@
 import Array "mo:core/Array";
+import Cycles "mo:core/Cycles";
 import IC "ic:aaaaa-aa";
 import Time "mo:core/Time";
 import Timer "mo:core/Timer";
@@ -406,8 +407,22 @@ actor Self {
   /// Minimum gap between XRC calls — callers inside this window are no-ops,
   /// so public refreshExchangeRate can't be used to drain cycles.
   let XRC_MIN_SYNC_GAP_NS : Int = 60_000_000_000;
-  /// Auto-sync cadence: hourly (~0.7T cycles/month).
-  let XRC_AUTO_SYNC_SECONDS : Nat = 3_600;
+  /// Heartbeat cadence: every 3 hours. This is the floor, not the ceiling —
+  /// user activity nudges an extra sync whenever the last one is over an
+  /// hour old (see _nudgeRateSyncIfStale), so an active refinery stays as
+  /// fresh as the old hourly timer while an idle one costs a third as much.
+  /// Both staleness cutoffs are 6 h, so even with every nudge missed the
+  /// heartbeat alone leaves a full missed-beat of margin before intakes
+  /// pause themselves.
+  let XRC_AUTO_SYNC_SECONDS : Nat = 10_800;
+  /// How stale the last XRC attempt may be before user activity triggers an
+  /// off-schedule sync. One hour — the old always-on cadence, now paid for
+  /// only while someone is actually here.
+  let RATE_NUDGE_MAX_AGE_NS : Int = 3_600_000_000_000;
+  /// Debounce so a burst of position polls schedules at most one nudge.
+  /// Deliberately not stable: a stale true after an upgrade would suppress
+  /// nudges until the next heartbeat clears it.
+  transient var rateSyncNudgeArmed : Bool = false;
 
   /// USD per sGLDT in 1e8 precision, admin-set. 0 = unset: XRC syncs then
   /// only record UNI/USD telemetry and leave uniExchangeRate untouched.
@@ -581,7 +596,8 @@ actor Self {
     } catch (e) { lastXRCError := e.message() };
   };
 
-  /// Hourly self-rescheduling sync. Structurally decoupled from the sync
+  /// Heartbeat self-rescheduling sync (every XRC_AUTO_SYNC_SECONDS; user
+  /// activity adds lazy nudges between beats). Structurally decoupled from the sync
   /// itself: this function never awaits anything, so it always runs to
   /// completion as one atomic message and its Timer.setTimer call always
   /// commits — no code path in here can trap on the far side of an await
@@ -604,11 +620,85 @@ actor Self {
   /// happens in here — including a trap this try/catch doesn't reach —
   /// cannot touch the already-committed reschedule from the caller.
   func _runRateSyncGuarded() : async () {
+    rateSyncNudgeArmed := false;
     try {
       await _syncRateFromXRC();
     } catch (e) {
       lastXRCError := "guarded sync wrapper caught: " # e.message();
     };
+  };
+
+  /// Activity-driven sync: called from the user-facing entry points, it
+  /// schedules one off-heartbeat sync when the last attempt is over an hour
+  /// old. Synchronous and cheap on the hot path — the sync itself runs as
+  /// its own zero-delay timer message. The `rateSyncNudgeArmed` debounce
+  /// plus _syncRateFromXRC's own 60 s minimum gap mean a hostile caller
+  /// looping on a position endpoint cannot use this to drain cycles.
+  func _nudgeRateSyncIfStale<system>() {
+    if (rateSyncNudgeArmed) { return };
+    if (Time.now() - lastXRCSyncNs <= RATE_NUDGE_MAX_AGE_NS) { return };
+    rateSyncNudgeArmed := true;
+    ignore Timer.setTimer<system>(#seconds 0, _runRateSyncGuarded);
+  };
+
+  // -------------------------------------------------------
+  // Cycles health — the alarm this canister didn't have
+  // -------------------------------------------------------
+  // On 2026-09-03 the balance drifted down to the freezing-threshold reserve
+  // and every outbound call started failing with IC0406 "could not perform
+  // call" — for days, silently, while queries kept answering. The reported
+  // "idle cycles burned per day" wildly understates real burn (XRC syncs
+  // attach 1B cycles per call), so the only honest burn figure is measured:
+  // daily balance snapshots, burn as the slope across them.
+
+  /// (timestampNs, cyclesBalance) snapshots, oldest first, capped at 14 —
+  /// two weeks of daily readings. Stable: the burn estimate should survive
+  /// upgrades rather than restart blind.
+  var cyclesSnapshots : [(Int, Nat)] = [];
+  let CYCLES_SNAPSHOT_MAX : Nat = 14;
+  /// Warn when measured runway drops under 45 days — enough notice to top
+  /// up leisurely, per RUNBOOK.md top-ups are the owner's manual action.
+  let CYCLES_WARN_DAYS : Nat = 45;
+
+  /// Daily snapshot. Same atomic-message discipline as _periodicRateSync:
+  /// no awaits, so the reschedule and the snapshot commit together, always.
+  func _dailyCyclesSnapshot() : async () {
+    ignore Timer.setTimer<system>(#seconds 86_400, _dailyCyclesSnapshot);
+    let entry = (Time.now(), Cycles.balance());
+    let appended = cyclesSnapshots.concat([entry]);
+    cyclesSnapshots := if (appended.size() > CYCLES_SNAPSHOT_MAX) {
+      appended.sliceToArray(appended.size() - CYCLES_SNAPSHOT_MAX : Nat, appended.size());
+    } else { appended };
+  };
+
+  /// Live cycles health, computed from measured burn — not the system's
+  /// "idle" figure. daysRemaining/burnPerDay are 0 until two snapshots at
+  /// least an hour apart exist (or if balance has grown, i.e. a top-up).
+  public query func getCyclesHealth() : async {
+    balance : Nat;
+    measuredBurnPerDay : Nat;
+    daysRemaining : Nat;
+    snapshotCount : Nat;
+    warning : ?Text;
+  } {
+    let balance = Cycles.balance();
+    let n = cyclesSnapshots.size();
+    var burnPerDay : Nat = 0;
+    if (n >= 2) {
+      let (t0, b0) = cyclesSnapshots[0];
+      let (t1, b1) = cyclesSnapshots[n - 1 : Nat];
+      let elapsedNs = t1 - t0;
+      if (elapsedNs >= 3_600_000_000_000 and b0 > b1) {
+        burnPerDay := (b0 - b1 : Nat) * 86_400_000_000_000 / Int.abs(elapsedNs);
+      };
+    };
+    let daysRemaining = if (burnPerDay == 0) { 0 } else { balance / burnPerDay };
+    let warning : ?Text = if (n < 2) {
+      null; // not enough data to judge — say nothing rather than guess
+    } else if (burnPerDay > 0 and daysRemaining < CYCLES_WARN_DAYS) {
+      ?("Cycles runway is ~" # daysRemaining.toText() # " days at measured burn (" # burnPerDay.toText() # "/day). Top up soon — outbound calls fail BEFORE the balance hits zero, at the freezing-threshold reserve.");
+    } else { null };
+    { balance; measuredBurnPerDay = burnPerDay; daysRemaining; snapshotCount = n; warning };
   };
 
   // Types
@@ -1173,6 +1263,12 @@ actor Self {
   /// Called automatically after any admin transfer or sGLDT payout so the banner stays current.
   /// Note: Principal.fromActor(Self) == c626g-iyaaa-aaaau-agpoa-cai (they are the same).
   public shared func refreshTreasuryBalances() : async () {
+    // TTL guard: a cache under 30 s old is fresh enough for every consumer
+    // (the /proof banner, post-payout refreshes). Skipping keeps an open
+    // public method from being loopable into 3 ledger calls per invocation,
+    // and is what lets the background cadence below drop to a slow
+    // heartbeat: the frontend warms this on demand instead.
+    if (Time.now() - treasuryBalancesCachedAt < 30_000_000_000) { return };
     let treasuryAccount : ICRC1Account = { owner = Principal.fromActor(Self); subaccount = null };
     let sgldtBal = await sgldtLedger.icrc1_balance_of(treasuryAccount);
     let ckUNIBal = await ckUNILedger.icrc1_balance_of(treasuryAccount);
@@ -1450,8 +1546,15 @@ actor Self {
       let ckBATBal = await ckBATLedgerV2.icrc1_balance_of(treasuryAccount);
       cachedCkBATTreasuryBalance := ckBATBal;
     } catch (_) {};
-    // Re-schedule itself
-    ignore Timer.setTimer<system>(#seconds 60, _periodicRefreshBalances);
+    treasuryBalancesCachedAt := Time.now();
+    // Re-schedule itself. 6-hour heartbeat, not 60 s: this cache is warmed
+    // on demand — the frontend calls refreshTreasuryBalances when someone
+    // actually loads /proof, and every payout/transfer path refreshes after
+    // moving funds. The old every-minute cadence was ~4,300 ledger calls a
+    // day spent keeping a banner current for nobody; the heartbeat only
+    // guarantees the cache can never be more than 6 h stale even if no one
+    // visits and nothing moves.
+    ignore Timer.setTimer<system>(#seconds 21_600, _periodicRefreshBalances);
   };
 
   // Fire startup timer: balance refresh after 5s
@@ -1460,6 +1563,10 @@ actor Self {
   // Automatic sGLDT payout sweeper — definition & startup hook live further down,
   // after verifyAndPayUNIDeposit, so the function it calls is already in scope.
   var sweeperInFlight : Bool = false;
+  /// Debounce for _kickSweeper: at most one pending quick pass at a time.
+  /// Transient on purpose — a stale true after upgrade would mute kicks, and
+  /// postupgrade schedules a fresh pass anyway.
+  transient var sweeperKickPending : Bool = false;
 
   // -------------------------------------------------------
   // ckUNI ERC-20 Minter Integration
@@ -1593,6 +1700,7 @@ actor Self {
           case (#processing) {
             let reset = { request with status = #confirmed };
             uniDeposits.add(requestId, reset);
+            _kickSweeper<system>();
             #ok("Deposit reset to confirmed. You may retry the payout.");
           };
           case (#pending) {
@@ -1612,6 +1720,7 @@ actor Self {
             // Allow retrying genuine (payout-step) failures by resetting to confirmed.
             let reset = { request with status = #confirmed };
             uniDeposits.add(requestId, reset);
+            _kickSweeper<system>();
             #ok("Deposit reset from failed to confirmed. You may retry the payout.");
           };
         };
@@ -1966,9 +2075,26 @@ actor Self {
   //
   // Caller becomes Principal.fromActor(Self) via IC message routing — already
   // permitted by the auth check inside verifyAndPayUNIDeposit.
-  func _sweepConfirmedDeposits<system>() : async () {
-    // Re-arm first so a slow sweep doesn't delay the next tick.
+  /// Schedule a quick sweep pass 30 s out, debounced to one at a time. Called
+  /// wherever a deposit (re)enters #confirmed outside the sweeper itself, so
+  /// reactivity no longer needs an always-on 30 s timer. (Forward reference
+  /// to _sweepConfirmedDeposits is fine — actor funcs are mutually recursive,
+  /// same as _periodicRateSync referencing _runRateSyncGuarded below it.)
+  func _kickSweeper<system>() {
+    if (sweeperKickPending) { return };
+    sweeperKickPending := true;
     ignore Timer.setTimer<system>(#seconds 30, _sweepConfirmedDeposits);
+  };
+
+  func _sweepConfirmedDeposits<system>() : async () {
+    // Survival heartbeat, re-armed first so a trap mid-sweep can't kill the
+    // chain: 6 hours, not 30 s. The 30 s reactivity lives in _kickSweeper —
+    // every path that (re)creates a #confirmed record kicks a quick pass, and
+    // a pass that leaves #confirmed work behind kicks its own follow-up. So
+    // the old behaviour (retry every 30 s while work exists) is preserved,
+    // but an empty queue costs 4 wake-ups a day instead of 2,880.
+    ignore Timer.setTimer<system>(#seconds 21_600, _sweepConfirmedDeposits);
+    sweeperKickPending := false;
 
     if (sweeperInFlight) { return };
     sweeperInFlight := true;
@@ -1990,11 +2116,23 @@ actor Self {
       try {
         ignore await verifyAndPayUNIDeposit(id);
       } catch (_) {
-        // Silent — next sweep will retry.
+        // Silent — the follow-up kick below retries.
       };
     };
 
     sweeperInFlight := false;
+
+    // A payout that failed above reverted its record to #confirmed. Re-scan
+    // rather than trusting confirmedIds: it tells us what is STILL owed, and
+    // only that warrants burning a quick retry cycle.
+    var remaining = false;
+    label scan for ((_, r) in uniDeposits.entries()) {
+      switch (r.status) {
+        case (#confirmed) { remaining := true; break scan };
+        case (_) {};
+      };
+    };
+    if (remaining) { _kickSweeper<system>() };
   };
 
   // (Sweep kick-off is registered at the bottom of the actor — it must come
@@ -2056,8 +2194,11 @@ actor Self {
       };
     };
 
-    // Re-attempt the actual ICRC-1 sGLDT transfer.
+    // Re-attempt the actual ICRC-1 sGLDT transfer. Kick a follow-up sweep
+    // first: if this direct attempt fails and reverts to #confirmed, the
+    // 30 s pass picks it up without waiting for the 6 h heartbeat.
     // verifyAndPayUNIDeposit never traps — all results are returned as descriptive Text.
+    _kickSweeper<system>();
     try {
       await verifyAndPayUNIDeposit(requestId);
     } catch (e) {
@@ -2119,7 +2260,10 @@ actor Self {
       case (#confirmed) {};
     };
 
-    // Directly attempt the sGLDT payout
+    // Directly attempt the sGLDT payout. Kick first for the same reason as
+    // retrySGLDTRelease: a failed attempt reverts to #confirmed and the
+    // quick pass retries it.
+    _kickSweeper<system>();
     try {
       let payResult = await verifyAndPayUNIDeposit(requestId);
       if (payResult.startsWith(#text "paid:") or payResult.startsWith(#text "already_paid:")) {
@@ -2169,6 +2313,7 @@ actor Self {
     minRefine : Nat;
     rate : Nat;
   } {
+    _nudgeRateSyncIfStale<system>();
     if (caller.isAnonymous()) {
       return { balance = 0; allowance = 0; minRefine = MIN_REFINE_CKUNI; rate = uniExchangeRate };
     };
@@ -2208,6 +2353,7 @@ actor Self {
     #ok : { refineId : Nat; sgldtPaid : Nat; rate : Nat; blockIndex : Nat };
     #err : Text;
   } {
+    _nudgeRateSyncIfStale<system>();
     if (not isAuthenticatedUser(caller)) {
       return #err("Sign in with Internet Identity before refining.");
     };
@@ -2600,6 +2746,7 @@ actor Self {
     rate : Nat;
     fee : Nat;
   } {
+    _nudgeRateSyncIfStale<system>();
     let fee = try { await ckBATLedgerV2.icrc1_fee() } catch (_) { 100_000_000_000_000_000 };
     if (caller.isAnonymous()) {
       return { balance = 0; allowance = 0; minRefine = MIN_REFINE_CKBAT; rate = _settleableBatRate(); fee };
@@ -2652,6 +2799,7 @@ actor Self {
     #ok : { refineId : Nat; sgldtPaid : Nat; rate : Nat; blockIndex : Nat };
     #err : Text;
   } {
+    _nudgeRateSyncIfStale<system>();
     if (not isAuthenticatedUser(caller)) {
       return #err("Sign in with Internet Identity before refining.");
     };
@@ -3335,6 +3483,7 @@ actor Self {
     #ok : { redeemId : Nat; ckuniPaid : Nat; rate : Nat; blockIndex : Nat };
     #err : Text;
   } {
+    _nudgeRateSyncIfStale<system>();
     if (not isAuthenticatedUser(caller)) {
       return #err("Sign in with Internet Identity before redeeming.");
     };
@@ -3753,6 +3902,7 @@ actor Self {
     #ok : { redeemId : Nat; ckbatPaid : Nat; rate : Nat; blockIndex : Nat };
     #err : Text;
   } {
+    _nudgeRateSyncIfStale<system>();
     if (not isAuthenticatedUser(caller)) {
       return #err("Sign in with Internet Identity before redeeming.");
     };
@@ -4307,19 +4457,21 @@ actor Self {
   // references (verifyAndPayUNIDeposit and the ledger bindings) is defined.
   ignore Timer.setTimer<system>(#seconds 10, _sweepConfirmedDeposits);
 
-  // First XRC rate sync 20 s after deploy; self-reschedules hourly.
+  // First XRC rate sync 20 s after deploy; self-reschedules on the heartbeat.
   ignore Timer.setTimer<system>(#seconds 20, _periodicRateSync);
+  ignore Timer.setTimer<system>(#seconds 60, _dailyCyclesSnapshot);
 
   // The IC clears every scheduled timer on code upgrade, and the top-level
   // setTimer calls above only run on first install — never on upgrade. Without
   // this hook, one `dfx deploy` silently kills the balance refresh, the
   // automatic payout sweeper (the thing that pays users who closed their
-  // browser), and the hourly XRC rate sync until someone notices and calls the
+  // browser), and the heartbeat XRC rate sync until someone notices and calls the
   // manual fallbacks. Same failure mode that killed cycles-monitor's refresh
   // loop; fixed there 2026-08 with this exact pattern.
   system func postupgrade() {
     ignore Timer.setTimer<system>(#seconds 5, _periodicRefreshBalances);
     ignore Timer.setTimer<system>(#seconds 10, _sweepConfirmedDeposits);
     ignore Timer.setTimer<system>(#seconds 20, _periodicRateSync);
+    ignore Timer.setTimer<system>(#seconds 60, _dailyCyclesSnapshot);
   };
 };

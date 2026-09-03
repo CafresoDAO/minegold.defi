@@ -254,6 +254,17 @@ service : {
   /// This is a query so it works for unauthenticated (anonymous) callers.
   /// Call refreshTreasuryBalances() to update the cache from the ckUNI ledger.
   getCkUNITreasuryBalance: () -> (nat) query;
+  /// Live cycles health, computed from measured burn — not the system's
+  /// "idle" figure. daysRemaining/burnPerDay are 0 until two snapshots at
+  /// least an hour apart exist (or if balance has grown, i.e. a top-up).
+  getCyclesHealth: () ->
+   (record {
+      balance: nat;
+      daysRemaining: nat;
+      measuredBurnPerDay: nat;
+      snapshotCount: nat;
+      warning: opt text;
+    }) query;
   getDepositStatus: (requestId: nat) ->
    (record {
       sgldtPaid: nat;

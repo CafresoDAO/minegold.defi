@@ -3,7 +3,8 @@
  * hedging. Native <details> so it works with no JS, is keyboard-operable
  * and screen-reader-announced for free, and survives a failed hydration.
  */
-const ITEMS: { q: string; a: React.ReactNode }[] = [
+function buildItems(batSupported: boolean): { q: string; a: React.ReactNode }[] {
+  return [
   {
     q: "Is this custodial? Do you hold my money?",
     a: (
@@ -64,18 +65,29 @@ const ITEMS: { q: string; a: React.ReactNode }[] = [
       </>
     ),
   },
-  {
-    q: "When does BAT intake open?",
-    a: (
-      <>
-        When DFINITY&apos;s chain-key minter lists BAT — not before, and not
-        on our say-so. The chip at the top of this page is a live read of the
-        minter&apos;s supported-token list, so it tells you the truth on
-        every visit. Join the waitlist and you get exactly one message, at
-        launch.
-      </>
-    ),
-  },
+  batSupported
+    ? {
+        q: "Is ckBAT intake actually live?",
+        a: (
+          <>
+            Yes. DFINITY&apos;s chain-key minter lists BAT, and this page
+            checked that live on your visit — the chip at the top isn&apos;t
+            static copy. BAT refines through the same treasury, the same
+            atomic settle-or-refund, and the same public proof page as UNI.
+          </>
+        ),
+      }
+    : {
+        q: "When does BAT intake open?",
+        a: (
+          <>
+            When DFINITY&apos;s chain-key minter lists BAT — not before, and
+            not on our say-so. The chip at the top of this page is a live
+            read of the minter&apos;s supported-token list, so it tells you
+            the truth on every visit.
+          </>
+        ),
+      },
   {
     q: "Who runs this, and how does it relate to Banking.Brave?",
     a: (
@@ -92,9 +104,11 @@ const ITEMS: { q: string; a: React.ReactNode }[] = [
       </>
     ),
   },
-];
+  ];
+}
 
-export function FAQ() {
+export function FAQ({ batSupported = false }: { batSupported?: boolean }) {
+  const items = buildItems(batSupported);
   return (
     <section data-ocid="landing.faq">
       <h2
@@ -104,7 +118,7 @@ export function FAQ() {
         Fair questions
       </h2>
       <div className="space-y-2">
-        {ITEMS.map((item) => (
+        {items.map((item) => (
           <details
             key={item.q}
             className="group rounded-2xl border px-4 py-3"

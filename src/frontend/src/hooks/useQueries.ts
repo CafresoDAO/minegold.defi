@@ -12,6 +12,7 @@ export const BACKEND_CANISTER_ID = "c626g-iyaaa-aaaau-agpoa-cai";
 const TREASURY_PRINCIPAL = BACKEND_CANISTER_ID;
 const SGLDT_CANISTER_ID = "i2s4q-syaaa-aaaan-qz4sq-cai";
 const CKUNI_CANISTER_ID = "ilzky-ayaaa-aaaar-qahha-cai";
+const CKBAT_CANISTER_ID = "j7x7x-syaaa-aaaar-qcbea-cai";
 const IC_HOST = "https://icp-api.io";
 
 // ── ICRC-1 minimal IDL for direct balance queries + transfers ────────────────
@@ -845,6 +846,40 @@ function getAnonymousAgent(): HttpAgent {
     // Do NOT call fetchRootKey() in production
   }
   return _anonymousAgent;
+}
+
+const icrc1SupplyIDL = ({ IDL }: { IDL: any }) =>
+  IDL.Service({
+    icrc1_total_supply: IDL.Func([], [IDL.Nat], ["query"]),
+  });
+
+async function queryIcrc1TotalSupply(canisterId: string): Promise<bigint> {
+  const actor = Actor.createActor(icrc1SupplyIDL, {
+    agent: getAnonymousAgent(),
+    canisterId,
+  }) as any;
+  return (await actor.icrc1_total_supply()) as bigint;
+}
+
+/** Total ckUNI/ckBAT currently minted on ICP — read straight off DFINITY's
+ *  own ledgers, not derived from anything this app controls. This is the
+ *  chain-key supply across ALL holders, not this treasury's balance (that's
+ *  `useProofSnapshot`'s `balances` field) — it answers "how much of this
+ *  token exists on ICP at all," the same question the minter's own
+ *  dashboard answers, just surfaced where a /proof reader already is. */
+export function useCkTotalSupply() {
+  return useQuery({
+    queryKey: ["ckTotalSupply"],
+    queryFn: async () => {
+      const [ckUNI, ckBAT] = await Promise.all([
+        queryIcrc1TotalSupply(CKUNI_CANISTER_ID),
+        queryIcrc1TotalSupply(CKBAT_CANISTER_ID),
+      ]);
+      return { ckUNI, ckBAT };
+    },
+    staleTime: 5 * 60_000,
+    retry: 1,
+  });
 }
 
 async function queryIcrc1Balance(canisterId: string): Promise<bigint> {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   formatTokenAmount,
   refreshProofBalances,
+  useCkTotalSupply,
   useProofSnapshot,
   useRateStatus,
 } from "../hooks/useQueries";
@@ -38,6 +39,7 @@ const ageLabel = (ns: bigint): string => {
 export function ProofPanel({ onClose, onNavigatePath }: Props) {
   const { data: rate } = useRateStatus();
   const { data: snap, isLoading, refetch, isFetching } = useProofSnapshot(true);
+  const { data: ckSupply, isLoading: ckSupplyLoading } = useCkTotalSupply();
   const qc = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -170,6 +172,52 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
               </>
             )}
           </div>
+        </div>
+
+        {/* Chain-key supply — how much ckUNI/ckBAT exists on ICP at all,
+            read straight off DFINITY's ledgers. Distinct from the treasury
+            balances above: those are this canister's inventory, this is the
+            total across every holder. */}
+        <div className="rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400">
+          <p className="t-label text-zinc-500 mb-1.5">
+            Total chain-key supply on ICP
+          </p>
+          <p className="mb-2 text-zinc-500">
+            How much ckUNI and ckBAT exist on ICP right now, across every
+            holder — not just this treasury. Read live from DFINITY&apos;s
+            own ledgers.
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <p className="t-label text-zinc-500 mb-1">ckUNI total supply</p>
+              <p className="text-lg font-black text-blue-300 tabular-nums">
+                {ckSupply
+                  ? formatTokenAmount(ckSupply.ckUNI, 18)
+                  : ckSupplyLoading
+                    ? "…"
+                    : "—"}
+              </p>
+            </div>
+            <div>
+              <p className="t-label text-zinc-500 mb-1">ckBAT total supply</p>
+              <p className="text-lg font-black text-orange-300 tabular-nums">
+                {ckSupply
+                  ? formatTokenAmount(ckSupply.ckBAT, 18)
+                  : ckSupplyLoading
+                    ? "…"
+                    : "—"}
+              </p>
+            </div>
+          </div>
+          <a
+            href="https://sv3dd-oaaaa-aaaar-qacoa-cai.raw.icp0.io/dashboard"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 underline underline-offset-2"
+          >
+            ckERC-20 minter dashboard — every token, every holder{" "}
+            <ExternalLink size={10} />
+          </a>
         </div>
 
         {/* Rate provenance */}

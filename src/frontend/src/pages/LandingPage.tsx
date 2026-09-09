@@ -142,6 +142,23 @@ export function LandingPage({
             >
               Open the refinery <ArrowRight size={15} />
             </button>
+            {/* Second hero CTA — only appears once the minter's own live
+                list actually carries BAT. Before that, this button would be
+                a promise; the page doesn't make promises it can't check. */}
+            {bat?.supported && (
+              <button
+                type="button"
+                data-ocid="landing.hero_bat_cta"
+                onClick={onOpenBrave}
+                className="inline-flex min-h-[48px] items-center gap-2 rounded-2xl border px-5 text-sm font-bold transition-transform hover:-translate-y-0.5"
+                style={{
+                  borderColor: "rgba(52,211,153,0.4)",
+                  color: "var(--trust-verified)",
+                }}
+              >
+                Refine ckBAT <ArrowRight size={15} />
+              </button>
+            )}
             <button
               type="button"
               data-ocid="landing.hero_proof"
@@ -174,11 +191,19 @@ export function LandingPage({
               data-ocid="landing.bat_status"
               onClick={onOpenBrave}
               className="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-semibold"
-              style={{
-                borderColor: "rgba(255,122,69,0.3)",
-                background: "rgba(255,122,69,0.1)",
-                color: "#ff9a6e",
-              }}
+              style={
+                bat?.supported
+                  ? {
+                      borderColor: "rgba(52,211,153,0.3)",
+                      background: "rgba(52,211,153,0.1)",
+                      color: "var(--trust-verified)",
+                    }
+                  : {
+                      borderColor: "rgba(255,122,69,0.3)",
+                      background: "rgba(255,122,69,0.1)",
+                      color: "#ff9a6e",
+                    }
+              }
             >
               <span
                 className="h-1.5 w-1.5 rounded-full"
@@ -321,23 +346,40 @@ export function LandingPage({
               </div>
               <div>
                 <dt className="t-label mb-1" style={{ color: "var(--bb-text-dim)" }}>
-                  Next intake
+                  {bat?.supported ? "Live intake" : "Next intake"}
                 </dt>
                 <dd className="text-sm font-bold">BAT</dd>
                 <dd
                   className="mt-1 text-[12px] leading-relaxed"
                   style={{ color: "var(--bb-text-muted)" }}
                 >
-                  Opens if DFINITY&apos;s minter lists BAT. The status chip
-                  above checks live, every visit.{" "}
-                  <button
-                    type="button"
-                    onClick={onOpenBrave}
-                    className="underline underline-offset-2"
-                    style={{ color: "var(--bb-brand)" }}
-                  >
-                    Live status ›
-                  </button>
+                  {bat?.supported ? (
+                    <>
+                      BAT → ckBAT → sGLDT. Live on mainnet today, same
+                      treasury and settlement as UNI.{" "}
+                      <button
+                        type="button"
+                        onClick={onOpenBrave}
+                        className="underline underline-offset-2"
+                        style={{ color: "var(--bb-brand)" }}
+                      >
+                        Refine now ›
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      Opens if DFINITY&apos;s minter lists BAT. The status
+                      chip above checks live, every visit.{" "}
+                      <button
+                        type="button"
+                        onClick={onOpenBrave}
+                        className="underline underline-offset-2"
+                        style={{ color: "var(--bb-brand)" }}
+                      >
+                        Live status ›
+                      </button>
+                    </>
+                  )}
                 </dd>
               </div>
               <div>
@@ -359,7 +401,7 @@ export function LandingPage({
 
         {/* ── FAQ ──────────────────────────────────────────────────────── */}
         <Reveal className="mb-16">
-          <FAQ />
+          <FAQ batSupported={bat?.supported ?? false} />
         </Reveal>
 
         {/* ── Footer ───────────────────────────────────────────────────── */}

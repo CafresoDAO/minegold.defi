@@ -8,8 +8,12 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { toast } from "sonner";
 
 const II_URL = "https://identity.ic0.app";
+/** How often a signed-in session re-checks that its delegation is still
+ *  valid. Cheap (local, no network): AuthClient reads the stored chain. */
+const SESSION_CHECK_MS = 60_000;
 const DAYS_30_NS = BigInt(30) * BigInt(24) * BigInt(60) * BigInt(60) * BigInt(1_000_000_000);
 
 /**
@@ -172,6 +176,40 @@ export function InternetIdentityProvider({ children }: { children: ReactNode }) 
       setLoginError(undefined);
     });
   }, [authClient]);
+
+  // Delegation expiry watchdog. isAuthenticated() was only consulted at
+  // boot, so a tab left open past the 30-day delegation kept signing update
+  // calls with a dead key and surfaced the agent's raw error mid-swap. Now
+  // the session is re-checked on a timer and whenever the tab regains focus
+  // (the common "came back days later" case), and an expired one is cleared
+  // with a plain explanation before any money call is attempted.
+  useEffect(() => {
+    if (!authClient || !identity) return;
+    let cancelled = false;
+    const check = () => {
+      void authClient.isAuthenticated().then((ok) => {
+        if (cancelled || ok) return;
+        cancelled = true;
+        setIdentity(undefined);
+        setLoginStatus("idle");
+        toast.error("Your session expired. Sign in again to continue.", {
+          duration: 8_000,
+        });
+      });
+    };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") check();
+    };
+    const timer = window.setInterval(check, SESSION_CHECK_MS);
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", check);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", check);
+    };
+  }, [authClient, identity]);
 
   const value: AuthContextValue = {
     identity,

@@ -1,6 +1,6 @@
-import { r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, J as IncidentBanner, T as ThemeToggle, y as ChevronRight, K as JOURNEY } from "./index-DuCrrQdW.js";
-import { f as fetchCkBatStatus } from "./ckMinter-DL3tY3-z.js";
-import { A as ArrowRight } from "./arrow-right-BustV5Ph.js";
+import { r as reactExports, j as jsxRuntimeExports, E as useProofSnapshot, F as formatTokenAmount, G as CANISTERS, H as DASHBOARD, I as ExternalLink, J as IncidentBanner, T as ThemeToggle, y as ChevronRight, K as JOURNEY } from "./index-BKHYdTi4.js";
+import { f as fetchCkBatStatus } from "./ckMinter-DNO66PVd.js";
+import { A as ArrowRight } from "./arrow-right-D6q7SNRc.js";
 function Reveal({
   children,
   delayMs = 0,
@@ -595,7 +595,7 @@ function LandingPage({
                     } : {
                       borderColor: "rgba(255,122,69,0.3)",
                       background: "rgba(255,122,69,0.1)",
-                      color: "#ff9a6e"
+                      color: "var(--token-bat-text)"
                     },
                     children: [
                       /* @__PURE__ */ jsxRuntimeExports.jsx(

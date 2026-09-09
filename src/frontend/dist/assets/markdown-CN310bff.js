@@ -1,4 +1,4 @@
-import { j as jsxRuntimeExports } from "./index-DuCrrQdW.js";
+import { j as jsxRuntimeExports } from "./index-BKHYdTi4.js";
 const slugify = (s) => s.toLowerCase().replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-");
 const INLINE_RE = /(`[^`]+`)|(\[[^\]]*\]\([^)\s]+\))|(\*\*[^*]+\*\*)|(\*[^*\n]+\*)|(_[^_\n]+_)/g;
 const isExternal = (href) => /^https?:\/\//i.test(href);

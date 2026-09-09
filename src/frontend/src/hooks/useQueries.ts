@@ -175,6 +175,12 @@ const rateAndActivityIDL = ({ IDL }: { IDL: any }) => {
           lastSyncNs: IDL.Int,
           lastError: IDL.Text,
           autoSyncSeconds: IDL.Nat,
+          medianUniUsdE8: IDL.Nat,
+          samples: IDL.Vec(IDL.Nat),
+          sampleWindow: IDL.Nat,
+          appliedNs: IDL.Int,
+          maxAgeNs: IDL.Int,
+          isFresh: IDL.Bool,
         }),
       ],
       ["query"],
@@ -194,6 +200,16 @@ export type RateStatus = {
   lastSyncNs: bigint;
   lastError: string;
   autoSyncSeconds: bigint;
+  medianUniUsdE8: bigint;
+  samples: bigint[];
+  sampleWindow: bigint;
+  appliedNs: bigint;
+  maxAgeNs: bigint;
+  /** False once the oracle read is older than maxAgeNs. The backend refuses
+   *  to settle a refine while this is false, so the deposit button must be
+   *  gated on it — otherwise the user pays Ethereum gas for a swap that is
+   *  guaranteed to be refused three minutes later. */
+  isFresh: boolean;
 };
 
 export type RefineStatusKey = "paid" | "pulled" | "refunded" | "stranded";
@@ -1352,16 +1368,15 @@ export function useUserSGLDTBalance(principalText?: string) {
     queryKey: ["userSGLDTBalance", principalText],
     queryFn: async () => {
       if (!actor || !principalText) return BigInt(0);
-      try {
-        // Call getUserSGLDTBalance on the backend which proxies icrc1_balance_of
-        return await actor.getUserSGLDTBalance(principalText);
-      } catch {
-        return BigInt(0);
-      }
+      // Let a failed read throw: coercing it to 0n showed users "0.0000
+      // sGLDT" during the Sep 2026 outage, which reads as "your gold is
+      // gone" rather than "we couldn't check".
+      return (await actor.getUserSGLDTBalance(principalText)) as bigint;
     },
     enabled: !!actor && !isFetching && !!principalText,
     refetchInterval: 60_000,
     staleTime: 55_000,
+    retry: 2,
   });
 }
 

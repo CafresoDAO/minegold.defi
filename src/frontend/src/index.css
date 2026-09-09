@@ -157,6 +157,7 @@
 
   /* Per-token accents */
   --token-bat:   #ff7a45;
+  --token-bat-text: #ff9a6e;  /* BAT accent as body text — see theme-light */
   --token-uni:   #ff007a;
 
   /* Roast — the warm coffee/banana accent CafresoPages and CafresoHQ use for
@@ -290,6 +291,18 @@ html.theme-light {
   --bb-gold: #B8860B;                /* refined gold — readable on white */
   --bb-gold-deep: #8B6508;           /* deeper gold for hover/pressed */
   --bb-gold-soft: #D4A94A;           /* lighter gold for subtle accents */
+
+  /* Trust tokens are used as TEXT in status pills, incident banners and
+     receipts. The dark-theme values (#34d399 / #fbbf24 / #f87171) sit at
+     1.6–2.8:1 on white — the light theme was failing AA on exactly the
+     copy that says whether something is verified or broken. These are the
+     -700 shades of the same hues: 4.5:1+ on #FFFFFF and #F8FAFC. The one
+     background use (a 6px status dot) reads fine darker.           */
+  --trust-verified: #047857;         /* emerald-700 — 5.5:1 on white */
+  --trust-attested: #b45309;         /* amber-700   — 4.6:1 on white */
+  --trust-unknown:  #64748B;         /* slate-500   — 4.6:1 on white */
+  --trust-fault:    #b91c1c;         /* red-700     — 5.9:1 on white */
+  --token-bat-text: #c2410c;         /* orange-700  — 4.8:1 on white */
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

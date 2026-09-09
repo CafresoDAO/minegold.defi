@@ -333,7 +333,7 @@ export function LandingPage({
                   : {
                       borderColor: "rgba(255,122,69,0.3)",
                       background: "rgba(255,122,69,0.1)",
-                      color: "#ff9a6e",
+                      color: "var(--token-bat-text)",
                     }
               }
             >

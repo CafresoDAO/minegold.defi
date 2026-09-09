@@ -8,6 +8,10 @@ type Props = {
   firstRun: boolean;
   uniAmount: string;
   showRateHint: boolean;
+  /** The canister's oracle read is stale and it will refuse to settle.
+   *  Deposits are disabled with the reason stated, so nobody pays gas for
+   *  a swap that is guaranteed to be refused. */
+  ratePaused: boolean;
   showConnecting: boolean;
   actorTimedOut: boolean;
   /** Non-null when the wallet's ETH can't cover the estimated gas — the Mine
@@ -38,6 +42,7 @@ export function PhaseIdle({
   firstRun,
   uniAmount,
   showRateHint,
+  ratePaused,
   showConnecting,
   actorTimedOut,
   gasShortfall,
@@ -83,6 +88,17 @@ export function PhaseIdle({
       {showRateHint && (
         <p className="mt-2 text-center text-xs text-amber-400">
           Waiting for the on-chain exchange rate before enabling swap…
+        </p>
+      )}
+      {ratePaused && (
+        <p
+          role="status"
+          data-ocid="refinery.rate_paused.hint"
+          className="mt-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-center text-xs leading-relaxed text-amber-300"
+        >
+          Deposits are paused: the refinery&apos;s price feed hasn&apos;t
+          refreshed recently, so it would refuse to settle your swap. Your
+          existing sGLDT is unaffected. Try again shortly.
         </p>
       )}
       {gasShortfall && (

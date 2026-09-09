@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useInternetIdentity } from "./auth";
 import { ethCall, getWalletClient, type Hash } from "./lib/eth";
 import {
@@ -140,6 +141,7 @@ export default function App() {
     clear: iiClear,
     isLoggingIn: iiIsLoggingIn,
   } = useInternetIdentity();
+  const queryClient = useQueryClient();
 
   // Derive user from II context identity
   const user =
@@ -907,6 +909,14 @@ export default function App() {
   const onchainRate =
     rateStatus && rateStatus.rate > 0n ? Number(rateStatus.rate) / 1e8 : 0;
   const effectiveRate = onchainRate > 0 ? onchainRate : liveRate;
+  /** The backend refuses refineCkUNI while its oracle read is stale, so the
+   *  deposit must be refused HERE too — before the user signs an irreversible
+   *  Ethereum approve+deposit and pays gas for a swap that cannot settle.
+   *  `ratePaused` = oracle reachable but stale; a null status (unreachable)
+   *  is handled by the existing "waiting for rate" hint. The CoinGecko
+   *  fallback is display-only and never unlocks the button. */
+  const rateFresh = rateStatus?.isFresh === true;
+  const ratePaused = rateStatus != null && !rateStatus.isFresh;
   /** The hint sent with refine calls — the exact rate the user was quoted.
    *  When quoting on-chain this is the canister's own rate (always in-band);
    *  the backend clamps any hint to ±2% of its rate regardless. */
@@ -989,6 +999,10 @@ export default function App() {
     clearRefineWatch(_principalSlug);
     iiClear();
     resetWallet();
+    // Drop every cached read. Several history/position keys are not scoped
+    // by principal, so without this the next person to sign in on this
+    // browser briefly sees the previous user's refines and balances.
+    queryClient.clear();
     setPhase("idle");
     setSgldtReleased(null);
     // Signing out returns to the public landing page, not to a sign-in wall.
@@ -2182,9 +2196,13 @@ export default function App() {
                       !user ||
                       (!actor && !actorTimedOut) ||
                       effectiveRate <= 0 ||
+                      !rateFresh ||
                       gasShortfall != null
                     }
-                    showRateHint={effectiveRate <= 0 && !!user && !!ethAddress}
+                    showRateHint={
+                      !rateFresh && !ratePaused && !!user && !!ethAddress
+                    }
+                    ratePaused={ratePaused}
                     gasShortfall={gasShortfall}
                     unlimitedApproval={unlimitedApproval}
                     onUnlimitedApprovalChange={toggleUnlimitedApproval}

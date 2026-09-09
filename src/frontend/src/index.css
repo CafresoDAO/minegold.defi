@@ -157,6 +157,16 @@
 
   /* Per-token accents */
   --token-bat:   #ff7a45;
+  --token-uni:   #ff007a;
+
+  /* Roast — the warm coffee/banana accent CafresoPages and CafresoHQ use for
+     their consumer surfaces. Minegold keeps --gold-* as its primary accent
+     (this is not a re-theme), but borrows this palette's warmth for the
+     hero's token-refining visual, so the ecosystem still reads as kin. */
+  --roast-crema:      #bfae9b;
+  --roast-coffee:     #262313;
+  --roast-banana:     #f5d25d;
+  --roast-banana-rim: #c68a32;
 
   /* Motion — named for what they DO, so call sites read intentionally. */
   --ease-strike:  cubic-bezier(0.2, 0.9, 0.3, 1);    /* pick hits rock */

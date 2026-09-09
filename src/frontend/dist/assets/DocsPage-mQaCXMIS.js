@@ -1,0 +1,224 @@
+import { c as createLucideIcon, j as jsxRuntimeExports, T as ThemeToggle } from "./index-DuCrrQdW.js";
+import { r as renderMarkdown } from "./markdown-CJ2VezwB.js";
+import { A as ArrowLeft } from "./arrow-left-BeQb4sYe.js";
+import { A as ArrowRight } from "./arrow-right-BustV5Ph.js";
+/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode = [
+  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  ["path", { d: "M10 9H8", key: "b1mrlr" }],
+  ["path", { d: "M16 13H8", key: "t4e002" }],
+  ["path", { d: "M16 17H8", key: "z1uh3a" }]
+];
+const FileText = createLucideIcon("file-text", __iconNode);
+const howItWorks = "# How it works\n\n## TL;DR\n\n**You give it a crypto token. It gives you back a token that represents real\ngold in a vault. You can swap back whenever you want.**\n\n- **What you put in:** UNI or BAT (Ethereum tokens), bridged the same way DFINITY\n  bridges any ERC-20 it lists.\n- **What you get out:** sGLDT — each unit backed by 0.01 g of real gold held\n  in an audited Swiss vault.\n- **How long:** about three minutes, most of it Ethereum confirming.\n- **Who holds your money:** *nobody.* Not us. Your tokens sit in your own\n  account on public ledgers the whole time, and the swap either completes or\n  refunds you automatically.\n- **Can you get out:** yes, any time, back to whichever you put in — and there\n  are two other exits that don't involve us at all.\n- **The catch:** this code is **unaudited** and **one person** runs the\n  treasury. Read [Risks & limitations](/docs/risks) before using real money.\n\nThere is no account with us, no password, and no support desk that can freeze\nor restore anything. That's the trade: nobody can seize it, and nobody can\nrescue it either.\n\n## The four steps\n\n1. You sign in with a passkey. That creates your **vault** — an account only\n   your device's biometrics can open.\n2. You connect the Ethereum **wallet** holding your UNI or BAT.\n3. You deposit. Two signatures in your wallet, then Ethereum confirms.\n4. sGLDT lands in your vault. You can withdraw it back to ckUNI or ckBAT at\n   any time.\n\nEverything below is the same story with the details filled in — including the\nparts that are other people's infrastructure rather than ours.\n\n## The long version\n\n### Step 1 — Your vault is not an account with us\n\nSigning in creates an Internet Identity: a keypair your device holds and your\nbiometrics unlock. We never see a password, and there is no account for us to\nfreeze, because there is no account — there is a principal that owns balances\non public ledgers.\n\nThe practical consequence is worth being blunt about: **we cannot recover your\nvault for you.** There is no reset link. That is the direct cost of there\nbeing no one who can seize it either. See\n[Redeem & recovery](/docs/redeem-and-recovery) for what this means in\npractice.\n\n### Step 2 — Your token crosses to the Internet Computer, and we don't carry it\n\nThis is the part people assume is the risky bit, and it is the part we have\nthe least to do with.\n\nYour UNI or BAT is bridged by **DFINITY's chain-key ERC-20 minter**\n(`sv3dd-oaaaa-aaaar-qacoa-cai`) — NNS-governed infrastructure, not our code.\nYou send the token to its helper contract on Ethereum. After **12 Ethereum\nblock confirmations** (roughly three minutes), the minter credits **ckUNI or\nckBAT to your own principal** on the matching ledger. Both run through the\nsame minter, on the same schedule — BAT is not a lesser-supported path.\n\nTwo things follow from that, and both matter:\n\n- The bridged ckUNI or ckBAT is **yours**, sitting in your account on a\n  DFINITY-run ledger, before this application touches it. We are not a\n  custodian of it.\n- Because it lands in your account automatically, **a deposit cannot go\n  missing in transit**. If you close the tab mid-flow, the tokens still\n  arrive. The next time you sign in, the app sees the un-refined balance and\n  offers to continue.\n\n### Step 3 — The swap is atomic, or it doesn't happen\n\nWhen you confirm the deposit, the refinery backend\n(`c626g-iyaaa-aaaau-agpoa-cai`) does two things as one unit: it pulls your\nckUNI or ckBAT, and it pays you sGLDT from treasury inventory at the current\nrate.\n\nIf the payout leg fails for any reason — most plausibly the treasury being\nshort of sGLDT — the pull is reversed and **your ckUNI or ckBAT is\nrefunded**. There is no state in which we hold your tokens and owe you gold.\n\nBecause ICRC ledgers charge their fee on top of the amount moved, and this\nflow moves through two ledger operations, the smallest deposit worth making\nis **0.005 UNI or 1 BAT** — below that, fees consume the deposit. The app\nenforces this rather than letting you make a losing trade.\n\nIn the rare case where even the refund fails, the swap is recorded as\n**stranded** and held for manual resolution. Nothing is silently dropped, and\nthe live count of stranded swaps is published on\n[/proof](/proof) — including when it is zero, which is when publishing it\nmeans something.\n\n### Step 4 — What you're actually holding\n\nsGLDT is a 1:1 wrapper of **GLDT**, Gold DAO's token. Each GLDT is backed by\n**0.01 g of LBMA-sourced physical gold** held in audited Swiss vaults.\n\nThe wrapper exists for one unglamorous reason: transfer fees. GLDT costs 0.10\nper transfer; sGLDT costs 0.00001 — about 10,000× cheaper. For a product\ndoing many small conversions, that difference is the difference between\nviable and not.\n\nYou can unwrap sGLDT to GLDT at sVault whenever you like, and Gold DAO's own\nprocess lets you redeem GLDT for metal. Neither of those is ours: **sVault's\ncontract holds the peg, and Gold DAO holds the gold.** We link to them; we\ndon't control them.\n\n## Who controls what\n\nThe single most useful thing you can know about a financial application is\nwhich parts its operator can change. Here is ours, in full:\n\n| Component | Controlled by |\n|---|---|\n| Refinery backend (the treasury) | **The operator** — one person |\n| Frontend canister | **The operator** — one person |\n| ckUNI / ckBAT ledgers | DFINITY (NNS) |\n| ckERC-20 minter | DFINITY (NNS) |\n| Exchange Rate Canister (the UNI/USD and BAT/USD oracle) | DFINITY (NNS) |\n| sGLDT ledger | Gold DAO / sVault |\n\nEvery one of those canister IDs, and the operator's single controller\nprincipal, is listed on [/proof](/proof) with dashboard links. You can verify\neach claim with `dfx canister info` without asking us anything.\n\n## What this application never does\n\n- It never takes custody of your gold. Settled sGLDT is in your vault, not\n  ours.\n- It never has a path to your Ethereum wallet beyond the approval you sign,\n  which you can revoke at [revoke.cash](https://revoke.cash) at any time.\n- It never quotes you a price it can't honour: the rate is read from the\n  canister, and the swap either settles at that rate or refunds.\n\n## Read the code\n\nEverything described on this page is open source:\n\n**[github.com/CafresoDAO/minegold.defi](https://github.com/CafresoDAO/minegold.defi)**\n\nThe parts worth reading first:\n\n| Path | What it is |\n|---|---|\n| `src/backend/main.mo` | The refinery. Every swap, refund and treasury movement. |\n| `src/frontend/src/lib/refineMath.ts` | The conversion arithmetic, including the e8/e18 handling. |\n| `src/frontend/src/lib/erc20.ts` | The Ethereum calldata this app asks your wallet to sign. |\n| `src/frontend/src/lib/eth.ts` | Everything else this app does on Ethereum. |\n| `src/frontend/src/lib/*.test.ts` | The money-path tests — start here to check our work. |\n| `CHANGELOG.md` / `INCIDENTS.md` | Published verbatim at [/status](/status). |\n\nThe arithmetic that moves money is unit-tested, and those tests run on every\npush (`.github/workflows/ci.yml`) — you can see them pass or fail in the\nrepository's Actions tab rather than taking our word for it. That is not the\nsame thing as an audit, and we don't claim it is: **this code remains\nunaudited.**\n\nReading the code is the strongest form of the verification this whole product\nargues for — stronger than anything we can tell you about ourselves. If you\nfind a problem, the contact address is on [Risks & limitations](/docs/risks).\n\n## Next\n\n- [The rate, in full](/docs/rate-methodology) — the exact formula, its two\n  inputs, and which one is operator-set.\n- [Redeem & recovery](/docs/redeem-and-recovery) — getting out, and what to do\n  when something goes wrong.\n- [Risks & limitations](/docs/risks) — the honest list.\n";
+const rateMethodology = "# How the rate is made\n\nThe exchange rate is the single number that decides what you get. This page\npublishes the whole formula, both of its inputs, which one we control, and\nevery guardrail around it.\n\nThe live values — current rate, oracle price, sync age — are on\n[/proof](/proof). This page explains what those numbers mean.\n\n## The formula\n\n```\n           median of 5 UNI/USD readings  (Exchange Rate Canister, hourly)\n1 UNI  =  ────────────────────────────────────────────────────────────────  sGLDT\n                     sGLDT/USD  (operator-set reference)\n\n\n           median of 5 BAT/USD readings  (Exchange Rate Canister, hourly)\n1 BAT  =  ────────────────────────────────────────────────────────────────  sGLDT\n                     sGLDT/USD  (operator-set reference)\n```\n\nBoth legs carry 1e8 precision. That is the entire calculation — there is no\nspread applied on top, no dynamic fee, and no hidden margin between the rate\nshown and the rate settled.\n\nBoth intakes share a denominator and both settle on a median. They differ\nonly in what they do before a full window of readings exists: the BAT intake\nstays closed, the UNI intake keeps using the latest reading. That is because\nthe UNI intake was already live when the median was added, and is explained\nunder the guardrails below.\n\n## Leg 1 — UNI/USD, from DFINITY's oracle\n\nSource: the **Exchange Rate Canister** (`uf6dk-hyaaa-aaaaq-qaaaq-cai`), NNS\ninfrastructure that aggregates prices across exchanges. We read it; we cannot\ninfluence what it says.\n\nIt syncs on an **hourly cadence**. The age of the last successful sync is\ndisplayed on /proof, and if the oracle is failing, the last error is\npublished there too rather than hidden behind a stale-looking number.\n\n## Leg 1b — BAT/USD, from the same oracle, taken as a median\n\nSame canister, same hourly cadence, one extra step: we keep the **last five\nBAT/USD readings** and settle on their **median**, never on the newest one.\n\nThe reason is narrow. The Exchange Rate Canister already aggregates across\nmany exchanges under IC consensus, so a single reading is not cheap to forge\n— but it is still a single reading. A median means a forged price has to\nsurvive **three separate hourly syncs** to move our rate at all. One bad\nprint does nothing.\n\nThe cost is that the intake **opens slowly**. Until five samples exist there\nis no median worth trusting, so the door stays shut rather than opening on\none or two readings. `getBatRateStatus` publishes the window, the median, and\nthe sample count, so \"how far along is it\" is a question you can answer\nyourself rather than take our word for.\n\n## Leg 2 — sGLDT/USD, set by the operator\n\nThis is the leg to scrutinise, so here is the unvarnished version.\n\nsGLDT trades on **one ICPSwap pool**, which the Exchange Rate Canister does\nnot index. There is no independent oracle for it. So the reference price is\nset by the operator, tracking GLDT's gold-derived value.\n\nWe would prefer this to be automated, and it should become automated. Today\nit is not, and calling it anything other than operator-set would be\nmisleading.\n\nIf the reference has not been set, the canister falls back to a **manual\nrate**, and /proof says so explicitly rather than displaying a computed\nnumber that isn't one.\n\n## The guardrails, with their actual numbers\n\nThese constrain what the rate can do — including what *we* can do to it.\n\n### ±30% — oracle jump rejection\n\nAn oracle reading that differs from the current rate by more than 30% is\n**rejected**. A flash-crash print or a bad aggregation can't drag the\nsettlement rate with it.\n\nThe tradeoff is deliberate and worth naming: if UNI genuinely moves more than\n30%, the rate goes stale and requires a **one-time operator re-anchor** to\nresume. We chose a stale rate that stops trading over a wrong rate that keeps\ntrading.\n\n### 6 hours — BAT staleness cutoff\n\nIf the refinery has not confirmed a BAT price in **six hours** — six missed\nhourly syncs — the ckBAT intake **closes itself** and refuses to settle.\n\nThis is here because the failure already happened. An upgrade wipes a\ncanister's timers, and for a stretch in August 2026 the re-arm was missing:\nthe last sync was sixteen days old while the intake stayed open. Nobody was\nharmed, but the door was open against a frozen price, and that is exactly the\ncondition this cutoff now refuses.\n\nThe timestamp behind it records when we last **believed** a price, not when\nwe last **tried** — a failed sync, or a reading the jump guard rejected, does\nnot refresh it. Six hours rides through a transient oracle outage; a dead\ntimer chain it does not.\n\nThe UNI leg now has the same six-hour cutoff. It arrived later than the BAT\none, and it works slightly differently on purpose: the UNI intake was\nalready open and taking money, so it keeps settling on the latest reading\nuntil a full sample window exists rather than closing itself while one\nfills. A safety change that takes a live money path offline to install\nitself is not a safety change.\n\n### ±2% — quote bound (the trade refuses, it does not reprice)\n\nThe frontend sends the rate you were quoted with each swap. If the canister's\nown rate has moved more than **±2%** away from that quote, the swap is\n**refused** and nothing is taken from your account. Within the band, the swap\nsettles — always at **the canister's rate**, never at the number the client\nsent.\n\nThat distinction is the whole point, and it did not always work this way.\nThe hint used to *become* the settlement price when it landed inside the\nband. Because refining pays out more at a high rate and redeeming pays out\nmore at a low one, a caller could quote themselves +2% going in and -2%\ncoming out and round-trip the pair for about +4% per cycle at the treasury's\nexpense — no market movement, no compromised key, just two ordinary calls in\na loop. It was found and closed in August 2026 before any user funds moved,\nand it is written up here rather than quietly patched because a page that\nonly lists the guardrails that always worked is an advertisement, not a\nmethodology.\n\nA quote is now something the canister can honour or refuse. It is not a\nprice the caller can steer.\n\n### 500,000 sGLDT / 50 ckUNI — admin transfer caps\n\nAdministrative transfers are capped per transaction. This bounds the size of\nany single operator action, including a mistaken one.\n\nIt does **not** bound repeated actions. It is a limit on blast radius, not a\nsubstitute for the multi-party control that doesn't exist yet — see\n[Risks & limitations](/docs/risks).\n\n## What you settle at\n\nThe rate that applies is the one **current when your swap executes**, not\nwhen you started it. Ethereum finality takes about three minutes, and the\nrate can move within that window.\n\nYour receipt records the settled rate and the sGLDT ledger block index of the\npayout, so every completed swap can be reconciled against the ledger\nindependently of anything we display.\n\n## What would make this better\n\nStated because a methodology page that lists no gaps isn't a methodology\npage:\n\n1. **An independent sGLDT/USD source.** The clearest single improvement:\n   removes the operator from the pricing path.\n2. **A published re-anchor log.** Every operator re-anchor, with timestamp\n   and reason, visible on /proof rather than inferable from rate history.\n3. **Time-locked rate parameters.** A delay between setting a reference and\n   it taking effect, so a change is observable before it settles anything.\n\nNone of these exist today. They are the honest roadmap for this page, and\nthis section is here so the absence is on the record rather than discovered.\n";
+const redeemAndRecovery = "# Redeem & recovery\n\nGetting out matters more than getting in. This page covers every exit path\nfrom sGLDT, and what to do when a step doesn't go as planned.\n\nThe short version: **there is always an exit, and none of them require our\npermission.**\n\n## Three ways out\n\nYour sGLDT is a token in your vault on a ledger we don't control. That gives\nyou three independent exits, and only the first involves us at all.\n\n### 1. Withdraw here — sGLDT back to ckUNI or ckBAT\n\nThe Withdraw button sits next to Deposit as an equal, on purpose. It redeems\nsGLDT back to whichever token you deposited with, at the same rate source\nthat priced your deposit. Both directions go through the identical code\npath — ckBAT redemption is not a lesser-supported feature bolted on\nafterward.\n\n- Minimum: **0.1 sGLDT** (below that, ledger fees exceed the payout)\n- Paid from treasury ckUNI or ckBAT; if the treasury is short in the asset\n  you're redeeming to, the withdrawal is declined cleanly rather than\n  partially executed\n- Current treasury ckUNI and ckBAT balances are published live on\n  [/proof](/proof)\n\nFrom ckUNI or ckBAT you can withdraw to Ethereum through DFINITY's minter,\nthe same infrastructure that brought it in. **That last leg has a cost we\ndon't control and should state plainly:**\n\n- The minter pays the Ethereum gas for your withdrawal by **burning ckETH**,\n  not by taking a cut of your ckUNI or ckBAT. If you arrived here by\n  depositing UNI or BAT, you have **no ckETH**, and the withdrawal will fail\n  until you acquire some. This applies identically to both assets.\n- You can see this in the minter's own interface: `withdraw_erc20` returns\n  `CkEthLedgerError` when it \"could not burn the required amount of ckETH to\n  pay for the transaction fees.\"\n- Acquiring ckETH is a separate step on a DEX or exchange. We don't sell it\n  to you and we don't do this conversion for you.\n\nThis is a real friction on the exit, so it belongs on the page about exits\nrather than in a support conversation after you've hit it. Exits 2 and 3\nbelow have no such requirement — **neither one needs ckETH, an Ethereum\ntransaction, or gas of any kind.** If your goal is simply to stop holding\nsGLDT, they are the cheaper doors.\n\n### 2. Unwrap to GLDT at sVault — no involvement from us\n\nsGLDT unwraps **1:1 to GLDT** at sVault. This path does not touch our\ncanisters, does not require our treasury to hold anything, and works whether\nor not this application is running.\n\nThis is the exit that matters most if you don't trust us, which is a\nperfectly reasonable position to hold about a single-operator product.\n\n### 3. Redeem GLDT for physical gold via Gold DAO\n\nGLDT is backed by 0.01 g of LBMA-sourced gold per token in audited Swiss\nvaults. Gold DAO operates the redemption process for the metal itself.\n\nStart at [gldt.org](https://gldt.org). This is Gold DAO's process, on Gold\nDAO's terms — we don't administer it and can't expedite it.\n\n## Recovery — when something goes wrong\n\n### My deposit confirmed on Ethereum but no sGLDT arrived\n\nAlmost always this is just timing: the minter waits **12 Ethereum block\nconfirmations**, roughly three minutes.\n\nIf it's been materially longer, your funds are not lost. The minter credits\nckUNI or ckBAT to **your own principal** — it arrives whether or not this app\nis open. Sign in and the app will show the un-refined balance and offer to\ncomplete the swap. You can also verify the balance directly on the ledger,\nwithout involving us:\n\n- ckUNI: `ilzky-ayaaa-aaaar-qahha-cai`\n- ckBAT: `j7x7x-syaaa-aaaar-qcbea-cai`\n\n### I closed the tab mid-deposit\n\nNothing is lost. See above — the bridge credits your principal\nindependently of this application's UI.\n\n### My swap failed\n\nThe swap is atomic: if the payout leg fails, the pull is reversed and **your\nckUNI or ckBAT is refunded**. You should see it back in your balance.\n\nThe most common cause is the treasury being short of sGLDT, which you can\ncheck yourself on [/proof](/proof).\n\n### My swap shows as \"held\" or \"stranded\"\n\nThis is the rare case where a swap failed *and* its automatic refund also\nfailed. The swap is recorded and held for manual resolution — it is not lost\nand not silently dropped.\n\nThe live count of stranded swaps is published on [/proof](/proof) at all\ntimes, including when it is zero. If yours is one of them, contact us with\nyour receipt; resolution is manual by design, because the alternative is\nautomated retry logic touching funds in an already-inconsistent state.\n\n### I lost access to my vault\n\nThis is the one we cannot fix, and we would rather say so directly than bury\nit.\n\nYour vault is an Internet Identity secured by your device's passkey. There is\n**no password reset and no recovery link**, because there is no account for\nus to reset — only a keypair your device holds. The same property that means\nnobody can freeze or seize your vault means nobody, including us, can restore\nit.\n\n**Protect against this before you need to:**\n\n- Register **more than one passkey** on your Internet Identity — a second\n  device, or a hardware key. This is the single most effective thing you can\n  do, and it takes a minute.\n- Add a **recovery phrase** through Internet Identity's own recovery options.\n- Do both at [identity.ic0.app](https://identity.ic0.app), not here — we\n  deliberately don't sit in the middle of your identity.\n\nIf you hold a meaningful balance and have exactly one passkey on exactly one\ndevice, treat adding a second as urgent.\n\n### The app is down, or gone\n\nYour sGLDT does not depend on this application existing. It is a token on\nsVault's ledger, and exit path 2 — unwrapping to GLDT — works with this site\nswitched off entirely.\n\nThat is by design, and it is the answer to \"what if the operator disappears.\"\n\n## Reconciling a swap yourself\n\nEvery completed swap records the settled rate and the **sGLDT ledger block\nindex** of the payout. That block is public. You can confirm your payout on\nthe ledger without trusting anything this interface displays.\n\nCanister IDs and dashboard links for every ledger in the path are on\n[/proof](/proof).\n\n## Related\n\n- [Risks & limitations](/docs/risks) — including what a single operator means\n- [How the rate is made](/docs/rate-methodology) — what your withdrawal is\n  priced at\n";
+const risks = "# Risks & limitations\n\nThis page exists because a financial application that only publishes its\nstrengths is telling you something by omission. Everything below is a real\nlimitation of minegold.defi as it stands today. None of it is hypothetical\nboilerplate.\n\nIf any single item here is unacceptable to you, that is a correct reason not\nto use this product, and we would rather you learn it here than afterwards.\n\n## The four that matter most\n\n### 1. The code is unaudited\n\nNo third party has audited the refinery backend. Not a firm, not a formal\nverification pass, not a bug bounty with a meaningful payout.\n\nWhat partially offsets this: the money path is short, the treasury logic is\natomic-with-refund rather than multi-step, and every canister is inspectable\non-chain. What does not offset it: none of that is the same thing as an\naudit, and we will not present it as though it were.\n\n### 2. One person controls the treasury\n\nThe refinery backend and the frontend canister have exactly **one IC\ncontroller** — a single principal, published in full on [/proof](/proof).\n\nTwo principals hold app-level **admin**, which is a separate and weaker\npermission: the controller principal above, and a second Internet Identity\nprincipal used to sign in to the admin screens\n(`rc62u-qypnw-bbkkp-d56wk-tnzaq-vwhi2-cqqay-q56hw-gsqbp-6wegl-jae`). Both\nbelong to the same person. Admin can move treasury funds within the caps\nbelow, set the sGLDT reference price, and grant admin to others — so the\nsecond principal is worth naming rather than rounding down to \"one key\". It\nis disclosed here because \"exactly one controller\" is true of the IC\ncontroller and would have been misleading about admin.\n\nThat controller can upgrade the backend. Practically, that means the honest\nstatement is: *the protections described on this site are enforced by code\nthat one person can change.* Time-locks, an SNS, or multi-party control would\nchange that. None of them exist today.\n\nThis is the risk that most deserves your attention, because it is the one\nthat no amount of on-chain verification eliminates. You can verify what the\ncode does right now. You cannot verify what it will do after the next\nupgrade.\n\n### 3. One leg of the exchange rate is operator-set\n\nThe rate is UNI/USD from DFINITY's Exchange Rate Canister, divided by an\n**sGLDT/USD reference the operator sets**. The oracle leg is independent\ninfrastructure. The reference leg is not.\n\nThe reason it is operator-set rather than fetched is genuine rather than\nconvenient: sGLDT trades on a single ICPSwap pool that the XRC cannot see. It\nhas to come from somewhere, and today it comes from us.\n\nThe guardrails on this are real, but they are guardrails, not independence:\n\n- Oracle readings that jump **±30%** from the current rate are rejected\n  outright; a genuine larger move requires a deliberate operator re-anchor.\n- A swap always settles at **the canister's own rate**. The quote the UI\n  sends can only *refuse* the trade — if the canister's rate has moved more\n  than **±2%** from your quote, nothing happens and nothing is taken. A\n  tampered frontend cannot move the price it settles at.\n- Administrative transfers are capped at **500,000 sGLDT / 50 ckUNI** per\n  transaction.\n\n[The full formula, with its provenance](/docs/rate-methodology), is published\nseparately.\n\n### 4. Payouts depend on treasury liquidity\n\nYour deposit is paid from sGLDT the treasury already holds. If the treasury\nis short, **your deposit is refunded** — this is the designed behaviour, not\na failure mode.\n\nBut refunded is not the same as filled. If liquidity runs out, the product\nstops working until it is topped up. Current coverage is shown live on\n[/proof](/proof), and we would rather you watch that number than take our\nword for its health.\n\n## What we depend on that we don't control\n\nA failure in any of these breaks this product, and we could not fix it:\n\n| Dependency | Run by | What breaks if it fails |\n|---|---|---|\n| ckERC-20 minter | DFINITY (NNS) | Deposits stop bridging, for both UNI and BAT |\n| ckUNI / ckBAT ledgers | DFINITY (NNS) | Bridged funds inaccessible |\n| Exchange Rate Canister | DFINITY (NNS) | Rate goes stale; both intakes refuse to settle after 6h |\n| sGLDT ledger | sVault | Payouts and withdrawals halt |\n| GLDT / physical backing | Gold DAO | The gold claim itself |\n\nThe sGLDT dependency is worth stating twice: **sGLDT's peg is sVault's\ncontract, and GLDT's gold backing is Gold DAO's.** We integrate them. If\neither fails, holding sGLDT is not a claim on us that we could honour.\n\n## Smaller, but real\n\n- **Ethereum finality takes time.** Roughly three minutes at 12 block\n  confirmations. During that window the rate can move; the swap settles at\n  the rate current when it executes, not when you started.\n- **Gas is yours.** Deposits require ETH for gas. On a small deposit, gas can\n  be a large fraction of the value. The app refuses to start a swap it can\n  see you can't afford, but it cannot make Ethereum cheap.\n- **Going back to Ethereum needs ckETH, which we don't give you.** Taking\n  ckUNI or ckBAT out to an Ethereum address burns ckETH for gas at DFINITY's\n  minter. Someone who only ever deposited UNI or BAT won't hold any, so that\n  specific leg requires a separate purchase. Applies identically to both\n  assets. Detailed, with the two exits that avoid it entirely, in\n  [Redeem & recovery](/docs/redeem-and-recovery).\n- **The operator's own ckUNI→Ethereum tool is switched off.** `adminDissolveCkUNI`\n  in the backend refuses to move funds: an earlier version sent ckUNI to the\n  minter without the approval flow the minter actually requires, which would\n  have stranded it. Rather than leave a method that loses money, it returns an\n  error and treasury withdrawals to Ethereum are done by hand. There is no\n  equivalent `adminDissolveCkBAT` at all — the operator has no programmatic\n  ckBAT-to-Ethereum path, only manual. This constrains *our* treasury\n  management, not your exits — the three routes out on\n  [Redeem & recovery](/docs/redeem-and-recovery) don't go through it.\n- **Minimums exist because fees do.** 0.005 UNI or 1 BAT to deposit, 0.1\n  sGLDT to withdraw. Below those, ledger fees eat the transaction.\n- **Stranded swaps require a human.** If a swap fails *and* its refund fails,\n  it is held as a stranded record for manual resolution. The count is\n  published live on [/proof](/proof), at zero as well as above it.\n- **Your vault cannot be recovered by us.** No password reset exists. See\n  [Redeem & recovery](/docs/redeem-and-recovery).\n- **Gold has a price, and it moves.** Nothing here protects you from the gold\n  price falling. This is a conversion, not a yield product, and there is no\n  return being promised.\n\n## What is not a risk here, and why\n\nStated so the list above reads as a real assessment rather than a defensive\none:\n\n- **We cannot spend your settled sGLDT.** Once a swap settles, the tokens are\n  in your vault on a ledger we don't control. Our treasury's health stops\n  mattering to you at that moment.\n- **We cannot lose your deposit in transit.** The bridge credits ckUNI to\n  your own principal before we touch it. Closing the tab does not lose funds.\n- **We cannot quietly change your price.** The settlement rate is always the\n  canister's own; the quote the UI sends can refuse a trade but never reprice\n  one.\n- **There is no leverage, lending, or yield scheme** operating on treasury\n  assets. The [treasury policy](/proof) states this, and it was published\n  before there was any pressure to have one.\n\n## How to verify all of this yourself\n\nEvery claim on this page is checkable without our cooperation:\n\n- Canister IDs, controllers, and live treasury balances: [/proof](/proof)\n- Controller verification: `dfx canister info <canister-id>`\n- Ledger balances and blocks: the ICP dashboard links on /proof\n- The gold backing: [gldt.org](https://gldt.org)\n\nIf you find something on this page that is no longer true, that is a bug and\nwe want to hear about it.\n";
+const DOCS = [
+  {
+    slug: "how-it-works",
+    title: "How it works",
+    blurb: "The full path from a token on Ethereum to gold-backed sGLDT — including the parts run by DFINITY and Gold DAO rather than by us.",
+    body: howItWorks
+  },
+  {
+    slug: "risks",
+    title: "Risks & limitations",
+    blurb: "Unaudited, single-operator, one rate leg we set ourselves. The honest list, and how to verify every item on it.",
+    body: risks
+  },
+  {
+    slug: "rate-methodology",
+    title: "How the rate is made",
+    blurb: "The whole formula, both inputs, every guardrail with its actual number — and what would make it better.",
+    body: rateMethodology
+  },
+  {
+    slug: "redeem-and-recovery",
+    title: "Redeem & recovery",
+    blurb: "Three ways out, two of which don't involve us at all. Plus what to do when a step goes wrong.",
+    body: redeemAndRecovery
+  }
+];
+const docBySlug = (slug) => DOCS.find((d) => d.slug === slug);
+function DocsPage({ slug, onBack, onNavigatePath }) {
+  const doc = slug ? docBySlug(slug) : void 0;
+  const interceptLinks = (e) => {
+    if (e.defaultPrevented || e.button !== 0) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const anchor = e.target.closest("a");
+    if (!anchor) return;
+    const href = anchor.getAttribute("href");
+    if (!(href == null ? void 0 : href.startsWith("/"))) return;
+    e.preventDefault();
+    onNavigatePath(href);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      "data-ocid": "docs.page",
+      className: "min-h-screen",
+      style: { background: "var(--bb-bg)", color: "var(--bb-text)" },
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-10 flex items-center justify-between", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "button",
+            {
+              type: "button",
+              "data-ocid": "docs.back",
+              onClick: () => doc ? onNavigatePath("/docs") : onBack(),
+              className: "inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold",
+              style: { color: "var(--bb-text-muted)" },
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowLeft, { size: 14 }),
+                " ",
+                doc ? "All docs" : "minegold.defi"
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeToggle, {})
+        ] }),
+        doc ? /* @__PURE__ */ jsxRuntimeExports.jsxs("article", { "data-ocid": "docs.article", onClick: interceptLinks, children: [
+          renderMarkdown(doc.body),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "nav",
+            {
+              className: "mt-12 border-t pt-6",
+              style: { borderColor: "var(--bb-border)" },
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label mb-3", style: { color: "var(--bb-text-dim)" }, children: "Other docs" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "space-y-2", children: DOCS.filter((d) => d.slug !== doc.slug).map((d) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => onNavigatePath(`/docs/${d.slug}`),
+                    className: "inline-flex min-h-[36px] items-center gap-1.5 text-sm font-semibold",
+                    style: { color: "var(--bb-brand)" },
+                    children: [
+                      d.title,
+                      " ",
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRight, { size: 13 })
+                    ]
+                  }
+                ) }, d.slug)) })
+              ]
+            }
+          )
+        ] }) : slug ? (
+          /* Unknown slug — a real 404 rather than a blank page, since the
+             asset canister SPA-fallbacks every unknown path to this app. */
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-ocid": "docs.notfound", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "t-display", style: { fontSize: "1.75rem" }, children: "No such document" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-3 text-[15px]", style: { color: "var(--bb-text-muted)" }, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("code", { className: "font-mono", children: [
+                "/docs/",
+                slug
+              ] }),
+              " doesn't exist. Everything we publish is listed below."
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-8", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DocIndex, { onNavigatePath }) })
+          ] })
+        ) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label mb-3", style: { color: "var(--bb-text-dim)" }, children: "Documentation" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "t-display", style: { fontSize: "clamp(1.9rem, 1.4rem + 2.2vw, 2.75rem)" }, children: "How this works, and what it can't do." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "p",
+            {
+              className: "mt-3 max-w-xl text-[15px] leading-relaxed",
+              style: { color: "var(--bb-text-muted)" },
+              children: "No sign-in required for any of it. The limitations page is as detailed as the how-it-works page, on purpose — a product that only documents its strengths is telling you something by omission."
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-8", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DocIndex, { onNavigatePath }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "p",
+            {
+              className: "mt-8 text-[13px] leading-relaxed",
+              style: { color: "var(--bb-text-muted)" },
+              children: [
+                "Every number these pages cite is published live on",
+                " ",
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => onNavigatePath("/proof"),
+                    className: "font-semibold underline underline-offset-2",
+                    style: { color: "var(--bb-brand)" },
+                    children: "/proof"
+                  }
+                ),
+                ", and changes to the product are logged on",
+                " ",
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => onNavigatePath("/status"),
+                    className: "font-semibold underline underline-offset-2",
+                    style: { color: "var(--bb-brand)" },
+                    children: "/status"
+                  }
+                ),
+                "."
+              ]
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "footer",
+          {
+            className: "mt-12 border-t pt-5 text-center text-[11px]",
+            style: { borderColor: "var(--bb-border)", color: "var(--bb-text-dim)" },
+            children: "minegold.defi · part of the Banking.Brave ecosystem, powered by CafresoDAO"
+          }
+        )
+      ] })
+    }
+  );
+}
+function DocIndex({ onNavigatePath }) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "grid gap-3 sm:grid-cols-2", children: DOCS.map((d) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "button",
+    {
+      type: "button",
+      "data-ocid": `docs.index.${d.slug}`,
+      onClick: () => onNavigatePath(`/docs/${d.slug}`),
+      className: "h-full w-full rounded-3xl border p-5 text-left transition-colors",
+      style: {
+        borderColor: "var(--bb-border)",
+        background: "var(--bb-surface)"
+      },
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "span",
+          {
+            className: "mb-2 inline-flex items-center gap-1.5 text-sm font-bold",
+            style: { color: "var(--bb-text)" },
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { size: 14, style: { color: "var(--bb-brand)" } }),
+              d.title
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "span",
+          {
+            className: "block text-[12px] leading-relaxed",
+            style: { color: "var(--bb-text-muted)" },
+            children: d.blurb
+          }
+        )
+      ]
+    }
+  ) }, d.slug)) });
+}
+export {
+  DocsPage
+};

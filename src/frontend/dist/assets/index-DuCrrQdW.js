@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-D7WtHpAM.js","assets/button-D2yCnfih.js","assets/LandingPage-DMXoLGKm.js","assets/ckMinter-DNa2DjEW.js","assets/arrow-right-C2fp01Tj.js","assets/MinegoldBraveSoon-QfgrJpiC.js","assets/arrow-left-BkFYacpR.js","assets/TransactionHistoryPage-DdNvlOxX.js","assets/ReceiptBlock-CsQc8xIx.js","assets/ReceiptPage-DLroC36P.js","assets/DocsPage-BFtgtj29.js","assets/markdown-CE3MQDuj.js","assets/StatusPage-OjCoiA2F.js","assets/SharedReceiptPage-0uBB7wdW.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-CHZ5dSsb.js","assets/button-FL8qXDYV.js","assets/LandingPage-DTmSyTZY.js","assets/ckMinter-DL3tY3-z.js","assets/arrow-right-BustV5Ph.js","assets/MinegoldBraveSoon-1ca9-uPh.js","assets/arrow-left-BeQb4sYe.js","assets/TransactionHistoryPage-BVyKKsCn.js","assets/ReceiptBlock-DQEWeJGg.js","assets/ReceiptPage-CdqkEf4Z.js","assets/DocsPage-mQaCXMIS.js","assets/markdown-CJ2VezwB.js","assets/StatusPage-D1-8T0sz.js","assets/SharedReceiptPage-CJnpWBqt.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -33990,7 +33990,7 @@ async function call(client2, args) {
       throw err;
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-7MfQZyd2.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-CE_ER2WL.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -48079,6 +48079,17 @@ function ActionQueue({
     )
   ] });
 }
+const CKUNI_ASSET = {
+  id: "ckUNI",
+  symbol: "ckUNI",
+  originSymbol: "UNI",
+  ledgerCanisterId: "ilzky-ayaaa-aaaar-qahha-cai",
+  erc20Address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+  decimals: 18,
+  feeFallback: 1000000000000000n,
+  minRefineFallback: 1000000000000000n,
+  minRefineLabel: "0.001 ckUNI"
+};
 const CKBAT_ASSET = {
   id: "ckBAT",
   symbol: "ckBAT",
@@ -50156,6 +50167,7 @@ const BACKEND_CANISTER_ID$1 = "c626g-iyaaa-aaaau-agpoa-cai";
 const TREASURY_PRINCIPAL = BACKEND_CANISTER_ID$1;
 const SGLDT_CANISTER_ID = "i2s4q-syaaa-aaaan-qz4sq-cai";
 const CKUNI_CANISTER_ID = "ilzky-ayaaa-aaaar-qahha-cai";
+const CKBAT_CANISTER_ID = "j7x7x-syaaa-aaaar-qcbea-cai";
 const IC_HOST = "https://icp-api.io";
 const icrc1BalanceIDL = ({ IDL: IDL2 }) => {
   const Account = IDL2.Record({
@@ -50749,6 +50761,30 @@ function getAnonymousAgent() {
   }
   return _anonymousAgent;
 }
+const icrc1SupplyIDL = ({ IDL: IDL2 }) => IDL2.Service({
+  icrc1_total_supply: IDL2.Func([], [IDL2.Nat], ["query"])
+});
+async function queryIcrc1TotalSupply(canisterId) {
+  const actor = Actor.createActor(icrc1SupplyIDL, {
+    agent: getAnonymousAgent(),
+    canisterId
+  });
+  return await actor.icrc1_total_supply();
+}
+function useCkTotalSupply() {
+  return useQuery({
+    queryKey: ["ckTotalSupply"],
+    queryFn: async () => {
+      const [ckUNI, ckBAT] = await Promise.all([
+        queryIcrc1TotalSupply(CKUNI_CANISTER_ID),
+        queryIcrc1TotalSupply(CKBAT_CANISTER_ID)
+      ]);
+      return { ckUNI, ckBAT };
+    },
+    staleTime: 5 * 6e4,
+    retry: 1
+  });
+}
 async function queryIcrc1Balance(canisterId) {
   const actor = Actor.createActor(icrc1BalanceIDL, {
     agent: getAnonymousAgent(),
@@ -50934,7 +50970,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BqnTkFGH.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BuyeCUFu.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -50965,7 +51001,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BqnTkFGH.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BuyeCUFu.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -50989,7 +51025,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BqnTkFGH.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BuyeCUFu.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -51333,6 +51369,58 @@ async function fetchBatRateStatus() {
     console.warn("[refine] ckBAT rate status fetch failed:", err);
     return null;
   }
+}
+const redeemBatIDL = ({ IDL: IDL2 }) => {
+  const RedeemOk = IDL2.Record({
+    redeemId: IDL2.Nat,
+    ckbatPaid: IDL2.Nat,
+    rate: IDL2.Nat,
+    blockIndex: IDL2.Nat
+  });
+  return IDL2.Service({
+    getMySGLDTPositionForCkBAT: IDL2.Func(
+      [],
+      [
+        IDL2.Record({
+          balance: IDL2.Nat,
+          allowance: IDL2.Nat,
+          minRedeem: IDL2.Nat,
+          rate: IDL2.Nat,
+          treasuryCkBAT: IDL2.Nat
+        })
+      ],
+      []
+    ),
+    redeemCkBAT: IDL2.Func(
+      [IDL2.Nat, IDL2.Opt(IDL2.Nat)],
+      [IDL2.Variant({ ok: RedeemOk, err: IDL2.Text })],
+      []
+    )
+  });
+};
+async function fetchMySGLDTPositionForCkBAT(identity) {
+  try {
+    const actor = await directActor(redeemBatIDL, { identity });
+    return await actor.getMySGLDTPositionForCkBAT();
+  } catch (err) {
+    console.warn("[redeem] sGLDT position (ckBAT) fetch failed:", err);
+    return null;
+  }
+}
+async function redeemCkBAT(opts) {
+  const actor = await directActor(redeemBatIDL, { identity: opts.identity });
+  const rateOpt = opts.rateHint == null ? [] : [opts.rateHint];
+  const result = await actor.redeemCkBAT(opts.amount, rateOpt);
+  if ("ok" in result) {
+    return {
+      ok: true,
+      redeemId: result.ok.redeemId,
+      ckbatPaid: result.ok.ckbatPaid,
+      rate: result.ok.rate,
+      blockIndex: result.ok.blockIndex
+    };
+  }
+  return { ok: false, error: result.err };
 }
 const DOT = {
   verified: "var(--trust-verified)",
@@ -51934,6 +52022,7 @@ const ageLabel = (ns) => {
 function ProofPanel({ onClose, onNavigatePath }) {
   const { data: rate } = useRateStatus();
   const { data: snap, isLoading, refetch, isFetching } = useProofSnapshot(true);
+  const { data: ckSupply, isLoading: ckSupplyLoading } = useCkTotalSupply();
   const qc = useQueryClient();
   const [refreshing, setRefreshing] = reactExports.useState(false);
   const syncAgeMin = rate && rate.lastSyncNs > 0n ? Math.max(
@@ -52033,6 +52122,34 @@ function ProofPanel({ onClose, onNavigatePath }) {
               /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 mt-0.5", children: "swaps whose auto-refund also failed, held for manual resolution — published even at 0" })
             ] })
           ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label text-zinc-500 mb-1.5", children: "Total chain-key supply on ICP" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2 text-zinc-500", children: "How much ckUNI and ckBAT exist on ICP right now, across every holder — not just this treasury. Read live from DFINITY's own ledgers." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label text-zinc-500 mb-1", children: "ckUNI total supply" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-black text-blue-300 tabular-nums", children: ckSupply ? formatTokenAmount(ckSupply.ckUNI, 18) : ckSupplyLoading ? "…" : "—" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label text-zinc-500 mb-1", children: "ckBAT total supply" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-black text-orange-300 tabular-nums", children: ckSupply ? formatTokenAmount(ckSupply.ckBAT, 18) : ckSupplyLoading ? "…" : "—" })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "a",
+            {
+              href: "https://sv3dd-oaaaa-aaaar-qacoa-cai.raw.icp0.io/dashboard",
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: "mt-2 inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 underline underline-offset-2",
+              children: [
+                "ckERC-20 minter dashboard — every token, every holder",
+                " ",
+                /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { size: 10 })
+              ]
+            }
+          )
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rounded-2xl border border-zinc-800 bg-black/30 p-4 mb-5 text-[12px] leading-relaxed text-zinc-400", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-label text-zinc-500 mb-1.5", children: "How the rate is made" }),
@@ -53065,12 +53182,39 @@ function ProfileModal({
   );
 }
 const SGLDT_FEE_HEADROOM = 100000n;
+const REDEEM_ASSETS = {
+  ckUNI: CKUNI_ASSET,
+  ckBAT: CKBAT_ASSET
+};
 function RedeemModal({ identity, onClose, onRedeemed }) {
+  const [asset, setAsset] = reactExports.useState("ckUNI");
   const [phase, setPhase] = reactExports.useState({ kind: "loading" });
   const [amountStr, setAmountStr] = reactExports.useState("");
   const loadPosition = reactExports.useCallback(async () => {
     setPhase({ kind: "loading" });
-    const pos = await fetchMySGLDTPosition(identity);
+    if (asset === "ckUNI") {
+      const pos2 = await fetchMySGLDTPosition(identity);
+      if (!pos2) {
+        setPhase({
+          kind: "error",
+          message: "Could not load your sGLDT position. Check your connection and try again.",
+          position: null
+        });
+        return;
+      }
+      setPhase({
+        kind: "input",
+        position: {
+          balance: pos2.balance,
+          allowance: pos2.allowance,
+          minRedeem: pos2.minRedeem,
+          rate: pos2.rate,
+          treasuryLiquidity: pos2.treasuryCkUNI
+        }
+      });
+      return;
+    }
+    const pos = await fetchMySGLDTPositionForCkBAT(identity);
     if (!pos) {
       setPhase({
         kind: "error",
@@ -53079,20 +53223,33 @@ function RedeemModal({ identity, onClose, onRedeemed }) {
       });
       return;
     }
-    setPhase({ kind: "input", position: pos });
-  }, [identity]);
+    setPhase({
+      kind: "input",
+      position: {
+        balance: pos.balance,
+        allowance: pos.allowance,
+        minRedeem: pos.minRedeem,
+        rate: pos.rate,
+        treasuryLiquidity: pos.treasuryCkBAT
+      }
+    });
+  }, [identity, asset]);
   reactExports.useEffect(() => {
     void loadPosition();
   }, [loadPosition]);
+  reactExports.useEffect(() => {
+    setAmountStr("");
+  }, [asset]);
+  const assetInfo = REDEEM_ASSETS[asset];
   const position = phase.kind === "input" || phase.kind === "approving" || phase.kind === "redeeming" ? phase.position : phase.kind === "error" ? phase.position : null;
   const amountE8s = parseDecimalToBigInt(amountStr, 8);
   const rateNum = position ? Number(position.rate) / 1e8 : 0;
-  const estCkUNI = rateNum > 0 ? Number(amountE8s) / 1e8 / rateNum : 0;
+  const estReceived = rateNum > 0 ? Number(amountE8s) / 1e8 / rateNum : 0;
   const balanceNum = position ? Number(position.balance) / 1e8 : 0;
-  const treasuryCkUNINum = position ? Number(position.treasuryCkUNI) / 1e18 : 0;
+  const treasuryLiquidityNum = position ? Number(position.treasuryLiquidity) / 1e18 : 0;
   const tooSmall = position != null && amountE8s > 0n && amountE8s < position.minRedeem;
   const overBalance = position != null && amountE8s > position.balance;
-  const overLiquidity = position != null && rateNum > 0 && estCkUNI > treasuryCkUNINum;
+  const overLiquidity = position != null && rateNum > 0 && estReceived > treasuryLiquidityNum;
   const canSubmit = position != null && amountE8s > 0n && !tooSmall && !overBalance && !overLiquidity;
   const submit = async () => {
     if (!position || !canSubmit) return;
@@ -53110,14 +53267,15 @@ function RedeemModal({ identity, onClose, onRedeemed }) {
         }
       }
       setPhase({ kind: "redeeming", position });
-      const result = await redeemSGLDT({ identity, amount: amountE8s, rateHint });
+      const result = asset === "ckUNI" ? await redeemSGLDT({ identity, amount: amountE8s, rateHint }) : await redeemCkBAT({ identity, amount: amountE8s, rateHint });
       if (!result.ok) {
         setPhase({ kind: "error", message: result.error, position });
         return;
       }
       setPhase({
         kind: "done",
-        ckuni: result.ckuniPaid,
+        asset,
+        received: "ckuniPaid" in result ? result.ckuniPaid : result.ckbatPaid,
         sgldt: amountE8s,
         payBlock: result.blockIndex,
         rate: result.rate
@@ -53153,9 +53311,35 @@ function RedeemModal({ identity, onClose, onRedeemed }) {
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 rounded-xl flex items-center justify-center bg-pink-500/20", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRightLeft, { size: 20, className: "text-pink-400" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "t-headline text-white", children: "Redeem sGLDT" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-zinc-500", children: "Swap back to ckUNI at the live oracle rate" })
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-zinc-500", children: [
+              "Swap back to ",
+              assetInfo.symbol,
+              " at the live oracle rate"
+            ] })
           ] })
         ] }),
+        phase.kind !== "done" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            role: "tablist",
+            "aria-label": "Redeem to",
+            className: "grid grid-cols-2 gap-2 mb-5",
+            children: Object.keys(REDEEM_ASSETS).map((id) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                role: "tab",
+                "aria-selected": asset === id,
+                "data-ocid": `wallet.redeem.asset_tab.${id}`,
+                disabled: busy,
+                onClick: () => setAsset(id),
+                className: `rounded-xl py-2 text-sm font-bold border transition-colors disabled:opacity-40 ${asset === id ? "bg-yellow-500/15 border-yellow-500/50 text-yellow-400" : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:bg-zinc-800"}`,
+                children: REDEEM_ASSETS[id].symbol
+              },
+              id
+            ))
+          }
+        ),
         phase.kind === "loading" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center gap-2 py-10 text-zinc-400 text-sm", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 16, className: "animate-spin" }),
           " Loading your position…"
@@ -53164,29 +53348,40 @@ function RedeemModal({ identity, onClose, onRedeemed }) {
           /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 40, className: "text-emerald-400 mx-auto" }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-white font-bold", children: [
-              (Number(phase.ckuni) / 1e18).toFixed(6),
-              " ckUNI received"
+              (Number(phase.received) / 1e18).toFixed(6),
+              " ",
+              REDEEM_ASSETS[phase.asset].symbol,
+              " received"
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-zinc-400 mt-1", children: [
               "for ",
               (Number(phase.sgldt) / 1e8).toFixed(4),
-              " sGLDT — the ckUNI is in your own ICP account. Bridge it back to native UNI on Ethereum any time via the chain-key minter."
+              " sGLDT — the",
+              " ",
+              REDEEM_ASSETS[phase.asset].symbol,
+              " is in your own ICP account. Bridge it back to native ",
+              REDEEM_ASSETS[phase.asset].originSymbol,
+              " ",
+              "on Ethereum any time via the chain-key minter."
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-zinc-500 font-mono mt-2", children: [
               "settled @ ",
               (Number(phase.rate) / 1e8).toFixed(4),
-              " sGLDT/UNI ·",
+              " sGLDT/",
+              REDEEM_ASSETS[phase.asset].originSymbol,
+              " ·",
               " ",
               /* @__PURE__ */ jsxRuntimeExports.jsxs(
                 "a",
                 {
-                  href: "https://dashboard.internetcomputer.org/canister/ilzky-ayaaa-aaaar-qahha-cai",
+                  href: `https://dashboard.internetcomputer.org/canister/${REDEEM_ASSETS[phase.asset].ledgerCanisterId}`,
                   target: "_blank",
                   rel: "noopener noreferrer",
                   className: "text-blue-400 hover:text-blue-300 underline underline-offset-2",
-                  title: "ckUNI ledger canister on the ICP dashboard",
+                  title: `${REDEEM_ASSETS[phase.asset].symbol} ledger canister on the ICP dashboard`,
                   children: [
-                    "ckUNI ledger block #",
+                    REDEEM_ASSETS[phase.asset].symbol,
+                    " ledger block #",
                     phase.payBlock.toString()
                   ]
                 }
@@ -53213,13 +53408,15 @@ function RedeemModal({ identity, onClose, onRedeemed }) {
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "t-label text-zinc-500 mb-0.5", children: "Rate" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-zinc-200 font-bold", children: rateNum > 0 ? `${rateNum.toFixed(4)} sGLDT/UNI` : "—" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-zinc-200 font-bold", children: rateNum > 0 ? `${rateNum.toFixed(4)} sGLDT/${assetInfo.originSymbol}` : "—" })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "col-span-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "t-label text-zinc-500 mb-0.5", children: "Treasury liquidity" }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-zinc-300 font-bold", children: [
-                treasuryCkUNINum.toFixed(6),
-                " ckUNI available"
+                treasuryLiquidityNum.toFixed(6),
+                " ",
+                assetInfo.symbol,
+                " available"
               ] })
             ] })
           ] }),
@@ -53261,8 +53458,9 @@ function RedeemModal({ identity, onClose, onRedeemed }) {
             ] }),
             amountE8s > 0n && rateNum > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-zinc-400 mt-1.5", children: [
               "≈ ",
-              estCkUNI.toFixed(6),
-              " ckUNI"
+              estReceived.toFixed(6),
+              " ",
+              assetInfo.symbol
             ] }),
             tooSmall && position && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-amber-400 mt-1.5", children: [
               "Minimum redeem is ",
@@ -53270,7 +53468,11 @@ function RedeemModal({ identity, onClose, onRedeemed }) {
               " sGLDT."
             ] }),
             overBalance && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-red-400 mt-1.5", children: "That's more sGLDT than you hold." }),
-            overLiquidity && !overBalance && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-amber-400 mt-1.5", children: "The treasury doesn't hold that much ckUNI right now — try a smaller amount." })
+            overLiquidity && !overBalance && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-amber-400 mt-1.5", children: [
+              "The treasury doesn't hold that much ",
+              assetInfo.symbol,
+              " right now — try a smaller amount."
+            ] })
           ] }),
           phase.kind === "error" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-[11px] text-red-300 leading-relaxed", children: phase.message }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -53288,7 +53490,7 @@ function RedeemModal({ identity, onClose, onRedeemed }) {
               ] }) : phase.kind === "redeeming" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "inline-flex items-center gap-2", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 14, className: "animate-spin" }),
                 " Redeeming…"
-              ] }) : "Redeem to ckUNI"
+              ] }) : `Redeem to ${assetInfo.symbol}`
             }
           ),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-zinc-500 leading-relaxed", children: "Two Internet Identity signatures: one approval letting the refinery pull your sGLDT, then the atomic swap. If the payout fails for any reason, your sGLDT is refunded automatically." }),
@@ -54974,33 +55176,33 @@ function useTreasuryEthUniBalance() {
   return { balance, loading, unavailable };
 }
 const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-D7WtHpAM.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+  () => __vitePreload(() => import("./AdminPage-CHZ5dSsb.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
 );
 const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-BOD8c0qc.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+  () => __vitePreload(() => import("./BankingBraveHome-Br-J1XUN.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
 );
 const LandingPage = reactExports.lazy(
-  () => __vitePreload(() => import("./LandingPage-DMXoLGKm.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
+  () => __vitePreload(() => import("./LandingPage-DTmSyTZY.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
 );
 const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-QfgrJpiC.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+  () => __vitePreload(() => import("./MinegoldBraveSoon-1ca9-uPh.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
 );
 const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-DdNvlOxX.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./TransactionHistoryPage-BVyKKsCn.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
     default: m2.TransactionHistoryPage
   }))
 );
 const ReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./ReceiptPage-DLroC36P.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
+  () => __vitePreload(() => import("./ReceiptPage-CdqkEf4Z.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
 );
 const DocsPage = reactExports.lazy(
-  () => __vitePreload(() => import("./DocsPage-BFtgtj29.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
+  () => __vitePreload(() => import("./DocsPage-mQaCXMIS.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
 );
 const StatusPage = reactExports.lazy(
-  () => __vitePreload(() => import("./StatusPage-OjCoiA2F.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
+  () => __vitePreload(() => import("./StatusPage-D1-8T0sz.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
 );
 const SharedReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./SharedReceiptPage-0uBB7wdW.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./SharedReceiptPage-CJnpWBqt.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
     default: m2.SharedReceiptPage
   }))
 );

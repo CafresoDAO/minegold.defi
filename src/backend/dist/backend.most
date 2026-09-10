@@ -250,6 +250,7 @@ actor {
   stable var etherscanApiKey : Text;
   stable var incidentNotice : ?IncidentNotice__643741317;
   stable var lastBatUsdPriceE8 : Nat;
+  stable var lastBatXRCError : Text;
   stable var lastUniUsdPriceE8 : Nat;
   stable var lastXRCError : Text;
   stable var lastXRCSyncNs : Int;

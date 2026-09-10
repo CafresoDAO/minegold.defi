@@ -187,8 +187,20 @@ It reinstalls the old module over itself. This burned two "done" deploys on
 
 ```bash
 dfx canister info c626g-iyaaa-aaaau-agpoa-cai --network ic   # module hash
-shasum -a 256 src/backend/dist/backend.wasm                  # compare
+shasum -a 256 .dfx/ic/canisters/backend/backend.wasm         # compare THIS one
 ```
+
+The module hash will **not** equal `shasum` of `src/backend/dist/backend.wasm`:
+dfx.json declares `candid:service` metadata, so dfx injects a custom section
+into the wasm before install and the on-chain hash is of that staged copy
+(`.dfx/ic/canisters/backend/backend.wasm`). Checking against `dist/` would
+report every correct deploy as a mismatch. And still call a new method.
+
+**Cycles for the upgrade itself:** `install_code` needs headroom beyond the
+freeze reserve — ~190 B more was demanded on 2026-09-09 with 160 B in the
+bank. The cycles-monitor canister (`ikh6x-…`, a controller) is a reservoir:
+`topUpCanister(principal, amount)` moves up to 300 B per call from it, admin
+= `xip3r`, no ICP involved. Prefer it over the near-empty cycles wallet.
 
 Also note: dfxvm's default is **0.24.3**, so a bare `dfx` is the wrong
 version. And 0.29.1 turns the plaintext-identity warning into a *hard abort*,

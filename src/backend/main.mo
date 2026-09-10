@@ -502,6 +502,11 @@ actor Self {
   /// guard rejects wild readings — a bad oracle sample can't instantly
   /// reprice the refinery; a genuine larger move needs one admin
   /// setUNIExchangeRate to re-anchor, after which syncs resume tracking.
+  /// Last BAT/USD oracle failure, verbatim. The BAT leg used to swallow its
+  /// #Err with no record at all — on 2026-09-09 the first post-upgrade sync
+  /// left BAT stale with nothing to read but "isFresh = false".
+  var lastBatXRCError : Text = "";
+
   func _syncRateFromXRC() : async () {
     let now = Time.now();
     if (now - lastXRCSyncNs < XRC_MIN_SYNC_GAP_NS) { return };
@@ -560,7 +565,11 @@ actor Self {
       switch (batResult) {
         case (#Ok(r)) {
           let batUsdE8 = _xrcRateToE8(r.rate, r.metadata.decimals);
+          if (batUsdE8 == 0) {
+            lastBatXRCError := "XRC returned a zero BAT/USD rate";
+          };
           if (batUsdE8 > 0) {
+            lastBatXRCError := "";
             lastBatUsdPriceE8 := batUsdE8;
             batUsdSamples := _pushSample(batUsdSamples, batUsdE8);
             // Settle on the median of the window, not on this reading. Until
@@ -591,7 +600,7 @@ actor Self {
             };
           };
         };
-        case (#Err(_)) {};
+        case (#Err(e)) { lastBatXRCError := debug_show (e) };
       };
     } catch (e) { lastXRCError := e.message() };
   };
@@ -2887,6 +2896,7 @@ actor Self {
     appliedNs : Int;
     maxAgeNs : Int;
     isFresh : Bool;
+    lastError : Text;
   } {
     {
       rate = batExchangeRate;
@@ -2898,6 +2908,7 @@ actor Self {
       appliedNs = batRateAppliedNs;
       maxAgeNs = BAT_RATE_MAX_AGE_NS;
       isFresh = _batRateIsFresh();
+      lastError = lastBatXRCError;
     };
   };
 

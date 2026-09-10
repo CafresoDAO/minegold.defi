@@ -222,6 +222,7 @@ service : {
       appliedNs: int;
       batUsdE8: nat;
       isFresh: bool;
+      lastError: text;
       maxAgeNs: int;
       medianBatUsdE8: nat;
       rate: nat;

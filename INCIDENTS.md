@@ -80,7 +80,7 @@ on-demand refresh, event-armed sweeper, on-demand balance cache) and adds
 stale for weeks; that is fixed in its own repo.
 
 ## 2026-09-09 — Rate feed stale again; swaps refused
-**Status:** identified
+**Status:** resolved
 **Impact:** availability only, same shape as 2026-09-03: refines and redeems
 refuse to settle while the UNI and BAT price feeds are stale. No funds
 affected. Additionally, the UNI deposit button in the web app did **not**
@@ -97,5 +97,13 @@ Fix in progress: deploy `863f7f20` plus the follow-up (`redeemSGLDT` now
 also refuses a stale rate; the sweeper backs off instead of retrying a
 failing deposit every 30 s; duplicate timer chains are cancelled), and the
 web app now disables the deposit button with the reason while the rate is
-stale. This entry will be updated to resolved once the module hash on
-mainnet matches and `isFresh` reads true on both legs.
+stale.
+
+**Resolution (same day):** backend upgraded (module hash verified against
+the staged wasm, `getCyclesHealth` answering), 300 B cycles moved in from
+the cycles-monitor reservoir — no ICP spent. The UNI leg refreshed on the
+first post-upgrade sync; the BAT leg missed that first attempt (the oracle
+error was not recorded — a gap now fixed, `getBatRateStatus` reports
+`lastError`) and refreshed on a forced second sync. Both legs read
+`isFresh = true`; refines and redeems settle again. Balance after: ~453 B
+against a ~54 B freeze reserve.

@@ -26,6 +26,15 @@ It is deliberately a **different constant** from `SITE_ORIGIN` in
 `routes.manifest.mjs`, which is the pretty domain used for canonical/OG URLs.
 Unifying them is a natural-looking cleanup that would strand every user.
 
+The **identity provider URL** (`II_URL`, now `https://id.ai/…`) is *not*
+part of the derivation and may change: id.ai and identity.ic0.app are the
+same II canister, and DFINITY's own statement is that the principal an app
+sees is identical across them. What *does* create a new principal is a user
+creating a **new identity** instead of choosing their existing one on the
+II 2.0 screen — the app warns on-device when that happens (see
+`minegold_last_principal` in `App.tsx`), and `/docs/redeem-and-recovery`
+walks them back.
+
 ### The frontend canister: reinstall is no longer forbidden, but it is a full replace
 
 Until 2026-08-27 this section said "must not be reinstalled": the installed

@@ -10,7 +10,14 @@ import {
 } from "react";
 import { toast } from "sonner";
 
-const II_URL = "https://identity.ic0.app";
+/** Internet Identity 2.0. Same II canister as identity.ic0.app, so every
+ *  existing principal is unchanged — what the dapp sees is derived from the
+ *  identity plus II_DERIVATION_ORIGIN below, not from this URL. The legacy
+ *  URL has shown the 2.0 upgrade flow since 2026-01-26 anyway; pointing at
+ *  id.ai directly is DFINITY's documented "single config change". The
+ *  feature flag is the guided-upgrade path for anyone still on a legacy
+ *  identity number. */
+const II_URL = "https://id.ai/?feature_flag_guided_upgrade=true";
 /** How often a signed-in session re-checks that its delegation is still
  *  valid. Cheap (local, no network): AuthClient reads the stored chain. */
 const SESSION_CHECK_MS = 60_000;

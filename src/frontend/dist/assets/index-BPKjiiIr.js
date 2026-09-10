@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-ByEUpJZ_.js","assets/button-BUC3Rteu.js","assets/LandingPage-vcK4lmLG.js","assets/ckMinter-DOTYYeO5.js","assets/arrow-right-BZqFJ-XX.js","assets/MinegoldBraveSoon-CgBknHhc.js","assets/arrow-left-4YbMKWZ0.js","assets/TransactionHistoryPage-BieCCktD.js","assets/ReceiptBlock-eNyoif24.js","assets/ReceiptPage-BOkpn-9_.js","assets/DocsPage-BkKiZTGw.js","assets/markdown-DJk1aiA8.js","assets/StatusPage-CBPxAaLy.js","assets/SharedReceiptPage-D51hZVV7.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-e-1Zinyi.js","assets/button-rkfq2dul.js","assets/LandingPage-DW6IM1ff.js","assets/ckMinter-B-9Vjeiv.js","assets/arrow-right-CZgHYTGQ.js","assets/MinegoldBraveSoon-DuFph9WE.js","assets/arrow-left-D5cN0u34.js","assets/TransactionHistoryPage-CQpNLSKQ.js","assets/ReceiptBlock-C71UikDk.js","assets/ReceiptPage-BnBzNgGL.js","assets/DocsPage-DN9moq9f.js","assets/markdown-B3CbH_l8.js","assets/StatusPage-BS0ouAL8.js","assets/SharedReceiptPage-DA70kqDm.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -27212,7 +27212,7 @@ function mergeLoginOptions(loginOptions, otherLoginOptions) {
     customValues
   };
 }
-const II_URL = "https://identity.ic0.app";
+const II_URL = "https://id.ai/?feature_flag_guided_upgrade=true";
 const SESSION_CHECK_MS = 6e4;
 const DAYS_30_NS = BigInt(30) * BigInt(24) * BigInt(60) * BigInt(60) * BigInt(1e9);
 const II_DERIVATION_ORIGIN = "https://cqyto-tiaaa-aaaau-agppa-cai.icp0.io";
@@ -34294,7 +34294,7 @@ async function call(client2, args) {
       throw err;
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-BcUY2fTp.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-B4903lKV.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -47833,7 +47833,7 @@ function LoginOverlay({ isLoggingIn, onLogin, onBack }) {
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-yellow-500/60 font-mono uppercase tracking-widest mb-3", children: "Cross-Chain Gold Refinery" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-headline text-white mb-2", children: "Where your gold will live" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-body text-zinc-400 mb-6 px-4", children: "Face ID or a fingerprint. No seed phrase. Only you can open it." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "t-body text-zinc-400 mb-6 px-4", children: "Face ID, a fingerprint, or your Google account. No seed phrase. Only you can open it." }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-4 gap-1.5 mb-6", children: JOURNEY.map((step) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-zinc-800/60 border border-zinc-700/50 rounded-2xl px-2 py-3 text-center", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "t-label text-yellow-500/70 mb-0.5", children: step.n }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-bold text-white", children: step.title })
@@ -47880,10 +47880,10 @@ function LoginOverlay({ isLoggingIn, onLogin, onBack }) {
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-3 text-[11px] text-zinc-500", children: [
-          "Face ID, a fingerprint, or a security key via",
+          "Face ID, a fingerprint, a security key, or Google via",
           " ",
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-zinc-300 font-semibold", children: "Internet Identity" }),
-          ". First time? It creates your vault in the same step."
+          ". First time? It creates your vault in the same step. Returning? Choose your existing identity — don't create a new one."
         ] }),
         onBack && /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
@@ -47953,8 +47953,21 @@ function SignInChooser({ open, isLoggingIn, onChooseInternetIdentity, onClose })
                   /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-11 h-11 rounded-xl bg-black flex items-center justify-center shrink-0", children: ICP_MARK }),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
                     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-bold text-sm text-white", children: isLoggingIn ? "Signing in…" : "Internet Identity" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] text-zinc-400 mt-0.5 leading-snug", children: "Face ID, fingerprint, or a security key. Creates your vault the first time." })
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] text-zinc-400 mt-0.5 leading-snug", children: "Face ID, fingerprint, a security key, or your Google account. Creates your vault the first time." })
                   ] })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "p",
+              {
+                "data-ocid": "signin.chooser.returning_hint",
+                className: "mt-2 rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-[11px] leading-snug text-amber-200",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-bold", children: "Already have gold here?" }),
+                  " On the next screen choose ",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-bold", children: "Use existing identity" }),
+                  " — creating a new one opens a different, empty vault."
                 ]
               }
             ),
@@ -51014,7 +51027,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-Cz4ah2vA.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DFVtic-U.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -51045,7 +51058,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-Cz4ah2vA.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DFVtic-U.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -51069,7 +51082,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-Cz4ah2vA.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DFVtic-U.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -54799,12 +54812,32 @@ function setConnectPending(pending) {
   } catch {
   }
 }
+const MAINNET_CHAIN_ID = "0x1";
+const announced = [];
+const BRAVE_RDNS = "com.brave.wallet";
+function announcedBrave() {
+  var _a3;
+  return ((_a3 = announced.find((a2) => a2.rdns === BRAVE_RDNS)) == null ? void 0 : _a3.provider) ?? null;
+}
 function preferredProvider(eth) {
+  const brave6963 = announcedBrave();
+  if (brave6963) return brave6963;
   if (eth.providers && eth.providers.length > 0) {
     const brave = eth.providers.find((p2) => p2.isBraveWallet === true);
     if (brave) return brave;
   }
   return eth;
+}
+async function readChainId(provider) {
+  try {
+    const result = await Promise.race([
+      provider.request({ method: "eth_chainId" }),
+      new Promise((r2) => setTimeout(() => r2(null), 3e3))
+    ]);
+    return typeof result === "string" ? result.toLowerCase() : null;
+  } catch {
+    return null;
+  }
 }
 function extractAddress(accounts) {
   if (Array.isArray(accounts)) {
@@ -54884,13 +54917,19 @@ function useEthWallet() {
     const id = setInterval(() => refreshBalances(ethAddress2), BALANCE_REFRESH_MS);
     return () => clearInterval(id);
   }, [ethAddress2, refreshBalances]);
-  const eip6963ProviderRef = reactExports.useRef(null);
   reactExports.useEffect(() => {
     const handleAnnounce = (e) => {
+      var _a3, _b3;
       const detail = e.detail;
-      if ((detail == null ? void 0 : detail.provider) && !eip6963ProviderRef.current) {
-        console.log("[eip6963] provider announced:", detail.info);
-        eip6963ProviderRef.current = detail.provider;
+      const rdns = (_a3 = detail == null ? void 0 : detail.info) == null ? void 0 : _a3.rdns;
+      if ((detail == null ? void 0 : detail.provider) && typeof rdns === "string") {
+        if (!announced.some((a2) => a2.rdns === rdns)) {
+          announced.push({
+            rdns,
+            name: String(((_b3 = detail.info) == null ? void 0 : _b3.name) ?? rdns),
+            provider: detail.provider
+          });
+        }
       }
     };
     window.addEventListener("eip6963:announceProvider", handleAnnounce);
@@ -54899,26 +54938,66 @@ function useEthWallet() {
       window.removeEventListener("eip6963:announceProvider", handleAnnounce);
     };
   }, []);
+  const [wrongChain, setWrongChain] = reactExports.useState(false);
+  const checkChain = reactExports.useCallback(async (provider) => {
+    const id = await readChainId(provider);
+    setWrongChain(id !== null && id !== MAINNET_CHAIN_ID);
+  }, []);
+  const switchToMainnet = reactExports.useCallback(async () => {
+    const win = window;
+    if (!win.ethereum) return;
+    const provider = preferredProvider(win.ethereum);
+    try {
+      await provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: MAINNET_CHAIN_ID }]
+      });
+    } catch {
+    }
+    await checkChain(provider);
+  }, [checkChain]);
+  reactExports.useEffect(() => {
+    if (!ethAddress2) return;
+    const win = window;
+    if (!win.ethereum) return;
+    void checkChain(preferredProvider(win.ethereum));
+  }, [ethAddress2, checkChain]);
   reactExports.useEffect(() => {
     const win = window;
     const eth = win.ethereum;
     if (!eth) return;
-    const anyEth = eth;
+    const anyEth = preferredProvider(eth);
     if (typeof anyEth.on !== "function") return;
-    const handler = (accounts) => {
+    const onAccounts = (accounts) => {
+      if (Array.isArray(accounts) && accounts.length === 0) {
+        setEthAddress(null);
+        setEthBalance(null);
+        setUniBalance(null);
+        setWalletConnectionError(
+          "Wallet disconnected. Reconnect to continue — nothing was signed."
+        );
+        return;
+      }
       if (Array.isArray(accounts) && accounts.length > 0 && typeof accounts[0] === "string") {
         const addr = accounts[0];
         if (ADDRESS_RE.test(addr)) {
-          console.log("[accountsChanged] picked up", addr);
+          setWalletConnectionError(null);
           setEthAddress(addr);
           refreshBalances(addr);
         }
       }
     };
-    anyEth.on("accountsChanged", handler);
+    const onChain = (chainId) => {
+      setWrongChain(
+        typeof chainId === "string" && chainId.toLowerCase() !== MAINNET_CHAIN_ID
+      );
+    };
+    anyEth.on("accountsChanged", onAccounts);
+    anyEth.on("chainChanged", onChain);
     return () => {
       if (typeof anyEth.removeListener === "function") {
-        anyEth.removeListener("accountsChanged", handler);
+        anyEth.removeListener("accountsChanged", onAccounts);
+        anyEth.removeListener("chainChanged", onChain);
       }
     };
   }, [refreshBalances]);
@@ -55094,6 +55173,7 @@ function useEthWallet() {
     setEthAddress(null);
     setEthBalance(null);
     setUniBalance(null);
+    setWrongChain(false);
   }, []);
   return {
     ethAddress: ethAddress2,
@@ -55108,7 +55188,9 @@ function useEthWallet() {
     setWalletConnectionError,
     walletConnectLog,
     connectEthereumWallet,
-    resetWallet
+    resetWallet,
+    wrongChain,
+    switchToMainnet
   };
 }
 const TOTAL_GAS_CEILING = 260000n;
@@ -55217,33 +55299,33 @@ function useTreasuryEthUniBalance() {
   return { balance, loading, unavailable };
 }
 const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-ByEUpJZ_.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+  () => __vitePreload(() => import("./AdminPage-e-1Zinyi.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
 );
 const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-CWmnLbo7.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+  () => __vitePreload(() => import("./BankingBraveHome-BZBw5rtT.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
 );
 const LandingPage = reactExports.lazy(
-  () => __vitePreload(() => import("./LandingPage-vcK4lmLG.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
+  () => __vitePreload(() => import("./LandingPage-DW6IM1ff.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
 );
 const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-CgBknHhc.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+  () => __vitePreload(() => import("./MinegoldBraveSoon-DuFph9WE.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
 );
 const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-BieCCktD.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./TransactionHistoryPage-CQpNLSKQ.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
     default: m2.TransactionHistoryPage
   }))
 );
 const ReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./ReceiptPage-BOkpn-9_.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
+  () => __vitePreload(() => import("./ReceiptPage-BnBzNgGL.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
 );
 const DocsPage = reactExports.lazy(
-  () => __vitePreload(() => import("./DocsPage-BkKiZTGw.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
+  () => __vitePreload(() => import("./DocsPage-DN9moq9f.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
 );
 const StatusPage = reactExports.lazy(
-  () => __vitePreload(() => import("./StatusPage-CBPxAaLy.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
+  () => __vitePreload(() => import("./StatusPage-BS0ouAL8.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
 );
 const SharedReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./SharedReceiptPage-D51hZVV7.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./SharedReceiptPage-DA70kqDm.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
     default: m2.SharedReceiptPage
   }))
 );
@@ -55279,7 +55361,9 @@ function App() {
     setWalletConnectionError,
     walletConnectLog,
     connectEthereumWallet,
-    resetWallet
+    resetWallet,
+    wrongChain,
+    switchToMainnet
   } = useEthWallet();
   const [firstRun, setFirstRun] = reactExports.useState(() => {
     try {
@@ -55327,6 +55411,21 @@ function App() {
   const treasuryPanelRef = reactExports.useRef(null);
   const _principalSlug = (user == null ? void 0 : user.principal.slice(0, 16)) ?? "";
   const DEPOSIT_ID_KEY = `minegold_deposit_id_${_principalSlug}`;
+  reactExports.useEffect(() => {
+    if (!(user == null ? void 0 : user.principal)) return;
+    const KEY = "minegold_last_principal";
+    try {
+      const last = localStorage.getItem(KEY);
+      if (last && last !== user.principal) {
+        ue.warning(
+          'This is a different vault than the one last used on this device. If you expected a balance, sign out and choose "Use existing identity" instead of creating a new one.',
+          { duration: 15e3 }
+        );
+      }
+      localStorage.setItem(KEY, user.principal);
+    } catch {
+    }
+  }, [user == null ? void 0 : user.principal]);
   const [depositRequestId, setDepositRequestIdState] = reactExports.useState(null);
   const setDepositRequestId = reactExports.useCallback(
     (id) => {
@@ -55830,6 +55929,10 @@ function App() {
     if (!actor) return "Unable to connect to the refinery. Please refresh and try again.";
     if (typeof window === "undefined" || !window.ethereum) {
       return "No Ethereum wallet is available in this browser. Open the dApp inside your wallet app's in-app browser (Brave Wallet, MetaMask, Trust, Rainbow) and try again.";
+    }
+    if (wrongChain) {
+      void switchToMainnet();
+      return "Your wallet is on a different network. Switch it to Ethereum mainnet and try again — the deposit contract only exists there.";
     }
     const amount = Number.parseFloat(uniAmount);
     if (Number.isNaN(amount) || amount <= 0) return "Enter a UNI amount first.";

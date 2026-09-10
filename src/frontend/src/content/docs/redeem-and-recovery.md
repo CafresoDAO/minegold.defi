@@ -108,23 +108,37 @@ automated retry logic touching funds in an already-inconsistent state.
 This is the one we cannot fix, and we would rather say so directly than bury
 it.
 
-Your vault is an Internet Identity secured by your device's passkey. There is
-**no password reset and no recovery link**, because there is no account for
-us to reset — only a keypair your device holds. The same property that means
-nobody can freeze or seize your vault means nobody, including us, can restore
-it.
+Your vault is an Internet Identity secured by your device's passkey (or the
+Google account you signed in with). There is **no password reset and no
+recovery link**, because there is no account for us to reset — only a
+keypair your device holds. The same property that means nobody can freeze or
+seize your vault means nobody, including us, can restore it.
 
 **Protect against this before you need to:**
 
 - Register **more than one passkey** on your Internet Identity — a second
   device, or a hardware key. This is the single most effective thing you can
   do, and it takes a minute.
-- Add a **recovery phrase** through Internet Identity's own recovery options.
-- Do both at [identity.ic0.app](https://identity.ic0.app), not here — we
-  deliberately don't sit in the middle of your identity.
+- Or **link a Google account** to the identity as a second way in. Internet
+  Identity 2.0 does this natively; a recovery *phrase* is not offered on the
+  new identities at the time of writing, so don't wait for one.
+- Do it at [id.ai](https://id.ai), not here — we deliberately don't sit in
+  the middle of your identity.
 
 If you hold a meaningful balance and have exactly one passkey on exactly one
 device, treat adding a second as urgent.
+
+### The app shows an empty vault, but I had gold
+
+Almost always this is a **second identity**, not lost gold. Internet
+Identity 2.0's sign-in screen offers "create new" one tap away from "use
+existing"; picking the former opens a brand-new, empty vault under a
+different principal. Your sGLDT is untouched under the original one.
+
+Sign out, sign in again, and choose **Use existing identity** (on the II
+screen: *use another identity → continue with passkey → use existing*). The
+app also warns you on this device when the principal differs from the last
+one that signed in here.
 
 ### The app is down, or gone
 

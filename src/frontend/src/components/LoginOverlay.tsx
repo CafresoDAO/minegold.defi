@@ -36,7 +36,8 @@ export function LoginOverlay({ isLoggingIn, onLogin, onBack }: Props) {
         <p className="text-xs text-yellow-500/60 font-mono uppercase tracking-widest mb-3">Cross-Chain Gold Refinery</p>
         <p className="t-headline text-white mb-2">Where your gold will live</p>
         <p className="t-body text-zinc-400 mb-6 px-4">
-          Face&nbsp;ID or a fingerprint. No seed phrase. Only you can open it.
+          Face&nbsp;ID, a fingerprint, or your Google account. No seed phrase.
+          Only you can open it.
         </p>
         {/* The canonical journey — same 4 steps everywhere (lib/journey).
             Titles only here: the gate should be glanceable, the detail
@@ -85,9 +86,10 @@ export function LoginOverlay({ isLoggingIn, onLogin, onBack }: Props) {
           {isLoggingIn ? "Signing in…" : "Sign in"}
         </GoldCTA>
         <p className="mt-3 text-[11px] text-zinc-500">
-          Face&nbsp;ID, a fingerprint, or a security key via{" "}
+          Face&nbsp;ID, a fingerprint, a security key, or Google via{" "}
           <span className="text-zinc-300 font-semibold">Internet Identity</span>.
-          First time? It creates your vault in the same step.
+          First time? It creates your vault in the same step. Returning?
+          Choose your existing identity — don&apos;t create a new one.
         </p>
         {onBack && (
           <button

@@ -11,6 +11,34 @@ Dates are ISO. Newest first.
 
 ---
 
+## 2026-09-10 — Internet Identity 2.0 door; Ethereum wallet chain and disconnect guards
+
+*Frontend only. No backend change; no principal changes — see below.*
+
+- **Sign-in now goes to Internet Identity 2.0 (id.ai).** Passkey-first, no
+  identity number, and Google sign-in for people who want it. Every existing
+  vault keeps its principal: id.ai is the same Internet Identity canister,
+  and the principal an app sees is derived from the identity plus this app's
+  fixed derivation origin, not from the sign-in URL.
+- **Returning-user guard.** The II 2.0 screen puts "create new identity" one
+  tap from "use existing"; picking the wrong one opens an empty vault that
+  looks like lost gold. The sign-in door now says so before the tap, and the
+  app warns on-device when the principal differs from the last one that
+  signed in there. `/docs/redeem-and-recovery` has the walk-back.
+- **Recovery guidance corrected** for II 2.0: second passkey or a linked
+  Google account; the new identities do not offer a recovery phrase today.
+- **Ethereum wallet: mainnet is enforced.** A wallet on another chain is
+  asked to switch (EIP-3326) and the deposit is refused with the reason
+  until it does — the helper contract only exists on mainnet, and signing
+  elsewhere spent gas for nothing. An unreadable chain never blocks (mobile
+  bridges sometimes hang on that call).
+- **Disconnect is honoured.** Locking the wallet or revoking the site cleared
+  nothing before; the deposit flow kept a stale address and hung at the
+  signature. It now clears the address and says so.
+- **Brave Wallet is chosen by identity.** With several wallets installed the
+  app now picks Brave from its EIP-6963 announcement rather than from
+  whichever extension won the `window.ethereum` injection race.
+
 ## 2026-09-09 — Stale-rate gating closed on every path; sweeper and timers stop burning cycles
 
 *Backend built and verified locally (harness green, stable-compatible with

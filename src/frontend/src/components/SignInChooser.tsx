@@ -85,10 +85,23 @@ export function SignInChooser({ open, isLoggingIn, onChooseInternetIdentity, onC
               {isLoggingIn ? "Signing in…" : "Internet Identity"}
             </div>
             <div className="text-[11px] text-zinc-400 mt-0.5 leading-snug">
-              Face&nbsp;ID, fingerprint, or a security key. Creates your vault the first time.
+              Face&nbsp;ID, fingerprint, a security key, or your Google account.
+              Creates your vault the first time.
             </div>
           </div>
         </button>
+        {/* II 2.0's new-identity screen is one tap away from "use existing",
+            and a returning user who creates a fresh identity by accident
+            lands in an empty vault that looks like lost gold. Say it before
+            the tap, not in a support thread after. */}
+        <p
+          data-ocid="signin.chooser.returning_hint"
+          className="mt-2 rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-[11px] leading-snug text-amber-200"
+        >
+          <span className="font-bold">Already have gold here?</span> On the next
+          screen choose <span className="font-bold">Use existing identity</span> —
+          creating a new one opens a different, empty vault.
+        </p>
 
         <div
           data-ocid="signin.chooser.oisy"

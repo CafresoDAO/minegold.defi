@@ -24,8 +24,9 @@ rescue it either.
 
 ## The four steps
 
-1. You sign in with a passkey. That creates your **vault** — an account only
-   your device's biometrics can open.
+1. You sign in with a passkey — or a Google account. That creates your
+   **vault** — an account only your device's biometrics (or that account)
+   can open.
 2. You connect the Ethereum **wallet** holding your UNI or BAT.
 3. You deposit. Two signatures in your wallet, then Ethereum confirms.
 4. sGLDT lands in your vault. You can withdraw it back to ckUNI or ckBAT at

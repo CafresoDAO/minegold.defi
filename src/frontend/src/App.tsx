@@ -174,6 +174,8 @@ export default function App() {
     walletConnectLog,
     connectEthereumWallet,
     resetWallet,
+    wrongChain,
+    switchToMainnet,
   } = useEthWallet();
   // First-run = this browser has never completed a refine. Gates the
   // unlimited-approval opt-in and seeds a sensible starter amount.
@@ -251,6 +253,27 @@ export default function App() {
   // Keys are scoped by principal to prevent cross-user bleed on shared devices.
   const _principalSlug = user?.principal.slice(0, 16) ?? "";
   const DEPOSIT_ID_KEY = `minegold_deposit_id_${_principalSlug}`;
+
+  // Same browser, different principal than last time. The usual cause since
+  // Internet Identity 2.0 is a returning user creating a NEW identity instead
+  // of choosing their existing one — their gold is still under the old
+  // principal, but the app now shows an empty vault. Name it immediately.
+  useEffect(() => {
+    if (!user?.principal) return;
+    const KEY = "minegold_last_principal";
+    try {
+      const last = localStorage.getItem(KEY);
+      if (last && last !== user.principal) {
+        toast.warning(
+          "This is a different vault than the one last used on this device. If you expected a balance, sign out and choose \"Use existing identity\" instead of creating a new one.",
+          { duration: 15_000 },
+        );
+      }
+      localStorage.setItem(KEY, user.principal);
+    } catch {
+      /* storage unavailable */
+    }
+  }, [user?.principal]);
   // NOTE: starts null and is HYDRATED from localStorage in an effect once the
   // II identity resolves — reading here in the initializer ran before `user`
   // existed, so the key was `minegold_deposit_id_` (empty slug) and stored
@@ -1104,6 +1127,13 @@ export default function App() {
     // with no wallet prompt.
     if (typeof window === "undefined" || !(window as unknown as { ethereum?: unknown }).ethereum) {
       return "No Ethereum wallet is available in this browser. Open the dApp inside your wallet app's in-app browser (Brave Wallet, MetaMask, Trust, Rainbow) and try again.";
+    }
+    // The helper contract only exists on Ethereum mainnet. A wallet parked
+    // on another chain would sign a transaction to the same address on the
+    // wrong network — gas spent, nothing bridged.
+    if (wrongChain) {
+      void switchToMainnet();
+      return "Your wallet is on a different network. Switch it to Ethereum mainnet and try again — the deposit contract only exists there.";
     }
     const amount = Number.parseFloat(uniAmount);
     if (Number.isNaN(amount) || amount <= 0) return "Enter a UNI amount first.";

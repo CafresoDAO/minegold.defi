@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   type BalanceDiagnostic,
   type EthProvider,
@@ -62,15 +62,50 @@ function setConnectPending(pending: boolean) {
   }
 }
 
+/** Ethereum mainnet — the only chain DFINITY's ckERC-20 helper exists on. */
+const MAINNET_CHAIN_ID = "0x1";
+
+/** EIP-6963 registry. Wallets announce themselves with a reverse-DNS id;
+ *  with Brave Wallet and MetaMask both installed, `window.ethereum` is
+ *  whichever won the injection race, while the announcements are unambiguous.
+ *  Module-level so a late announcement (Brave injects after load on mobile)
+ *  is still seen by the next connect. */
+type AnnouncedProvider = { rdns: string; name: string; provider: EthProvider };
+const announced: AnnouncedProvider[] = [];
+const BRAVE_RDNS = "com.brave.wallet";
+
+function announcedBrave(): EthProvider | null {
+  return announced.find((a) => a.rdns === BRAVE_RDNS)?.provider ?? null;
+}
+
 /** Pick the provider to talk to. With several wallets injected, prefer the
  *  Brave sub-provider — Brave users are the primary audience and its
- *  in-app browser is the only working path on iOS. */
+ *  in-app browser is the only working path on iOS. Order: an EIP-6963
+ *  announcement from Brave (unambiguous), then a Brave entry in the legacy
+ *  `providers[]` array, then whatever `window.ethereum` is. */
 function preferredProvider(eth: EthWindow): EthProvider {
+  const brave6963 = announcedBrave();
+  if (brave6963) return brave6963;
   if (eth.providers && eth.providers.length > 0) {
     const brave = eth.providers.find((p) => p.isBraveWallet === true);
     if (brave) return brave;
   }
   return eth;
+}
+
+/** `eth_chainId` with a hard timeout: the injected bridge on mobile Brave
+ *  can hang on this exact call, and an unknown chain must not block a user
+ *  whose wallet is fine. null = could not determine. */
+async function readChainId(provider: EthProvider): Promise<string | null> {
+  try {
+    const result = await Promise.race([
+      provider.request({ method: "eth_chainId" }),
+      new Promise<null>((r) => setTimeout(() => r(null), 3000)),
+    ]);
+    return typeof result === "string" ? result.toLowerCase() : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Pull a valid address out of whatever shape a wallet bridge returned.
@@ -189,14 +224,21 @@ export function useEthWallet() {
 
   // EIP-6963 provider discovery — the standard announcement handshake,
   // reliable in Brave's in-app wallet browser and any compliant wallet.
-  const eip6963ProviderRef = useRef<EthProvider | null>(null);
+  // Every announcement is kept (keyed by rdns) so preferredProvider can pick
+  // Brave by identity rather than by who won the window.ethereum race.
   useEffect(() => {
     const handleAnnounce = (e: Event) => {
       // biome-ignore lint/suspicious/noExplicitAny: CustomEvent detail shape
       const detail = (e as any).detail;
-      if (detail?.provider && !eip6963ProviderRef.current) {
-        console.log("[eip6963] provider announced:", detail.info);
-        eip6963ProviderRef.current = detail.provider as EthProvider;
+      const rdns = detail?.info?.rdns;
+      if (detail?.provider && typeof rdns === "string") {
+        if (!announced.some((a) => a.rdns === rdns)) {
+          announced.push({
+            rdns,
+            name: String(detail.info?.name ?? rdns),
+            provider: detail.provider as EthProvider,
+          });
+        }
       }
     };
     window.addEventListener("eip6963:announceProvider", handleAnnounce);
@@ -206,16 +248,62 @@ export function useEthWallet() {
     };
   }, []);
 
-  // `accountsChanged` fires when the user approves access in the wallet app
-  // — including when the original request call hung and never resolved.
+  // Chain guard. `wrongChain` is only ever true when the wallet POSITIVELY
+  // reported a non-mainnet chain — an unreadable chain (mobile bridge hang)
+  // stays false so it cannot block a working wallet.
+  const [wrongChain, setWrongChain] = useState(false);
+  const checkChain = useCallback(async (provider: EthProvider) => {
+    const id = await readChainId(provider);
+    setWrongChain(id !== null && id !== MAINNET_CHAIN_ID);
+  }, []);
+
+  /** Ask the wallet to switch to mainnet (EIP-3326). Brave Wallet and
+   *  MetaMask both prompt; a refusal leaves wrongChain set and the deposit
+   *  gated with the reason on screen. */
+  const switchToMainnet = useCallback(async () => {
+    const win = window as unknown as { ethereum?: EthWindow };
+    if (!win.ethereum) return;
+    const provider = preferredProvider(win.ethereum);
+    try {
+      await provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: MAINNET_CHAIN_ID }],
+      });
+    } catch {
+      /* user declined or wallet lacks the method — chainChanged decides */
+    }
+    await checkChain(provider);
+  }, [checkChain]);
+
+  useEffect(() => {
+    if (!ethAddress) return;
+    const win = window as unknown as { ethereum?: EthWindow };
+    if (!win.ethereum) return;
+    void checkChain(preferredProvider(win.ethereum));
+  }, [ethAddress, checkChain]);
+
+  // Wallet events. `accountsChanged` fires when the user approves access in
+  // the wallet app — including when the original request call hung and never
+  // resolved — and with an EMPTY list when they disconnect the site or lock
+  // the wallet; that must clear the address, or the deposit flow would keep
+  // a stale one and hang at the signature. `chainChanged` re-runs the guard.
   useEffect(() => {
     const win = window as unknown as { ethereum?: EthWindow };
     const eth = win.ethereum;
     if (!eth) return;
     // biome-ignore lint/suspicious/noExplicitAny: EIP-1193 event emitter shape
-    const anyEth = eth as any;
+    const anyEth = preferredProvider(eth) as any;
     if (typeof anyEth.on !== "function") return;
-    const handler = (accounts: unknown) => {
+    const onAccounts = (accounts: unknown) => {
+      if (Array.isArray(accounts) && accounts.length === 0) {
+        setEthAddress(null);
+        setEthBalance(null);
+        setUniBalance(null);
+        setWalletConnectionError(
+          "Wallet disconnected. Reconnect to continue — nothing was signed.",
+        );
+        return;
+      }
       if (
         Array.isArray(accounts) &&
         accounts.length > 0 &&
@@ -223,16 +311,23 @@ export function useEthWallet() {
       ) {
         const addr = accounts[0] as string;
         if (ADDRESS_RE.test(addr)) {
-          console.log("[accountsChanged] picked up", addr);
+          setWalletConnectionError(null);
           setEthAddress(addr);
           refreshBalances(addr);
         }
       }
     };
-    anyEth.on("accountsChanged", handler);
+    const onChain = (chainId: unknown) => {
+      setWrongChain(
+        typeof chainId === "string" && chainId.toLowerCase() !== MAINNET_CHAIN_ID,
+      );
+    };
+    anyEth.on("accountsChanged", onAccounts);
+    anyEth.on("chainChanged", onChain);
     return () => {
       if (typeof anyEth.removeListener === "function") {
-        anyEth.removeListener("accountsChanged", handler);
+        anyEth.removeListener("accountsChanged", onAccounts);
+        anyEth.removeListener("chainChanged", onChain);
       }
     };
   }, [refreshBalances]);
@@ -441,6 +536,7 @@ export function useEthWallet() {
     setEthAddress(null);
     setEthBalance(null);
     setUniBalance(null);
+    setWrongChain(false);
   }, []);
 
   return {
@@ -457,5 +553,7 @@ export function useEthWallet() {
     walletConnectLog,
     connectEthereumWallet,
     resetWallet,
+    wrongChain,
+    switchToMainnet,
   };
 }

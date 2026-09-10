@@ -108,7 +108,15 @@ repo. What was learned the hard way on 2026-09-03 and 2026-09-09:
 
   `install_code` needs headroom beyond the freeze reserve too: a frontend
   reinstall was refused on 2026-09-09 with 332 B in the bank; 20 B more
-  cleared it.
+  cleared it. The reservation is also visible: a `canister status` read in
+  the minute after an upgrade can show the balance ~250 B lower than it
+  is (409 B → 155 B → 402 B on 2026-09-10). It comes back once the install
+  settles. Read it twice before reacting.
+- **`getCyclesHealth` measures burn as the slope between daily snapshots**,
+  so a day with several upgrades reads hot (60 B/day on 2026-09-10 after
+  four deploys in 24 h, versus the ~10 B/day the timers now cost). Treat a
+  runway warning after a deploy-heavy day as "top up anyway, then re-check
+  in 48 h", not as a leak until a quiet day says so.
 - Both `cqyto` and `dqcmv` (cafreso.com) have hit out-of-cycles rejections
   before. The cycles-monitor dashboard was itself stale for weeks (its
   refresh loop had died); trust a live `dfx canister status` over any

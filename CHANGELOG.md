@@ -11,6 +11,36 @@ Dates are ISO. Newest first.
 
 ---
 
+## 2026-09-09 — Stale-rate gating closed on every path; sweeper and timers stop burning cycles
+
+*Backend built and verified locally (harness green, stable-compatible with
+the live module); frontend deployed. Backend deployment pending — see
+INCIDENTS.*
+
+- **`redeemSGLDT` now refuses a stale UNI rate**, exactly as `refineCkUNI`
+  and both ckBAT legs already did. It pays treasury ckUNI, so it was the one
+  path where a stale price could overpay from inventory.
+- **The web app refuses the UNI deposit while the rate is stale**, with the
+  reason on screen. The backend would have refused the swap anyway; the app
+  was letting people sign an irreversible Ethereum approve+deposit first.
+- **Payout sweeper backs off.** A deposit whose payout keeps failing is
+  retried at 30 s, 60 s, 120 s … up to 6 h instead of every 30 s forever,
+  and repeat failures no longer append a new history row each time.
+- **Timer chains are held by id and cancelled before re-arming**, so the
+  admin "re-arm" method can no longer add a second permanent oracle-sync
+  chain (each one cost two 1 B-cycle XRC calls per tick).
+- **Refund fee fallback fixed.** When the ledger fee could not be read, a
+  refund was sent with `fee = 0`, which the ledger rejects — turning a
+  transient read failure into a stranded record. It now lets the ledger
+  apply its default fee (the treasury absorbs one fee).
+- Web app: wallet-rejection / transfer-failure / payout toasts now actually
+  render (the toaster was never mounted); an expired Internet Identity
+  session is cleared with a plain message instead of failing mid-swap; a
+  render error shows reload + status instead of a blank page; signing out
+  clears cached reads; light theme status colours meet WCAG AA.
+- Docs: README build recipe corrected (`mops build` never existed), ckBAT
+  ledger listed, cycles runbook section added.
+
 ## 2026-08-05 — The Etherscan oracle is gone from the backend
 
 *Backend built and verified; not yet deployed.*

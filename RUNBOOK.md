@@ -26,10 +26,21 @@ It is deliberately a **different constant** from `SITE_ORIGIN` in
 `routes.manifest.mjs`, which is the pretty domain used for canonical/OG URLs.
 Unifying them is a natural-looking cleanup that would strand every user.
 
-### The frontend canister must not be reinstalled
+### The frontend canister: reinstall is no longer forbidden, but it is a full replace
 
-`cqyto-tiaaa-aaaau-agppa-cai` live-serves ~39 MB. `dfx deploy frontend` fails
-on it (see §2) — **do not force it.** Reinstalling wipes the assets.
+Until 2026-08-27 this section said "must not be reinstalled": the installed
+module was not dfx's asset canister, `dfx deploy frontend` failed on it, and
+a reinstall would have wiped assets we could not re-upload the same way.
+On 2026-08-27 (and again 2026-09-09) it **was** reinstalled with
+`--mode reinstall` from a full `src/frontend/dist/`, verified live
+afterwards, and the module is now dfx's standard asset canister. So:
+
+- A reinstall replaces **everything** the canister serves with whatever is
+  in `dist/` at that moment. Build first, from a clean checkout, every time.
+- Prefer a normal `dfx deploy frontend --network ic` (upgrade) now that the
+  module is standard; fall back to reinstall only if the upgrade path fails.
+- `scripts/asset-sync/sync.mjs` (§2) still works and remains the surgical
+  option.
 
 ### Incidents are posted before they are fixed
 
@@ -41,21 +52,58 @@ See §4. This is a published commitment on `/status`, not an aspiration.
 
 | Identity | Role |
 |---|---|
-| `vm_default_identity_backup` | **Sole controller** of backend + frontend. Holds the cycles and ICP. This is the one that does real work. |
+| `vm_default_identity_backup` | Human controller of backend + frontend. Holds the cycles and ICP. This is the one that does real work. |
 | `default`, `ic_admin` | Near-empty. A cycles top-up from these fails with `InsufficientFunds`. |
 
 - Controller principal:
   `xip3r-mhzcr-csb7y-ilqf5-4tpge-dka64-jv2ow-zon7z-key3x-77kf3-mae`
+- **Second controller:** `ikh6x-qqaaa-aaaaf-qgyha-cai`, the cycles-monitor
+  backend (separate repo). It polls `canister_status` and can auto-top-up.
+  It is a canister, not a person — but it is a controller, and `/docs/risks`
+  must keep saying "two controllers" while that is true.
 - PEM used by the asset sync tool:
   `~/.config/dfx/identity/vm_default_identity_backup/identity.pem`
 - `xip3r` also holds app-level `#admin` (granted in the init do-block), so
   CLI ops methods work. The **UI** admin is a different, hardcoded Internet
   Identity principal (`rc62u…`).
 
-**Cycles:** top-ups spend real ICP and are the owner's call, never automatic.
-Both `cqyto` and `dqcmv` (cafreso.com) have hit out-of-cycles rejections
-before — worth watching for recurring drain rather than waiting for the next
-outage.
+### Cycles — read this before the next outage, not after
+
+Top-ups spend real ICP and are the owner's call, never automatic from this
+repo. What was learned the hard way on 2026-09-03 and 2026-09-09:
+
+- **The "Idle cycles burned per day" figure from `dfx canister status` is
+  not the burn.** It is the storage baseline (~7.7 B/day). Measured burn
+  with the timers running was **30–50 B/day** before commit `863f7f20`
+  (hourly 2-leg XRC syncs at ~1 B cycles per call, plus 4,300 balance
+  refreshes and 2,880 sweeper wake-ups a day), and one permanently failing
+  legacy deposit was adding a retry loop on top. Budget top-ups on the
+  measured number: `getCyclesHealth` on the backend reports it once two
+  daily snapshots exist, and `/proof` displays it.
+- **Freezing threshold is 7 days** (`dfx canister update-settings backend
+  --freezing-threshold 604800 --network ic`), lowered from the 30-day
+  default on 2026-09-03. The reserve the replica protects is
+  `idle-burn × threshold`; below that line the canister still answers
+  queries and runs updates that make no outbound calls, **but every
+  inter-canister call is refused** with `IC0406 … could not perform
+  remote/self call`. That split — queries fine, ledger/XRC calls failing —
+  is the fingerprint. Check the balance against the reserve *first*;
+  redeploys and stop/start do nothing for it.
+- Top-up (this identity holds the cycles):
+
+  ```bash
+  DFX_WARNING=-mainnet_plaintext_identity dfx cycles top-up \
+    c626g-iyaaa-aaaau-agpoa-cai 2000000000000 --network ic \
+    --identity vm_default_identity_backup
+  ```
+
+  `install_code` needs headroom beyond the freeze reserve too: a frontend
+  reinstall was refused on 2026-09-09 with 332 B in the bank; 20 B more
+  cleared it.
+- Both `cqyto` and `dqcmv` (cafreso.com) have hit out-of-cycles rejections
+  before. The cycles-monitor dashboard was itself stale for weeks (its
+  refresh loop had died); trust a live `dfx canister status` over any
+  dashboard number.
 
 ---
 
@@ -165,6 +213,25 @@ moc --stable-compatible old.most new.most
 Compiler: moc 1.3.0 from the mops cache, package `core@2.2.0`, lint flags
 including `-E M0236` (dot-notation is a hard error).
 
+### Compiling (there is no `mops build`)
+
+`mops build` is not a mops CLI command and `dfx build backend` only checks
+that the artifacts exist. The full recipe is in `README.md → Development`;
+the short form, from `src/backend`:
+
+```bash
+export DFX_MOC_PATH=moc-wrapper && MOC=$(mops toolchain bin moc) && mops install
+$MOC --release --default-persistent-actors --actor-idl=system-idl \
+  --implicit-package=core -no-check-ir -E=M0236,M0235,M0223,M0237 -A=M0198 \
+  $(mops sources) -o dist/backend.wasm --idl --stable-types main.mo
+```
+
+`--stable-types` is a flag, not an option that takes a path — it writes
+`dist/backend.most` next to the wasm. Keep the previous `.most` (from git)
+for the compatibility check above. Making a persistent `var` `transient`
+counts as *dropping* a stable variable and needs a migration function;
+reset it in `postupgrade` instead.
+
 ---
 
 ## 4. Incident response
@@ -208,9 +275,21 @@ node scripts/ckbat-watch/check.mjs
 # Stranded swaps — should be 0
 dfx canister call c626g-iyaaa-aaaau-agpoa-cai getStrandedCounts --query --network ic
 
-# Rate health: oracle sync age and last error
+# Rate health: oracle sync age, last error, and isFresh (both legs)
 dfx canister call c626g-iyaaa-aaaau-agpoa-cai getRateStatus --query --network ic
+dfx canister call c626g-iyaaa-aaaau-agpoa-cai getBatRateStatus --query --network ic
+
+# Cycles: measured burn, runway, and the freeze reserve — the number to
+# budget top-ups on (see §1)
+dfx canister call c626g-iyaaa-aaaau-agpoa-cai getCyclesHealth --query --network ic
+DFX_WARNING=-mainnet_plaintext_identity dfx canister status backend --network ic \
+  --identity vm_default_identity_backup
 ```
+
+| Symptom | Check first |
+|---|---|
+| `getRateStatus.isFresh = false`, `lastError` mentions "could not perform self call" | Cycles vs freeze reserve (§1) — not the oracle, not the ledgers |
+| Rate stale, no error, `lastSyncNs` frozen | Timer chain died; `adminRearmRateSyncTimer` then `adminForceRateSync` |
 
 ---
 

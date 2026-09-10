@@ -1,6 +1,6 @@
 # minegold.defi — the on-chain gold refinery
 
-Turn your tokens into gold, on-chain. Bridge UNI from Ethereum through
+Turn your tokens into gold, on-chain. Bridge UNI or BAT from Ethereum through
 DFINITY's chain-key minter — your keys, your account, at every step — and
 refine it into **sGLDT**, a 1:1 wrapper of Gold DAO's physically backed GLDT.
 
@@ -44,12 +44,16 @@ locked in.
 - **Unaudited.** No third-party audit of this code has been performed.
 - **Single operator.** One person controls the backend canister and sets the
   sGLDT/USD reference leg of the rate (sGLDT trades on one ICPSwap pool the
-  exchange-rate canister can't see). The UNI/USD leg comes from DFINITY's
-  Exchange Rate Canister, synced hourly, with a ±30% jump guard.
+  exchange-rate canister can't see). The UNI/USD and BAT/USD legs come from
+  DFINITY's Exchange Rate Canister — a 3-hour heartbeat plus an on-demand
+  refresh whenever someone quotes against a rate older than an hour — with a
+  ±30% jump guard, a median-of-5 window, and a 6-hour staleness cutoff after
+  which both refines and redeems refuse to settle rather than use a stale
+  price.
 - **Treasury liquidity bounds payouts.** Refines pay from the treasury's
-  sGLDT; redeems pay from its ckUNI. Balances are public and shown live at
-  `/proof`. If the treasury can't cover a swap, your deposit is auto-refunded
-  — never taken.
+  sGLDT; redeems pay from its ckUNI or ckBAT. Balances are public and shown
+  live at `/proof`. If the treasury can't cover a swap, your deposit is
+  auto-refunded — never taken.
 - **Stranded records.** A swap whose refund *also* fails is held as a
   "stranded" record for manual resolution — funds are recorded, nothing is
   silently dropped, and the count is published at `/proof`.
@@ -64,32 +68,55 @@ locked in.
 | Refinery backend | `c626g-iyaaa-aaaau-agpoa-cai` | treasury + atomic swaps |
 | sGLDT ledger | `i2s4q-syaaa-aaaan-qz4sq-cai` | the GLDT wrapper (sVault) |
 | ckUNI ledger | `ilzky-ayaaa-aaaar-qahha-cai` | your bridged UNI, in your account |
+| ckBAT ledger | `j7x7x-syaaa-aaaar-qcbea-cai` | your bridged BAT, in your account |
 | ckERC-20 minter | `sv3dd-oaaaa-aaaar-qacoa-cai` | DFINITY's bridge — not our code |
-| Exchange Rate Canister | `uf6dk-hyaaa-aaaaq-qaaaq-cai` | UNI/USD oracle (DFINITY) |
+| Exchange Rate Canister | `uf6dk-hyaaa-aaaaq-qaaaq-cai` | UNI/USD and BAT/USD oracle (DFINITY) |
 
 ## Development
 
 ```bash
-# frontend
-cd src/frontend && pnpm install && pnpm build
+# frontend — typecheck, unit tests, build (this is exactly what CI runs)
+cd src/frontend && npm ci && npm run typecheck && npm test && npm run build
 
-# backend (Motoko) — mops + moc via dfx 0.29.1
-dfx build backend
+# backend (Motoko, moc 1.3.0 via mops). `dfx build backend` does NOT compile —
+# dfx.json's build step is only a "do the artifacts exist" guard — and
+# `mops build` is not a mops command. This is the real recipe:
+cd src/backend
+export DFX_MOC_PATH=moc-wrapper          # lets `mops toolchain bin moc` resolve
+MOC=$(mops toolchain bin moc)            # ~/Library/Caches/mops/moc/1.3.0/moc
+mops install
+$MOC --release --default-persistent-actors --actor-idl=system-idl \
+  --implicit-package=core -no-check-ir -E=M0236,M0235,M0223,M0237 -A=M0198 \
+  $(mops sources) -o dist/backend.wasm --idl --stable-types main.mo
+
+# before ANY backend upgrade: confirm the stable-variable layout is compatible
+# with what is running (grab the live .most from the last deployed commit)
+$MOC --stable-compatible <live>.most dist/backend.most
+
+# local end-to-end harness (own replica on :4955, mock ledgers at the real
+# mainnet principals, real main.mo with one injected admin grant)
+cd ../../scripts/local-test && dfx start --clean --background && \
+  ./run-bat-redeem-test.sh && ./run-uni-refine-redeem-test.sh; dfx stop
 ```
 
-Deploy notes:
+Deploy notes (the full operator detail lives in `RUNBOOK.md`):
 
-- **Backend** upgrades go through dfx 0.29.1 with
-  `--wasm-memory-persistence` (stable-compatible upgrade path).
-- **Frontend** is NOT deployed with `dfx deploy` — the installed asset
-  module predates dfx's and rejects reinstall. Sync `dist/` over the
-  standard asset API instead: `node scripts/asset-sync/sync.mjs`
-  (`--dry-run` to preview, `--only <substring>` for surgical deploys).
-  Content types for extensionless files are declared in that script.
+- **Backend** upgrades use dfx 0.29.1 and **must** pass
+  `--wasm-memory-persistence keep` — the canister uses enhanced orthogonal
+  persistence and the replica rejects an upgrade without it. Verify by
+  module hash afterwards, never by dfx's exit code.
+- **Frontend** is a standard dfx asset canister since 2026-08-27 (it was
+  reinstalled from `dist/` then; the previous module rejected upgrades).
+  `dfx deploy frontend --network ic` now works; `scripts/asset-sync/sync.mjs`
+  remains as the surgical alternative.
+- **Cycles.** The backend's real burn is far above the figure
+  `dfx canister status` calls "idle" — see `RUNBOOK.md §1`. `getCyclesHealth`
+  on the backend reports measured burn and runway; `/proof` shows it.
 
-## What's next
+## Minegold.Brave — BAT is live
 
-**Minegold.Brave**: the same refinery for BAT — Brave pays you BAT for the
-ads you already see; the refinery turns it into gold. Gated honestly on
-DFINITY listing ckBAT on the chain-key minter; the app checks the minter
-live and says exactly where that stands.
+The same refinery for BAT — Brave pays you BAT for the ads you already see;
+the refinery turns it into gold. DFINITY lists ckBAT on the chain-key minter,
+so BAT → ckBAT → sGLDT and the redeem back to ckBAT run on the identical
+code path as UNI. The landing page still checks the minter live on every
+visit rather than trusting this sentence.

@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-ByzfZFuP.js","assets/button-CkLYHrK6.js","assets/LandingPage-Bli8BQYu.js","assets/ckMinter-DNO66PVd.js","assets/arrow-right-D6q7SNRc.js","assets/MinegoldBraveSoon-CBTY-xat.js","assets/arrow-left-BlKj5OiZ.js","assets/TransactionHistoryPage-BxCQP1AV.js","assets/ReceiptBlock-O4L195ls.js","assets/ReceiptPage-BOsLUTa1.js","assets/DocsPage-AthE48Kv.js","assets/markdown-CN310bff.js","assets/StatusPage-CEPaI_pj.js","assets/SharedReceiptPage-B-HJ4hL1.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-Chku1wa-.js","assets/button-BLPqoC90.js","assets/LandingPage-maggiMME.js","assets/ckMinter-BMsFn3Ar.js","assets/arrow-right-BU3PWT2U.js","assets/MinegoldBraveSoon-CcZEXezc.js","assets/arrow-left-BmHAho4f.js","assets/TransactionHistoryPage-DjjobH1P.js","assets/ReceiptBlock-trRAqMq8.js","assets/ReceiptPage-DjaHN4jb.js","assets/DocsPage-DTu8QeLd.js","assets/markdown-C-os5JnM.js","assets/StatusPage-DY-P9kKw.js","assets/SharedReceiptPage-Cb4ou0LU.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -34294,7 +34294,7 @@ async function call(client2, args) {
       throw err;
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-D-lN9q73.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-BGKgIkRz.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -51014,7 +51014,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BlAQzq2x.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DI9kdrzu.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -51045,7 +51045,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BlAQzq2x.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DI9kdrzu.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -51069,7 +51069,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-BlAQzq2x.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DI9kdrzu.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -55217,33 +55217,33 @@ function useTreasuryEthUniBalance() {
   return { balance, loading, unavailable };
 }
 const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-ByzfZFuP.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+  () => __vitePreload(() => import("./AdminPage-Chku1wa-.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
 );
 const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-BzXIuyWG.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+  () => __vitePreload(() => import("./BankingBraveHome-Dr5FpSnZ.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
 );
 const LandingPage = reactExports.lazy(
-  () => __vitePreload(() => import("./LandingPage-Bli8BQYu.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
+  () => __vitePreload(() => import("./LandingPage-maggiMME.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
 );
 const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-CBTY-xat.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+  () => __vitePreload(() => import("./MinegoldBraveSoon-CcZEXezc.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
 );
 const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-BxCQP1AV.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./TransactionHistoryPage-DjjobH1P.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
     default: m2.TransactionHistoryPage
   }))
 );
 const ReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./ReceiptPage-BOsLUTa1.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
+  () => __vitePreload(() => import("./ReceiptPage-DjaHN4jb.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
 );
 const DocsPage = reactExports.lazy(
-  () => __vitePreload(() => import("./DocsPage-AthE48Kv.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
+  () => __vitePreload(() => import("./DocsPage-DTu8QeLd.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
 );
 const StatusPage = reactExports.lazy(
-  () => __vitePreload(() => import("./StatusPage-CEPaI_pj.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
+  () => __vitePreload(() => import("./StatusPage-DY-P9kKw.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
 );
 const SharedReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./SharedReceiptPage-B-HJ4hL1.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./SharedReceiptPage-Cb4ou0LU.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
     default: m2.SharedReceiptPage
   }))
 );

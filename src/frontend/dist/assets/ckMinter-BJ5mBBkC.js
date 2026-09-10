@@ -1,4 +1,4 @@
-import { a2 as HttpAgent, a3 as Actor } from "./index-DlXOJMfv.js";
+import { a3 as HttpAgent, a4 as Actor } from "./index-CSqsgWTS.js";
 const CK_MINTER_CANISTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai";
 const BAT_ERC20_ADDRESS = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF";
 const minterIDL = ({ IDL }) => {

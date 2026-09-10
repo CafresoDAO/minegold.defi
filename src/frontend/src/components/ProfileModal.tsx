@@ -1,6 +1,7 @@
 import { CheckCircle2, Copy, Send, UserCircle2, XCircle } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { useDialogA11y } from "../hooks/useDialogA11y";
 import { safeBalance } from "../lib/format";
 
 type ProfileUser = {
@@ -37,18 +38,28 @@ export function ProfileModal({
 }: Props) {
   const [copiedPrincipal, setCopiedPrincipal] = useState(false);
   const [copiedEthAddress, setCopiedEthAddress] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogA11y({ open: true, onClose, containerRef: dialogRef });
 
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
       data-ocid="profile.modal"
     >
-      <div className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-md relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain">
+      <div
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="profile-modal-title"
+        className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-md relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain"
+      >
         <button
           type="button"
           data-ocid="profile.close_button"
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400"
+          aria-label="Close"
+          className="absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 min-h-[44px] min-w-[44px] inline-flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
         >
           <XCircle size={18} />
         </button>
@@ -57,7 +68,9 @@ export function ProfileModal({
             <UserCircle2 size={22} className="text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold">Your Identity</h2>
+            <h2 id="profile-modal-title" className="text-xl font-bold">
+              Your Identity
+            </h2>
             <p className="text-xs text-zinc-500 uppercase tracking-wider">
               {user.identityType}
             </p>

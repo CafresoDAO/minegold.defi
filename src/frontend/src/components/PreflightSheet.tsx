@@ -1,4 +1,6 @@
 import { CheckCircle2, X } from "lucide-react";
+import { useRef } from "react";
+import { useDialogA11y } from "../hooks/useDialogA11y";
 import { GoldCTA } from "./ui/GoldCTA";
 
 type Props = {
@@ -30,23 +32,32 @@ export function PreflightSheet({
   onConfirm,
   onCancel,
 }: Props) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogA11y({ open: true, onClose: onCancel, containerRef: dialogRef });
   return (
     <div
       data-ocid="refinery.preflight.sheet"
       className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4"
     >
-      <div className="w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-t-[2rem] sm:rounded-[2rem] p-6 sm:p-8 relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain">
+      <div
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="preflight-sheet-title"
+        className="w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-t-[2rem] sm:rounded-[2rem] p-6 sm:p-8 relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain"
+      >
         <button
           type="button"
           data-ocid="refinery.preflight.close"
           onClick={onCancel}
-          className="absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400"
+          className="absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 min-h-[44px] min-w-[44px] inline-flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
           aria-label="Close"
         >
           <X size={16} />
         </button>
 
-        <h2 className="t-headline text-white mb-1">
+        <h2 id="preflight-sheet-title" className="t-headline text-white mb-1">
           Two taps in your wallet, coming up
         </h2>
         <p className="text-[13px] text-zinc-400 leading-relaxed mb-5">

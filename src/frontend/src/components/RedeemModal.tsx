@@ -1,5 +1,6 @@
 import { ArrowRightLeft, CheckCircle2, Loader2, XCircle } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useDialogA11y } from "../hooks/useDialogA11y";
 import {
   approveSGLDTForRedeem,
   fetchMySGLDTPosition,
@@ -194,18 +195,33 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
 
   const busy = phase.kind === "approving" || phase.kind === "redeeming";
 
+  // Escape mirrors the close button: ignored while a transaction is in flight.
+  const requestClose = useCallback(() => {
+    if (!busy) onClose();
+  }, [busy, onClose]);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogA11y({ open: true, onClose: requestClose, containerRef: dialogRef });
+
   return (
     <div
       data-ocid="wallet.redeem.modal"
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
     >
-      <div className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-md relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain">
+      <div
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="redeem-modal-title"
+        className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-md relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain"
+      >
         <button
           type="button"
           data-ocid="wallet.redeem.close_button"
           onClick={onClose}
           disabled={busy}
-          className="absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 disabled:opacity-40"
+          aria-label="Close"
+          className="absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 disabled:opacity-40 min-h-[44px] min-w-[44px] inline-flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
         >
           <XCircle size={18} />
         </button>
@@ -215,7 +231,9 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
             <ArrowRightLeft size={20} className="text-pink-400" />
           </div>
           <div>
-            <h2 className="t-headline text-white">Redeem sGLDT</h2>
+            <h2 id="redeem-modal-title" className="t-headline text-white">
+              Redeem sGLDT
+            </h2>
             <p className="text-xs text-zinc-500">
               Swap back to {assetInfo.symbol} at the live oracle rate
             </p>
@@ -351,13 +369,28 @@ export function RedeemModal({ identity, onClose, onRedeemed }: Props) {
                   disabled={busy}
                   onChange={(e) => setAmountStr(e.target.value)}
                   placeholder="0.0"
-                  className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white font-mono text-sm focus:border-yellow-500/50 focus:outline-none disabled:opacity-50"
+                  className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white font-mono text-sm focus:border-yellow-500/50 focus-visible:ring-2 focus-visible:ring-yellow-400/70 focus-visible:outline-none disabled:opacity-50"
                 />
                 <button
                   type="button"
                   data-ocid="wallet.redeem.max_button"
                   disabled={busy || !position}
-                  onClick={() => setAmountStr(balanceNum > 0 ? String(balanceNum) : "")}
+                  onClick={() => {
+                    // Max is the balance minus what this flow will charge on
+                    // top of the amount: the approve's fee and the
+                    // transfer_from's fee. The full balance was guaranteed to
+                    // fail with InsufficientFunds at the pull.
+                    if (!position) return;
+                    const headroom = 2n * SGLDT_FEE_HEADROOM;
+                    const max = position.balance > headroom ? position.balance - headroom : 0n;
+                    if (max === 0n) {
+                      setAmountStr("");
+                      return;
+                    }
+                    const whole = max / 100_000_000n;
+                    const frac = (max % 100_000_000n).toString().padStart(8, "0").replace(/0+$/, "");
+                    setAmountStr(frac ? `${whole}.${frac}` : String(whole));
+                  }}
                   className="px-3 rounded-xl border border-zinc-800 bg-zinc-900 t-label text-yellow-500 hover:bg-zinc-800 disabled:opacity-40"
                 >
                   Max

@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { ExternalLink, RefreshCw, ShieldCheck, XCircle } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useDialogA11y } from "../hooks/useDialogA11y";
 import {
   formatTokenAmount,
   refreshProofBalances,
@@ -42,6 +43,8 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
   const { data: ckSupply, isLoading: ckSupplyLoading } = useCkTotalSupply();
   const qc = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogA11y({ open: true, onClose, containerRef: dialogRef });
 
   const syncAgeMin =
     rate && rate.lastSyncNs > 0n
@@ -75,12 +78,20 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
       data-ocid="proof.panel"
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
     >
-      <div className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-2xl relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain">
+      <div
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="proof-panel-title"
+        className="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 sm:p-8 w-full max-w-2xl relative max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain"
+      >
         <button
           type="button"
           data-ocid="proof.close"
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400"
+          aria-label="Close"
+          className="absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-zinc-400 min-h-[44px] min-w-[44px] inline-flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
         >
           <XCircle size={18} />
         </button>
@@ -90,7 +101,9 @@ export function ProofPanel({ onClose, onNavigatePath }: Props) {
             <ShieldCheck size={20} className="text-emerald-400" />
           </div>
           <div>
-            <h2 className="t-headline text-white">Proof &amp; transparency</h2>
+            <h2 id="proof-panel-title" className="t-headline text-white">
+              Proof &amp; transparency
+            </h2>
             <p className="text-[11px] text-zinc-500">
               Every number below is on-chain — verify it, don&apos;t trust it.
             </p>

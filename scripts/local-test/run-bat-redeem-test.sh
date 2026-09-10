@@ -117,6 +117,19 @@ OUT=$(dfx canister call backend setBATExchangeRate "(100_000_000 : nat)" --ident
 [[ "$OUT" == *"ok"* ]] || fail "setBATExchangeRate: $OUT"
 pass "rate set: 1e8-precision sGLDT/BAT = 100_000_000 (1:1)"
 
+# Fat-finger guard: a single-step change of more than 5x is a units slip
+# until proven otherwise. 10x must be refused and leave the rate untouched;
+# 2x must go through.
+OUT=$(dfx canister call backend setBATExchangeRate "(1_000_000_000 : nat)" --identity default)
+[[ "$OUT" == *"refused"* ]] || fail "setBATExchangeRate should refuse a 10x jump: $OUT"
+OUT=$(dfx canister call backend getBatRateStatus --query)
+[[ "$OUT" == *"rate = 100_000_000"* ]] || fail "rate must be unchanged after a refused set: $OUT"
+OUT=$(dfx canister call backend setBATExchangeRate "(200_000_000 : nat)" --identity default)
+[[ "$OUT" == *"ok"* ]] || fail "setBATExchangeRate should accept a 2x change: $OUT"
+OUT=$(dfx canister call backend setBATExchangeRate "(100_000_000 : nat)" --identity default)
+[[ "$OUT" == *"ok"* ]] || fail "setBATExchangeRate back to 1:1: $OUT"
+pass "rate setter refuses a 10x jump (units-slip guard) and accepts a 2x re-anchor"
+
 # ── users ────────────────────────────────────────────────
 dfx identity new local-test-user --storage-mode plaintext >/dev/null 2>&1 || true
 dfx identity new local-test-user-2 --storage-mode plaintext >/dev/null 2>&1 || true

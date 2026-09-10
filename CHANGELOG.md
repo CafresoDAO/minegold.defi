@@ -11,6 +11,42 @@ Dates are ISO. Newest first.
 
 ---
 
+## 2026-09-10 — Rate-setter units guard; anonymous-call cycle hygiene; modal accessibility; Max button fix
+
+*Backend built and verified (both harnesses green, stable-compatible);
+frontend built. Deployed with this entry.*
+
+- **Admin rate setters refuse a >5× single-step change.** Every admin
+  price/rate method (`setSGLDTUsdPrice`, `setUNIExchangeRate`,
+  `setLiveExchangeRate`, `syncLiveExchangeRate`, `setBATExchangeRate`) now
+  rejects a value more than 5× away from the current one. These methods
+  bypass the oracle's ±30% guard on purpose (that is what a re-anchor is),
+  but nothing stopped a units slip — dollars where e8 was meant — from
+  setting a settlement price 1e8× off. A genuine larger move is walked
+  there in two deliberate steps. Covered by the harness.
+- **Unauthenticated callers can no longer make the backend spend cycles on
+  ledger calls.** The position endpoints checked for an anonymous caller
+  *after* their first ledger call; the check now comes first, and anonymous
+  callers get the cached treasury figure. `refreshExchangeRate` for a
+  non-admin now triggers the hourly-debounced nudge instead of an immediate
+  two-leg oracle sync (one signed-in identity could otherwise force ~5.8 T
+  cycles a day of XRC calls by looping on it); admin still gets an immediate
+  sync.
+- **Web app, Withdraw: the Max button works.** It set the full sGLDT balance,
+  which the pull then rejected with InsufficientFunds every time (the approve
+  and transfer fees come on top). Max is now balance minus the two fees.
+- **Admin page amounts are parsed exactly** (decimal string → e8/e18) instead
+  of `Math.round(x * 1e18)`, which loses precision past 2^53.
+- **Modals are real dialogs.** Withdraw, Transfer, Profile, Proof and the
+  deposit preflight sheet now carry dialog semantics, close on Escape (not
+  while a transaction is in flight), move focus in on open and back on
+  close, trap Tab inside, and have labelled 44px close buttons. Inputs that
+  hid their focus ring show one. A global visible-focus floor covers the
+  hand-rolled buttons that relied on the browser default.
+- **Contrast:** the dominant secondary text colour (`zinc-500`, 141 uses at
+  10–12px, 3.7–4.1:1) is remapped in the dark theme to the same-weight
+  `--bb-text-dim` at 5.2–5.9:1.
+
 ## 2026-09-10 — Auto-refine: a standing order for ckBAT
 
 *Backend built and verified (harness green on both the ckBAT and ckUNI

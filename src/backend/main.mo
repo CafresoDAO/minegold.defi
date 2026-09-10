@@ -2847,6 +2847,10 @@ actor Self {
   public shared ({ caller }) func setBATExchangeRate(rate : Nat) : async Text {
     if (not isAdmin(caller)) { return "error: admin only" };
     if (rate == 0) { return "error: rate must be > 0" };
+    switch (_rateSanity(batExchangeRate, rate)) {
+      case (?why) { return "error: " # why };
+      case (null) {};
+    };
     batExchangeRate := rate;
     // An admin-set rate is a fresh rate — otherwise a manual re-anchor after
     // an oracle outage would set a number the staleness guard then refuses.
@@ -2864,10 +2868,12 @@ actor Self {
     fee : Nat;
   } {
     _nudgeRateSyncIfStale<system>();
-    let fee = try { await ckBATLedgerV2.icrc1_fee() } catch (_) { 100_000_000_000_000_000 };
+    // Anonymous first, before any ledger call: an unauthenticated caller
+    // looping on this must not be able to spend our cycles on their behalf.
     if (caller.isAnonymous()) {
-      return { balance = 0; allowance = 0; minRefine = MIN_REFINE_CKBAT; rate = _settleableBatRate(); fee };
+      return { balance = 0; allowance = 0; minRefine = MIN_REFINE_CKBAT; rate = _settleableBatRate(); fee = 100_000_000_000_000_000 };
     };
+    let fee = try { await ckBATLedgerV2.icrc1_fee() } catch (_) { 100_000_000_000_000_000 };
     let me = Principal.fromActor(Self);
     let bal = try {
       await ckBATLedgerV2.icrc1_balance_of({ owner = caller; subaccount = null });
@@ -3758,18 +3764,20 @@ actor Self {
     treasuryCkUNI : Nat;
   } {
     let me = Principal.fromActor(Self);
-    let treasuryBal = try {
-      await ckUNILedgerV2.icrc1_balance_of({ owner = me; subaccount = null });
-    } catch (_) { 0 };
+    // Anonymous callers get the cached treasury figure — no ledger call on
+    // an unauthenticated request.
     if (caller.isAnonymous()) {
       return {
         balance = 0;
         allowance = 0;
         minRedeem = MIN_REDEEM_SGLDT;
         rate = uniExchangeRate;
-        treasuryCkUNI = treasuryBal;
+        treasuryCkUNI = cachedCkUNITreasuryBalance;
       };
     };
+    let treasuryBal = try {
+      await ckUNILedgerV2.icrc1_balance_of({ owner = me; subaccount = null });
+    } catch (_) { 0 };
     let bal = try {
       await sgldtLedgerV2.icrc1_balance_of({ owner = caller; subaccount = null });
     } catch (_) { 0 };
@@ -4174,18 +4182,20 @@ actor Self {
     treasuryCkBAT : Nat;
   } {
     let me = Principal.fromActor(Self);
-    let treasuryBal = try {
-      await ckBATLedgerV2.icrc1_balance_of({ owner = me; subaccount = null });
-    } catch (_) { 0 };
+    // Anonymous callers get the cached treasury figure — no ledger call on
+    // an unauthenticated request.
     if (caller.isAnonymous()) {
       return {
         balance = 0;
         allowance = 0;
         minRedeem = MIN_REDEEM_SGLDT;
         rate = _settleableBatRate();
-        treasuryCkBAT = treasuryBal;
+        treasuryCkBAT = cachedCkBATTreasuryBalance;
       };
     };
+    let treasuryBal = try {
+      await ckBATLedgerV2.icrc1_balance_of({ owner = me; subaccount = null });
+    } catch (_) { 0 };
     let bal = try {
       await sgldtLedgerV2.icrc1_balance_of({ owner = caller; subaccount = null });
     } catch (_) { 0 };
@@ -4666,7 +4676,15 @@ actor Self {
     if (caller.isAnonymous()) {
       Runtime.trap("Unauthorized: Must be logged in to refresh the exchange rate");
     };
-    await _syncRateFromXRC();
+    // Admin gets an immediate sync. Anyone else gets the same activity-driven
+    // nudge the money paths use (debounced to one sync per hour): with the
+    // 60 s minimum gap alone, one signed-in identity could force ~2,900
+    // two-leg XRC calls a day — ~5.8 T cycles — by looping on this method.
+    if (isAdmin(caller)) {
+      await _syncRateFromXRC();
+    } else {
+      _nudgeRateSyncIfStale<system>();
+    };
     { rate = uniExchangeRate; uniUsdE8 = lastUniUsdPriceE8; lastError = lastXRCError };
   };
 
@@ -4710,6 +4728,21 @@ actor Self {
     "ok: rate-sync timer re-armed, next automatic sync in " # XRC_AUTO_SYNC_SECONDS.toText() # "s";
   };
 
+  /// Fat-finger guard shared by every admin rate/price setter. The oracle's
+  /// own ±30% jump guard is deliberately bypassed by admin re-anchors (that
+  /// is what they are for), but nothing stopped a units slip — dollars where
+  /// e8 was meant, or vice versa — from setting a settlement price 1e8× off
+  /// and opening the treasury to an instant drain. A genuine move never
+  /// needs a single-step change of more than 5×; a real one larger than
+  /// that can be walked there in two steps, deliberately.
+  func _rateSanity(current : Nat, proposed : Nat) : ?Text {
+    if (current == 0 or proposed == 0) { return null };
+    if (proposed > current * 5 or proposed * 5 < current) {
+      return ?("refused: " # proposed.toText() # " is more than 5x away from the current " # current.toText() # " — a units slip? Walk it there in two steps if it is real.");
+    };
+    null;
+  };
+
   /// Admin: set the USD reference price of sGLDT (1e8 precision). This is the
   /// slow leg of the rate — the XRC handles the volatile UNI leg from then
   /// on. Setting it recomputes the rate immediately from the last XRC
@@ -4717,6 +4750,10 @@ actor Self {
   public shared ({ caller }) func setSGLDTUsdPrice(priceE8 : Nat) : async () {
     if (not isAdmin(caller)) {
       Runtime.trap("Unauthorized: admin only");
+    };
+    switch (_rateSanity(sgldtUsdPriceE8, priceE8)) {
+      case (?why) { Runtime.trap(why) };
+      case (null) {};
     };
     sgldtUsdPriceE8 := priceE8;
     if (priceE8 > 0 and lastUniUsdPriceE8 > 0) {
@@ -4731,6 +4768,10 @@ actor Self {
     };
     if (rate == 0) {
       Runtime.trap("Invalid rate: must be greater than 0");
+    };
+    switch (_rateSanity(uniExchangeRate, rate)) {
+      case (?why) { Runtime.trap(why) };
+      case (null) {};
     };
     uniExchangeRate := rate;
     // An admin re-anchor is a fresh rate — otherwise a manual recovery after
@@ -4749,6 +4790,10 @@ actor Self {
     if (newRate == 0) {
       Runtime.trap("Invalid rate: must be greater than 0");
     };
+    switch (_rateSanity(uniExchangeRate, newRate)) {
+      case (?why) { Runtime.trap(why) };
+      case (null) {};
+    };
     uniExchangeRate := newRate;
     uniRateAppliedNs := Time.now();
   };
@@ -4764,6 +4809,10 @@ actor Self {
     };
     if (newRate == 0) {
       return #err("Invalid rate: must be greater than 0");
+    };
+    switch (_rateSanity(uniExchangeRate, newRate)) {
+      case (?why) { return #err(why) };
+      case (null) {};
     };
     uniExchangeRate := newRate;
     uniRateAppliedNs := Time.now();

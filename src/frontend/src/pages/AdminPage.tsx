@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useInternetIdentity } from "../auth";
+import { parseDecimalToBigInt } from "../lib/erc20";
 import { useBackendActor } from "../hooks/useBackendActor";
 import {
   directAdminGrantAdmin,
@@ -300,7 +301,7 @@ function TreasuryTab() {
     }
     setRateStatus({ busy: true, message: `Setting rate to ${parsed} sGLDT/UNI…` });
     try {
-      await setRateMutation.mutateAsync(BigInt(Math.round(parsed * 1e8)));
+      await setRateMutation.mutateAsync(parseDecimalToBigInt(rateInput.trim(), 8));
       setRateStatus({ busy: false, ok: true, message: `Exchange rate set to ${parsed} sGLDT per UNI` });
       setRateInput("");
     } catch (err) {
@@ -553,7 +554,9 @@ function MinterTab() {
       setMintStatus({ busy: false, ok: false, message: "Enter a positive UNI amount" });
       return;
     }
-    const amount = BigInt(Math.round(parsed * 1e18));
+    // Decimal string → e18 exactly; Math.round(parsed * 1e18) loses precision
+    // past 2^53 and can mint or move a different amount than was typed.
+    const amount = parseDecimalToBigInt(mintAmount.trim(), 18);
     setMintStatus({ busy: true, message: `Minting ${parsed} ckUNI…` });
     try {
       const r = await mintMutation.mutateAsync({ ethTxHash: mintTxHash.trim(), uniAmount: amount });
@@ -576,7 +579,7 @@ function MinterTab() {
       setDissolveStatus({ busy: false, ok: false, message: "Ethereum address must start with 0x" });
       return;
     }
-    const amount = BigInt(Math.round(parsed * 1e18));
+    const amount = parseDecimalToBigInt(dissolveAmount.trim(), 18);
     setDissolveStatus({ busy: true, message: `Dissolving ${parsed} ckUNI → ${dissolveEth.trim().slice(0, 10)}…` });
     try {
       const r = await dissolveMutation.mutateAsync({ ckUNIAmount: amount, destinationEthAddress: dissolveEth.trim() });

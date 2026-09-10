@@ -687,6 +687,20 @@ html.theme-light [class*="bg-black/40"] { background-color: #EEF2F7 !important; 
    tiny sizes is still marginal at 3.65:1 — tracked as follow-up.) */
 html:not(.theme-light) .text-zinc-600 { color: #a1a1aa !important; } /* → zinc-400 */
 html:not(.theme-light) .text-zinc-700 { color: #a1a1aa !important; } /* → zinc-400 */
+/* zinc-500 (#71717a) is the dominant secondary text colour — 141 uses,
+   almost all at 10–12px — and sits at 4.14:1 on the page and 3.67:1 on
+   cards, under AA for body text. --bb-text-dim (#8b8b93) is the same
+   visual weight at 5.9:1 / 5.2:1. */
+html:not(.theme-light) .text-zinc-500 { color: var(--bb-text-dim) !important; }
+
+/* Keyboard focus is visible everywhere by default. Components that draw
+   their own ring (GoldCTA, NavBar, the modals) override this locally; this
+   is the floor for the ~30 hand-rolled buttons that relied on the browser
+   default while a sibling's `outline-none` suppressed it. */
+:focus-visible {
+  outline: 2px solid var(--gold-400);
+  outline-offset: 2px;
+}
 
 @layer base {
   :root {

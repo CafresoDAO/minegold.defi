@@ -187,6 +187,8 @@ actor {
   stable RATE_SAMPLE_WINDOW : Nat;
   stable SGLDT_DECIMALS : Nat;
   stable SGLDT_DEFAULT_PRICE : Nat;
+  stable SWEEP_BACKOFF_BASE_S : Nat;
+  stable SWEEP_BACKOFF_MAX_S : Nat;
   stable TREASURY_PRINCIPAL : Principal;
   stable UNI_CONTRACT_ADDRESS_LOWER : Text;
   stable UNI_RATE_MAX_AGE_NS : Int;

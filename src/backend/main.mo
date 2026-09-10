@@ -612,8 +612,21 @@ actor Self {
   /// runs as a separate, independently-scheduled message via a zero-delay
   /// timer, wrapped in its own try/catch as a second line of defense.
   func _periodicRateSync() : async () {
-    ignore Timer.setTimer<system>(#seconds XRC_AUTO_SYNC_SECONDS, _periodicRateSync);
+    _armRateSyncIn<system>(XRC_AUTO_SYNC_SECONDS);
     ignore Timer.setTimer<system>(#seconds 0, _runRateSyncGuarded);
+  };
+
+  /// The heartbeat chain, de-duplicated. Every earlier arm point (actor body,
+  /// postupgrade, adminRearmRateSyncTimer) called setTimer directly, so each
+  /// admin re-arm added a SECOND permanent chain — and each chain costs two
+  /// 1 B-cycle XRC calls per tick. One timer id, cancelled before re-arming.
+  transient var rateSyncTimer : ?Nat = null;
+  func _armRateSyncIn<system>(seconds : Nat) {
+    switch (rateSyncTimer) {
+      case (?t) { Timer.cancelTimer(t) };
+      case (null) {};
+    };
+    rateSyncTimer := ?Timer.setTimer<system>(#seconds seconds, _periodicRateSync);
   };
 
   /// Runs in its own message (see _periodicRateSync above), so whatever
@@ -1562,7 +1575,40 @@ actor Self {
 
   // Automatic sGLDT payout sweeper — definition & startup hook live further down,
   // after verifyAndPayUNIDeposit, so the function it calls is already in scope.
+  // An in-flight lock. It is (historically) a persistent var, and dropping a
+  // stable variable needs an explicit migration, so it stays persistent — but
+  // a trap that left it `true` used to survive every upgrade and silently stop
+  // the sweeper for good. postupgrade now force-clears it: upgrades clear all
+  // timers anyway, so nothing can genuinely be in flight when new code starts.
   var sweeperInFlight : Bool = false;
+
+  /// Per-deposit retry backoff for the sweeper. A deposit whose payout fails
+  /// for a durable reason (treasury short, ledger rejecting the amount) used
+  /// to be retried every 30 s forever — a self-call plus two ledger calls plus
+  /// a fresh #Failed history row per attempt, ~2,880 times a day per stuck
+  /// record. Now each consecutive failure doubles the wait, capped at the
+  /// 6 h heartbeat; a success or any status change clears the entry.
+  type SweepBackoff = { attempts : Nat; notBeforeNs : Int };
+  transient let sweepBackoff = Map.empty<Nat, SweepBackoff>();
+  let SWEEP_BACKOFF_BASE_S : Nat = 30;
+  let SWEEP_BACKOFF_MAX_S : Nat = 21_600;
+
+  func _sweepDelaySeconds(attempts : Nat) : Nat {
+    // 30s, 60s, 120s, … capped; the exponent is clamped so 2^n stays sane.
+    let n = if (attempts > 10) { 10 } else { attempts };
+    let d = SWEEP_BACKOFF_BASE_S * (2 ** n);
+    if (d > SWEEP_BACKOFF_MAX_S) { SWEEP_BACKOFF_MAX_S } else { d };
+  };
+
+  /// True while a payout failure for this deposit has already been written to
+  /// the user's history in the current retry streak — the sweeper's repeat
+  /// attempts should not each add another identical #Failed row.
+  func _payoutFailureAlreadyRecorded(requestId : Nat) : Bool {
+    switch (sweepBackoff.get(requestId)) {
+      case (?b) { b.attempts > 0 };
+      case (null) { false };
+    };
+  };
   /// Debounce for _kickSweeper: at most one pending quick pass at a time.
   /// Transient on purpose — a stale true after upgrade would mute kicks, and
   /// postupgrade schedules a fresh pass anyway.
@@ -1961,7 +2007,7 @@ actor Self {
           let revertedRequest = { liveRequest with status = #confirmed };
           uniDeposits.add(requestId, revertedRequest);
           ignore debug_show(("sGLDT transfer failed: InsufficientFunds, treasury balance:", balance, "needed:", sgldtAmount));
-          _recordTx(
+          if (not _payoutFailureAlreadyRecorded(requestId)) _recordTx(
             liveRequest.submitter,
             {
               id = _nextTxId();
@@ -2016,7 +2062,7 @@ actor Self {
           let revertedRequest = { liveRequest with status = #confirmed };
           uniDeposits.add(requestId, revertedRequest);
           ignore debug_show(("sGLDT transfer failed: GenericError", error_code, message));
-          _recordTx(
+          if (not _payoutFailureAlreadyRecorded(requestId)) _recordTx(
             liveRequest.submitter,
             {
               id = _nextTxId();
@@ -2038,7 +2084,7 @@ actor Self {
           let revertedRequest = { liveRequest with status = #confirmed };
           uniDeposits.add(requestId, revertedRequest);
           ignore debug_show("sGLDT transfer failed: unknown ICRC-1 error variant");
-          _recordTx(
+          if (not _payoutFailureAlreadyRecorded(requestId)) _recordTx(
             liveRequest.submitter,
             {
               id = _nextTxId();
@@ -2081,9 +2127,13 @@ actor Self {
   /// to _sweepConfirmedDeposits is fine — actor funcs are mutually recursive,
   /// same as _periodicRateSync referencing _runRateSyncGuarded below it.)
   func _kickSweeper<system>() {
+    _kickSweeperIn<system>(SWEEP_BACKOFF_BASE_S);
+  };
+
+  func _kickSweeperIn<system>(seconds : Nat) {
     if (sweeperKickPending) { return };
     sweeperKickPending := true;
-    ignore Timer.setTimer<system>(#seconds 30, _sweepConfirmedDeposits);
+    ignore Timer.setTimer<system>(#seconds seconds, _sweepConfirmedDeposits);
   };
 
   func _sweepConfirmedDeposits<system>() : async () {
@@ -2093,16 +2143,24 @@ actor Self {
     // a pass that leaves #confirmed work behind kicks its own follow-up. So
     // the old behaviour (retry every 30 s while work exists) is preserved,
     // but an empty queue costs 4 wake-ups a day instead of 2,880.
-    ignore Timer.setTimer<system>(#seconds 21_600, _sweepConfirmedDeposits);
+    _armSweepHeartbeat<system>();
     sweeperKickPending := false;
 
     if (sweeperInFlight) { return };
     sweeperInFlight := true;
 
+    let now = Time.now();
     let confirmedIds = List.empty<Nat>();
     for ((id, r) in uniDeposits.entries()) {
       switch (r.status) {
-        case (#confirmed) { confirmedIds.add(id) };
+        case (#confirmed) {
+          // Skip records still inside their retry backoff window.
+          let eligible = switch (sweepBackoff.get(id)) {
+            case (?b) { b.notBeforeNs <= now };
+            case (null) { true };
+          };
+          if (eligible) { confirmedIds.add(id) };
+        };
         // #pending used to be verified here via Etherscan. That path is gone
         // (see the deletion note above `verifyAndPayUNIDeposit`): nothing can
         // create a #pending record any more, and no Ethereum oracle remains to
@@ -2118,21 +2176,66 @@ actor Self {
       } catch (_) {
         // Silent — the follow-up kick below retries.
       };
+      // Re-read the record: still #confirmed means the attempt failed and
+      // reverted, so lengthen this record's wait. Anything else clears it.
+      switch (uniDeposits.get(id)) {
+        case (?r) {
+          switch (r.status) {
+            case (#confirmed) {
+              let attempts = switch (sweepBackoff.get(id)) {
+                case (?b) { b.attempts + 1 };
+                case (null) { 1 };
+              };
+              let delayNs : Int = _sweepDelaySeconds(attempts) * 1_000_000_000;
+              sweepBackoff.add(id, { attempts; notBeforeNs = Time.now() + delayNs });
+            };
+            case (_) { sweepBackoff.remove(id) };
+          };
+        };
+        case (null) { sweepBackoff.remove(id) };
+      };
     };
 
     sweeperInFlight := false;
 
-    // A payout that failed above reverted its record to #confirmed. Re-scan
-    // rather than trusting confirmedIds: it tells us what is STILL owed, and
-    // only that warrants burning a quick retry cycle.
-    var remaining = false;
-    label scan for ((_, r) in uniDeposits.entries()) {
+    // Anything still #confirmed is still owed. Wake up when the EARLIEST of
+    // them becomes eligible again — not a flat 30 s, which is what turned one
+    // permanently-failing legacy deposit into a 2,880-attempt-a-day loop.
+    var earliest : ?Int = null;
+    let after = Time.now();
+    for ((id, r) in uniDeposits.entries()) {
       switch (r.status) {
-        case (#confirmed) { remaining := true; break scan };
+        case (#confirmed) {
+          let due : Int = switch (sweepBackoff.get(id)) {
+            case (?b) { b.notBeforeNs };
+            case (null) { after };
+          };
+          earliest := switch (earliest) {
+            case (?e) { if (due < e) { ?due } else { ?e } };
+            case (null) { ?due };
+          };
+        };
         case (_) {};
       };
     };
-    if (remaining) { _kickSweeper<system>() };
+    switch (earliest) {
+      case (?due) {
+        let waitNs : Int = due - after;
+        let waitS : Nat = if (waitNs <= 0) { 1 } else { Int.abs(waitNs) / 1_000_000_000 + 1 };
+        _kickSweeperIn<system>(waitS);
+      };
+      case (null) {};
+    };
+  };
+
+  /// Sweep heartbeat, de-duplicated: only ever one pending 6 h timer.
+  transient var sweepHeartbeatTimer : ?Nat = null;
+  func _armSweepHeartbeat<system>() {
+    switch (sweepHeartbeatTimer) {
+      case (?t) { Timer.cancelTimer(t) };
+      case (null) {};
+    };
+    sweepHeartbeatTimer := ?Timer.setTimer<system>(#seconds 21_600, _sweepConfirmedDeposits);
   };
 
   // (Sweep kick-off is registered at the bottom of the actor — it must come
@@ -2548,7 +2651,12 @@ actor Self {
     pullBlock : Nat,
     reason : Text,
   ) : async { #ok : { refineId : Nat; sgldtPaid : Nat; rate : Nat; blockIndex : Nat }; #err : Text } {
-    let ckFee = try { await ckUNILedgerV2.icrc1_fee() } catch (_) { 0 };
+    // Unknown fee → `fee = null` so the ledger applies its own default. The
+    // old `0` fallback produced `fee = ?0`, which every ICRC-1 ledger rejects
+    // with BadFee — turning a transient fee-read failure into a stranded
+    // record. Cost of the fallback: the treasury eats one ledger fee.
+    let ckFeeOpt : ?Nat = try { ?(await ckUNILedgerV2.icrc1_fee()) } catch (_) { null };
+    let ckFee = switch (ckFeeOpt) { case (?f) { f }; case (null) { 0 } };
 
     func markStranded(detail : Text) {
       refines.add(
@@ -2594,7 +2702,7 @@ actor Self {
         from_subaccount = null;
         to = { owner = user; subaccount = null };
         amount = refundAmount;
-        fee = ?ckFee;
+        fee = ckFeeOpt;
         memo = ?_depositMemo(refineId);
         created_at_time = ?_dedupCreatedAt(startedAt);
       });
@@ -2989,7 +3097,9 @@ actor Self {
     pullBlock : Nat,
     reason : Text,
   ) : async { #ok : { refineId : Nat; sgldtPaid : Nat; rate : Nat; blockIndex : Nat }; #err : Text } {
-    let ckFee = try { await ckBATLedgerV2.icrc1_fee() } catch (_) { 0 };
+    // See the ckUNI twin: unknown fee → null, never ?0.
+    let ckFeeOpt : ?Nat = try { ?(await ckBATLedgerV2.icrc1_fee()) } catch (_) { null };
+    let ckFee = switch (ckFeeOpt) { case (?f) { f }; case (null) { 0 } };
 
     func markStranded(detail : Text) {
       batRefines.add(
@@ -3035,7 +3145,7 @@ actor Self {
         from_subaccount = null;
         to = { owner = user; subaccount = null };
         amount = refundAmount;
-        fee = ?ckFee;
+        fee = ckFeeOpt;
         memo = ?_depositMemo(refineId);
         created_at_time = ?_dedupCreatedAt(startedAt);
       });
@@ -3490,6 +3600,17 @@ actor Self {
     if (amount < MIN_REDEEM_SGLDT) {
       return #err("Amount too small. Minimum redeem is 0.1 sGLDT.");
     };
+    // Same gate as refineCkUNI, and it matters MORE here: this leg pays out
+    // treasury ckUNI. A stale rate while UNI has risen means every redeem
+    // overpays from inventory. The ckBAT redeem is already gated via
+    // _settleableBatRate(); this closes the last unguarded settlement path.
+    if (not _uniRateIsFresh()) {
+      return #err(
+        "Redeeming is paused — the UNI price feed has not updated in over "
+        # (UNI_RATE_MAX_AGE_NS / 3_600_000_000_000).toText()
+        # " hours. Your sGLDT has not been touched. Try again shortly."
+      );
+    };
 
     let rate = switch (_settleRate(rateHint, uniExchangeRate)) {
       case (#ok(r)) { r };
@@ -3599,13 +3720,18 @@ actor Self {
     );
 
     // ── Step 2: pay the ckUNI ──
-    let ckFee = try { await ckUNILedgerV2.icrc1_fee() } catch (_) { 0 };
+    // Unknown fee → `fee = null` so the ledger applies its own default. The
+    // old `0` fallback produced `fee = ?0`, which every ICRC-1 ledger rejects
+    // with BadFee — turning a transient fee-read failure into a stranded
+    // record. Cost of the fallback: the treasury eats one ledger fee.
+    let ckFeeOpt : ?Nat = try { ?(await ckUNILedgerV2.icrc1_fee()) } catch (_) { null };
+    let ckFee = switch (ckFeeOpt) { case (?f) { f }; case (null) { 0 } };
     let payResult = try {
       await ckUNILedgerV2.icrc1_transfer({
         from_subaccount = null;
         to = { owner = caller; subaccount = null };
         amount = ckuniAmount;
-        fee = ?ckFee;
+        fee = ckFeeOpt;
         memo = ?_depositMemo(redeemId);
         created_at_time = ?_dedupCreatedAt(startedAt);
       });
@@ -4016,13 +4142,15 @@ actor Self {
     );
 
     // ── Step 2: pay the ckBAT ──
-    let ckFee = try { await ckBATLedgerV2.icrc1_fee() } catch (_) { 0 };
+    // See the ckUNI twin: unknown fee → null, never ?0.
+    let ckFeeOpt : ?Nat = try { ?(await ckBATLedgerV2.icrc1_fee()) } catch (_) { null };
+    let ckFee = switch (ckFeeOpt) { case (?f) { f }; case (null) { 0 } };
     let payResult = try {
       await ckBATLedgerV2.icrc1_transfer({
         from_subaccount = null;
         to = { owner = caller; subaccount = null };
         amount = ckbatAmount;
-        fee = ?ckFee;
+        fee = ckFeeOpt;
         memo = ?_depositMemo(redeemId);
         created_at_time = ?_dedupCreatedAt(startedAt);
       });
@@ -4375,7 +4503,7 @@ actor Self {
     if (not isAdmin(caller)) {
       Runtime.trap("Unauthorized: admin only");
     };
-    ignore Timer.setTimer<system>(#seconds XRC_AUTO_SYNC_SECONDS, _periodicRateSync);
+    _armRateSyncIn<system>(XRC_AUTO_SYNC_SECONDS);
     "ok: rate-sync timer re-armed, next automatic sync in " # XRC_AUTO_SYNC_SECONDS.toText() # "s";
   };
 
@@ -4455,10 +4583,10 @@ actor Self {
   // Kick off the first payout sweep 10 s after deploy; it self-reschedules
   // every 30 s. Registered last so every helper the sweep transitively
   // references (verifyAndPayUNIDeposit and the ledger bindings) is defined.
-  ignore Timer.setTimer<system>(#seconds 10, _sweepConfirmedDeposits);
+  _kickSweeperIn<system>(10);
 
   // First XRC rate sync 20 s after deploy; self-reschedules on the heartbeat.
-  ignore Timer.setTimer<system>(#seconds 20, _periodicRateSync);
+  _armRateSyncIn<system>(20);
   ignore Timer.setTimer<system>(#seconds 60, _dailyCyclesSnapshot);
 
   // The IC clears every scheduled timer on code upgrade, and the top-level
@@ -4469,9 +4597,10 @@ actor Self {
   // manual fallbacks. Same failure mode that killed cycles-monitor's refresh
   // loop; fixed there 2026-08 with this exact pattern.
   system func postupgrade() {
+    sweeperInFlight := false;
     ignore Timer.setTimer<system>(#seconds 5, _periodicRefreshBalances);
-    ignore Timer.setTimer<system>(#seconds 10, _sweepConfirmedDeposits);
-    ignore Timer.setTimer<system>(#seconds 20, _periodicRateSync);
+    _kickSweeperIn<system>(10);
+    _armRateSyncIn<system>(20);
     ignore Timer.setTimer<system>(#seconds 60, _dailyCyclesSnapshot);
   };
 };

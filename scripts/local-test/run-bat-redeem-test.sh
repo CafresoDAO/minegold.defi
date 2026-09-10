@@ -90,7 +90,15 @@ echo "── deploy ────────────────────
 # previous run rather than upgrading onto it (these mocks have no upgrade
 # path worth preserving, and stale balances would silently break the
 # round-trip assertions below).
-dfx deploy --identity default -qq --mode reinstall -y 2>/dev/null || dfx deploy --identity default -qq
+# `dfx deploy --mode reinstall` with NO canister name is rejected by dfx
+# ("only valid when deploying a single canister"), so the old one-liner
+# silently fell through to a plain upgrade — and with
+# --default-persistent-actors an upgrade keeps every stable var. Deploy
+# once to create everything, then reinstall each canister by name.
+dfx deploy --identity default -qq 2>/dev/null || dfx deploy --identity default -qq
+for c in backend mock_sgldt_ledger mock_ckbat_ledger mock_ckuni_ledger; do
+  dfx deploy "$c" --identity default -qq --mode reinstall -y >/dev/null 2>&1 || fail "reinstall of $c failed"
+done
 BACKEND=$(dfx canister id backend)
 SGLDT=$(dfx canister id mock_sgldt_ledger)
 CKBAT=$(dfx canister id mock_ckbat_ledger)

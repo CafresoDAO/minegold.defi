@@ -6,7 +6,7 @@
       "type": "custom",
       "wasm": "src/backend/dist/backend.wasm",
       "candid": "src/backend/dist/backend.did",
-      "build": "bash -c 'test -f src/backend/dist/backend.wasm && test -f src/backend/dist/backend.did || { echo \"[dfx.json] Pre-built backend artifacts missing.\"; echo \"         Run:  cd src/backend && mops install && mops build\"; exit 1; }'",
+      "build": "bash -c 'test -f src/backend/dist/backend.wasm && test -f src/backend/dist/backend.did || { echo \"[dfx.json] Pre-built backend artifacts missing.\"; echo \"         Run the moc recipe in README.md -> Development (there is no mops build)\"; exit 1; }'",
       "metadata": [
         {
           "name": "candid:service",

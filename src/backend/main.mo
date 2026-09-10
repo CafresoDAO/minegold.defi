@@ -2922,6 +2922,18 @@ actor Self {
     if (not isAuthenticatedUser(caller)) {
       return #err("Sign in with Internet Identity before refining.");
     };
+    await _refineCkBATFor(caller, amount, rateHint, false);
+  };
+
+  /// The refine itself, for a given user. Shared by the public entry point
+  /// above (caller = the user) and the auto-refine sweeper (caller = an
+  /// opted-in user, on their standing allowance). The parameter keeps the
+  /// name `caller` so the money path below is byte-for-byte the audited one;
+  /// only the authorisation moved out. `auto` only labels the history row.
+  func _refineCkBATFor(caller : Principal, amount : Nat, rateHint : ?Nat, auto : Bool) : async {
+    #ok : { refineId : Nat; sgldtPaid : Nat; rate : Nat; blockIndex : Nat };
+    #err : Text;
+  } {
     if (batExchangeRate == 0) {
       return #err("ckBAT refining is not open yet — no exchange rate has been set.");
     };
@@ -3026,7 +3038,7 @@ actor Self {
         ethTxHash = null;
         icpBlockIndex = ?pullBlock;
         errorMsg = null;
-        description = "ckBAT received by the refinery: " # amount.toText() # " e18. Block: " # pullBlock.toText();
+        description = (if (auto) { "Auto-refine: " } else { "" }) # "ckBAT received by the refinery: " # amount.toText() # " e18. Block: " # pullBlock.toText();
       },
     );
 
@@ -3096,6 +3108,186 @@ actor Self {
         await _refundCkBAT(refineId, caller, amount, rate, startedAt, pullBlock, reason);
       };
     };
+  };
+
+  // -------------------------------------------------------
+  // Auto-refine (ckBAT standing order)
+  // -------------------------------------------------------
+  // Brave pays BAT rewards monthly, in small amounts. A user who has to come
+  // back, approve, and refine each time mostly won't. With a standing ICRC-2
+  // allowance to this canister and this flag on, the refinery does it for
+  // them: every pass, whatever ckBAT is in their account (minus the fee the
+  // pull costs) is refined at the live rate through the exact same
+  // pay-or-refund path as a manual refine. The user's own allowance is the
+  // authorisation and the cap — revoking it (approve 0) stops the sweeper
+  // cold regardless of this flag, which is why the UI revokes on opt-out.
+  //
+  // Cycles: two ledger reads per enabled user per pass, at most
+  // AUTO_REFINE_BATCH users per pass, one pass per AUTO_REFINE_INTERVAL_S.
+  // A pass with no settleable BAT rate makes no calls at all.
+
+  type AutoRefine = {
+    enabled : Bool;
+    sinceNs : Int;
+    lastRunNs : Int;
+    lastResult : Text;
+    refines : Nat;
+  };
+  let autoRefineBat = Map.empty<Principal, AutoRefine>();
+  var autoRefineCursor : Nat = 0;
+  let AUTO_REFINE_INTERVAL_S : Nat = 3_600;
+  let AUTO_REFINE_BATCH : Nat = 20;
+  transient var autoRefineTimer : ?Nat = null;
+  transient var autoRefineInFlightSinceNs : ?Int = null;
+  transient var lastAutoRefineNote : Text = "";
+
+  func _armAutoRefineSweep<system>(seconds : Nat) {
+    switch (autoRefineTimer) {
+      case (?t) { Timer.cancelTimer(t) };
+      case (null) {};
+    };
+    autoRefineTimer := ?Timer.setTimer<system>(#seconds seconds, _autoRefineSweep);
+  };
+
+  /// Heartbeat: re-arms first, then runs the pass as its own message (same
+  /// decoupling as _periodicRateSync — nothing in the pass can unwind the
+  /// reschedule).
+  func _autoRefineSweep() : async () {
+    _armAutoRefineSweep<system>(AUTO_REFINE_INTERVAL_S);
+    ignore Timer.setTimer<system>(#seconds 0, _runAutoRefinePass);
+  };
+
+  func _runAutoRefinePass() : async () {
+    // In-flight guard with a 30-minute expiry: a trap after an await would
+    // otherwise leave it set until the next upgrade.
+    switch (autoRefineInFlightSinceNs) {
+      case (?since) {
+        if (Time.now() - since < 1_800_000_000_000) { return };
+      };
+      case (null) {};
+    };
+    autoRefineInFlightSinceNs := ?Time.now();
+    try {
+      await _autoRefinePassBody();
+    } catch (e) {
+      lastAutoRefineNote := "pass failed: " # e.message();
+    };
+    autoRefineInFlightSinceNs := null;
+  };
+
+  func _autoRefinePassBody() : async () {
+    if (batExchangeRate == 0 or not _batRateIsFresh()) {
+      lastAutoRefineNote := "skipped: BAT rate not settleable";
+      return;
+    };
+    let enabled = List.empty<Principal>();
+    for ((p, s) in autoRefineBat.entries()) {
+      if (s.enabled) { enabled.add(p) };
+    };
+    let n = enabled.size();
+    if (n == 0) {
+      lastAutoRefineNote := "idle: nobody opted in";
+      return;
+    };
+    let fee = try { await ckBATLedgerV2.icrc1_fee() } catch (_) {
+      lastAutoRefineNote := "skipped: ckBAT fee unreadable";
+      return;
+    };
+    let me = Principal.fromActor(Self);
+    // Round-robin: start where the last pass stopped, take one batch, and
+    // wrap the cursor at the end so every user is reached across passes.
+    let start = if (autoRefineCursor >= n) { 0 } else { autoRefineCursor };
+    var i : Nat = 0;
+    var processed : Nat = 0;
+    var refined : Nat = 0;
+    for (user in enabled.values()) {
+      if (i >= start and processed < AUTO_REFINE_BATCH) {
+        processed += 1;
+        let now = Time.now();
+        let current = switch (autoRefineBat.get(user)) {
+          case (?s) { s };
+          case (null) { { enabled = true; sinceNs = now; lastRunNs = 0; lastResult = ""; refines = 0 } };
+        };
+        let bal = try {
+          await ckBATLedgerV2.icrc1_balance_of({ owner = user; subaccount = null });
+        } catch (_) { 0 };
+        let allow = try {
+          (await ckBATLedgerV2.icrc2_allowance({
+            account = { owner = user; subaccount = null };
+            spender = { owner = me; subaccount = null };
+          })).allowance;
+        } catch (_) { 0 };
+        // transfer_from charges the fee from the user's balance on top of
+        // the amount, and the allowance must cover amount + fee.
+        let capBal : Nat = if (bal > fee) { bal - fee } else { 0 };
+        let capAllow : Nat = if (allow > fee) { allow - fee } else { 0 };
+        let amount : Nat = if (capBal < capAllow) { capBal } else { capAllow };
+        if (allow == 0) {
+          autoRefineBat.add(user, { current with lastRunNs = now; lastResult = "waiting: no allowance — approve the refinery to resume" });
+        } else if (amount < MIN_REFINE_CKBAT) {
+          autoRefineBat.add(user, { current with lastRunNs = now; lastResult = "waiting: below the 1 ckBAT minimum (refinable " # amount.toText() # " e18)" });
+        } else {
+          let r = try {
+            await _refineCkBATFor(user, amount, null, true);
+          } catch (e) { #err(e.message()) };
+          switch (r) {
+            case (#ok(o)) {
+              refined += 1;
+              autoRefineBat.add(user, { current with lastRunNs = now; refines = current.refines + 1; lastResult = "ok: refined " # amount.toText() # " e18 ckBAT for " # o.sgldtPaid.toText() # " e8 sGLDT (block " # o.blockIndex.toText() # ")" });
+            };
+            case (#err(m)) {
+              autoRefineBat.add(user, { current with lastRunNs = now; lastResult = "err: " # m });
+            };
+          };
+        };
+      };
+      i += 1;
+    };
+    autoRefineCursor := if (start + processed >= n) { 0 } else { start + processed };
+    lastAutoRefineNote := "ok: checked " # processed.toText() # " of " # n.toText() # ", refined " # refined.toText();
+  };
+
+  /// Opt in or out. Opting in does NOT move funds and does NOT grant the
+  /// refinery anything — the standing ICRC-2 allowance the user signs on the
+  /// ckBAT ledger is the only authorisation, and this flag merely tells the
+  /// sweeper to look. Opting out clears the flag; the UI also revokes the
+  /// allowance so nothing is left standing.
+  public shared ({ caller }) func setAutoRefineCkBAT(enabled : Bool) : async { #ok : AutoRefine; #err : Text } {
+    if (not isAuthenticatedUser(caller)) {
+      return #err("Sign in with Internet Identity first.");
+    };
+    let now = Time.now();
+    let next : AutoRefine = switch (autoRefineBat.get(caller)) {
+      case (?s) { { s with enabled; sinceNs = (if (enabled and not s.enabled) { now } else { s.sinceNs }) } };
+      case (null) { { enabled; sinceNs = now; lastRunNs = 0; lastResult = ""; refines = 0 } };
+    };
+    autoRefineBat.add(caller, next);
+    // A fresh opt-in gets its first pass promptly rather than at the next
+    // hourly beat — but never sooner than a minute, to keep a toggle-spam
+    // caller from turning this into a ledger-call fountain.
+    if (enabled) { _armAutoRefineSweep<system>(60) };
+    #ok(next);
+  };
+
+  public shared query ({ caller }) func getMyAutoRefineCkBAT() : async ?AutoRefine {
+    autoRefineBat.get(caller);
+  };
+
+  /// Operator visibility: how many are opted in, and what the last pass did.
+  public query func getAutoRefineStatus() : async { enabled : Nat; intervalSeconds : Nat; batch : Nat; lastPass : Text } {
+    var c : Nat = 0;
+    for ((_, s) in autoRefineBat.entries()) { if (s.enabled) { c += 1 } };
+    { enabled = c; intervalSeconds = AUTO_REFINE_INTERVAL_S; batch = AUTO_REFINE_BATCH; lastPass = lastAutoRefineNote };
+  };
+
+  /// Admin: run one pass now (the local harness and incident response both
+  /// need this — an hour is a long time to wait for an assertion).
+  public shared ({ caller }) func adminRunAutoRefineSweep() : async Text {
+    if (not isAdmin(caller)) {
+      Runtime.trap("Unauthorized: admin only");
+    };
+    await _runAutoRefinePass();
+    lastAutoRefineNote;
   };
 
   /// Return pulled ckBAT after a failed sGLDT payout. Mirrors _refundCkUNI.
@@ -4599,6 +4791,7 @@ actor Self {
   // First XRC rate sync 20 s after deploy; self-reschedules on the heartbeat.
   _armRateSyncIn<system>(20);
   ignore Timer.setTimer<system>(#seconds 60, _dailyCyclesSnapshot);
+  _armAutoRefineSweep<system>(120);
 
   // The IC clears every scheduled timer on code upgrade, and the top-level
   // setTimer calls above only run on first install — never on upgrade. Without
@@ -4613,5 +4806,6 @@ actor Self {
     _kickSweeperIn<system>(10);
     _armRateSyncIn<system>(20);
     ignore Timer.setTimer<system>(#seconds 60, _dailyCyclesSnapshot);
+    _armAutoRefineSweep<system>(120);
   };
 };

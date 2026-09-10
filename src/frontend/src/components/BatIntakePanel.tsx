@@ -8,6 +8,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useBatRefineFlow } from "../hooks/useBatRefineFlow";
 import { type BatRateStatus, fetchBatRateStatus } from "../hooks/useQueries";
+import { AutoRefineCard } from "./AutoRefineCard";
 import { DASHBOARD } from "../lib/canisters";
 import {
   CKBAT_ASSET,
@@ -412,6 +413,16 @@ export function BatIntakePanel({ identity, onSignIn }: BatIntakePanelProps) {
           </p>
         </>
       )}
+
+      {/* The standing order lives with the intake it automates. Shown for
+          anyone signed in — including at zero balance, so a first-time Brave
+          user can switch it on before their first rewards land. */}
+      <AutoRefineCard
+        identity={identity}
+        balance={balance}
+        fee={fee}
+        onChanged={loadPosition}
+      />
 
       {state.kind === "failed" && (
         <div

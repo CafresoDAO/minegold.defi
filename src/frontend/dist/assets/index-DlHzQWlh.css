@@ -1164,6 +1164,9 @@ video {
 .mb-8 {
   margin-bottom: 2rem;
 }
+.ml-1 {
+  margin-left: 0.25rem;
+}
 .ml-2 {
   margin-left: 0.5rem;
 }
@@ -1432,6 +1435,9 @@ video {
 }
 .w-9 {
   width: 2.25rem;
+}
+.w-\[72px\] {
+  width: 72px;
 }
 .w-fit {
   width: -moz-fit-content;

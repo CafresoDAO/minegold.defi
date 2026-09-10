@@ -137,6 +137,14 @@ type BatRedeemRecord =
    timestamp: Time;
    user: principal;
  };
+type AutoRefine = 
+ record {
+   enabled: bool;
+   lastResult: text;
+   lastRunNs: int;
+   refines: nat;
+   sinceNs: int;
+ };
 service : {
   _initializeAccessControl: () -> ();
   /// Admin-only: add a transaction record on behalf of any user (e.g. for manual entries).
@@ -200,6 +208,9 @@ service : {
   /// getRateStatus that the chain has stalled — this only reschedules the
   /// loop; call adminForceRateSync separately for an immediate sync.
   adminRearmRateSyncTimer: () -> (text);
+  /// Admin: run one pass now (the local harness and incident response both
+  /// need this — an hour is a long time to wait for an assertion).
+  adminRunAutoRefineSweep: () -> (text);
   /// Admin transfers ckUNI from this canister to any principal via ICRC-1.
   /// Returns a Text result prefixed with "ok:" on success or "error:" on failure
   /// so the frontend can surface the real reason (no traps on transfer errors).
@@ -213,6 +224,14 @@ service : {
   /// Admin-only.
   diagnosePayoutAbility: (depositId: nat) -> (text);
   getAllUNIDeposits: () -> (vec UniDepositRequest) query;
+  /// Operator visibility: how many are opted in, and what the last pass did.
+  getAutoRefineStatus: () ->
+   (record {
+      batch: nat;
+      enabled: nat;
+      intervalSeconds: nat;
+      lastPass: text;
+    }) query;
   /// Rate provenance for the ckBAT leg, mirroring getRateStatus for UNI.
   /// Public and unauthenticated on purpose — the /proof page publishes it, and
   /// "here is the price we will pay you and when we last believed it" is
@@ -289,6 +308,7 @@ service : {
           status: text;
           txHash: text;
         }) query;
+  getMyAutoRefineCkBAT: () -> (opt AutoRefine) query;
   /// The caller's own ckBAT redeem history, newest-first.
   getMyBatRedeems: () -> (vec BatRedeemRecord) query;
   /// The caller's own ckBAT refine history, newest-first.
@@ -621,6 +641,16 @@ service : {
                                         err: text;
                                         ok: text;
                                       });
+  /// Opt in or out. Opting in does NOT move funds and does NOT grant the
+  /// refinery anything — the standing ICRC-2 allowance the user signs on the
+  /// ckBAT ledger is the only authorisation, and this flag merely tells the
+  /// sweeper to look. Opting out clears the flag; the UI also revokes the
+  /// allowance so nothing is left standing.
+  setAutoRefineCkBAT: (enabled: bool) ->
+   (variant {
+      err: text;
+      ok: AutoRefine;
+    });
   /// Admin-set sGLDT-per-BAT rate. Also re-anchors the XRC jump guard, same as
   /// setUNIExchangeRate does for the UNI leg.
   setBATExchangeRate: (rate: nat) -> (text);

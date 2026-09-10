@@ -11,6 +11,32 @@ Dates are ISO. Newest first.
 
 ---
 
+## 2026-09-10 — Auto-refine: a standing order for ckBAT
+
+*Backend built and verified (harness green on both the ckBAT and ckUNI
+paths, stable-compatible with the live module); frontend built. Deployment
+pending.*
+
+- **New: auto-refine for ckBAT.** A user signs one standing ICRC-2 approval
+  on the ckBAT ledger and flips a switch; an hourly pass then refines
+  whatever ckBAT is in their account, at the live rate, through the exact
+  same `_refineCkBATFor` money path as a manual refine (the public
+  `refineCkBAT` is now a thin authorisation wrapper around it). Every
+  auto-refine is a normal `#paid` record in the user's history, labelled.
+- **The allowance is the authorisation.** The backend flag only tells the
+  sweeper to look. Switching off revokes the approval from the app; a user
+  who revokes it on the ledger themselves stops the sweeper regardless, and
+  their record says "waiting: no allowance". The sweeper never pulls more
+  than balance − fee, and skips anyone below the 1 ckBAT minimum.
+- **Bounded by design.** No calls at all while the BAT rate is stale; at
+  most 20 users per pass, round-robin, two ledger reads each; one pass an
+  hour (a fresh opt-in gets one within a minute). New methods:
+  `setAutoRefineCkBAT`, `getMyAutoRefineCkBAT`, `getAutoRefineStatus`
+  (public, operator visibility), `adminRunAutoRefineSweep` (admin).
+- Local harness now covers: refuse non-admin sweep; opt-in with no
+  allowance pulls nothing and records why; opt-in + allowance sweeps the
+  account to zero and pays sGLDT; opt-out leaves newly arrived ckBAT alone.
+
 ## 2026-09-10 — Internet Identity 2.0 door; Ethereum wallet chain and disconnect guards
 
 *Frontend only. No backend change; no principal changes — see below.*

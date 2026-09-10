@@ -109,6 +109,30 @@ process lets you redeem GLDT for metal. Neither of those is ours: **sVault's
 contract holds the peg, and Gold DAO holds the gold.** We link to them; we
 don't control them.
 
+### Auto-refine — the standing order for BAT
+
+Brave pays ad rewards monthly, in small amounts, and a swap you have to come
+back for is a swap that mostly doesn't happen. So the BAT intake has a
+switch: **auto-refine**. Turning it on signs one standing approval on the
+ckBAT ledger — permission for the refinery to pull ckBAT from *your*
+account — and from then on an hourly pass refines whatever ckBAT is sitting
+there, at the live rate, through exactly the same pay-or-refund path as a
+manual refine. Each one shows up in your history like any other refine.
+
+What it can and cannot do is worth being precise about:
+
+- It can only pull what is actually in your account. The approval is large
+  on purpose so it never silently runs out; your balance is the real cap.
+- It does nothing while the BAT price feed is stale — the same 6-hour rule
+  that closes the manual intake closes this too.
+- It does nothing without the approval. The switch in the app is just a
+  flag; the approval you sign on the ledger is the authorisation, and
+  switching off revokes it (approve 0), so nothing is left standing. You can
+  also revoke it yourself at any time on the ckBAT ledger, and the sweeper
+  simply reports "no allowance" and waits.
+- It costs you one ckBAT ledger fee to switch on and one to switch off —
+  the approve transactions — and the usual pull fee on each refine.
+
 ## Who controls what
 
 The single most useful thing you can know about a financial application is

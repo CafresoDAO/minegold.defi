@@ -39,6 +39,12 @@ The exit is symmetric: redeem sGLDT → ckUNI at the same oracle rate, then
 withdraw ckUNI → native UNI through DFINITY's standard minter. You are never
 locked in.
 
+**Auto-refine (BAT).** Brave pays ad rewards monthly; a swap you have to
+come back for mostly doesn't happen. One standing ICRC-2 approval on the
+ckBAT ledger plus a switch in the app, and an hourly pass refines whatever
+ckBAT lands in your account through the same pay-or-refund path. The
+approval is the authorisation — revoke it and the sweeper stops.
+
 ## Risks & limitations (read this)
 
 - **Unaudited.** No third-party audit of this code has been performed.

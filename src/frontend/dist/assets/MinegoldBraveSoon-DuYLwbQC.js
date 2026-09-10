@@ -1,7 +1,7 @@
-import { c as createLucideIcon, r as reactExports, N as fetchMyCkBATPosition, O as fetchCkBATFee, Q as computeRefineAmounts, U as formatAssetAmount, V as CKBAT_ASSET, X as approveCkBATForRefinery, Y as refineCkBAT, Z as fetchBatRateStatus, _ as parseAssetAmount, j as jsxRuntimeExports, s as CircleCheck, H as DASHBOARD, I as ExternalLink, g as RefreshCw, L as LoaderCircle, T as ThemeToggle } from "./index-BPKjiiIr.js";
-import { A as ArrowRight } from "./arrow-right-CZgHYTGQ.js";
-import { f as fetchCkBatStatus, C as CK_MINTER_CANISTER_ID, B as BAT_ERC20_ADDRESS } from "./ckMinter-B-9Vjeiv.js";
-import { A as ArrowLeft } from "./arrow-left-D5cN0u34.js";
+import { c as createLucideIcon, r as reactExports, N as fetchMyCkBATPosition, O as fetchCkBATFee, Q as computeRefineAmounts, U as formatAssetAmount, V as CKBAT_ASSET, X as approveCkBATForRefinery, Y as refineCkBAT, Z as fetchMyAutoRefineCkBAT, j as jsxRuntimeExports, L as LoaderCircle, _ as setAutoRefineCkBAT, $ as CKBAT_STANDING_ALLOWANCE, a0 as fetchBatRateStatus, a1 as parseAssetAmount, s as CircleCheck, H as DASHBOARD, I as ExternalLink, g as RefreshCw, T as ThemeToggle } from "./index-DlXOJMfv.js";
+import { A as ArrowRight } from "./arrow-right-CAOuMpTw.js";
+import { f as fetchCkBatStatus, C as CK_MINTER_CANISTER_ID, B as BAT_ERC20_ADDRESS } from "./ckMinter-ClGHsfGr.js";
+import { A as ArrowLeft } from "./arrow-left-ayzIFsG3.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -107,6 +107,173 @@ function useBatRefineFlow(identity) {
   }, []);
   const busy = state.kind === "approving" || state.kind === "refining";
   return { state, position, busy, refineNow, refreshPosition, reset };
+}
+function AutoRefineCard({ identity, balance, fee, onChanged }) {
+  const [setting, setSetting] = reactExports.useState(
+    void 0
+  );
+  const [busy, setBusy] = reactExports.useState(null);
+  const [error, setError] = reactExports.useState(null);
+  const load = reactExports.useCallback(() => {
+    void fetchMyAutoRefineCkBAT(identity).then(setSetting);
+  }, [identity]);
+  reactExports.useEffect(() => {
+    load();
+  }, [load]);
+  const enabled = (setting == null ? void 0 : setting.enabled) === true;
+  const canPayFee = balance >= fee;
+  const turnOn = async () => {
+    setBusy("on");
+    setError(null);
+    const approved = await approveCkBATForRefinery({
+      identity,
+      amount: CKBAT_STANDING_ALLOWANCE
+    });
+    if (!approved.ok) {
+      setError(approved.error);
+      setBusy(null);
+      return;
+    }
+    const r = await setAutoRefineCkBAT({ identity, enabled: true });
+    if (!r.ok) setError(r.error);
+    else setSetting(r.setting);
+    setBusy(null);
+    onChanged();
+  };
+  const turnOff = async () => {
+    setBusy("off");
+    setError(null);
+    const r = await setAutoRefineCkBAT({ identity, enabled: false });
+    if (!r.ok) {
+      setError(r.error);
+      setBusy(null);
+      return;
+    }
+    setSetting(r.setting);
+    if (canPayFee) {
+      const revoked = await approveCkBATForRefinery({ identity, amount: 0n });
+      if (!revoked.ok) {
+        setError(
+          `Auto-refine is off, but the standing approval could not be revoked: ${revoked.error} You can revoke it later from this card.`
+        );
+      }
+    } else {
+      setError(
+        `Auto-refine is off. The standing approval is still on the ledger (revoking costs ${formatAssetAmount(fee, CKBAT_ASSET, 2)} ckBAT, which you don't hold right now) — it can't move anything while this is off, and you can revoke it once you have ckBAT again.`
+      );
+    }
+    setBusy(null);
+    onChanged();
+  };
+  const lastRun = setting && setting.lastRunNs > 0n ? new Date(Number(setting.lastRunNs / 1000000n)).toLocaleString() : null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "div",
+    {
+      "data-ocid": "brave.autorefine",
+      className: "mt-5 rounded-2xl border p-4",
+      style: {
+        borderColor: enabled ? "rgba(52,211,153,0.35)" : "var(--bb-border)",
+        background: enabled ? "rgba(52,211,153,0.06)" : "var(--bb-surface-soft)"
+      },
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-bold", children: [
+              "Auto-refine",
+              " ",
+              enabled && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "span",
+                {
+                  className: "ml-1 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wider",
+                  style: {
+                    background: "rgba(52,211,153,0.15)",
+                    color: "var(--trust-verified)"
+                  },
+                  children: "on"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "p",
+              {
+                className: "mt-1 text-[12px] leading-relaxed",
+                style: { color: "var(--bb-text-muted)" },
+                children: "Whenever ckBAT lands in your vault, the refinery turns it into sGLDT for you — hourly, at the live rate, with the same automatic refund if a payout ever fails. Brave pays rewards monthly; this is how they become gold without you coming back."
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              role: "switch",
+              "aria-checked": enabled,
+              "aria-label": enabled ? "Turn auto-refine off" : "Turn auto-refine on",
+              "data-ocid": "brave.autorefine.toggle",
+              disabled: busy !== null || setting === void 0 || !enabled && !canPayFee,
+              onClick: () => void (enabled ? turnOff() : turnOn()),
+              className: "relative inline-flex h-11 w-[72px] shrink-0 items-center rounded-full border transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400",
+              style: {
+                borderColor: enabled ? "var(--trust-verified)" : "var(--bb-border)",
+                background: enabled ? "var(--trust-verified)" : "var(--bb-bg-soft)"
+              },
+              children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "span",
+                {
+                  className: "absolute flex h-9 w-9 items-center justify-center rounded-full shadow transition-transform",
+                  style: {
+                    background: "#ffffff",
+                    transform: enabled ? "translateX(32px)" : "translateX(3px)"
+                  },
+                  children: busy && /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 14, className: "animate-spin", style: { color: "var(--ink-800)" } })
+                }
+              )
+            }
+          )
+        ] }),
+        !enabled && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "p",
+          {
+            className: "mt-2 text-[11px] leading-relaxed",
+            style: { color: "var(--bb-text-dim)" },
+            children: [
+              "Turning this on signs one standing approval for the refinery to pull ckBAT from your account (costs the",
+              " ",
+              formatAssetAmount(fee, CKBAT_ASSET, 2),
+              " ckBAT ledger fee once). Your balance is the real cap — it can only ever pull what is there. Turning it off revokes the approval.",
+              !canPayFee && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+                " ",
+                "You need at least ",
+                formatAssetAmount(fee, CKBAT_ASSET, 2),
+                " ckBAT to sign it."
+              ] })
+            ]
+          }
+        ),
+        enabled && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "p",
+          {
+            className: "mt-2 text-[11px] leading-relaxed tabular-nums",
+            style: { color: "var(--bb-text-dim)" },
+            children: [
+              setting.refines > 0n ? `${String(setting.refines)} auto-refine${setting.refines === 1n ? "" : "s"} so far.` : "No auto-refine yet.",
+              " ",
+              lastRun ? `Last check ${lastRun}: ${setting.lastResult}` : "First check within the hour."
+            ]
+          }
+        ),
+        error && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "p",
+          {
+            role: "alert",
+            className: "mt-2 text-[11px] leading-relaxed",
+            style: { color: "var(--trust-fault)" },
+            children: error
+          }
+        )
+      ]
+    }
+  );
 }
 function BatIntakePanel({ identity, onSignIn }) {
   const { state, position, busy, refineNow, refreshPosition, reset } = useBatRefineFlow(identity);
@@ -483,6 +650,15 @@ function BatIntakePanel({ identity, onSignIn }) {
         }
       )
     ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      AutoRefineCard,
+      {
+        identity,
+        balance,
+        fee,
+        onChanged: loadPosition
+      }
+    ),
     state.kind === "failed" && /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {

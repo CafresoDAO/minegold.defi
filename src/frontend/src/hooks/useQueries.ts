@@ -1508,6 +1508,13 @@ const batRefineIDL = ({ IDL }: { IDL: any }) => {
     rate: IDL.Nat,
     blockIndex: IDL.Nat,
   });
+  const AutoRefine = IDL.Record({
+    enabled: IDL.Bool,
+    sinceNs: IDL.Int,
+    lastRunNs: IDL.Int,
+    lastResult: IDL.Text,
+    refines: IDL.Nat,
+  });
   return IDL.Service({
     getMyCkBATPosition: IDL.Func(
       [],
@@ -1527,8 +1534,60 @@ const batRefineIDL = ({ IDL }: { IDL: any }) => {
       [IDL.Variant({ ok: RefineOk, err: IDL.Text })],
       [],
     ),
+    setAutoRefineCkBAT: IDL.Func(
+      [IDL.Bool],
+      [IDL.Variant({ ok: AutoRefine, err: IDL.Text })],
+      [],
+    ),
+    getMyAutoRefineCkBAT: IDL.Func([], [IDL.Opt(AutoRefine)], ["query"]),
   });
 };
+
+export type AutoRefineSetting = {
+  enabled: boolean;
+  sinceNs: bigint;
+  lastRunNs: bigint;
+  /** Human-readable outcome of the last pass for this user: "ok: …",
+   *  "waiting: …", or "err: …". Empty until the first pass. */
+  lastResult: string;
+  refines: bigint;
+};
+
+/** Standing allowance granted when auto-refine is switched on: 1,000,000
+ *  ckBAT (e18). Deliberately larger than anyone will earn in ad rewards so
+ *  it never silently runs out — the user's BALANCE is the real cap, since
+ *  transfer_from can only pull what is actually there. Revoked with
+ *  approve(0) when switched off. */
+export const CKBAT_STANDING_ALLOWANCE = 1_000_000_000_000_000_000_000_000n;
+
+export async function fetchMyAutoRefineCkBAT(
+  identity: unknown,
+): Promise<AutoRefineSetting | null> {
+  try {
+    const actor = await directActor(batRefineIDL, { identity });
+    const r = (await actor.getMyAutoRefineCkBAT()) as [] | [AutoRefineSetting];
+    return r.length ? r[0] : null;
+  } catch (err) {
+    console.warn("[auto-refine] setting fetch failed:", err);
+    return null;
+  }
+}
+
+export async function setAutoRefineCkBAT(opts: {
+  identity: unknown;
+  enabled: boolean;
+}): Promise<{ ok: true; setting: AutoRefineSetting } | { ok: false; error: string }> {
+  try {
+    const actor = await directActor(batRefineIDL, { identity: opts.identity });
+    const r = (await actor.setAutoRefineCkBAT(opts.enabled)) as
+      | { ok: AutoRefineSetting }
+      | { err: string };
+    if ("ok" in r) return { ok: true, setting: r.ok };
+    return { ok: false, error: r.err };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
 
 export type CkBATPosition = {
   balance: bigint;

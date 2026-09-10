@@ -1,4 +1,12 @@
 // Version: 1.0.0
+type AutoRefine__737775869 =
+  {
+    enabled : Bool;
+    lastResult : Text;
+    lastRunNs : Int;
+    refines : Nat;
+    sinceNs : Int
+  };
 type BalanceCacheEntry__243068242 =
   {cachedAt : Time__772726445; ethWei : Nat; uniWei : Nat};
 type BatRedeemRecord__1041645630 =
@@ -164,6 +172,8 @@ type sGLDTRequest__25166406 =
   };
 actor {
   stable ADMIN_PRINCIPAL : Principal;
+  stable AUTO_REFINE_BATCH : Nat;
+  stable AUTO_REFINE_INTERVAL_S : Nat;
   stable BALANCE_CACHE_TTL_NS : Int;
   stable BAT_DEFAULT_PRICE : Nat;
   stable BAT_RATE_MAX_AGE_NS : Int;
@@ -203,6 +213,12 @@ actor {
       var adminAssigned : Bool;
       userRoles : Map__466055834<Principal, UserRole__585387465>
     };
+  stable autoRefineBat :
+    {
+      var root : Node__216023231<Principal, AutoRefine__737775869>;
+      var size : Nat__107743821
+    };
+  stable var autoRefineCursor : Nat;
   stable balanceCache :
     {
       var root : Node__216023231<Text, BalanceCacheEntry__243068242>;

@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-e-1Zinyi.js","assets/button-rkfq2dul.js","assets/LandingPage-DW6IM1ff.js","assets/ckMinter-B-9Vjeiv.js","assets/arrow-right-CZgHYTGQ.js","assets/MinegoldBraveSoon-DuFph9WE.js","assets/arrow-left-D5cN0u34.js","assets/TransactionHistoryPage-CQpNLSKQ.js","assets/ReceiptBlock-C71UikDk.js","assets/ReceiptPage-BnBzNgGL.js","assets/DocsPage-DN9moq9f.js","assets/markdown-B3CbH_l8.js","assets/StatusPage-BS0ouAL8.js","assets/SharedReceiptPage-DA70kqDm.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/AdminPage-BoXGOD5T.js","assets/button-DDe1mUvc.js","assets/LandingPage-FnEls2zt.js","assets/ckMinter-ClGHsfGr.js","assets/arrow-right-CAOuMpTw.js","assets/MinegoldBraveSoon-DuYLwbQC.js","assets/arrow-left-ayzIFsG3.js","assets/TransactionHistoryPage-fw1mmeCn.js","assets/ReceiptBlock-DoPdie82.js","assets/ReceiptPage-CnZawGAB.js","assets/DocsPage-mpRZWnAH.js","assets/markdown-Cnpayada.js","assets/StatusPage-Cw4BDQKJ.js","assets/SharedReceiptPage-CImDuE6_.js"])))=>i.map(i=>d[i]);
 var __defProp = Object.defineProperty;
 var __typeError = (msg) => {
   throw TypeError(msg);
@@ -34294,7 +34294,7 @@ async function call(client2, args) {
       throw err;
     const data2 = getRevertErrorData(err);
     const { offchainLookup, offchainLookupSignature } = await __vitePreload(async () => {
-      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-B4903lKV.js");
+      const { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 } = await import("./ccip-B3pxs-Xj.js");
       return { offchainLookup: offchainLookup2, offchainLookupSignature: offchainLookupSignature2 };
     }, true ? [] : void 0);
     if (client2.ccipRead !== false && (data2 == null ? void 0 : data2.slice(0, 10)) === offchainLookupSignature && to)
@@ -51027,7 +51027,7 @@ function useRefreshTreasuryBalances() {
   return useMutation({
     mutationFn: async () => {
       const { createActorWithConfig } = await __vitePreload(async () => {
-        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DFVtic-U.js");
+        const { createActorWithConfig: createActorWithConfig2 } = await import("./index-D71xYOWM.js");
         return { createActorWithConfig: createActorWithConfig2 };
       }, true ? [] : void 0);
       const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -51058,7 +51058,7 @@ function usePublicTreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DFVtic-U.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-D71xYOWM.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -51082,7 +51082,7 @@ function usePublicCkUNITreasuryBalance() {
     queryFn: async () => {
       try {
         const { createActorWithConfig } = await __vitePreload(async () => {
-          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-DFVtic-U.js");
+          const { createActorWithConfig: createActorWithConfig2 } = await import("./index-D71xYOWM.js");
           return { createActorWithConfig: createActorWithConfig2 };
         }, true ? [] : void 0);
         const { createActor: createActor2 } = await __vitePreload(async () => {
@@ -51290,6 +51290,13 @@ const batRefineIDL = ({ IDL: IDL2 }) => {
     rate: IDL2.Nat,
     blockIndex: IDL2.Nat
   });
+  const AutoRefine = IDL2.Record({
+    enabled: IDL2.Bool,
+    sinceNs: IDL2.Int,
+    lastRunNs: IDL2.Int,
+    lastResult: IDL2.Text,
+    refines: IDL2.Nat
+  });
   return IDL2.Service({
     getMyCkBATPosition: IDL2.Func(
       [],
@@ -51308,9 +51315,36 @@ const batRefineIDL = ({ IDL: IDL2 }) => {
       [IDL2.Nat, IDL2.Opt(IDL2.Nat)],
       [IDL2.Variant({ ok: RefineOk, err: IDL2.Text })],
       []
-    )
+    ),
+    setAutoRefineCkBAT: IDL2.Func(
+      [IDL2.Bool],
+      [IDL2.Variant({ ok: AutoRefine, err: IDL2.Text })],
+      []
+    ),
+    getMyAutoRefineCkBAT: IDL2.Func([], [IDL2.Opt(AutoRefine)], ["query"])
   });
 };
+const CKBAT_STANDING_ALLOWANCE = 1000000000000000000000000n;
+async function fetchMyAutoRefineCkBAT(identity) {
+  try {
+    const actor = await directActor(batRefineIDL, { identity });
+    const r2 = await actor.getMyAutoRefineCkBAT();
+    return r2.length ? r2[0] : null;
+  } catch (err) {
+    console.warn("[auto-refine] setting fetch failed:", err);
+    return null;
+  }
+}
+async function setAutoRefineCkBAT(opts) {
+  try {
+    const actor = await directActor(batRefineIDL, { identity: opts.identity });
+    const r2 = await actor.setAutoRefineCkBAT(opts.enabled);
+    if ("ok" in r2) return { ok: true, setting: r2.ok };
+    return { ok: false, error: r2.err };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+  }
+}
 async function fetchMyCkBATPosition(identity) {
   try {
     const actor = await directActor(batRefineIDL, { identity });
@@ -55299,33 +55333,33 @@ function useTreasuryEthUniBalance() {
   return { balance, loading, unavailable };
 }
 const AdminPage = reactExports.lazy(
-  () => __vitePreload(() => import("./AdminPage-e-1Zinyi.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
+  () => __vitePreload(() => import("./AdminPage-BoXGOD5T.js"), true ? __vite__mapDeps([0,1]) : void 0).then((m2) => ({ default: m2.AdminPage }))
 );
 const BankingBraveHome = reactExports.lazy(
-  () => __vitePreload(() => import("./BankingBraveHome-BZBw5rtT.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
+  () => __vitePreload(() => import("./BankingBraveHome-ySRqKkdL.js"), true ? [] : void 0).then((m2) => ({ default: m2.BankingBraveHome }))
 );
 const LandingPage = reactExports.lazy(
-  () => __vitePreload(() => import("./LandingPage-DW6IM1ff.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
+  () => __vitePreload(() => import("./LandingPage-FnEls2zt.js"), true ? __vite__mapDeps([2,3,4]) : void 0).then((m2) => ({ default: m2.LandingPage }))
 );
 const MinegoldBraveSoon = reactExports.lazy(
-  () => __vitePreload(() => import("./MinegoldBraveSoon-DuFph9WE.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
+  () => __vitePreload(() => import("./MinegoldBraveSoon-DuYLwbQC.js"), true ? __vite__mapDeps([5,4,3,6]) : void 0).then((m2) => ({ default: m2.MinegoldBraveSoon }))
 );
 const TransactionHistoryPage = reactExports.lazy(
-  () => __vitePreload(() => import("./TransactionHistoryPage-CQpNLSKQ.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./TransactionHistoryPage-fw1mmeCn.js"), true ? __vite__mapDeps([7,1,8]) : void 0).then((m2) => ({
     default: m2.TransactionHistoryPage
   }))
 );
 const ReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./ReceiptPage-BnBzNgGL.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
+  () => __vitePreload(() => import("./ReceiptPage-CnZawGAB.js"), true ? __vite__mapDeps([9,8,6]) : void 0).then((m2) => ({ default: m2.ReceiptPage }))
 );
 const DocsPage = reactExports.lazy(
-  () => __vitePreload(() => import("./DocsPage-DN9moq9f.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
+  () => __vitePreload(() => import("./DocsPage-mpRZWnAH.js"), true ? __vite__mapDeps([10,11,6,4]) : void 0).then((m2) => ({ default: m2.DocsPage }))
 );
 const StatusPage = reactExports.lazy(
-  () => __vitePreload(() => import("./StatusPage-BS0ouAL8.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
+  () => __vitePreload(() => import("./StatusPage-Cw4BDQKJ.js"), true ? __vite__mapDeps([12,11,6]) : void 0).then((m2) => ({ default: m2.StatusPage }))
 );
 const SharedReceiptPage = reactExports.lazy(
-  () => __vitePreload(() => import("./SharedReceiptPage-DA70kqDm.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
+  () => __vitePreload(() => import("./SharedReceiptPage-CImDuE6_.js"), true ? __vite__mapDeps([13,4]) : void 0).then((m2) => ({
     default: m2.SharedReceiptPage
   }))
 );
@@ -56887,7 +56921,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   ] }) }) })
 );
 export {
-  HttpAgent as $,
+  CKBAT_STANDING_ALLOWANCE as $,
   ShieldCheck as A,
   TrendingUp as B,
   CircleAlert as C,
@@ -56913,53 +56947,56 @@ export {
   Wallet as W,
   approveCkBATForRefinery as X,
   refineCkBAT as Y,
-  fetchBatRateStatus as Z,
-  parseAssetAmount as _,
+  fetchMyAutoRefineCkBAT as Z,
+  setAutoRefineCkBAT as _,
   cn as a,
-  Actor as a0,
-  useLedger as a1,
-  ArrowRightLeft as a2,
-  StatusPill as a3,
-  ChevronUp as a4,
-  ChevronDown as a5,
-  ArrowDownToLine as a6,
-  ArrowUpFromLine as a7,
-  cva as a8,
-  fetchShareToken as a9,
-  localBatchGatewayRequest as aA,
-  call as aB,
-  concat$1 as aC,
-  encodeAbiParameters as aD,
-  getAbortError as aE,
-  isAbortError as aF,
-  HttpRequestError as aG,
-  isHex as aH,
-  shareUrl as aa,
-  Check as ab,
-  X as ac,
-  unpublishReceipt as ad,
-  publishReceipt as ae,
-  findEntry as af,
-  fmtAmount as ag,
-  ledgerUrl as ah,
-  TriangleAlert as ai,
-  fetchPublicReceipt as aj,
-  formatTimestamp as ak,
-  SGLDT_LEDGER_ID as al,
-  encode$4 as am,
-  Text as an,
-  isV3ResponseBody as ao,
-  DelegationIdentity as ap,
-  isDelegationValid as aq,
-  AuthClient as ar,
-  useQueryClient as as,
-  useQuery as at,
-  BaseError$1 as au,
-  getUrl as av,
-  stringify$1 as aw,
-  decodeErrorResult as ax,
-  isAddressEqual as ay,
-  localBatchGatewayUrl as az,
+  fetchBatRateStatus as a0,
+  parseAssetAmount as a1,
+  HttpAgent as a2,
+  Actor as a3,
+  useLedger as a4,
+  ArrowRightLeft as a5,
+  StatusPill as a6,
+  ChevronUp as a7,
+  ChevronDown as a8,
+  ArrowDownToLine as a9,
+  decodeErrorResult as aA,
+  isAddressEqual as aB,
+  localBatchGatewayUrl as aC,
+  localBatchGatewayRequest as aD,
+  call as aE,
+  concat$1 as aF,
+  encodeAbiParameters as aG,
+  getAbortError as aH,
+  isAbortError as aI,
+  HttpRequestError as aJ,
+  isHex as aK,
+  ArrowUpFromLine as aa,
+  cva as ab,
+  fetchShareToken as ac,
+  shareUrl as ad,
+  Check as ae,
+  X as af,
+  unpublishReceipt as ag,
+  publishReceipt as ah,
+  findEntry as ai,
+  fmtAmount as aj,
+  ledgerUrl as ak,
+  TriangleAlert as al,
+  fetchPublicReceipt as am,
+  formatTimestamp as an,
+  SGLDT_LEDGER_ID as ao,
+  encode$4 as ap,
+  Text as aq,
+  isV3ResponseBody as ar,
+  DelegationIdentity as as,
+  isDelegationValid as at,
+  AuthClient as au,
+  useQueryClient as av,
+  useQuery as aw,
+  BaseError$1 as ax,
+  getUrl as ay,
+  stringify$1 as az,
   reactDomExports as b,
   createLucideIcon as c,
   useIsAdmin as d,

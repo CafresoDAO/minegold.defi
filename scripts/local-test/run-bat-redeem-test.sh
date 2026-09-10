@@ -258,6 +258,79 @@ OUT=$(dfx canister call backend getMyBatRedeems --identity local-test-user)
 [[ "$OUT" == *"status = "* ]] || fail "getMyBatRedeems returned nothing: $OUT"
 pass "getMyBatRedeems returns the caller's own redeem history"
 
+echo "── auto-refine (standing order) ────────────────────────"
+# A fresh user opts in with a standing allowance; one admin-triggered pass
+# must refine everything refinable (balance minus one fee) at the live rate
+# and record it on the user's setting. Then opting out must stop the next
+# pass from touching them even though ckBAT keeps arriving.
+dfx identity new local-test-user-3 --storage-mode plaintext >/dev/null 2>&1 || true
+USER3=$(dfx identity get-principal --identity local-test-user-3)
+dfx canister call mock_ckbat_ledger mint \
+  "(record { owner = principal \"$USER3\"; subaccount = null }, 3_000_000_000_000_000_000)" >/dev/null
+pass "user3 funded with 3 ckBAT (e18)"
+
+OUT=$(dfx canister call backend adminRunAutoRefineSweep --identity local-test-user-3 2>&1 || true)
+[[ "$OUT" == *"Unauthorized"* ]] || fail "adminRunAutoRefineSweep should refuse a non-admin: $OUT"
+pass "adminRunAutoRefineSweep refuses a non-admin caller"
+
+OUT=$(dfx canister call backend getMyAutoRefineCkBAT --query --identity local-test-user-3)
+[[ "$OUT" == *"null"* ]] || fail "getMyAutoRefineCkBAT should be null before opting in: $OUT"
+pass "no auto-refine setting before opting in"
+
+OUT=$(dfx canister call backend setAutoRefineCkBAT "(true)" --identity local-test-user-3)
+[[ "$OUT" == *"ok"* && "$OUT" == *"enabled = true"* ]] || fail "setAutoRefineCkBAT(true): $OUT"
+pass "user3 opts in: $OUT"
+
+# Opted in but with NO allowance: the pass must not pull anything and must
+# say why on the user's record.
+OUT=$(dfx canister call backend adminRunAutoRefineSweep --identity default)
+[[ "$OUT" == *"refined 0"* ]] || fail "pass with no allowance should refine 0: $OUT"
+OUT=$(dfx canister call backend getMyAutoRefineCkBAT --query --identity local-test-user-3)
+[[ "$OUT" == *"waiting: no allowance"* ]] || fail "user3 record should say no allowance: $OUT"
+pass "no allowance → nothing pulled, reason recorded on the user's setting"
+
+OUT=$(dfx canister call mock_ckbat_ledger icrc2_approve \
+  "(record { from_subaccount = null; spender = record { owner = principal \"$BACKEND\"; subaccount = null }; amount = 1_000_000_000_000_000_000_000_000; expected_allowance = null; expires_at = null; fee = null; memo = null; created_at_time = null })" \
+  --identity local-test-user-3)
+[[ "$OUT" == *"Ok"* ]] || fail "user3 standing approve: $OUT"
+pass "user3 signs the standing allowance"
+
+U3_SGLDT_BEFORE=$(dfx canister call mock_sgldt_ledger icrc1_balance_of "(record { owner = principal \"$USER3\"; subaccount = null })" | tr -d '() :nat_' )
+OUT=$(dfx canister call backend adminRunAutoRefineSweep --identity default)
+[[ "$OUT" == *"refined 1"* ]] || fail "pass should have refined user3: $OUT"
+pass "admin pass: $OUT"
+
+OUT=$(dfx canister call backend getMyAutoRefineCkBAT --query --identity local-test-user-3)
+[[ "$OUT" == *"refines = 1"* && "$OUT" == *"ok: refined"* ]] || fail "user3 setting after pass: $OUT"
+pass "user3's setting records one auto-refine with an ok result"
+
+U3_SGLDT_AFTER=$(dfx canister call mock_sgldt_ledger icrc1_balance_of "(record { owner = principal \"$USER3\"; subaccount = null })" | tr -d '() :nat_' )
+[[ "$U3_SGLDT_AFTER" -gt "$U3_SGLDT_BEFORE" ]] || fail "user3 sGLDT did not increase: before=$U3_SGLDT_BEFORE after=$U3_SGLDT_AFTER"
+U3_CKBAT_AFTER=$(dfx canister call mock_ckbat_ledger icrc1_balance_of "(record { owner = principal \"$USER3\"; subaccount = null })" | tr -d '() :nat_' )
+# 3 ckBAT minus one fee was pulled, plus the pull's own fee: nothing
+# refinable is left behind (what remains is strictly less than the minimum).
+[[ "$U3_CKBAT_AFTER" -lt 1000000000000000000 ]] || fail "user3 should have been swept to below 1 ckBAT: $U3_CKBAT_AFTER"
+pass "user3 received sGLDT ($U3_SGLDT_AFTER e8s) and was swept to $U3_CKBAT_AFTER e18 ckBAT"
+
+OUT=$(dfx canister call backend getMyBatRefines --identity local-test-user-3)
+[[ "$OUT" == *"paid"* ]] || fail "auto-refine should appear in user3's refine history: $OUT"
+pass "the auto-refine is a normal paid refine in the user's history"
+
+# Opt out, top up, run again: the flag alone must stop the sweeper.
+OUT=$(dfx canister call backend setAutoRefineCkBAT "(false)" --identity local-test-user-3)
+[[ "$OUT" == *"enabled = false"* ]] || fail "setAutoRefineCkBAT(false): $OUT"
+dfx canister call mock_ckbat_ledger mint \
+  "(record { owner = principal \"$USER3\"; subaccount = null }, 2_000_000_000_000_000_000)" >/dev/null
+OUT=$(dfx canister call backend adminRunAutoRefineSweep --identity default)
+[[ "$OUT" == *"idle: nobody opted in"* ]] || fail "pass after opt-out should be idle: $OUT"
+OUT=$(dfx canister call backend getMyAutoRefineCkBAT --query --identity local-test-user-3)
+[[ "$OUT" == *"refines = 1"* ]] || fail "refine count must not change after opt-out: $OUT"
+pass "opt-out honoured: new ckBAT left untouched, pass reports idle"
+
+OUT=$(dfx canister call backend getAutoRefineStatus --query)
+[[ "$OUT" == *"enabled = 0"* ]] || fail "getAutoRefineStatus: $OUT"
+pass "getAutoRefineStatus reports 0 enabled after opt-out"
+
 echo "── admin methods ───────────────────────────────────────"
 OUT=$(dfx canister call backend adminRearmRateSyncTimer --identity local-test-user 2>&1 || true)
 [[ "$OUT" == *"nauthorized"* || "$OUT" == *"reject"* ]] || fail "non-admin should be refused adminRearmRateSyncTimer: $OUT"

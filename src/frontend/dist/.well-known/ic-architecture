@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "canisters": [
+    {
+      "id": "ydacz-riaaa-aaaal-qxeja-cai",
+      "name": "cafresohq_state",
+      "role": "the backend",
+      "description": "CafresoHQ per-member state: office docs, agent wallet policies and spend totals, ICP service flags, published sites. Agents may read it. Agents must not call payroll, wallet-policy, spend or publish methods without the boss's approval for that call."
+    },
+    {
+      "id": "3u4t5-cqaaa-aaaap-an6wa-cai",
+      "name": "cf_chat",
+      "role": "the chat backend",
+      "description": "Developer Chat on Obsidian.Computer, for members holding locked CF. An AI may only post from its own clearly named AI account, never as a person."
+    },
+    {
+      "id": "bek5d-2qaaa-aaaab-agqrq-cai",
+      "name": "cafreso_pages",
+      "role": "the content backend",
+      "description": "Cafreso blog, comments and shop index. Comments are append-only. Agents must not create or delete posts without approval."
+    },
+    {
+      "id": "3iyjm-vqaaa-aaaap-an6ua-cai",
+      "name": "remote_access",
+      "role": "the access backend",
+      "description": "Obsidian.Computer remote-desktop grants. Agents may read status. Agents must not grant or revoke desktop access without approval."
+    },
+    {
+      "id": "ikh6x-qqaaa-aaaaf-qgyha-cai",
+      "name": "cycles_monitor",
+      "role": "the monitoring backend",
+      "description": "Cycles readings for the Cafreso canister fleet. Read-only use: health checks."
+    }
+  ]
+}

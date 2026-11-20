@@ -54,6 +54,9 @@ if (onlyIdx !== -1 && !ONLY) {
  *  Internet Identity tooling may reject). */
 const EXPLICIT_CONTENT_TYPE = {
   ".well-known/ii-alternative-origins": "application/json",
+  // Service-discoverability manifest for the ICP MCP (2026-11-20). JSON, no
+  // extension, by spec — so it must be named here or the deploy refuses it.
+  ".well-known/ic-architecture": "application/json",
   ".well-known/ic-domains": "text/plain",
   "favicon.ico": "image/x-icon", // mime/lite has no .ico entry
 };

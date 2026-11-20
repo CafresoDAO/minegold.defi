@@ -13,6 +13,16 @@
 //   2. Access-Control-Allow-Origin: *
 // Both are set explicitly below — otherwise II silently rejects the login.
 [
+  // Service-discoverability manifest (ICP MCP). Same rules as the whitelist:
+  // JSON, readable cross-origin. Inert under sync.mjs, which sets the type itself.
+  {
+    "match": ".well-known/ic-architecture",
+    "headers": {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    },
+    "ignore": false
+  },
   {
     "match": ".well-known/ii-alternative-origins",
     "headers": {
